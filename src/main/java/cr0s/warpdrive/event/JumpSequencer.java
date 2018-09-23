@@ -857,7 +857,7 @@ public class JumpSequencer extends AbstractSequencer {
 			assert server != null;
 			try {
 				targetWorld = server.getWorld(dimensionIdSpace);
-			} catch (Exception exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				reason.append(Commons.styleWarning, "warpdrive.ship.guide.unable_to_load_space_dimension",
 				              dimensionIdSpace);
@@ -886,7 +886,7 @@ public class JumpSequencer extends AbstractSequencer {
 			assert server != null;
 			try {
 				targetWorld = server.getWorld(dimensionIdHyperspace);
-			} catch (Exception exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				reason.append(Commons.styleWarning, "warpdrive.ship.guide.unable_to_load_hyperspace_dimension",
 				              dimensionIdHyperspace);
@@ -925,7 +925,7 @@ public class JumpSequencer extends AbstractSequencer {
 			assert server != null;
 			try {
 				targetWorld = server.getWorld(dimensionIdSpace);
-			} catch (Exception exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				reason.append(Commons.styleWarning, "warpdrive.ship.guide.unable_to_load_space_dimension",
 				              dimensionIdSpace);
@@ -971,7 +971,7 @@ public class JumpSequencer extends AbstractSequencer {
 			assert server != null;
 			try {
 				targetWorld = server.getWorld(celestialObject.dimensionId);
-			} catch (Exception exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				reason.append(Commons.styleWarning, "warpdrive.ship.guide.unable_to_land_invalid_id",
 				              celestialObject.getDisplayName(), celestialObject.dimensionId);
@@ -1174,7 +1174,7 @@ public class JumpSequencer extends AbstractSequencer {
 				final double oldEntityX = movingEntity.v3OriginalPosition.x;
 				final double oldEntityY = movingEntity.v3OriginalPosition.y;
 				final double oldEntityZ = movingEntity.v3OriginalPosition.z;
-				Vec3d target = transformation.apply(oldEntityX, oldEntityY, oldEntityZ);
+				final Vec3d target = transformation.apply(oldEntityX, oldEntityY, oldEntityZ);
 				final double newEntityX = target.x;
 				final double newEntityY = target.y;
 				final double newEntityZ = target.z;
@@ -1508,7 +1508,7 @@ public class JumpSequencer extends AbstractSequencer {
 		final VectorI offset = new VectorI((int) Math.signum(moveX), (int) Math.signum(moveY), (int) Math.signum(moveZ));
 		
 		int x, y, z;
-		MutableBlockPos mutableBlockPosSource = new MutableBlockPos(0, 0, 0);
+		final MutableBlockPos mutableBlockPosSource = new MutableBlockPos(0, 0, 0);
 		BlockPos blockPosTarget;
 		final BlockPos blockPosCoreAtTarget = transformation.apply(ship.core.getX(), ship.core.getY(), ship.core.getZ());
 		

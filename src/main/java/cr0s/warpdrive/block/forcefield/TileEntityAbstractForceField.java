@@ -157,17 +157,11 @@ public abstract class TileEntityAbstractForceField extends TileEntityAbstractEne
 	// OpenComputer callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
-	public Object[] enable(final Context context, final Arguments arguments) {
-		return enable(OC_convertArgumentsAndLogCall(context, arguments));
-	}
-	
-	@Callback
-	@Optional.Method(modid = "opencomputers")
 	public Object[] beamFrequency(final Context context, final Arguments arguments) {
 		return beamFrequency(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	// ComputerCraft IPeripheral methods implementation
+	// ComputerCraft IPeripheral methods
 	@Override
 	@Optional.Method(modid = "computercraft")
 	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {

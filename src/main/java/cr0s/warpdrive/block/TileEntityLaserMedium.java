@@ -52,7 +52,7 @@ public class TileEntityLaserMedium extends TileEntityAbstractEnergy {
 		return super.writeToNBT(tagCompound);
 	}
 	
-	// IEnergySink methods implementation
+	// IEnergySink methods
 	@Override
 	public int energy_getMaxStorage() {
 		return WarpDriveConfig.LASER_MEDIUM_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()];

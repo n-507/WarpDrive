@@ -249,6 +249,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		return new Object[] { enumTier.getIndex(), enumTier.getName() };
 	}
 	
+	@Override
 	public Object[] getUpgrades() {
 		return new Object[] { isUpgradeable(), getUpgradesAsString() };
 	}

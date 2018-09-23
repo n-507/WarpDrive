@@ -105,13 +105,14 @@ public class TileEntityMonitor extends TileEntityAbstractMachine implements IVid
 		return new Integer[] { videoChannel };
 	}
 	
-	// ComputerCraft IPeripheral methods implementation
+	// ComputerCraft IPeripheral methods
 	@Override
 	@Optional.Method(modid = "computercraft")
 	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {
 		final String methodName = CC_getMethodNameAndLogCall(method, arguments);
 		
-		if (methodName.equals("videoChannel")) {
+		switch (methodName) {
+		case "videoChannel":
 			if (arguments.length == 1 && arguments[0] != null) {
 				setVideoChannel(Commons.toInt(arguments[0]));
 			}

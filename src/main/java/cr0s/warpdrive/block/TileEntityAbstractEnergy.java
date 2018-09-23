@@ -197,7 +197,8 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {
 		final String methodName = CC_getMethodNameAndLogCall(method, arguments);
 		
-		if (methodName.equals("energy")) {
+		switch (methodName) {
+		case "energy":
 			return energy();
 		}
 		

@@ -73,13 +73,13 @@ public class BlockMonitor extends BlockAbstractRotatingContainer {
 				
 				Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.monitor.viewing_camera",
 						videoChannel,
-						camera.position.getX(),
-						camera.position.getY(),
-						camera.position.getZ() ));
+						camera.blockPos.getX(),
+						camera.blockPos.getY(),
+						camera.blockPos.getZ() ));
 				ClientCameraHandler.setupViewpoint(
 						camera.type, entityPlayer, entityPlayer.rotationYaw, entityPlayer.rotationPitch,
 						blockPos, blockState,
-						camera.position, world.getBlockState(camera.position));
+						camera.blockPos, world.getBlockState(camera.blockPos));
 			}
 		}
 		

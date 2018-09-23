@@ -153,7 +153,7 @@ public class TileEntitySecurityStation extends TileEntityAbstractMachine impleme
 		return getAttachedPlayers();
 	}
 	
-	// ComputerCraft IPeripheral methods implementation
+	// ComputerCraft IPeripheral methods
 	@Override
 	@Optional.Method(modid = "computercraft")
 	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {

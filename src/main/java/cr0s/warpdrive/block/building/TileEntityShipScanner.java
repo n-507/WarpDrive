@@ -726,24 +726,24 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		}
 	}
 	
-	// ComputerCraft IPeripheral methods implementation
+	// ComputerCraft IPeripheral methods
 	@Override
 	@Optional.Method(modid = "computercraft")
 	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {
 		final String methodName = CC_getMethodNameAndLogCall(method, arguments);
 		
 		switch (methodName) {
-			case "scan":
-				return scan();
-
-			case "fileName":
-				return filename();
-
-			case "deploy": // deploy(schematicFileName, offsetX, offsetY, offsetZ)
-				return deploy(arguments);
-
-			case "state":
-				return state();
+		case "scan":
+			return scan();
+			
+		case "fileName":
+			return filename();
+			
+		case "deploy": // deploy(schematicFileName, offsetX, offsetY, offsetZ)
+			return deploy(arguments);
+			
+		case "state":
+			return state();
 		}
 		
 		return super.callMethod(computer, context, method, arguments);

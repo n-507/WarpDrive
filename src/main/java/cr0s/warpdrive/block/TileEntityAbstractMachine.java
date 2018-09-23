@@ -148,7 +148,8 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 		return enable(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	// ComputerCraft IPeripheral methods implementation
+	@Callback
+	// ComputerCraft IPeripheral methods
 	@Override
 	@Optional.Method(modid = "computercraft")
 	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {
@@ -157,7 +158,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 		switch (methodName) {
 		case "name":
 			return name(arguments);
-		
+			
 		case "enable":
 			return enable(arguments);
 		}

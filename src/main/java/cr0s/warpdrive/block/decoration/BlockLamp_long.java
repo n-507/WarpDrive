@@ -26,7 +26,7 @@ public class BlockLamp_long extends BlockAbstractLamp {
 	@Nonnull
 	@SuppressWarnings("deprecation")
 	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState blockState, IBlockAccess source, BlockPos pos) {
+	public AxisAlignedBB getBoundingBox(final IBlockState blockState, final IBlockAccess source, final BlockPos pos) {
 		switch (blockState.getValue(BlockProperties.FACING)) {
 			case DOWN : return AABB_DOWN ;
 			case UP   : return AABB_UP   ;

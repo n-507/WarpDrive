@@ -31,7 +31,7 @@ public class CamerasRegistry {
 				} else {
 					if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 						WarpDrive.logger.info(String.format("Removing 'dead' camera %s (while searching)",
-						                                    Commons.format(world, cam.position)));
+						                                    Commons.format(world, cam.blockPos)));
 					}
 					it.remove();
 				}
@@ -43,11 +43,11 @@ public class CamerasRegistry {
 		return null;
 	}
 	
-	private CameraRegistryItem getCamByPosition(final World world, final BlockPos position) {
+	private CameraRegistryItem getCamByPosition(final World world, final BlockPos blockPos) {
 		for (final CameraRegistryItem cam : registry) {
-			if ( cam.position.getX() == position.getX()
-			  && cam.position.getY() == position.getY()
-			  && cam.position.getZ() == position.getZ()
+			if ( cam.blockPos.getX() == blockPos.getX()
+			  && cam.blockPos.getY() == blockPos.getY()
+			  && cam.blockPos.getZ() == blockPos.getZ()
 			  && cam.dimensionId == world.provider.getDimension() ) {
 				return cam;
 			}
@@ -63,19 +63,19 @@ public class CamerasRegistry {
 			return false;
 		}
 		
-		if (!world.getChunk(cam.position).isLoaded()) {
+		if (!world.getChunk(cam.blockPos).isLoaded()) {
 			if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 				WarpDrive.logger.info(String.format("Reporting an 'unloaded' camera %s",
-				                                    Commons.format(world, cam.position)));
+				                                    Commons.format(world, cam.blockPos)));
 			}
 			return false;
 		}
-		final Block block = world.getBlockState(cam.position).getBlock();
+		final Block block = world.getBlockState(cam.blockPos).getBlock();
 		if ( block != WarpDrive.blockCamera
 		  && block != WarpDrive.blockLaserCamera ) {
 			if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 				WarpDrive.logger.info(String.format("Reporting a 'dead' camera %s",
-				                                    Commons.format(world, cam.position)));
+				                                    Commons.format(world, cam.blockPos)));
 			}
 			return false;
 		}
@@ -92,7 +92,7 @@ public class CamerasRegistry {
 			if (!isCamAlive(world, cam)) {
 				if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 					WarpDrive.logger.info(String.format("Removing 'dead' camera %s",
-					                                    Commons.format(world, cam.position)));
+					                                    Commons.format(world, cam.blockPos)));
 				}
 				it.remove();
 			}
@@ -101,34 +101,34 @@ public class CamerasRegistry {
 		// LocalProfiler.stop();
 	}
 	
-	public void removeFromRegistry(final World world, final BlockPos position) {
-		final CameraRegistryItem cam = getCamByPosition(world, position);
+	public void removeFromRegistry(final World world, final BlockPos blockPos) {
+		final CameraRegistryItem cam = getCamByPosition(world, blockPos);
 		if (cam != null) {
 			if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 				WarpDrive.logger.info(String.format("Removing camera by request %s",
-				                                    Commons.format(world, cam.position)));
+				                                    Commons.format(world, cam.blockPos)));
 			}
 			registry.remove(cam);
 		}
 	}
 	
-	public void updateInRegistry(final World world, final BlockPos position, final int videoChannel, final EnumCameraType enumCameraType) {
-		final CameraRegistryItem cam = new CameraRegistryItem(world, position, videoChannel, enumCameraType);
+	public void updateInRegistry(final World world, final BlockPos blockPos, final int videoChannel, final EnumCameraType enumCameraType) {
+		final CameraRegistryItem cam = new CameraRegistryItem(world, blockPos, videoChannel, enumCameraType);
 		removeDeadCams(world);
 		
 		if (isCamAlive(world, cam)) {
-			final CameraRegistryItem existingCam = getCamByPosition(world, cam.position);
+			final CameraRegistryItem existingCam = getCamByPosition(world, cam.blockPos);
 			if (existingCam == null) {
 				if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 					WarpDrive.logger.info(String.format("Adding 'live' camera %s with video channel %s",
-					                                    Commons.format(world, cam.position),
+					                                    Commons.format(world, cam.blockPos),
 					                                    cam.videoChannel));
 				}
 				registry.add(cam);
 			} else if (existingCam.videoChannel != cam.videoChannel) {
 				if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 					WarpDrive.logger.info(String.format("Updating 'live' camera %s from video channel %d to video channel %d",
-					                                    Commons.format(world, cam.position),
+					                                    Commons.format(world, cam.blockPos),
 					                                    existingCam.videoChannel, cam.videoChannel));
 				}
 				existingCam.videoChannel = cam.videoChannel;
@@ -136,7 +136,7 @@ public class CamerasRegistry {
 		} else {
 			if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 				WarpDrive.logger.info(String.format("Unable to update 'dead' camera %s",
-				                                    Commons.format(world, cam.position)));
+				                                    Commons.format(world, cam.blockPos)));
 			}
 		}
 	}
@@ -150,7 +150,7 @@ public class CamerasRegistry {
 		
 		for (final CameraRegistryItem cam : registry) {
 			WarpDrive.logger.info(String.format("- %d (%d %d %d)",
-			                                    cam.videoChannel, cam.position.getX(), cam.position.getY(), cam.position.getZ()));
+			                                    cam.videoChannel, cam.blockPos.getX(), cam.blockPos.getY(), cam.blockPos.getZ()));
 		}
 	}
 }

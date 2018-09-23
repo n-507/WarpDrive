@@ -8,6 +8,7 @@ import cr0s.warpdrive.config.Filler;
 import cr0s.warpdrive.config.structures.Orb.OrbShell;
 import cr0s.warpdrive.data.VectorI;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -30,7 +31,7 @@ public class MetaOrbInstance extends OrbInstance {
 	}
 	
 	@Override
-	public boolean generate(final World world, final Random random, final BlockPos blockPos) {
+	public boolean generate(@Nonnull final World world, @Nonnull final Random random, @Nonnull final BlockPos blockPos) {
 		if (WarpDriveConfig.LOGGING_WORLD_GENERATION) {
 			WarpDrive.logger.info(String.format("Generating MetaOrb %s of %d cores with radius of %d",
 			                                    structure.name, metaShell.count, totalThickness));
@@ -70,8 +71,8 @@ public class MetaOrbInstance extends OrbInstance {
 		for (int xIndex = blockPos.getX() - totalThickness; xIndex <= blockPos.getX() + totalThickness; xIndex++) {
 			for (int zIndex = blockPos.getZ() - totalThickness; zIndex <= blockPos.getZ() + totalThickness; zIndex++) {
 				for (int yIndex = minY_clamped; yIndex <= maxY_clamped; yIndex++) {
-					BlockPos blockPosNotify = new BlockPos(xIndex, yIndex, zIndex);
-					IBlockState blockState = world.getBlockState(blockPosNotify);
+					final BlockPos blockPosNotify = new BlockPos(xIndex, yIndex, zIndex);
+					final IBlockState blockState = world.getBlockState(blockPosNotify);
 					if (blockState.getBlock() != Blocks.AIR) {
 						world.notifyBlockUpdate(blockPosNotify, blockState, blockState, 3);
 					}
@@ -107,7 +108,7 @@ public class MetaOrbInstance extends OrbInstance {
 		}
 	}
 	
-	private static boolean isReplaceableOreGen(World world, final BlockPos blockPos) {
+	private static boolean isReplaceableOreGen(final World world, final BlockPos blockPos) {
 		final IBlockState blockState = world.getBlockState(blockPos);
 		return blockState.getBlock().isReplaceableOreGen(blockState, world, blockPos, BlockMatcher.forBlock(Blocks.AIR));
 	}

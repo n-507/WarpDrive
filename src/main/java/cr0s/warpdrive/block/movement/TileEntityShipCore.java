@@ -536,6 +536,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		}
 	}
 	
+	@Override
 	public String getAllPlayersInArea() {
 		final AxisAlignedBB axisalignedbb = new AxisAlignedBB(minX, minY, minZ, maxX + 0.99D, maxY + 0.99D, maxZ + 0.99D);
 		final List list = world.getEntitiesWithinAABBExcludingEntity(null, axisalignedbb);

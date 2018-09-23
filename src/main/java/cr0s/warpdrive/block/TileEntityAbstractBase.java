@@ -370,17 +370,20 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		if (videoChannel == -1) {
 			return new WarpDriveText(Commons.styleWarning, "warpdrive.video_channel.status_line.undefined");
 		} else if (videoChannel < 0) {
-			return new WarpDriveText(Commons.styleWarning, "warpdrive.video_channel.status_line.invalid", videoChannel);
+			return new WarpDriveText(Commons.styleWarning, "warpdrive.video_channel.status_line.invalid",
+			                         videoChannel);
 		} else {
 			final CameraRegistryItem camera = WarpDrive.cameras.getCameraByVideoChannel(world, videoChannel);
 			if (camera == null) {
-				return new WarpDriveText(Commons.styleWarning, "warpdrive.video_channel.status_line.not_loaded", videoChannel);
+				return new WarpDriveText(Commons.styleWarning, "warpdrive.video_channel.status_line.not_loaded",
+				                         videoChannel);
 			} else if (camera.isTileEntity(this)) {
-				return new WarpDriveText(Commons.styleCorrect, "warpdrive.video_channel.status_line.valid_self", videoChannel);
+				return new WarpDriveText(Commons.styleCorrect, "warpdrive.video_channel.status_line.valid_self",
+				                         videoChannel);
 			} else {
 				return new WarpDriveText(Commons.styleCorrect, "warpdrive.video_channel.status_line.valid_other",
 				                         videoChannel,
-				                         Commons.format(world, camera.position) );
+				                         Commons.format(world, camera.blockPos) );
 			}
 		}
 	}

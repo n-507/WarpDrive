@@ -526,7 +526,7 @@ public class WarpDriveConfig {
 	}
 	
 	public static Object getOreOrItemStack(final String registryName1, final int meta1,
-	                                       Object... args) {
+	                                       final Object... args) {
 		// always validate parameters in dev space
 		assert args.length % 2 == 0;
 		for (int index = 0; index < args.length; index += 2) {

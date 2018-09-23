@@ -255,7 +255,7 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 		return getResult(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	// ComputerCraft IPeripheral methods implementation
+	// ComputerCraft IPeripheral methods
 	@Override
 	@Optional.Method(modid = "computercraft")
 	public void attach(@Nonnull final IComputerAccess computer) {

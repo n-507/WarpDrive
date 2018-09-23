@@ -7,6 +7,7 @@ import cr0s.warpdrive.world.EntitySphereGen;
 import cr0s.warpdrive.world.EntityStarCore;
 import cr0s.warpdrive.world.WorldGenSmallShip;
 
+import javax.annotation.Nonnull;
 import java.util.Random;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -74,7 +75,7 @@ public class OrbInstance extends AbstractStructureInstance {
 	}
 	
 	@Override
-	public boolean generate(final World world, final Random random, final BlockPos blockPos) {
+	public boolean generate(@Nonnull final World world, @Nonnull final Random random, @Nonnull final BlockPos blockPos) {
 		final boolean hasShip = schematicName != null && !schematicName.isEmpty();
 		final int y2 = Math.min(WarpDriveConfig.SPACE_GENERATOR_Y_MAX_BORDER - totalThickness,
 			  Math.max(blockPos.getY(), WarpDriveConfig.SPACE_GENERATOR_Y_MIN_BORDER + totalThickness));
@@ -83,14 +84,14 @@ public class OrbInstance extends AbstractStructureInstance {
 		}
 		final EntitySphereGen entitySphereGen = new EntitySphereGen(world, blockPos.getX(), y2, blockPos.getZ(), this, !hasShip);
 		world.spawnEntity(entitySphereGen);
-		if (((Orb)structure).hasStarCore) {
+		if (((Orb) structure).hasStarCore) {
 			return world.spawnEntity(new EntityStarCore(world, blockPos.getX(), y2, blockPos.getZ(), totalThickness));
 		}
 		return true;
 	}
 	
 	public OrbShell getShellForSqRadius(final double sqRadius) {
-		final int intSqRadius = (int)Math.round(sqRadius);
+		final int intSqRadius = (int) Math.round(sqRadius);
 		if (intSqRadius < sqRadiusToOrbShell.length) {
 			return sqRadiusToOrbShell[intSqRadius];
 		} else {

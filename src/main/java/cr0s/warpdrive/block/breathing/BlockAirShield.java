@@ -83,7 +83,7 @@ public class BlockAirShield extends BlockAbstractOmnipanel {
 	@Nullable
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
-		return null;
+		return NULL_AABB;
 	}
 	
 	@Override

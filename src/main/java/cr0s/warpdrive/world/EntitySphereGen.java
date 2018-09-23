@@ -257,7 +257,7 @@ public final class EntitySphereGen extends Entity {
 	}
 	
 	@Override
-	protected void writeEntityToNBT(final NBTTagCompound tagCompound) {
+	protected void writeEntityToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		// FIXME not implemented
 	}
 	

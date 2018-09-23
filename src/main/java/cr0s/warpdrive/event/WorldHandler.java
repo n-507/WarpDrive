@@ -9,8 +9,8 @@ import cr0s.warpdrive.network.PacketHandler;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.chunk.Chunk;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
@@ -32,7 +32,8 @@ public class WorldHandler {
 	
 	//TODO: register as event receiver
 	public void onChunkLoaded(final ChunkWatchEvent event) {
-		final ChunkPos chunk = event.getChunk();
+		final Chunk chunk = event.getChunkInstance();
+		assert chunk != null;
 		
 		// Check chunk for locating in cloaked areas
 		WarpDrive.logger.info(String.format("onChunkLoaded %d %d", chunk.x, chunk.z));

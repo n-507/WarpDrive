@@ -81,7 +81,7 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 			       && isPassableBlock(pos.getY() - 2);
 			isActive = isEnabled && isValid;
 			
-			IBlockState blockState = world.getBlockState(pos);
+			final IBlockState blockState = world.getBlockState(pos);
 			if (energy_getEnergyStored() < WarpDriveConfig.LIFT_ENERGY_PER_ENTITY || !isActive) {
 				mode = EnumLiftMode.INACTIVE;
 				if (blockState.getValue(BlockLift.MODE) != EnumLiftMode.INACTIVE) {
@@ -122,7 +122,7 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 		}
 	}
 	
-	private boolean isPassableBlock(int yPosition) {
+	private boolean isPassableBlock(final int yPosition) {
 		final BlockPos blockPos = new BlockPos(pos.getX(), yPosition, pos.getZ());
 		final IBlockState blockState = world.getBlockState(blockPos);
 		return blockState.getBlock() == Blocks.AIR
@@ -251,12 +251,6 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 	// OpenComputer callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
-	public Object[] enable(final Context context, final Arguments arguments) {
-		return enable(OC_convertArgumentsAndLogCall(context, arguments));
-	}
-	
-	@Callback
-	@Optional.Method(modid = "opencomputers")
 	public Object[] mode(final Context context, final Arguments arguments) {
 		return mode(
 			new Object[] {
@@ -271,19 +265,16 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 		return state();
 	}
 	
-	// ComputerCraft IPeripheral methods implementation
+	// ComputerCraft IPeripheral methods
 	@Override
 	@Optional.Method(modid = "computercraft")
 	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {
 		final String methodName = CC_getMethodNameAndLogCall(method, arguments);
 		
 		switch (methodName) {
-		case "enable":
-			return enable(arguments);
-			
 		case "mode":
 			return mode(arguments);
-		
+			
 		case "state":
 			return state();
 		}

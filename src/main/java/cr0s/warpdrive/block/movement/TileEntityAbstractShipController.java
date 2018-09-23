@@ -77,7 +77,7 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
-		boolean isConfirmed = tagCompound.hasKey("commandConfirmed") && tagCompound.getBoolean("commandConfirmed");
+		final boolean isConfirmed = tagCompound.hasKey("commandConfirmed") && tagCompound.getBoolean("commandConfirmed");
 		setCommand(tagCompound.getString("commandName"), isConfirmed);
 		
 		setFront(tagCompound.getInteger("front"));
@@ -437,7 +437,7 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 		return targetName(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	// ComputerCraft IPeripheral methods implementation
+	// ComputerCraft IPeripheral methods
 	@Override
 	@Optional.Method(modid = "computercraft")
 	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {

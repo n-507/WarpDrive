@@ -9,13 +9,13 @@ import net.minecraft.world.World;
 public class CameraRegistryItem {
 	
 	public int dimensionId;
-	public BlockPos position;
+	public BlockPos blockPos;
 	public int videoChannel;
 	public EnumCameraType type;
 	
-	public CameraRegistryItem(final World world, final BlockPos position, final int videoChannel, final EnumCameraType enumCameraType) {
+	public CameraRegistryItem(final World world, final BlockPos blockPos, final int videoChannel, final EnumCameraType enumCameraType) {
 		this.videoChannel = videoChannel;
-		this.position = position;
+		this.blockPos = blockPos;
 		this.dimensionId = world.provider.getDimension();
 		this.type = enumCameraType;
 	}
@@ -23,7 +23,7 @@ public class CameraRegistryItem {
 	public boolean isTileEntity(final TileEntity tileEntity) {
 		return tileEntity instanceof IVideoChannel
 			&& dimensionId == tileEntity.getWorld().provider.getDimension()
-			&& position.equals(tileEntity.getPos())
+			&& blockPos.equals(tileEntity.getPos())
 			&& videoChannel == ((IVideoChannel) tileEntity).getVideoChannel();
 	}
 }

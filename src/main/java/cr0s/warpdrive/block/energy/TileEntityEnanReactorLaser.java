@@ -100,8 +100,8 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		this.weakReactorCore = reactorCore != null && reactorFace != EnumReactorFace.UNKNOWN ? new WeakReference<>(reactorCore) : null;
 		
 		// refresh blockstate
-		IBlockState blockState_old = world.getBlockState(pos);
-		IBlockState blockState_new;
+		final IBlockState blockState_old = world.getBlockState(pos);
+		final IBlockState blockState_new;
 		if (reactorFace.facingLaserProperty != null) {
 			blockState_new = blockState_old.withProperty(BlockProperties.ACTIVE, true)
 			                               .withProperty(BlockProperties.FACING, reactorFace.facingLaserProperty);
@@ -207,7 +207,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	}
 	
 	@Override
-	public Object[] stabilize(Object[] arguments) {
+	public Object[] stabilize(final Object[] arguments) {
 		if (arguments.length != 1) {
 			return new Object[] { false, "Invalid number of arguments" };
 		}
