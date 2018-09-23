@@ -33,11 +33,6 @@
 					"side"  : "warpdrive:blocks/movement/ship_controller-side_active2"
 				}
 			},
-			"summon": {
-				"textures": {
-					"side"  : "warpdrive:blocks/movement/ship_controller-side_active3"
-				}
-			},
 			"hyperdrive": {
 				"textures": {
 					"side"  : "warpdrive:blocks/movement/ship_controller-side_active4"

@@ -7,7 +7,7 @@ if not term.isAvailable() then
   os.exit()
 end
 if component.gpu.getDepth() < 4 then
-  print("Tier 2 GPU required")
+  print("A tier 2 or higher GPU is required")
   os.exit()
 end
 

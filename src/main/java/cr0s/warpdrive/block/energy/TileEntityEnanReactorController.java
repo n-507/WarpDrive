@@ -103,13 +103,13 @@ public class TileEntityEnanReactorController extends TileEntityAbstractEnergyCor
 	}
 	
 	@Override
-	public Double[] getInstability() {
+	public Double[] getInstabilities() {
 		final TileEntityEnanReactorCore tileEntityEnanReactorCore = tileEntityEnanReactorCoreWeakReference == null ? null : tileEntityEnanReactorCoreWeakReference.get();
 		if (tileEntityEnanReactorCore == null) {
 			return new Double[] { -1.0D, -1.0D, -1.0D, -1.0D, -1.0D, -1.0D, -1.0D, -1.0D,
 			                      -1.0D, -1.0D, -1.0D, -1.0D, -1.0D, -1.0D, -1.0D, -1.0D };
 		}
-		return tileEntityEnanReactorCore.getInstability();
+		return tileEntityEnanReactorCore.getInstabilities();
 	}
 	
 	@Override
@@ -160,8 +160,8 @@ public class TileEntityEnanReactorController extends TileEntityAbstractEnergyCor
 	// OpenComputer callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
-	public Object[] getInstability(final Context context, final Arguments arguments) {
-		return getInstability();
+	public Object[] getInstabilities(final Context context, final Arguments arguments) {
+		return getInstabilities();
 	}
 	
 	@Callback
@@ -194,26 +194,21 @@ public class TileEntityEnanReactorController extends TileEntityAbstractEnergyCor
 	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {
 		final String methodName = CC_getMethodNameAndLogCall(method, arguments);
 		
-		try {
-			switch (methodName) {
-			case "getInstability":
-				return getInstability();
+		switch (methodName) {
+		case "getInstabilities":
+			return getInstabilities();
 			
-			case "instabilityTarget":
-				return instabilityTarget(arguments);
+		case "instabilityTarget":
+			return instabilityTarget(arguments);
 			
-			case "outputMode":
-				return outputMode(arguments);
+		case "outputMode":
+			return outputMode(arguments);
 			
-			case "stabilizerEnergy":
-				return stabilizerEnergy(arguments);
+		case "stabilizerEnergy":
+			return stabilizerEnergy(arguments);
 			
-			case "state":
-				return state();
-			}
-		} catch (final Exception exception) {
-			exception.printStackTrace();
-			return new String[] { exception.getMessage() };
+		case "state":
+			return state();
 		}
 		
 		return super.callMethod(computer, context, method, arguments);

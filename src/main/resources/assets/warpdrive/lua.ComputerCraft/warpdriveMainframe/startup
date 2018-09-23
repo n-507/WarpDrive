@@ -784,10 +784,10 @@ function core_boot()
   WriteLn("Ship core detected...")
   
   repeat
-    pos = ship.position()
+    pos = ship.getLocalPosition()
     os.sleep(0.3)
   until pos ~= nil
-  X, Y, Z = ship.position()
+  X, Y, Z = ship.getLocalPosition()
   WriteLn("Ship position triangulated...")
   
   repeat
@@ -1065,7 +1065,7 @@ function core_page()
   ShowTitle(label .. " - Ship status")
   if ship ~= nil then
     -- WriteLn("")
-    X, Y, Z = ship.position()
+    local X, Y, Z = ship.getLocalPosition()
     WriteLn("Core:")
     WriteLn(" x, y, z          = " .. X .. ", " .. Y .. ", " .. Z)
     local energy, energyMax = ship.energy()
@@ -1232,7 +1232,7 @@ function reactor_page()
   else
     SetColorDefault()
     Write("Reactor stability")
-    instabilities = { reactor.instability() }
+    instabilities = { reactor.getInstabilities() }
     for key,instability in pairs(instabilities) do
       SetCursorPos(12, 2 + key)
       stability = math.floor((100.0 - instability) * 10) / 10
@@ -1285,7 +1285,7 @@ function reactor_page()
         Write("Side " .. side .. ":")
         SetCursorPos(30, 3 + side)
         local energy = reactorlaser.wrap.energy()
-        if not reactorlaser.wrap.hasReactor() then
+        if not reactorlaser.wrap.isAssemblyValid() then
           SetColorDisabled()
         elseif energy > 3 * data.reactor_laserAmount then
           SetColorSuccess()
@@ -1391,7 +1391,7 @@ function reactor_pulse(output)
   if reactor == nil or reactor.isInterfaced() == nil then
     os.reboot()
   end
-  local instabilities = { reactor.instability() }
+  local instabilities = { reactor.getInstabilities() }
   for key,instability in pairs(instabilities) do
     local stability = 100.0 - instability
     if stability < data.reactor_targetStability then
@@ -1432,7 +1432,7 @@ function reactor_pulse(output)
           side = side % 4
           SetCursorPos(30, 3 + side)
           local energy = reactorlaser.wrap.energy()
-          if not reactorlaser.wrap.hasReactor() then
+          if not reactorlaser.wrap.isAssemblyValid() then
             SetColorDisabled()
           elseif energy > 3 * data.reactor_laserAmount then
             SetColorSuccess()

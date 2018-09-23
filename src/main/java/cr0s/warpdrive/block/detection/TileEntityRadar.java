@@ -108,14 +108,21 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	
 	// Common OC/CC methods
 	public Object[] getGlobalPosition() {
-		final CelestialObject celestialObject = CelestialObjectManager.get(world, pos.getX(), pos.getZ());
-		if (celestialObject != null) {
-			final String galaxyName = StarMapRegistry.getGalaxyName(celestialObject, pos.getX(), pos.getY(), pos.getZ());
-			final Vector3 vec3Position = StarMapRegistry.getUniversalCoordinates(celestialObject, pos.getX(), pos.getY(), pos.getZ());
-			return new Object[] { galaxyName, celestialObject.getDisplayName(), vec3Position.x, vec3Position.y, vec3Position.z };
-		} else {
-			return new Object[] { StarMapRegistry.GALAXY_UNDEFINED, Commons.format(world), pos.getX(), pos.getY(), pos.getZ() };
+		// check for optical sensors
+		if (false) {
+			return new Object[] { false, StarMapRegistry.GALAXY_UNDEFINED, pos.getX(), pos.getY(), pos.getZ(), Commons.format(world) };
 		}
+		
+		// check for registered celestial object
+		final CelestialObject celestialObject = CelestialObjectManager.get(world, pos.getX(), pos.getZ());
+		if (celestialObject == null) {
+			return new Object[] { false, StarMapRegistry.GALAXY_UNDEFINED, pos.getX(), pos.getY(), pos.getZ(), Commons.format(world) };
+		}
+		
+		// get actual coordinates
+		final String galaxyName = StarMapRegistry.getGalaxyName(celestialObject, pos.getX(), pos.getY(), pos.getZ());
+		final Vector3 vec3Position = StarMapRegistry.getUniversalCoordinates(celestialObject, pos.getX(), pos.getY(), pos.getZ());
+		return new Object[] { true, galaxyName, vec3Position.x, vec3Position.y, vec3Position.z, celestialObject.getDisplayName() };
 	}
 	
 	private Object[] radius(final Object[] arguments) {
@@ -227,6 +234,12 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
+	public Object[] radius(final Context context, final Arguments arguments) {
+		return radius(OC_convertArgumentsAndLogCall(context, arguments));
+	}
+	
+	@Callback
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getScanDuration(final Context context, final Arguments arguments) {
 		return getScanDuration(OC_convertArgumentsAndLogCall(context, arguments));
 	}
@@ -285,19 +298,19 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 			
 		case "radius":
 			return radius(arguments);
-		
+			
 		case "getScanDuration":
 			return getScanDuration(arguments);
-		
+			
 		case "start":
 			return start();
-		
+			
 		case "getResults":
 			return getResults();
-		
+			
 		case "getResultsCount":
 			return getResultsCount();
-		
+			
 		case "getResult":
 			return getResult(arguments);
 		}

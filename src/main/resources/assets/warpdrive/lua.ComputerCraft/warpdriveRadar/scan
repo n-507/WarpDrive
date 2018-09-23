@@ -38,7 +38,7 @@ local radius = tonumber(argv[1])
 
 local w, h = term.getSize()
 local scale = math.min(w, h) / 2
-local _, _, _, _, radarX, radarY, radarZ = radar.position()
+local _, _, radarX, radarY, radarZ = radar.getGlobalPosition()
 
 term.clear()
 

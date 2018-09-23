@@ -600,7 +600,7 @@ public class WarpDriveConfig {
 		//noinspection ResultOfMethodCallIgnored
 		configDirectory.mkdir();
 		if (!configDirectory.isDirectory()) {
-			throw new RuntimeException(String.format("Unable to create config directory ",
+			throw new RuntimeException(String.format("Unable to create config directory %s",
 			                                         configDirectory));
 		}
 		
@@ -1130,9 +1130,9 @@ public class WarpDriveConfig {
 			return;
 		}
 		values[0] = Commons.clamp(min      , max      , values[0]);
-		values[0] = Commons.clamp(min      , values[2], values[1]);
-		values[1] = Commons.clamp(values[1], values[3], values[2]);
-		values[2] = Commons.clamp(values[2], max      , values[3]);
+		values[1] = Commons.clamp(min      , values[2], values[1]);
+		values[2] = Commons.clamp(values[1], values[3], values[2]);
+		values[3] = Commons.clamp(values[2], max      , values[3]);
 	}
 	
 	public static void loadDictionary(final File file) {

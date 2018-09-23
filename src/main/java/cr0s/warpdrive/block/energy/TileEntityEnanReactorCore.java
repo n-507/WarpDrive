@@ -386,7 +386,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	}
 	
 	@Override
-	public Double[] getInstability() {
+	public Double[] getInstabilities() {
 		// computer is alive => start updating reactor
 		hold = false;
 		

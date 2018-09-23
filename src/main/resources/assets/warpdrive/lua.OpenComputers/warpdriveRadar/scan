@@ -7,7 +7,7 @@ if not term.isAvailable() then
   os.exit()
 end
 if component.gpu.getDepth() < 4 then
-  print("Tier 2 GPU required")
+  print("A tier 2 or higher GPU is required")
   os.exit()
 end
 
@@ -41,7 +41,7 @@ local radius = tonumber(argv[1])
 
 local w, h = component.gpu.getResolution()
 local scale = math.min(w, h) / 2
-local _, _, _, _, radarX, radarY, radarZ = radar.position()
+local _, _, radarX, radarY, radarZ = radar.getGlobalPosition()
 
 term.clear()
 

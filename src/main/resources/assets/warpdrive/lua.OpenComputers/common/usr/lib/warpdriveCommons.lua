@@ -995,8 +995,8 @@ local function boot()
     os.exit()
   end
   if component.gpu.getDepth() < 4 then
-    print("A tier 2 or higher GPU required")
-    print("A tier 2 or higher screen required")
+    print("A tier 2 or higher GPU is required")
+    print("A tier 2 or higher screen is required")
     os.exit()
   end
   print("loading...")

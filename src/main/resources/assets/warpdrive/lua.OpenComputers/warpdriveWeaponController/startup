@@ -81,7 +81,7 @@ function laser_getDescription(address)
   if laser == nil or laser.position == nil then
     return "~invalid~"
   end
-  local x, y, z = laser.position()
+  local x, y, z = laser.getLocalPosition()
   return "@ " .. w.format_integer(x, 7) .. " " .. w.format_integer(y, 3) .. " " .. w.format_integer(z, 7)
 end
 
@@ -186,7 +186,7 @@ function laser_battery_page()
       w.write("Laser head is not defined, press L to link one")
     else
       w.setColorNormal()
-      headX, headY, headZ = laserbattery.head.position()
+      headX, headY, headZ = laserbattery.head.getLocalPosition()
       headFrequency = laserbattery.head.beamFrequency()
       w.writeLn("Laser head:")
       if headFrequency == -1 then
@@ -207,7 +207,7 @@ function laser_battery_page()
       w.write("Boosting lasers:")
       for key, booster in pairs(laserbattery.boosters) do
         w.setCursorPos(1, 5 + key)
-        local x, y, z = booster.position()
+        local x, y, z = booster.getLocalPosition()
         if booster.beamFrequency() == headFrequency and headFrequency ~= -1 then
           w.setColorNormal()
         else
@@ -266,7 +266,7 @@ function laser_battery_config()
   end
   w.setCursorPos(1, 4)
   w.setColorDisabled()
-  local headX, headY, headZ = laserbattery.head.position()
+  local headX, headY, headZ = laserbattery.head.getLocalPosition()
   local headFrequency = laserbattery.head.beamFrequency()
   w.write("@ " .. w.format_integer(headX, 7) .. " " .. w.format_integer(headY, 3) .. " " .. w.format_integer(headZ, 7))
   w.setCursorPos(1, 5)
@@ -351,7 +351,7 @@ function laser_battery_linkLasers()
     
     w.setCursorPos(1, 9)
     w.setColorDisabled()
-    local headX, headY, headZ = laserbattery.head.position()
+    local headX, headY, headZ = laserbattery.head.getLocalPosition()
     local headFrequency = laserbattery.head.beamFrequency()
     w.write("@ " .. w.format_integer(headX, 7) .. " " .. w.format_integer(headY, 3) .. " " .. w.format_integer(headZ, 7))
   end
@@ -409,7 +409,7 @@ function laser_battery_getDescription(laserbattery)
   if laserbattery.head == nil then
     msg = msg .. 0
   else
-    x, y, z = laserbattery.head.position()
+    x, y, z = laserbattery.head.getLocalPosition()
     found = true
     msg = msg .. 1
   end
@@ -421,7 +421,7 @@ function laser_battery_getDescription(laserbattery)
     if not found then
       for key, booster in pairs(laserbattery.boosters) do
         if booster ~= nil and not found then
-          x, y, z = booster.position()
+          x, y, z = booster.getLocalPosition()
           found = true
         end
       end
@@ -508,7 +508,7 @@ function laser_station_page()
       w.write("Laser camera is not defined, press L to link one")
     else
       w.setColorNormal()
-      local camX, camY, camZ = laserstation.camera.position()
+      local camX, camY, camZ = laserstation.camera.getLocalPosition()
       local camVideoChannel = laserstation.camera.videoChannel()
       w.writeLn("Laser camera:")
       if camVideoChannel == -1 then
@@ -584,7 +584,7 @@ function laser_station_config()
     return
   end
   w.setCursorPos(1, 5)
-  local camX, camY, camZ = laserstation.camera.position()
+  local camX, camY, camZ = laserstation.camera.getLocalPosition()
   local camVideoChannel = laserstation.camera.videoChannel()
   w.write("Camera @ " .. w.format_integer(camX, 7) .. " " .. w.format_integer(camY, 3) .. " " .. w.format_integer(camZ, 7))
   w.setCursorPos(1, 6)
@@ -679,7 +679,7 @@ function laser_station_linkBatteries()
     w.setCursorPos(1, 9)
     w.setColorDisabled()
     w.clearLine()
-    local camX, camY, camZ = laserstation.camera.position()
+    local camX, camY, camZ = laserstation.camera.getLocalPosition()
     local camVideoChannel = laserstation.camera.videoChannel()
     w.write("@ " .. w.format_integer(camX, 7) .. " " .. w.format_integer(camY, 3) .. " " .. w.format_integer(camZ, 7))
   end
@@ -739,14 +739,14 @@ function laser_battery_shoot(batteryName, targetX, targetY, targetZ)
   local x, y, z
   if data.laser_firingMode == "boosted" and laserbattery.head ~= nil and laserbattery.boosters ~= nil then
     local frequency = laserbattery.head.beamFrequency()
-    local headX, headY, headZ = laserbattery.head.position()
+    local headX, headY, headZ = laserbattery.head.getLocalPosition()
     
     for key, booster in pairs(laserbattery.boosters) do
       booster.beamFrequency(frequency)
     end
     w.sleep(0)
     for key, booster in pairs(laserbattery.boosters) do
-      x, y, z = booster.position()
+      x, y, z = booster.getLocalPosition()
       booster.emitBeam(headX - x, headY - y, headZ - z)
     end
     w.sleep(0.1)
@@ -757,7 +757,7 @@ function laser_battery_shoot(batteryName, targetX, targetY, targetZ)
     end
     laserbattery.head.emitBeam(targetX - headX, targetY - headY, targetZ - headZ)
   elseif data.laser_firingMode == "single" and laserbattery.head ~= nil then
-    x, y, z = laserbattery.head.position()
+    x, y, z = laserbattery.head.getLocalPosition()
     if data.laser_firingScatter then
       x = x + math.random(-1, 1)
       y = y + math.random(-1, 1)
@@ -766,7 +766,7 @@ function laser_battery_shoot(batteryName, targetX, targetY, targetZ)
     laserbattery.head.emitBeam(targetX - x, targetY - y, targetZ - z)
   else
     if laserbattery.head ~= nil then
-      x, y, z = laserbattery.head.position()
+      x, y, z = laserbattery.head.getLocalPosition()
       if z ~= nil then
         if data.laser_firingScatter then
           x = x + math.random(-1, 1)
@@ -779,7 +779,7 @@ function laser_battery_shoot(batteryName, targetX, targetY, targetZ)
     
     if laserbattery.boosters ~= nil then
       for key, booster in pairs(laserbattery.boosters) do
-        x, y, z = booster.position()
+        x, y, z = booster.getLocalPosition()
         if z ~= nil then
           if data.laser_firingScatter then
             x = x + math.random(-1, 1)

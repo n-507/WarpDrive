@@ -294,7 +294,7 @@ function transporter_config()
       remoteLocation = { transporter.remoteLocation(remoteLocation_new) }
     else
       if #remoteLocation == 1 then
-        remoteLocation[1], remoteLocation[2], remoteLocation[3] = transporter.position()
+        remoteLocation[1], remoteLocation[2], remoteLocation[3] = transporter.getLocalPosition()
       end
       
       w.setCursorPos(1, 10)

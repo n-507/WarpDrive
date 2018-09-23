@@ -39,7 +39,7 @@ function ffield_boot(isDetailed)
   ffield_projectors = {}
   for key, address in pairs(ffield_projectorAddresses) do
     local device = w.device_get(address)
-    local x, y, z = device.position()
+    local x, y, z = device.getLocalPosition()
     local beamFrequency = device.beamFrequency()
     -- local isEnabled = device.enable()
     local status, isEnabled, isConnected, isPowered, shape, energy = device.state()
@@ -62,7 +62,7 @@ function ffield_boot(isDetailed)
   ffield_relays = {}
   for key, address in pairs(ffield_relayAddresses) do
     local device = w.device_get(address)
-    local x, y, z = device.position()
+    local x, y, z = device.getLocalPosition()
     local beamFrequency = device.beamFrequency()
     local isEnabled = device.enable()
     local relay = {
@@ -245,7 +245,7 @@ function ffield_projector_config()
   
   w.setCursorPos(1, 2)
   w.setColorNormal()
-  projector.position.x, projector.position.y, projector.position.z = projector.device.position()
+  projector.position.x, projector.position.y, projector.position.z = projector.device.getLocalPosition()
   w.write("Projector @ " .. w.format_integer(projector.position.x, 7) .. " " .. w.format_integer(projector.position.y, 3) .. " " .. w.format_integer(projector.position.z, 7))
   
   -- name
@@ -495,7 +495,7 @@ function ffield_relay_config()
   
   w.setCursorPos(1, 2)
   w.setColorNormal()
-  relay.position.x, relay.position.y, relay.position.z = relay.device.position()
+  relay.position.x, relay.position.y, relay.position.z = relay.device.getLocalPosition()
   w.write("Relay @ " .. w.format_integer(relay.position.x, 7) .. " " .. w.format_integer(relay.position.y, 3) .. " " .. w.format_integer(relay.position.z, 7))
   
   -- name

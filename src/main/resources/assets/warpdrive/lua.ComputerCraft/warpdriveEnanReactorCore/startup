@@ -97,7 +97,7 @@ function reactor_page()
   else
     w.setColorNormal()
     w.write("Reactor stability")
-    local instabilities = { reactor.instability() }
+    local instabilities = { reactor.getInstabilities() }
     for key, instability in pairs(instabilities) do
       w.setCursorPos(12, 2 + key)
       local stability = math.floor((100.0 - instability) * 10) / 10.0
@@ -149,7 +149,7 @@ function reactor_page()
         w.write("Side " .. w.format_integer(side) .. ":")
         w.setCursorPos(30, 3 + side)
         local energy = reactorlaser.wrap.energy()
-        if not reactorlaser.wrap.hasReactor() then
+        if not reactorlaser.wrap.isAssemblyValid() then
           w.setColorDisabled()
         elseif energy > 3 * reactor_laserAmount then
           w.setColorSuccess()
@@ -258,7 +258,7 @@ function reactor_pulse(output)
   if reactor == nil or reactor.isInterfaced() == nil then
     w.reboot()
   end
-  local instabilities = { reactor.instability() }
+  local instabilities = { reactor.getInstabilities() }
   if w.page_getCallbackDisplay() == reactor_page and (not reactor_configPageLoaded) then
     for key, instability in pairs(instabilities) do
       w.setCursorPos(12, 2 + key)
@@ -296,7 +296,7 @@ function reactor_pulse(output)
           if energy == nil then
             energy = -1
           end
-          if not reactorlaser.wrap.hasReactor() then
+          if not reactorlaser.wrap.isAssemblyValid() then
             w.setColorDisabled()
           elseif energy > 3 * reactor_laserAmount then
             w.setColorSuccess()
