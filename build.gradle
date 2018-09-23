@@ -152,19 +152,39 @@ task copyShipControllerCommons2(type: Copy) {
     into('build/resources/main/assets/warpdrive/lua.OpenComputers/warpdriveShipCore')
 }
 
-task copyOpenComputersCommons(type: Copy) {
+task copyOpenComputersCommons1(type: Copy) {
     from 'src/main/resources/assets/warpdrive/lua.OpenComputers/common'
     into('build/resources/main/assets/warpdrive/lua.OpenComputers/warpdriveAccelerator')
+}
+
+task copyOpenComputersCommons2(type: Copy) {
+    from 'src/main/resources/assets/warpdrive/lua.OpenComputers/common'
     into('build/resources/main/assets/warpdrive/lua.OpenComputers/warpdriveEnanReactorCore')
+}
+
+task copyOpenComputersCommons3(type: Copy) {
+    from 'src/main/resources/assets/warpdrive/lua.OpenComputers/common'
     into('build/resources/main/assets/warpdrive/lua.OpenComputers/warpdriveShipController')
+}
+
+task copyOpenComputersCommons4(type: Copy) {
+    from 'src/main/resources/assets/warpdrive/lua.OpenComputers/common'
     into('build/resources/main/assets/warpdrive/lua.OpenComputers/warpdriveShipCore')
+}
+
+task copyOpenComputersCommons5(type: Copy) {
+    from 'src/main/resources/assets/warpdrive/lua.OpenComputers/common'
     into('build/resources/main/assets/warpdrive/lua.OpenComputers/warpdriveTransporterCore')
+}
+
+task copyOpenComputersCommons6(type: Copy) {
+    from 'src/main/resources/assets/warpdrive/lua.OpenComputers/common'
     into('build/resources/main/assets/warpdrive/lua.OpenComputers/warpdriveWeaponController')
 }
 
 jar {
     dependsOn copyShipControllerCommons1, copyShipControllerCommons2
-    dependsOn copyOpenComputersCommons
+    dependsOn copyOpenComputersCommons1, copyOpenComputersCommons2, copyOpenComputersCommons3, copyOpenComputersCommons4, copyOpenComputersCommons5, copyOpenComputersCommons6
     
     manifest {
         attributes FMLAT: "warpdrive_at.cfg"
