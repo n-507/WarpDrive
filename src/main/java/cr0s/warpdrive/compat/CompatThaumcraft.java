@@ -11,27 +11,35 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 
 public class CompatThaumcraft implements IBlockTransformer {
 	
+	private static Class<?> interfaceIBlockFacing;
+	private static Class<?> interfaceIBlockFacingHorizontal;
+	
+	private static Class<?> classBlockPillar;
 	private static Class<?> classBlockChestHungry;
-	private static Class<?> classBlockJar;
-	private static Class<?> classBlockMetalDevice;
+	
+	private static Class<?> classBlockBannerTC;
 	private static Class<?> classBlockMirror;
-	private static Class<?> classBlockTable;
+	private static Class<?> classBlockAlembic;
+	private static Class<?> classBlockJar;
 	private static Class<?> classBlockTube;
-	private static Class<?> classBlockWoodenDevice;
 	
 	public static void register() {
 		try {
+			interfaceIBlockFacing = Class.forName("thaumcraft.common.blocks.IBlockFacing");
+			interfaceIBlockFacingHorizontal = Class.forName("thaumcraft.common.blocks.IBlockFacingHorizontal");
+			
+			classBlockPillar = Class.forName("thaumcraft.common.blocks.basic.BlockPillar");
 			classBlockChestHungry = Class.forName("thaumcraft.common.blocks.devices.BlockHungryChest");
-			classBlockJar = Class.forName("thaumcraft.common.blocks.essentia.BlockJar");
-			classBlockMetalDevice = Class.forName("thaumcraft.common.blocks.BlockMetalDevice"); // @TODO MC1.12
+			
+			classBlockBannerTC = Class.forName("thaumcraft.common.blocks.basic.BlockBannerTC");
 			classBlockMirror = Class.forName("thaumcraft.common.blocks.devices.BlockMirror");
-			classBlockTable = Class.forName("thaumcraft.common.blocks.basic.BlockTable");
+			classBlockAlembic = Class.forName("thaumcraft.common.blocks.essentia.BlockAlembic");
+			classBlockJar = Class.forName("thaumcraft.common.blocks.essentia.BlockJar");
 			classBlockTube = Class.forName("thaumcraft.common.blocks.essentia.BlockTube");
-			classBlockWoodenDevice = Class.forName("thaumcraft.common.blocks.BlockWoodenDevice"); // @TODO MC1.12
+			
 			WarpDriveConfig.registerBlockTransformer("thaumcraft", new CompatThaumcraft());
 		} catch(final ClassNotFoundException exception) {
 			exception.printStackTrace();
@@ -40,13 +48,15 @@ public class CompatThaumcraft implements IBlockTransformer {
 	
 	@Override
 	public boolean isApplicable(final Block block, final int metadata, final TileEntity tileEntity) {
-		return classBlockChestHungry.isInstance(block)
-			|| classBlockJar.isInstance(block)
-			|| classBlockMetalDevice.isInstance(block)
-			|| classBlockMirror.isInstance(block)
-			|| classBlockTable.isInstance(block)
-			|| classBlockTube.isInstance(block)
-			|| classBlockWoodenDevice.isInstance(block);
+		return interfaceIBlockFacing.isInstance(block)
+			|| interfaceIBlockFacingHorizontal.isInstance(block)
+		    || classBlockPillar.isInstance(block)
+		    || classBlockChestHungry.isInstance(block)
+		    || classBlockBannerTC.isInstance(block)
+		    || classBlockMirror.isInstance(block)
+		    || classBlockAlembic.isInstance(block)
+		    || classBlockJar.isInstance(block)
+		    || classBlockTube.isInstance(block);
 	}
 	
 	@Override
@@ -67,11 +77,35 @@ public class CompatThaumcraft implements IBlockTransformer {
 		// nothing to do
 	}
 	
+	// As of 1.12.2-6.1.BETA24
+	// Blocks
+	// IBlockFacing                       (metadata) -EnumFacing-                   thaumcraft.common.blocks.IBlockFacing
+	// IBlockFacingHorizontal             (metadata) -EnumFacing-                   thaumcraft.common.blocks.IBlockFacingHorizontal
+	// BlockPillar                        (metadata) -EnumFacing-                   thaumcraft.common.blocks.basic.BlockPillar
+	// BlockHungryChest                   (metadata) -EnumFacing-                   thaumcraft.common.blocks.devices.BlockHungryChest
+	//
+	// TileEntities
+	// TileAlembic                        facing (byte) -EnumFacing-                thaumcraft.common.blocks.essentia.BlockAlembic
+	// TileBanner                         facing (byte) -EnumFacing-                thaumcraft.common.blocks.basic.BlockBannerTC
+	// TileJarFillable                    facing (byte) -EnumFacing-                thaumcraft.common.blocks.essentia.BlockJar
+	// TileMirror, TileMirrorEssentia     linkX/Y/Z, linkDim (int)                  thaumcraft.common.blocks.devices.BlockMirror
+	// TileTube, TileTubeBuffer           side (int) -EnumFacing-                   thaumcraft.common.blocks.essentia.BlockTube
+	//
+	// Entities
+	// EntityArcaneBore                   faceing (byte)                            thaumcraft.common.entities.construct.EntityArcaneBore
+	// SealHarvest ?                      taskface (byte)                           thaumcraft:harvest
+	// SealEntity ?                       face (byte)
+	//
+	// Items
+	// ItemHandMirror                     linkX/Y/Z, linkDim (int)                  thaumcraft.common.items.tools.ItemHandMirror
+	// BlockMirrorItem                    linkX/Y/Z, linkDim (int)                  thaumcraft.common.blocks.devices.BlockMirrorItem
+	
+	// As of 1.7.10-x
 	// Vanilla supported: stairs
 	// Not rotating: arcane workbench, deconstruction table, crystals, candles, crucible, alchemical centrifuge
 	
 	// Transformation handling required:
-	// Tile Hungry chest: (metadata) 2 5 3 4						mrotHungryChest	thaumcraft.common.blocks.BlockChestHungry
+	// Tile Hungry chest: (metadata) 2 5 3 4						mrotHungryChest thaumcraft.common.blocks.BlockChestHungry
 	// Tile jar: facing (byte) 2 5 3 4								rotForgeByte	thaumcraft.common.blocks.BlockJar
 	// Tile vis relay: orientation (short) 0 / 1 / 2 5 3 4			rotForgeShort	thaumcraft.common.blocks.BlockMetalDevice
 	// Tile arcane lamp: orientation (int) 2 5 3 4					rotForgeInt		thaumcraft.common.blocks.BlockMetalDevice
@@ -85,84 +119,49 @@ public class CompatThaumcraft implements IBlockTransformer {
 	// Tile arcane bore base: orientation (int) 2 5 3 4				rotForgeInt		thaumcraft.common.blocks.BlockWoodenDevice
 	// Tile banner: facing (byte) 0 4 8 12							rotBanner		thaumcraft.common.blocks.BlockWoodenDevice
 	
-	// -----------------------------------------    {  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-	private static final int[]   mrotHungryChest  = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-	private static final int[]   mrotMirror       = {  0,  1,  5,  4,  2,  3,  6,  7, 11, 10,  8,  9, 12, 13, 14, 15 };
-	private static final int[]   mrotTable        = {  1,  0,  5,  4,  2,  3,  9,  8,  6,  7, 10, 11, 12, 13, 14, 15 };
-	private static final byte[]  rotForgeByte     = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-	private static final int[]   rotForgeInt      = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-	private static final short[] rotForgeShort    = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-	private static final byte[]  rotBanner        = {  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15,  0,  1,  2,  3 };
+	// -----------------------------------------        {  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	private static final int[]   mrotFacingEnable     = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 13, 12, 10, 11, 14, 15 };
+	private static final int[]   mrotFacingHorizontal = {  1,  2,  3,  0,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	private static final byte[]  rotForgeByte         = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	private static final int[]   rotForgeInt          = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	private static final byte[]  rotBanner            = {  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15,  0,  1,  2,  3 };
 	
 	@Override
 	public int rotate(final Block block, final int metadata, final NBTTagCompound nbtTileEntity, final ITransformation transformation) {
 		final byte rotationSteps = transformation.getRotationSteps();
 		
-		if (classBlockChestHungry.isInstance(block)) {
+		if ( interfaceIBlockFacing.isInstance(block)
+		  || interfaceIBlockFacingHorizontal.isInstance(block)
+		  || classBlockChestHungry.isInstance(block) ) {
 			switch (rotationSteps) {
 			case 1:
-				return mrotHungryChest[metadata];
+				return mrotFacingEnable[metadata];
 			case 2:
-				return mrotHungryChest[mrotHungryChest[metadata]];
+				return mrotFacingEnable[mrotFacingEnable[metadata]];
 			case 3:
-				return mrotHungryChest[mrotHungryChest[mrotHungryChest[metadata]]];
+				return mrotFacingEnable[mrotFacingEnable[mrotFacingEnable[metadata]]];
 			default:
 				return metadata;
 			}
 		}
-		if (classBlockJar.isInstance(block)) {
-			if (nbtTileEntity.hasKey("facing")) {
-				final short direction = nbtTileEntity.getByte("facing");
-				switch (rotationSteps) {
-				case 1:
-					nbtTileEntity.setByte("facing", rotForgeByte[direction]);
-					return metadata;
-				case 2:
-					nbtTileEntity.setByte("facing", rotForgeByte[rotForgeByte[direction]]);
-					return metadata;
-				case 3:
-					nbtTileEntity.setByte("facing", rotForgeByte[rotForgeByte[rotForgeByte[direction]]]);
-					return metadata;
-				default:
-					return metadata;
-				}
+		
+		if (classBlockPillar.isInstance(block)) {
+			switch (rotationSteps) {
+			case 1:
+				return mrotFacingHorizontal[metadata];
+			case 2:
+				return mrotFacingHorizontal[mrotFacingHorizontal[metadata]];
+			case 3:
+				return mrotFacingHorizontal[mrotFacingHorizontal[mrotFacingHorizontal[metadata]]];
+			default:
+				return metadata;
 			}
 		}
-		if (classBlockMetalDevice.isInstance(block)) {
-			if (nbtTileEntity.hasKey("orientation") && nbtTileEntity.hasKey("orientation", Constants.NBT.TAG_SHORT)) {
-				final short orientation = nbtTileEntity.getShort("orientation");
-				switch (rotationSteps) {
-				case 1:
-					nbtTileEntity.setShort("orientation", rotForgeShort[orientation]);
-					return metadata;
-				case 2:
-					nbtTileEntity.setShort("orientation", rotForgeShort[rotForgeShort[orientation]]);
-					return metadata;
-				case 3:
-					nbtTileEntity.setShort("orientation", rotForgeShort[rotForgeShort[rotForgeShort[orientation]]]);
-					return metadata;
-				default:
-					return metadata;
-				}
-			}
-			if (nbtTileEntity.hasKey("orientation") && nbtTileEntity.hasKey("orientation", Constants.NBT.TAG_INT)) {
-				final int orientation = nbtTileEntity.getInteger("orientation");
-				switch (rotationSteps) {
-				case 1:
-					nbtTileEntity.setInteger("orientation", rotForgeInt[orientation]);
-					return metadata;
-				case 2:
-					nbtTileEntity.setInteger("orientation", rotForgeInt[rotForgeInt[orientation]]);
-					return metadata;
-				case 3:
-					nbtTileEntity.setInteger("orientation", rotForgeInt[rotForgeInt[rotForgeInt[orientation]]]);
-					return metadata;
-				default:
-					return metadata;
-				}
-			}
-			if (nbtTileEntity.hasKey("facing") && nbtTileEntity.hasKey("facing", Constants.NBT.TAG_BYTE)) {
-				final byte facing = nbtTileEntity.getByte("facing");
+		
+		if ( classBlockAlembic.isInstance(block)
+		  || classBlockJar.isInstance(block) ) {
+			if (nbtTileEntity.hasKey("facing")) {
+				final short facing = nbtTileEntity.getByte("facing");
 				switch (rotationSteps) {
 				case 1:
 					nbtTileEntity.setByte("facing", rotForgeByte[facing]);
@@ -178,40 +177,29 @@ public class CompatThaumcraft implements IBlockTransformer {
 				}
 			}
 		}
-		if (classBlockMirror.isInstance(block)) {
-			if (nbtTileEntity.hasKey("linkX") && nbtTileEntity.hasKey("linkY") && nbtTileEntity.hasKey("linkZ")) {
-				final BlockPos targetLink = transformation.apply(nbtTileEntity.getInteger("linkX"), nbtTileEntity.getInteger("linkY"), nbtTileEntity.getInteger("linkZ"));
-				nbtTileEntity.setInteger("linkX", targetLink.getX());
-				nbtTileEntity.setInteger("linkY", targetLink.getY());
-				nbtTileEntity.setInteger("linkZ", targetLink.getZ());
-			}
-			
-			switch (rotationSteps) {
-			case 1:
-				return mrotMirror[metadata];
-			case 2:
-				return mrotMirror[mrotMirror[metadata]];
-			case 3:
-				return mrotMirror[mrotMirror[mrotMirror[metadata]]];
-			default:
-				return metadata;
-			}
-		}
-		if (classBlockTable.isInstance(block)) {
-			switch (rotationSteps) {
-			case 1:
-				return mrotTable[metadata];
-			case 2:
-				return mrotTable[mrotTable[metadata]];
-			case 3:
-				return mrotTable[mrotTable[mrotTable[metadata]]];
-			default:
-				return metadata;
+		
+		if (classBlockBannerTC.isInstance(block)) {
+			if (nbtTileEntity.hasKey("facing")) {
+				final short facing = nbtTileEntity.getByte("facing");
+				switch (rotationSteps) {
+				case 1:
+					nbtTileEntity.setByte("facing", rotBanner[facing]);
+					return metadata;
+				case 2:
+					nbtTileEntity.setByte("facing", rotBanner[rotBanner[facing]]);
+					return metadata;
+				case 3:
+					nbtTileEntity.setByte("facing", rotBanner[rotBanner[rotBanner[facing]]]);
+					return metadata;
+				default:
+					return metadata;
+				}
 			}
 		}
+		
 		if (classBlockTube.isInstance(block)) {
-			if (nbtTileEntity.hasKey("side") && nbtTileEntity.hasKey("side", Constants.NBT.TAG_INT)) {
-				final int side = nbtTileEntity.getByte("side");
+			if (nbtTileEntity.hasKey("side")) {
+				final int side = nbtTileEntity.getInteger("side");
 				switch (rotationSteps) {
 				case 1:
 					nbtTileEntity.setInteger("side", rotForgeInt[side]);
@@ -226,74 +214,15 @@ public class CompatThaumcraft implements IBlockTransformer {
 					return metadata;
 				}
 			}
-			if (nbtTileEntity.hasKey("face") && nbtTileEntity.hasKey("face", Constants.NBT.TAG_BYTE)) {
-				final byte face = nbtTileEntity.getByte("face");
-				switch (rotationSteps) {
-				case 1:
-					nbtTileEntity.setByte("face", rotForgeByte[face]);
-					return metadata;
-				case 2:
-					nbtTileEntity.setByte("face", rotForgeByte[rotForgeByte[face]]);
-					return metadata;
-				case 3:
-					nbtTileEntity.setByte("face", rotForgeByte[rotForgeByte[rotForgeByte[face]]]);
-					return metadata;
-				default:
-					return metadata;
-				}
-			}
 		}
-		if (classBlockWoodenDevice.isInstance(block)) {
-			// Tile bellows: orientation (byte) 0 / 1 / 2 5 3 4				rotForgeByte	thaumcraft.common.blocks.BlockWoodenDevice
-			// Tile arcane bore base: orientation (int) 2 5 3 4				rotForgeInt		thaumcraft.common.blocks.BlockWoodenDevice
-			// Tile banner: facing (byte) 0 4 8 12							rotBanner		thaumcraft.common.blocks.BlockWoodenDevice
-			if (nbtTileEntity.hasKey("orientation") && nbtTileEntity.hasKey("orientation", Constants.NBT.TAG_BYTE)) {
-				final byte orientation = nbtTileEntity.getByte("orientation");
-				switch (rotationSteps) {
-				case 1:
-					nbtTileEntity.setByte("orientation", rotForgeByte[orientation]);
-					return metadata;
-				case 2:
-					nbtTileEntity.setByte("orientation", rotForgeByte[rotForgeByte[orientation]]);
-					return metadata;
-				case 3:
-					nbtTileEntity.setByte("orientation", rotForgeByte[rotForgeByte[rotForgeByte[orientation]]]);
-					return metadata;
-				default:
-					return metadata;
-				}
-			}
-			if (nbtTileEntity.hasKey("orientation") && nbtTileEntity.hasKey("orientation", Constants.NBT.TAG_INT)) {
-				final int orientation = nbtTileEntity.getByte("orientation");
-				switch (rotationSteps) {
-				case 1:
-					nbtTileEntity.setInteger("orientation", rotForgeInt[orientation]);
-					return metadata;
-				case 2:
-					nbtTileEntity.setInteger("orientation", rotForgeInt[rotForgeInt[orientation]]);
-					return metadata;
-				case 3:
-					nbtTileEntity.setInteger("orientation", rotForgeInt[rotForgeInt[rotForgeInt[orientation]]]);
-					return metadata;
-				default:
-					return metadata;
-				}
-			}
-			if (nbtTileEntity.hasKey("facing") && nbtTileEntity.hasKey("facing", Constants.NBT.TAG_BYTE)) {
-				final byte facing = nbtTileEntity.getByte("facing");
-				switch (rotationSteps) {
-				case 1:
-					nbtTileEntity.setByte("facing", rotBanner[facing]);
-					return metadata;
-				case 2:
-					nbtTileEntity.setByte("facing", rotBanner[rotBanner[facing]]);
-					return metadata;
-				case 3:
-					nbtTileEntity.setByte("facing", rotBanner[rotBanner[rotBanner[facing]]]);
-					return metadata;
-				default:
-					return metadata;
-				}
+		
+		if (classBlockMirror.isInstance(block)) {
+			if (nbtTileEntity.hasKey("linkX") && nbtTileEntity.hasKey("linkY") && nbtTileEntity.hasKey("linkZ") && nbtTileEntity.hasKey("linkDim")) {
+				// final int dimensionId = nbtTileEntity.getInteger("linkDim");
+				final BlockPos targetLink = transformation.apply(nbtTileEntity.getInteger("linkX"), nbtTileEntity.getInteger("linkY"), nbtTileEntity.getInteger("linkZ"));
+				nbtTileEntity.setInteger("linkX", targetLink.getX());
+				nbtTileEntity.setInteger("linkY", targetLink.getY());
+				nbtTileEntity.setInteger("linkZ", targetLink.getZ());
 			}
 		}
 		
