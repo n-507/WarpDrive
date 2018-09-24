@@ -200,6 +200,14 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 		return new Object[] { cache_laserMedium_count };
 	}
 	
+	@Override
+	public Object[] isAssemblyValid() {
+		if (laserMedium_direction == null) {
+			return new Object[] { false, "No laser medium detected" };
+		}
+		return super.isAssemblyValid();
+	}
+	
 	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")

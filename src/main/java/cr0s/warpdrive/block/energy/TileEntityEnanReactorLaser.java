@@ -43,7 +43,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		super();
 		
 		addMethods(new String[] {
-				"hasReactor",
+				"isAssemblyValid",
 				"side",
 				"stabilize"
 		});
@@ -202,8 +202,11 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	
 	// Common OC/CC methods
 	@Override
-	public Object[] hasReactor() {
-		return new Object[] { reactorFace != EnumReactorFace.UNKNOWN };
+	public Object[] isAssemblyValid() {
+		if (reactorFace == EnumReactorFace.UNKNOWN) {
+			return new Object[] { false, "No reactor detected" };
+		}
+		return super.isAssemblyValid();
 	}
 	
 	@Override
@@ -232,12 +235,6 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
-	public Object[] hasReactor(final Context context, final Arguments arguments) {
-		return hasReactor();
-	}
-	
-	@Callback
-	@Optional.Method(modid = "opencomputers")
 	public Object[] stabilize(final Context context, final Arguments arguments) {
 		return stabilize(OC_convertArgumentsAndLogCall(context, arguments));
 	}
@@ -255,9 +252,6 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		final String methodName = CC_getMethodNameAndLogCall(method, arguments);
 		
 		switch (methodName) {
-		case "hasReactor":
-			return hasReactor();
-			
 		case "stabilize":
 			return stabilize(arguments);
 			

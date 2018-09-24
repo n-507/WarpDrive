@@ -1212,10 +1212,10 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	// Common OC/CC methods
 	@Override
 	public Object[] isAssemblyValid() {
-		if (isValid) {
-			return new Object[] { true, "ok" };
+		if (!isValid) {
+			return new Object[] { false, reasonInvalid.getUnformattedText() };
 		}
-		return new Object[] { false, reasonInvalid.getUnformattedText() };
+		return super.isAssemblyValid();
 	}
 	
 	@Override

@@ -33,6 +33,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 		addMethods(new String[] {
 				"name",
 				"enable",
+				"isAssemblyValid"
 				});
 	}
 	
@@ -135,6 +136,11 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 		return new Object[] { isEnabled };
 	}
 	
+	@Override
+	public Object[] isAssemblyValid() {
+		return new Object[] { true, "ok" };
+	}
+	
 	// OpenComputer callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
@@ -149,6 +155,11 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	}
 	
 	@Callback
+	@Optional.Method(modid = "opencomputers")
+	public Object[] isAssemblyValid(final Context context, final Arguments arguments) {
+		return isAssemblyValid();
+	}
+	
 	// ComputerCraft IPeripheral methods
 	@Override
 	@Optional.Method(modid = "computercraft")
@@ -161,6 +172,9 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 			
 		case "enable":
 			return enable(arguments);
+			
+		case "isAssemblyValid":
+			return isAssemblyValid();
 		}
 		
 		return super.callMethod(computer, context, method, arguments);

@@ -11,13 +11,7 @@ import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.SoundEvents;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.network.PacketHandler;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 import net.minecraft.block.state.IBlockState;
@@ -27,8 +21,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
-
-import net.minecraftforge.fml.common.Optional;
 
 public class TileEntityCloakingCore extends TileEntityAbstractEnergyConsumer {
 	
@@ -469,31 +461,21 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyConsumer {
 		return new Object[] { energyRequired / updateRate };
 	}
 	
+	@Override
 	public Object[] isAssemblyValid() {
-		return new Object[] { isValid, Commons.removeFormatting(textValidityIssues.getUnformattedText()) };
+		if (!isValid) {
+			return new Object[] { false, Commons.removeFormatting(textValidityIssues.getUnformattedText()) };
+		}
+		return super.isAssemblyValid();
 	}
 	
 	// OpenComputer callback methods
-	@Callback
-	@Optional.Method(modid = "opencomputers")
-	public Object[] isAssemblyValid(final Context context, final Arguments arguments) {
-		return isAssemblyValid();
-	}
+	// (none)
 	
-	// ComputerCraft IPeripheral methods implementation
-	@Override
-	@Optional.Method(modid = "computercraft")
-	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {
-		final String methodName = CC_getMethodNameAndLogCall(method, arguments);
-		
-		switch (methodName) {
-		case "isAssemblyValid":
-			return isAssemblyValid();
-		}
-		
-		return super.callMethod(computer, context, method, arguments);
-	}
+	// ComputerCraft IPeripheral methods
+	// (none)
 	
+	// TileEntityAbstractEnergy methods
 	@Override
 	public int energy_getMaxStorage() {
 		return WarpDriveConfig.CLOAKING_MAX_ENERGY_STORED;
