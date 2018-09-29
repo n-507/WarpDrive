@@ -14,8 +14,8 @@ death.attack.warpdrive.teleportation.player=%1$s wurde durch %2$s beim teleporti
 death.attack.warpdrive.warm=%1$s verglühte
 death.attack.warpdrive.warm.player=%1$s wurde von %2$s gebruzelt
 
-itemGroup.warpdrive.hull=WarpDrive (hull)
-itemGroup.warpdrive.main=WarpDrive (main)
+itemGroup.warpdrive.hull=WarpDrive's rumpfs
+itemGroup.warpdrive.main=WarpDrive
 
 item.warpdrive.component.malformed.name=Fehlerhaftes Item
 item.warpdrive.component.memory_crystal.name=Speicherkristall

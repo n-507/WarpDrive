@@ -6,6 +6,7 @@ import cr0s.warpdrive.block.BlockAbstractOmnipanel;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.Vector3;
@@ -18,6 +19,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
@@ -31,7 +33,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BlockHullOmnipanel extends BlockAbstractOmnipanel implements IDamageReceiver {
 	
 	public BlockHullOmnipanel(final String registryName, final EnumTier enumTier) {
-		super(null, enumTier, Material.GLASS);
+		super(registryName, enumTier, Material.GLASS);
 		
 		setHardness(WarpDriveConfig.HULL_HARDNESS[enumTier.getIndex()]);
 		setResistance(WarpDriveConfig.HULL_BLAST_RESISTANCE[enumTier.getIndex()] * 5 / 3);
@@ -41,8 +43,13 @@ public class BlockHullOmnipanel extends BlockAbstractOmnipanel implements IDamag
 		setDefaultState(getDefaultState()
 				                .withProperty(BlockColored.COLOR, EnumDyeColor.WHITE)
 		               );
-		setRegistryName(registryName);
-		WarpDrive.register(this, new ItemBlockHull(this));
+		setCreativeTab(WarpDrive.creativeTabHull);
+	}
+	
+	@Nullable
+	@Override
+	public ItemBlock createItemBlock() {
+		return new ItemBlockHull(this);
 	}
 	
 	@SuppressWarnings("deprecation")

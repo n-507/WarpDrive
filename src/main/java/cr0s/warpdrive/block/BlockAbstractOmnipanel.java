@@ -59,7 +59,26 @@ public abstract class BlockAbstractOmnipanel extends BlockAbstractBase {
 	
 	@SuppressWarnings("deprecation")
 	@Override
+	public boolean isBlockNormalCube(final IBlockState blockState) {
+		// not supposed to be called, upstream should use isNormalCube(IBlockState, IBlockAccess, BlockPos) instead
+		// practically, Forge still use it in WorldEntitySpawner.isValidEmptySpawnBlock() calling BlockStateContainer$StateImplementation.isBlockNormalCube()
+		return false;
+	}
+	
+	@Override
+	public boolean isNormalCube(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
+		return false;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
 	public boolean isOpaqueCube(final IBlockState blockState) {
+		return false;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isFullCube(final IBlockState blockState) {
 		return false;
 	}
 	

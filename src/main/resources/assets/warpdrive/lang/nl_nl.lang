@@ -14,8 +14,8 @@ death.attack.warpdrive.teleportation.player=%1$s was gedoos door teleportatie va
 death.attack.warpdrive.warm=%1$s is doodgegaan door oververhitting
 death.attack.warpdrive.warm.player=%1$s is gekookt door %2$s
 
-itemGroup.warpdrive.hull=WarpDrive (hull)
-itemGroup.warpdrive.main=WarpDrive (main)
+itemGroup.warpdrive.hull=WarpDrive's hulls
+itemGroup.warpdrive.main=WarpDrive
 
 item.warpdrive.component.malformed.name=Verkeerd item
 item.warpdrive.component.memory_crystal.name=Geheugen Kristal

@@ -1,6 +1,7 @@
 package cr0s.warpdrive.client;
 
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.data.EnumTier;
 
 import javax.annotation.Nonnull;
 
@@ -20,9 +21,9 @@ public class CreativeTabHull extends CreativeTabAbstractBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public ItemStack createIcon() {
-		final int tier = random.nextInt(3);
+		final int tier = 1 + random.nextInt(EnumTier.length - 1);
 		final int metadata = random.nextInt(16);
-		switch (random.nextInt(6)) {
+		switch (random.nextInt(7)) {
 		case 0: return new ItemStack(WarpDrive.blockHulls_plain[tier][0], 1, metadata);
 		case 1: return new ItemStack(WarpDrive.blockHulls_plain[tier][1], 1, metadata);
 		case 2: return new ItemStack(WarpDrive.blockHulls_glass[tier], 1, metadata);

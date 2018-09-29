@@ -14,8 +14,8 @@ death.attack.warpdrive.teleportation.player=%2$s传送%1$s时“失误”了
 death.attack.warpdrive.warm=%1$s死于高温
 death.attack.warpdrive.warm.player=%1$s被%2$s煮熟了
 
-itemGroup.warpdrive.hull=曲率驱动 (hull)
-itemGroup.warpdrive.main=曲率驱动 (main)
+itemGroup.warpdrive.hull=曲率驱动: hull
+itemGroup.warpdrive.main=曲率驱动
 
 item.warpdrive.component.malformed.name=畸变废品
 item.warpdrive.component.memory_crystal.name=记忆水晶

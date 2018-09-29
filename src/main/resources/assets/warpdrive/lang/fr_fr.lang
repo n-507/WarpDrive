@@ -14,8 +14,8 @@ death.attack.warpdrive.teleportation.player=%1$s a été tué par %2$s durant sa
 death.attack.warpdrive.warm=%1$s est mort de brûlure sévère
 death.attack.warpdrive.warm.player=%1$s a été cuit par %2$s
 
-itemGroup.warpdrive.hull=WarpDrive (hull)
-itemGroup.warpdrive.main=WarpDrive (main)
+itemGroup.warpdrive.hull=WarpDrive: coques
+itemGroup.warpdrive.main=WarpDrive
 
 item.warpdrive.component.malformed.name=Item invalide
 item.warpdrive.component.memory_crystal.name=Cristal de mémoire

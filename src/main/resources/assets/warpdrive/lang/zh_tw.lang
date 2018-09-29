@@ -14,8 +14,8 @@ death.attack.warpdrive.teleportation.player=%2$s 對 %1$s 使出了超時空傳�
 death.attack.warpdrive.warm=%1$s 在傳送中失去聯係了
 death.attack.warpdrive.warm.player=%2$s 把 %1$s 變成了綠色香蕉
 
-itemGroup.warpdrive.hull=WarpDrive (hull)
-itemGroup.warpdrive.main=WarpDrive (main)
+itemGroup.warpdrive.hull=WarpDrive's hulls
+itemGroup.warpdrive.main=WarpDrive
 
 item.warpdrive.component.malformed.name=不良道具[WD]
 item.warpdrive.component.memory_crystal.name=記憶水晶
