@@ -478,6 +478,7 @@ public class WarpDriveConfig {
 			final NBTTagCompound tagCompound = JsonToNBT.getTagFromJson(stringNBT);
 			itemStack.setTagCompound(tagCompound);
 		} catch (final NBTException exception) {
+			WarpDrive.logger.error(exception.getMessage());
 			exception.printStackTrace();
 			WarpDrive.logger.error(String.format("Invalid NBT for %s@%d %s",
 			                                     registryName, meta, stringNBT));

@@ -196,8 +196,9 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 				final String stringNBT = elementName.getTextContent();
 				if (!stringNBT.isEmpty()) {
 					try {
-						tagCompound = (NBTTagCompound) JsonToNBT.getTagFromJson(stringNBT);
+						tagCompound = JsonToNBT.getTagFromJson(stringNBT);
 					} catch (final NBTException exception) {
+						WarpDrive.logger.error(exception.getMessage());
 						throw new InvalidXmlException(String.format("Invalid nbt for Celestial object %s",
 						                                            id));
 					}

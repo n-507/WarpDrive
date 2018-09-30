@@ -84,6 +84,7 @@ public class Loot implements IXmlRepresentableUnit {
 			try {
 				tagCompound = JsonToNBT.getTagFromJson(stringNBT);
 			} catch (final NBTException exception) {
+				WarpDrive.logger.error(exception.getMessage());
 				throw new InvalidXmlException(String.format("Invalid nbt for item %s",
 				                                            nameItem));
 			}
