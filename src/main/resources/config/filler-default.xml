@@ -243,17 +243,73 @@
 	</fillerSet>
 	
 	
+	<!-- ship computer core -->
+	<fillerSet group="ship_computerCore" name="ComputerCraft" weight="20" mods="computercraft">
+		<filler block="computercraft:computer" metadata="12" weight="100" />
+	</fillerSet>
+	<fillerSet group="ship_computerCore" name="OpenComputers" weight="10" mods="opencomputers">
+		<filler block="opencomputers:case1" metadata="3" xnbt="{facing:5,id:&quot;ic2:solar_generator&quot;}" weight="200" />
+		<filler block="opencomputers:case2" metadata="3" xnbt="{facing:5,id:&quot;ic2:solar_generator&quot;}" weight="100" />
+	</fillerSet>
+	<fillerSet group="ship_computerCore" name="vanilla" weight="1" mods="!computercraft,!opencomputers">
+		<filler block="minecraft:sandstone_stairs" metadata="4" weight="100" />
+	</fillerSet>
+	
+	
+	<!-- ship computer screen -->
+	<fillerSet group="ship_computerScreen" name="ComputerCraft" weight="20" mods="computercraft">
+		<filler block="minecraft:air" metadata="0" weight="100" />
+	</fillerSet>
+	<fillerSet group="ship_computerScreen" name="OpenComputers" weight="10" mods="opencomputers">
+		<filler block="opencomputers:screen2" metadata="9" xnbt="{facing:5,id:&quot;ic2:solar_generator&quot;}" weight="100" />
+	</fillerSet>
+	<fillerSet group="ship_computerScreen" name="vanilla" weight="1" mods="!computercraft,!opencomputers">
+		<filler block="minecraft:sandstone_stairs" metadata="0" weight="100" />
+	</fillerSet>
+	
+	
+	<!-- ship computer keyboard -->
+	<fillerSet group="ship_computerKeyboard" name="ComputerCraft" weight="20" mods="computercraft">
+		<filler block="minecraft:air" metadata="0" weight="100" />
+	</fillerSet>
+	<fillerSet group="ship_computerKeyboard" name="OpenComputers" weight="10" mods="opencomputers">
+		<filler block="opencomputers:keyboard" metadata="8" weight="100" />
+	</fillerSet>
+	<fillerSet group="ship_computerKeyboard" name="vanilla" weight="1" mods="!computercraft,!opencomputers">
+		<filler block="minecraft:wall_sign" metadata="3" weight="100" />
+	</fillerSet>
+	
+	
+	<!-- ship computer floppy -->
+	<fillerSet group="ship_computerFloppy" name="ComputerCraft" weight="20" mods="computercraft">
+		<filler block="minecraft:air" metadata="0" weight="100" />
+	</fillerSet>
+	<fillerSet group="ship_computerFloppy" name="OpenComputers" weight="10" mods="opencomputers">
+		<filler block="opencomputers:diskdrive" metadata="1" weight="100" />
+	</fillerSet>
+	<fillerSet group="ship_computerFloppy" name="vanilla" weight="1" mods="!computercraft,!opencomputers">
+		<filler block="minecraft:wall_sign" metadata="2" weight="100" />
+	</fillerSet>
+	
+	
 	<!-- ship solar panel -->
-	<fillerSet group="ship_solarPanel" name="advancedSolarPanel" weight="20" mods="AdvancedSolarPanel">
+	<fillerSet group="ship_solarPanel" name="AdvancedSolarPanel" weight="20" mods="AdvancedSolarPanel">
 		<filler block="AdvancedSolarPanel:BlockAdvSolarPanel" nbt="{facing:5}" metadata="0" weight="200" />
 		<filler block="AdvancedSolarPanel:BlockAdvSolarPanel" nbt="{facing:5}" metadata="1" weight="100" />
 	</fillerSet>
 	<fillerSet group="ship_solarPanel" name="ic2" weight="10" mods="ic2">
 		<filler block="ic2:te" metadata="3" nbt="{facing:5,id:&quot;ic2:solar_generator&quot;}" weight="100" />
 	</fillerSet>
-	<fillerSet group="ship_solarPanel" name="enderio" weight="10" mods="enderio,thermaldynamics">
+	<fillerSet group="ship_solarPanel" name="enderio" weight="10" mods="enderio">
 		<filler block="enderio:block_solar_panel" metadata="0" weight="100" />
 		<filler block="enderio:block_solar_panel" metadata="1" weight="50" />
+	</fillerSet>
+	<fillerSet group="ship_solarPanel" name="enderio_with_thermaldynamics" weight="10" mods="enderio,thermaldynamics">
+		<filler block="enderio:block_solar_panel" metadata="0" weight="100" />
+		<filler block="enderio:block_solar_panel" metadata="1" weight="50" />
+	</fillerSet>
+	<fillerSet group="ship_solarPanel" name="thermaldynamics_without_enderio" weight="10" mods="thermaldynamics,!enderio">
+		<import group="ship_solarPanel" name="vanilla" />
 	</fillerSet>
 	<fillerSet group="ship_solarPanel" name="vanilla" weight="1" mods="!ic2,!enderio,!thermaldynamics">
 		<filler block="minecraft:daylight_detector" weight="100" />
@@ -270,7 +326,16 @@
 		<filler block="ic2:cable" nbt="{type:1b,insulation:0b}" metadata="6" weight="100" /><!-- Glass fiber cable -->
 		<filler block="ic2:cable" nbt="{type:4b,insulation:1b}" metadata="9" weight="100" /><!-- Insulated tin cable -->
 	</fillerSet>
-	<fillerSet group="ship_wiring" name="enderio" weight="5" mods="enderio,thermaldynamics">
+	<fillerSet group="ship_wiring" name="enderio" weight="5" mods="enderio">
+		<filler block="enderio:block_conduit_bundle" metadata="0" nbt="{conduits:{&quot;0&quot;:{subtype:0s,UUID:&quot;7e9c38f2-9a3a-3091-bea9-d53e75afc515&quot;},size:1}}" weight="100" /><!-- Energy Conduit -->
+		<filler block="enderio:block_conduit_bundle" metadata="0" nbt="{conduits:{&quot;0&quot;:{subtype:1s,UUID:&quot;7e9c38f2-9a3a-3091-bea9-d53e75afc515&quot;},size:1}}" weight="40" /><!-- Enhanced Energy Conduit -->
+		<filler block="enderio:block_conduit_bundle" metadata="0" nbt="{conduits:{&quot;0&quot;:{subtype:2s,UUID:&quot;7e9c38f2-9a3a-3091-bea9-d53e75afc515&quot;},size:1}}" weight="10" /><!-- Ender Energy Conduit -->
+	</fillerSet>
+	<fillerSet group="ship_wiring" name="enderio_with_thermaldynamics" weight="5" mods="enderio,thermaldynamics">
+		<import group="ship_wiring" name="enderio" />
+		<import group="ship_wiring" name="thermaldynamics_without_enderio" />
+	</fillerSet>
+	<fillerSet group="ship_wiring" name="thermaldynamics_without_enderio" weight="5" mods="thermaldynamics,!enderio">
 		<filler block="thermaldynamics:ThermalDynamics_0" metadata="0" weight="100" /><!-- Leadstone Fluxduct -->
 		<filler block="thermaldynamics:ThermalDynamics_0" metadata="1" weight="40" /><!-- Hardened Fluxduct -->
 		<filler block="thermaldynamics:ThermalDynamics_0" metadata="2" weight="10" /><!-- Redstone Energy Fluxduct -->

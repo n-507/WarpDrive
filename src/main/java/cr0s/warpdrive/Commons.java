@@ -386,6 +386,21 @@ public class Commons {
 		                     x, y, z);
 	}
 	
+	public static String format(final ItemStack itemStack) {
+		final String stringNBT;
+		if (itemStack.hasTagCompound()) {
+			stringNBT = " " + itemStack.getTagCompound();
+		} else {
+			stringNBT = "";
+		}
+		return String.format("%dx%s@%d (%s)%s",
+		                     itemStack.getCount(),
+		                     itemStack.getItem().getRegistryName(),
+		                     itemStack.getItemDamage(),
+		                     itemStack.getDisplayName(),
+		                     stringNBT);
+	}
+	
 	public static String sanitizeFileName(final String name) {
 		return name.replace("/", "")
 		           .replace(".", "")

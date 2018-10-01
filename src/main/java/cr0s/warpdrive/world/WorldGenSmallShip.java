@@ -2,7 +2,7 @@ package cr0s.warpdrive.world;
 
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.TileEntityAbstractEnergy;
-import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.BlockProperties;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
@@ -14,6 +14,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
@@ -36,8 +37,10 @@ public class WorldGenSmallShip extends WorldGenerator {
 		final boolean hasGlassRoof = rand.nextBoolean();
 		final boolean hasWings = rand.nextBoolean();
 		final int x = blockPos.getX() - 5;
-		final int y = blockPos.getY() - 4;
-		final int z = blockPos.getZ() - 6;
+		final int y = blockPos.getY() - 3;
+		final int z = blockPos.getZ() - 7;
+		
+		// Ship is facing West: X- is forward, Z+ is left
 		genStructure.setHullPlain(world, x, y + 1, z + 4);
 		genStructure.setHullPlain(world, x, y + 1, z + 10);
 		genStructure.setHullPlain(world, x + 1, y + 1, z + 4);
@@ -278,7 +281,7 @@ public class WorldGenSmallShip extends WorldGenerator {
 		genStructure.setHullGlass(world, x + 9, y + 5, z + 12);
 		genStructure.setHullPlain(world, x + 9, y + 6, z + 3);
 		if (!isCorrupted || rand.nextBoolean()) {
-			world.setBlockState(new BlockPos(x + 9, y + 6, z + 7), WarpDrive.blockAirGeneratorTiered[1].getDefaultState(), 2);
+			world.setBlockState(new BlockPos(x + 9, y + 6, z + 7), WarpDrive.blockAirGeneratorTiered[1].getStateFromMeta(4), 2);
 		}
 		genStructure.setHullPlain(world, x + 9, y + 6, z + 11);
 		genStructure.setHullPlain(world, x + 9, y + 7, z + 4);
@@ -311,7 +314,6 @@ public class WorldGenSmallShip extends WorldGenerator {
 		genStructure.setHullGlass(world, x + 10, y + 4, z + 2);
 		genStructure.setHullGlass(world, x + 10, y + 4, z + 12);
 		genStructure.setHullGlass(world, x + 10, y + 5, z + 2);
-		genStructure.setHullGlass(world, x + 10, y + 5, z + 7);
 		genStructure.setHullGlass(world, x + 10, y + 5, z + 12);
 		genStructure.setHullPlain(world, x + 10, y + 6, z + 3);
 		genStructure.setHullPlain(world, x + 10, y + 6, z + 6);
@@ -348,15 +350,13 @@ public class WorldGenSmallShip extends WorldGenerator {
 		world.setBlockState(new BlockPos(x + 11, y + 3, z + 9), Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE.getDefaultState(), 2);
 		genStructure.setHullPlain(world, x + 11, y + 3, z + 12);
 		genStructure.setHullGlass(world, x + 11, y + 4, z + 2);
-		if ((!isCorrupted || rand.nextBoolean()) && WarpDriveConfig.isComputerCraftLoaded) {
-			world.setBlockState(new BlockPos(x + 11, y + 4, z + 7), WarpDriveConfig.CC_Computer.getStateFromMeta(12), 3);
-		}
+		genStructure.setComputerFloppy(world, x + 11, y + 4, z + 6);
+		genStructure.setComputerScreen(world, x + 11, y + 4, z + 7);
+		genStructure.setComputerKeyboard(world, x + 11, y + 4, z + 8);
 		genStructure.setHullGlass(world, x + 11, y + 4, z + 12);
 		genStructure.setHullGlass(world, x + 11, y + 5, z + 2);
 		genStructure.setHullGlass(world, x + 11, y + 5, z + 6);
-		if (!isCorrupted || rand.nextBoolean()) {
-			world.setBlockState(new BlockPos(x + 11, y + 5, z + 7), WarpDrive.blockShipControllers[1].getDefaultState());
-		}
+		genStructure.setComputerCore(world, x + 11, y + 5, z + 7);
 		genStructure.setHullGlass(world, x + 11, y + 5, z + 8);
 		genStructure.setHullGlass(world, x + 11, y + 5, z + 12);
 		genStructure.setHullPlain(world, x + 11, y + 6, z + 3);
@@ -418,9 +418,10 @@ public class WorldGenSmallShip extends WorldGenerator {
 		genStructure.setHullGlass(world, x + 12, y + 5, z + 2);
 		genStructure.setHullGlass(world, x + 12, y + 5, z + 6);
 		if (!isCorrupted || rand.nextBoolean()) {
-			world.setBlockState(new BlockPos(x + 12, y + 5, z + 7), WarpDrive.blockShipCores[1].getDefaultState());
+			world.setBlockState(new BlockPos(x + 12, y + 5, z + 7),
+			                    WarpDrive.blockShipCores[1].getDefaultState().withProperty(BlockProperties.FACING, EnumFacing.WEST));
 			if (isCreative) {// fill with energy
-				TileEntity tileEntity = world.getTileEntity(new BlockPos(x + 12, y + 5, z + 7));
+				final TileEntity tileEntity = world.getTileEntity(new BlockPos(x + 12, y + 5, z + 7));
 				if (tileEntity instanceof TileEntityAbstractEnergy) {
 					((TileEntityAbstractEnergy) tileEntity).energy_consume( - ((TileEntityAbstractEnergy) tileEntity).energy_getMaxStorage() / 2);
 				}
