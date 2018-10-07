@@ -41,8 +41,8 @@ public class MetaOrbInstance extends OrbInstance {
 		
 		final int y2 = Math.min(WarpDriveConfig.SPACE_GENERATOR_Y_MAX_BORDER - totalThickness - (int) metaShell.radius,
 		                        Math.max(blockPos.getY(), WarpDriveConfig.SPACE_GENERATOR_Y_MIN_BORDER + totalThickness + (int) metaShell.radius));
-		if (((MetaOrb)structure).metaShell == null) {
-			return super.generate(world, random, blockPos.add(0, y2, 0));
+		if (((MetaOrb) structure).metaShell == null) {
+			return super.generate(world, random, new BlockPos(blockPos.getX(), y2, blockPos.getZ()));
 		}
 		
 		// generate an abstract form for the core
