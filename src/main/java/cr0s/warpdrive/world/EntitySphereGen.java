@@ -14,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.World;
 
 /*
@@ -101,13 +102,14 @@ public final class EntitySphereGen extends Entity {
 		this.state = STATE_STOP;
 		final int minY_clamped = Math.max(0, yCoord - radius);
 		final int maxY_clamped = Math.min(255, yCoord + radius);
+		final MutableBlockPos mutableBlockPos = new MutableBlockPos();
 		for (int x = xCoord - radius; x <= xCoord + radius; x++) {
 			for (int z = zCoord - radius; z <= zCoord + radius; z++) {
 				for (int y = minY_clamped; y <= maxY_clamped; y++) {
-					BlockPos blockPos = new BlockPos(x, y, z);
-					IBlockState blockState = world.getBlockState(blockPos);
+					mutableBlockPos.setPos(x, y, z);
+					final IBlockState blockState = world.getBlockState(mutableBlockPos);
 					if (blockState.getBlock() != Blocks.AIR) {
-						world.notifyBlockUpdate(blockPos, blockState, blockState, 3);
+						world.notifyBlockUpdate(mutableBlockPos, blockState, blockState, 3);
 					}
 				}
 			}
@@ -156,14 +158,16 @@ public final class EntitySphereGen extends Entity {
 		final int blocksToMove = Math.min(BLOCKS_PER_TICK, blocks.size() - currentIndex);
 		LocalProfiler.start("[EntitySphereGen] Placing blocks from " + currentIndex + " to " + (currentIndex + blocksToMove) + "/" + blocks.size());
 		
+		final MutableBlockPos mutableBlockPos = new MutableBlockPos();
 		for (int index = 0; index < blocksToMove; index++) {
 			if (currentIndex >= blocks.size())
 				break;
 			final JumpBlock jumpBlock = blocks.get(currentIndex);
+			mutableBlockPos.setPos(jumpBlock.x, jumpBlock.y, jumpBlock.z);
 			if (isSurfaces.get(currentIndex)) {
-				world.setBlockState(new BlockPos(jumpBlock.x, jumpBlock.y, jumpBlock.z), jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta), 2);
+				world.setBlockState(mutableBlockPos, jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta), 2);
 			} else {
-				JumpBlock.setBlockNoLight(world, new BlockPos(jumpBlock.x, jumpBlock.y, jumpBlock.z), jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta), 2);
+				JumpBlock.setBlockNoLight(world, mutableBlockPos, jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta), 2);
 			}
 			currentIndex++;
 		}
