@@ -5,6 +5,7 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.structures.AbstractStructure;
 import cr0s.warpdrive.config.structures.StructureManager;
 import cr0s.warpdrive.data.CelestialObjectManager;
+import cr0s.warpdrive.data.EnumStructureGroup;
 import cr0s.warpdrive.world.WorldGenSmallShip;
 import cr0s.warpdrive.world.WorldGenStation;
 
@@ -35,7 +36,9 @@ public class CommandGenerate extends AbstractCommand {
 	@Nonnull
 	@Override
 	public String getUsage(@Nonnull final ICommandSender commandSender) {
-		return "/" + getName() + " <structure>\nPossible structures: moon, ship <name>, asteroid, astfield, gascloud, star <class>";
+		return String.format("/%s <structure group> [<structure name>]\nStructure groups are ship, station, astfield, %s",
+		                     getName(),
+		                     StructureManager.getGroups().replace("\"", "") );
 	}
 	
 	@Override
@@ -72,36 +75,33 @@ public class CommandGenerate extends AbstractCommand {
 		if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
 			final String name = (args.length > 1) ? args[1] : null;
 			switch (structure) {
-				case "ship":
-					WarpDrive.logger.info(String.format("/generate: generating NPC ship %s",
-					                                    Commons.format(world, blockPos)));
-					new WorldGenSmallShip(false, true).generate(world, world.rand, blockPos);
-					break;
-				case "station":
-					WarpDrive.logger.info(String.format("/generate: generating station at %s",
-					                                    Commons.format(world, blockPos)));
-					new WorldGenStation(false).generate(world, world.rand, blockPos);
-					break;
-				case "asteroid":
-					blockPos = new BlockPos(blockPos.getX(), blockPos.getY() - 10, blockPos.getZ());
-					generateStructure(commandSender, StructureManager.GROUP_ASTEROIDS, name, world, blockPos);
-					break;
-				case "astfield":
-					generateStructure(commandSender, StructureManager.GROUP_ASTEROIDS_FIELDS, name, world, blockPos);
-					break;
-				case "gascloud":
-					generateStructure(commandSender, StructureManager.GROUP_GAS_CLOUDS, name, world, blockPos);
-					break;
-				case "moon":
-					blockPos = new BlockPos(blockPos.getX(), blockPos.getY() - 16, blockPos.getZ());
-					generateStructure(commandSender, StructureManager.GROUP_MOONS, name, world, blockPos);
-					break;
-				case "star":
-					generateStructure(commandSender, StructureManager.GROUP_STARS, name, world, blockPos);
-					break;
-				default:
-					Commons.addChatMessage(commandSender, new TextComponentString(getUsage(commandSender)));
-					break;
+			case "":
+				Commons.addChatMessage(commandSender, new TextComponentString(getUsage(commandSender)));
+				break;
+				
+			case "ship":
+				WarpDrive.logger.info(String.format("/generate: generating NPC ship %s",
+				                                    Commons.format(world, blockPos)));
+				new WorldGenSmallShip(false, true).generate(world, world.rand, blockPos);
+				break;
+				
+			case "station":
+				WarpDrive.logger.info(String.format("/generate: generating station %s",
+				                                    Commons.format(world, blockPos)));
+				new WorldGenStation(false).generate(world, world.rand, blockPos);
+				break;
+				
+			case "astfield":
+				generateStructure(commandSender, EnumStructureGroup.ASTEROIDS_FIELDS.getName(), name, world, blockPos);
+				break;
+				
+			case "gascloud":
+				generateStructure(commandSender, EnumStructureGroup.GAS_CLOUDS.getName(), name, world, blockPos);
+				break;
+				
+			default:
+				generateStructure(commandSender, structure, name, world, blockPos);
+				break;
 			}
 		}
 	}

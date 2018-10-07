@@ -194,82 +194,110 @@ public class WorldGenStructure {
 	}
 	
 	public void fillInventoryWithLoot(final World world, final Random rand, final int x, final int y, final int z, final String group) {
-		final TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
-		if (tileEntity instanceof IInventory) {
-			final IInventory inventory = (IInventory) tileEntity;
-			final int size = inventory.getSizeInventory();
-			final int countLoots = Math.min(rand.nextInt(3) + rand.nextInt(4), size);
-			
-			final GenericSet<Loot> lootSet = WarpDriveConfig.LootManager.getRandomSetFromGroup(rand, group);
-			if (lootSet == null) {
-				WarpDrive.logger.warn(String.format("No LootSet found with group %s for inventory %s: check your configuration",
-				                                    group,
-				                                    Commons.format(world, x, y, z)));
-				return;
+		fillInventoryWithLoot(world, rand, new BlockPos(x, y, z), group, 0, 3, 4, 3);
+	}
+	
+	public void fillInventoryWithLoot(final World world, final Random rand, final BlockPos blockPos, final String group,
+	                                  final int quantityMin, final int quantityRandom1, final int quantityRandom2,
+	                                  final int maxRetries) {
+		// validate context
+		final TileEntity tileEntity = world.getTileEntity(blockPos);
+		
+		if (!(tileEntity instanceof IInventory)) {
+			WarpDrive.logger.error(String.format("Unable to fill inventory with LootSet %s %s: %s has no inventory",
+			                                     group,
+			                                     Commons.format(world, blockPos),
+			                                     tileEntity ));
+			return;
+		}
+		
+		if (tileEntity.isInvalid()) {
+			WarpDrive.logger.error(String.format("Unable to fill inventory with LootSet %s %s: %s is Invalid",
+			                                     group,
+			                                     Commons.format(world, blockPos),
+			                                     tileEntity ));
+			return;
+		}
+		
+		// evaluate parameters: quantity of loot, actual loot set
+		final IInventory inventory = (IInventory) tileEntity;
+		final int size = inventory.getSizeInventory();
+		final int countLoots = Math.min(quantityMin + rand.nextInt(quantityRandom1) + rand.nextInt(quantityRandom2), size);
+		
+		final GenericSet<Loot> lootSet = WarpDriveConfig.LootManager.getRandomSetFromGroup(rand, group);
+		if (lootSet == null) {
+			WarpDrive.logger.warn(String.format("Unable to fill inventory with LootSet %s %s: no LootSet found with group %s, check your configuration",
+			                                    group,
+			                                    Commons.format(world, blockPos),
+			                                    group ));
+			return;
+		}
+		
+		// shuffle slot indexes to reduce random calls and loops later on
+		final ArrayList<Integer> indexSlots = new ArrayList<>(size);
+		for (int indexSlot = 0; indexSlot < size; indexSlot++) {
+			final ItemStack itemStack = inventory.getStackInSlot(indexSlot);
+			if (itemStack.isEmpty()) {
+				indexSlots.add(indexSlot);
 			}
-			
-			// shuffle index to reduce random calls and loops later on
-			final ArrayList<Integer> indexSlots = new ArrayList<>(size);
-			for (int indexSlot = 0; indexSlot < size; indexSlot++) {
-				final ItemStack itemStack = inventory.getStackInSlot(indexSlot);
-				if (itemStack.isEmpty()) {
-					indexSlots.add(indexSlot);
-				}
-			}
-			Collections.shuffle(indexSlots);
-			
-			// for all loots to add
-			ItemStack itemStackLoot;
-			boolean isAdded;
-			for (int i = 0; i < countLoots; i++) {
-				isAdded = false;
-				// with a few retries
-				for (int countLootRetries = 0; countLootRetries < 3; countLootRetries++) {
-					// pick a loot
-					itemStackLoot = lootSet.getRandomUnit(rand).getItemStack(rand);
-					
-					// find a valid slot for it
-					for (final Iterator<Integer> iterator = indexSlots.iterator(); iterator.hasNext(); ) {
-						final Integer indexSlot = iterator.next();
-						if (!inventory.getStackInSlot(indexSlot).isEmpty()) {
-							assert false;   // index used were already removed, so we shouldn't reach this
-							continue;
-						}
-						if (inventory.isItemValidForSlot(indexSlot, itemStackLoot)) {
-							// remove that slot & item, even if insertion fail, to avoid a spam
-							iterator.remove();
-							isAdded = true;
-							try {
-								inventory.setInventorySlotContents(indexSlot, itemStackLoot);
-								WarpDrive.logger.debug(String.format("Added loot %s from LootSet %s in slot %d of inventory %s in %s: check your configuration",
-								                                     Commons.format(itemStackLoot),
-								                                     lootSet.getFullName(),
-								                                     indexSlot,
-								                                     inventory.getName() == null ? "-null name-" : inventory.getName(),
-								                                     Commons.format(world, x, y, z)));
-							} catch (final Exception exception) {
-								exception.printStackTrace();
-								WarpDrive.logger.error(String.format("Exception while adding %s from LootSet %s in slot %d of inventory %s %s: %s",
-								                                     Commons.format(itemStackLoot),
-								                                     lootSet.getFullName(),
-								                                     indexSlot,
-								                                     inventory.getName() == null ? "-null name-" : inventory.getName(),
-								                                     Commons.format(world, x, y, z),
-								                                     exception.getMessage()));
-							}
-							break;
-						}
+		}
+		Collections.shuffle(indexSlots);
+		
+		// for all loots to add
+		ItemStack itemStackLoot;
+		boolean isAdded;
+		for (int i = 0; i < countLoots; i++) {
+			isAdded = false;
+			// with a few retries
+			for (int countLootRetries = 0; countLootRetries < maxRetries; countLootRetries++) {
+				// pick a loot
+				itemStackLoot = lootSet.getRandomUnit(rand).getItemStack(rand);
+				
+				// find a valid slot for it
+				for (final Iterator<Integer> iterator = indexSlots.iterator(); iterator.hasNext(); ) {
+					final Integer indexSlot = iterator.next();
+					if (!inventory.getStackInSlot(indexSlot).isEmpty()) {
+						assert false;   // index used were already removed, so we shouldn't reach this
+						continue;
 					}
-					if (isAdded || indexSlots.isEmpty()) {
+					if (inventory.isItemValidForSlot(indexSlot, itemStackLoot)) {
+						// remove that slot & item, even if insertion fail, to avoid a spam
+						iterator.remove();
+						isAdded = true;
+						try {
+							inventory.setInventorySlotContents(indexSlot, itemStackLoot);
+							if (WarpDriveConfig.LOGGING_WORLD_GENERATION) {
+								WarpDrive.logger.debug(String.format("Filling inventory with LootSet %s %s: loot %s from %s in slot %d of inventory %s",
+								                                     group,
+								                                     Commons.format(world, blockPos),
+								                                     Commons.format(itemStackLoot),
+								                                     lootSet.getFullName(),
+								                                     indexSlot,
+								                                     inventory.getName() == null ? "-null name-" : inventory.getName() ));
+							}
+						} catch (final Exception exception) {
+							exception.printStackTrace();
+							WarpDrive.logger.error(String.format("Exception while filling inventory with LootSet %s %s: loot %s from %s in slot %d of inventory %s reported %s",
+							                                     group,
+							                                     Commons.format(world, blockPos),
+							                                     Commons.format(itemStackLoot),
+							                                     lootSet.getFullName(),
+							                                     indexSlot,
+							                                     inventory.getName() == null ? "-null name-" : inventory.getName(),
+							                                     exception.getMessage() ));
+						}
 						break;
 					}
 				}
-				if (!isAdded) {
-					WarpDrive.logger.warn(String.format("Unable to find a valid loot from LootSet %s for inventory %s in %s: check your configuration",
-					                                    lootSet.getFullName(),
-					                                    inventory.getName() == null ? "-null name-" : inventory.getName(),
-					                                    Commons.format(world, x, y, z)));
+				if (isAdded || indexSlots.isEmpty()) {
+					break;
 				}
+			}
+			if (!isAdded) {
+				WarpDrive.logger.debug(String.format("Unable to find a valid loot from LootSet %s for inventory %s in %s: check your configuration",
+				                                     lootSet.getFullName(),
+				                                     inventory.getName() == null ? "-null name-" : inventory.getName(),
+				                                     Commons.format(world, blockPos) ));
 			}
 		}
 	}

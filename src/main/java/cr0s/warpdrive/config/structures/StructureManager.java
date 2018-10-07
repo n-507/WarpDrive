@@ -1,9 +1,12 @@
 package cr0s.warpdrive.config.structures;
 
+import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.InvalidXmlException;
 import cr0s.warpdrive.config.XmlRandomCollection;
 import cr0s.warpdrive.config.XmlFileManager;
+import cr0s.warpdrive.data.EnumStructureGroup;
+
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -15,26 +18,21 @@ import java.util.Random;
 
 public class StructureManager extends XmlFileManager {
 	
-	private static StructureManager INSTANCE = new StructureManager();
-	
-	public static final String GROUP_STARS = "star";
-	public static final String GROUP_MOONS = "moon";
-	public static final String GROUP_GAS_CLOUDS = "gascloud";
-	public static final String GROUP_ASTEROIDS = "asteroid";
-	public static final String GROUP_ASTEROIDS_FIELDS = "asteroids_field";
+	private static final StructureManager INSTANCE = new StructureManager();
 	
 	private static HashMap<String, XmlRandomCollection<AbstractStructure>> structuresByGroup;
-	
-	private static final String[] REQUIRED_GROUPS = { GROUP_STARS, GROUP_MOONS, GROUP_GAS_CLOUDS, GROUP_ASTEROIDS, GROUP_ASTEROIDS_FIELDS };
 	
 	public static void load(final File dir) {
 		structuresByGroup = new HashMap<>();
 		INSTANCE.load(dir, "structure", "structure");
 		
-		for (final String group : REQUIRED_GROUPS) {
-			if (!structuresByGroup.containsKey(group)) {
+		for (final EnumStructureGroup group : EnumStructureGroup.values()) {
+			if (!group.isRequired()) {
+				continue;
+			}
+			if (!structuresByGroup.containsKey(group.getName())) {
 				WarpDrive.logger.error(String.format("Error: no structure defined for mandatory group %s",
-				                                     group));
+				                                     group.getName()));
 			}
 		}
 	}
@@ -59,16 +57,23 @@ public class StructureManager extends XmlFileManager {
 		
 		AbstractStructure abstractStructure = xmlRandomCollection.getNamedEntry(name);
 		if (abstractStructure == null) {
-			switch (group) {
-				case GROUP_STARS:
-					abstractStructure = new Star(group, name);
-					break;
-				case GROUP_MOONS:
-					abstractStructure = new Orb(group, name);
-					break;
-				default:
-					abstractStructure = new MetaOrb(group, name);
-					break;
+			final EnumStructureGroup enumStructureGroup = EnumStructureGroup.byName(group);
+			switch (enumStructureGroup) {
+			case STARS:
+				abstractStructure = new Star(group, name);
+				break;
+				
+			case MOONS:
+				abstractStructure = new Orb(group, name);
+				break;
+			
+			case SCHEMATIC:
+				abstractStructure = new Schematic(group, name);
+				break;
+				
+			default:
+				abstractStructure = new MetaOrb(group, name);
+				break;
 			}
 		}
 		xmlRandomCollection.loadFromXML(abstractStructure, elementStructure);
@@ -80,7 +85,7 @@ public class StructureManager extends XmlFileManager {
 		}
 		
 		// @TODO XML configuration for Asteroids Fields
-		if (group.equals(GROUP_ASTEROIDS_FIELDS)) {
+		if (EnumStructureGroup.byName(group) == EnumStructureGroup.ASTEROIDS_FIELDS) {
 			return new AsteroidField(null, null);
 		}
 		
@@ -104,5 +109,9 @@ public class StructureManager extends XmlFileManager {
 			}
 		}
 		return "Error: group '" + group + "' isn't defined. Try one of: " + StringUtils.join(structuresByGroup.keySet(), ", ");
+	}
+	
+	public static String getGroups() {
+		return Commons.format(structuresByGroup.keySet().toArray());
 	}
 }

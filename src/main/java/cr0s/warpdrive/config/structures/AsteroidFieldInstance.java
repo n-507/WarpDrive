@@ -4,6 +4,7 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.LocalProfiler;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.EnumStructureGroup;
 import cr0s.warpdrive.world.WorldGenSmallShip;
 import cr0s.warpdrive.world.WorldGenStation;
 
@@ -110,7 +111,7 @@ public class AsteroidFieldInstance extends AbstractStructureInstance {
 			}
 			
 			// Place an asteroid
-			final AbstractStructure asteroid = StructureManager.getStructure(world.rand, StructureManager.GROUP_ASTEROIDS, null);
+			final AbstractStructure asteroid = StructureManager.getStructure(world.rand, EnumStructureGroup.ASTEROIDS.getName(), null);
 			if (asteroid == null) {
 				WarpDrive.logger.error(String.format("Unable to generate big asteroid %s, probably a bad configuration",
 				                                     Commons.format(world, aX, aY, aZ)));
@@ -133,7 +134,7 @@ public class AsteroidFieldInstance extends AbstractStructureInstance {
 			
 			// Placing
 			if (world.rand.nextInt(400) != 1) {
-				final AbstractStructure asteroid = StructureManager.getStructure(world.rand, StructureManager.GROUP_ASTEROIDS, null);
+				final AbstractStructure asteroid = StructureManager.getStructure(world.rand, EnumStructureGroup.ASTEROIDS.getName(), null);
 				if (asteroid == null) {
 					WarpDrive.logger.error(String.format("Unable to generate small asteroid %s, probably a bad configuration",
 					                                     Commons.format(world, aX, aY, aZ)));
@@ -163,7 +164,7 @@ public class AsteroidFieldInstance extends AbstractStructureInstance {
 			
 			// Placing
 			if (world.rand.nextBoolean()) {
-				final AbstractStructure gasCloud = StructureManager.getStructure(world.rand, StructureManager.GROUP_GAS_CLOUDS, null);
+				final AbstractStructure gasCloud = StructureManager.getStructure(world.rand, EnumStructureGroup.GAS_CLOUDS.getName(), null);
 				if (gasCloud == null) {
 					WarpDrive.logger.error(String.format("Unable to generate gas cloud %s, probably a bad configuration",
 					                                     Commons.format(world, aX, aY, aZ)));
