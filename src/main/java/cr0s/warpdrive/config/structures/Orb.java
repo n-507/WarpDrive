@@ -6,6 +6,9 @@ import cr0s.warpdrive.config.InvalidXmlException;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.config.XmlFileManager;
 import cr0s.warpdrive.config.Filler;
+
+import javax.annotation.Nonnull;
+
 import org.w3c.dom.Element;
 
 import java.util.List;
@@ -46,7 +49,8 @@ public class Orb extends AbstractStructure {
 		
 		final List<Element> listSchematic = XmlFileManager.getChildrenElementByTagName(element, "schematic");
 		if (listSchematic.size() > 1) {
-			WarpDrive.logger.error(String.format("Too many schematic defined, only first one will be used in structure %s", getFullName()));
+			WarpDrive.logger.error(String.format("Too many schematic defined, only first one will be used in structure %s",
+			                                     getFullName()));
 		}
 		if (listSchematic.size() > 0) {
 			schematicName = listSchematic.get(0).getAttribute("group");
@@ -56,7 +60,7 @@ public class Orb extends AbstractStructure {
 	}
 	
 	@Override
-	public boolean generate(final World world, final Random random, final BlockPos blockPos) {
+	public boolean generate(@Nonnull final World world, @Nonnull final Random random, @Nonnull final BlockPos blockPos) {
 		return instantiate(random).generate(world, random, blockPos);
 	}
 	

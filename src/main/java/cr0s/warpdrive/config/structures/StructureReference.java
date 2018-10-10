@@ -1,6 +1,9 @@
 package cr0s.warpdrive.config.structures;
 
 import cr0s.warpdrive.config.InvalidXmlException;
+
+import javax.annotation.Nonnull;
+
 import org.w3c.dom.Element;
 
 import java.util.Random;
@@ -22,7 +25,7 @@ public class StructureReference extends AbstractStructure {
 	}
 	
 	@Override
-	public boolean generate(final World world, final Random random, final BlockPos blockPos) {
+	public boolean generate(@Nonnull final World world, @Nonnull final Random random, @Nonnull final BlockPos blockPos) {
 		return instantiate(random).generate(world, random, blockPos);
 	}
 	

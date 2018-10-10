@@ -9,10 +9,8 @@ import cr0s.warpdrive.data.EnumStructureGroup;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -38,20 +36,25 @@ public class StructureManager extends XmlFileManager {
 	}
 	
 	@Override
-	protected void parseRootElement(final String location, final Element elementStructure) throws InvalidXmlException, SAXException, IOException {
-		final String group = elementStructure.getAttribute("group");
+	protected void parseRootElement(final String location, final Element element) throws InvalidXmlException {
+		final String group = element.getAttribute("group");
 		if (group.isEmpty()) {
 			throw new InvalidXmlException(String.format("%s is missing a group attribute!",
 			                                            location));
 		}
 		
-		final String name = elementStructure.getAttribute("name");
+		final String name = element.getAttribute("name");
 		if (name.isEmpty()) {
 			throw new InvalidXmlException(String.format("%s is missing a name attribute!",
 			                                            location));
 		}
 		
-		WarpDrive.logger.info(String.format("- found Structure %s:%s", group, name));
+		if (!element.getTagName().equals("structure")) {
+			throw new InvalidXmlException(String.format("%s contains invalid element %s, expecting structure!",
+			                                            location, element.getTagName()));
+		}
+		WarpDrive.logger.info(String.format("- found %s %s:%s",
+		                                    element.getTagName(), group, name));
 		
 		final XmlRandomCollection<AbstractStructure> xmlRandomCollection = structuresByGroup.computeIfAbsent(group, k -> new XmlRandomCollection<>());
 		
@@ -76,7 +79,7 @@ public class StructureManager extends XmlFileManager {
 				break;
 			}
 		}
-		xmlRandomCollection.loadFromXML(abstractStructure, elementStructure);
+		xmlRandomCollection.loadFromXML(abstractStructure, element);
 	}
 	
 	public static AbstractStructure getStructure(final Random random, final String group, final String name) {

@@ -18,11 +18,11 @@ public class GenericSet<E extends IXmlRepresentableUnit> implements IXmlRepresen
 	
 	protected String group;
 	protected String name;
-	private E unitDefault;
-	private String nameElementUnit;
-	private XmlRandomCollection<E> units;
-	private ArrayList<String> importGroupNames;
-	private ArrayList<String> importGroups;
+	private final E unitDefault;
+	private final String nameElementUnit;
+	private final XmlRandomCollection<E> units;
+	private final ArrayList<String> importGroupNames;
+	private final ArrayList<String> importGroups;
 	
 	public String getFullName() {
 		return group + ":" + name;

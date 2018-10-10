@@ -42,7 +42,7 @@ public class MetaOrb extends Orb {
 	}
 	
 	@Override
-	public boolean generate(final World world, final Random random, final BlockPos blockPos) {
+	public boolean generate(@Nonnull final World world, @Nonnull final Random random, @Nonnull final BlockPos blockPos) {
 		return instantiate(random).generate(world, random, blockPos);
 	}
 	
