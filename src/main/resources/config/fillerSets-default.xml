@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<worldGeneration version="2"
+<worldGeneration version="3"
 				 xmlns="http://warpdrive.lemadec.org"
 				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 				 xsi:schemaLocation="http://warpdrive.lemadec.org WarpDrive.xsd">
@@ -248,8 +248,8 @@
 		<filler block="computercraft:computer" metadata="12" weight="100" />
 	</fillerSet>
 	<fillerSet group="ship_computerCore" name="OpenComputers" weight="10" mods="opencomputers">
-		<filler block="opencomputers:case1" metadata="3" xnbt="{facing:5,id:&quot;ic2:solar_generator&quot;}" weight="200" />
-		<filler block="opencomputers:case2" metadata="3" xnbt="{facing:5,id:&quot;ic2:solar_generator&quot;}" weight="100" />
+		<filler block="opencomputers:case1" metadata="3" weight="200" />
+		<filler block="opencomputers:case2" metadata="3" weight="100" />
 	</fillerSet>
 	<fillerSet group="ship_computerCore" name="vanilla" weight="1" mods="!computercraft,!opencomputers">
 		<filler block="minecraft:sandstone_stairs" metadata="4" weight="100" />
@@ -261,7 +261,7 @@
 		<filler block="minecraft:air" metadata="0" weight="100" />
 	</fillerSet>
 	<fillerSet group="ship_computerScreen" name="OpenComputers" weight="10" mods="opencomputers">
-		<filler block="opencomputers:screen2" metadata="9" xnbt="{facing:5,id:&quot;ic2:solar_generator&quot;}" weight="100" />
+		<filler block="opencomputers:screen2" metadata="9" weight="100" />
 	</fillerSet>
 	<fillerSet group="ship_computerScreen" name="vanilla" weight="1" mods="!computercraft,!opencomputers">
 		<filler block="minecraft:sandstone_stairs" metadata="0" weight="100" />

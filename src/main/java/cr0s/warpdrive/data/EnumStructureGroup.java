@@ -12,7 +12,6 @@ public enum EnumStructureGroup implements IStringSerializable {
 	GAS_CLOUDS       ("gascloud"       , true),
 	ASTEROIDS        ("asteroid"       , true),
 	ASTEROIDS_FIELDS ("asteroids_field", true),
-	SCHEMATIC        ("schematic"      , true),
 	;
 	
 	private final String name;

@@ -11,9 +11,11 @@
 			<xs:element name="for" type="wd:elementFor" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="import" type="wd:elementImport" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="filler" type="wd:elementFiller" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="schematic" type="wd:elementSchematic" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="metashell" type="wd:elementMetashell" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="replacement" type="wd:elementReplacement" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="shell" type="wd:elementShell" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="replacement" type="wd:elementReplacement" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="insertion" type="wd:elementInsertion" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
 		<xs:attribute name="variable" type="xs:string" use="required" />
 		<xs:attribute name="from" type="xs:string" use="optional" />
@@ -49,14 +51,35 @@
 		<xs:attribute name="ratio" type="xs:string" use="optional" />
 		<xs:attribute name="mods" type="xs:string" use="optional" />
 	</xs:complexType>
-	
+
+	<xs:complexType name="elementSchematicSet">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="for" type="wd:elementFor" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="schematic" type="wd:elementSchematic" minOccurs="0" maxOccurs="unbounded" />
+		</xs:choice>
+		<xs:attribute name="group" type="xs:string" use="required" />
+		<xs:attribute name="name" type="xs:string" use="optional" />
+		<xs:attribute name="weight" type="xs:string" use="optional" />
+		<xs:attribute name="ratio" type="xs:string" use="optional" />
+		<xs:attribute name="mods" type="xs:string" use="optional" />
+	</xs:complexType>
+
+	<xs:complexType name="elementSchematic">
+		<xs:attribute name="filename" type="xs:string" use="required" />
+		<xs:attribute name="weight" type="xs:string" use="optional" />
+		<xs:attribute name="ratio" type="xs:string" use="optional" />
+		<xs:attribute name="mods" type="xs:string" use="optional" />
+	</xs:complexType>
+
 	<xs:complexType name="elementStructure">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="for" type="wd:elementFor" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="import" type="wd:elementImport" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="metashell" type="wd:elementMetashell" minOccurs="0" maxOccurs="1" />
 			<xs:element name="schematic" type="wd:elementSchematic" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="metashell" type="wd:elementMetashell" minOccurs="0" maxOccurs="1" />
 			<xs:element name="shell" type="wd:elementShell" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="replacement" type="wd:elementReplacement" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="insertion" type="wd:elementInsertion" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
 		<xs:attribute name="group" type="xs:string" use="required" />
 		<xs:attribute name="name" type="xs:string" use="required" />
@@ -64,31 +87,29 @@
 		<xs:attribute name="ratio" type="xs:string" use="optional" />
 		<xs:attribute name="mods" type="xs:string" use="optional" />
 	</xs:complexType>
-	
-    <xs:complexType name="elementSchematic">
-		<xs:choice minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="for" type="wd:elementFor" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="replacement" type="wd:elementReplacement" minOccurs="0" maxOccurs="unbounded" />
-		</xs:choice>
-        <xs:attribute name="group" type="xs:string" use="required" />
-        <xs:attribute name="name" type="xs:string" use="optional" />
-		<xs:attribute name="filename" type="xs:string" use="required" />
-		<xs:attribute name="weight" type="xs:string" use="optional" />
-		<xs:attribute name="ratio" type="xs:string" use="optional" />
-        <xs:attribute name="mods" type="xs:string" use="optional" />
-    </xs:complexType>
-	
+
 	<xs:complexType name="elementReplacement">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="for" type="wd:elementFor" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="import" type="wd:elementImport" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="filler" type="wd:elementFiller" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
-		<xs:attribute name="block" type="xs:string" use="required" />
-		<xs:attribute name="metadata" type="xs:string" use="optional" />
+		<xs:attribute name="blockState" type="xs:string" use="required" />
 		<xs:attribute name="mods" type="xs:string" use="optional" />
 	</xs:complexType>
-	
+
+	<xs:complexType name="elementInsertion">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="for" type="wd:elementFor" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="import" type="wd:elementImport" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="filler" type="wd:elementLoot" minOccurs="0" maxOccurs="unbounded" />
+		</xs:choice>
+		<xs:attribute name="blockState" type="xs:string" use="required" />
+		<xs:attribute name="minQuantity" type="xs:string" use="optional" />
+		<xs:attribute name="maxQuantity" type="xs:string" use="optional" />
+		<xs:attribute name="mods" type="xs:string" use="optional" />
+	</xs:complexType>
+
 	<xs:complexType name="elementLootSet">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="for" type="wd:elementFor" minOccurs="0" maxOccurs="unbounded" />
@@ -298,7 +319,7 @@
 			<xs:element name="for" type="wd:elementForRoot" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="fillerSet" type="wd:elementFillerSet" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="lootSet" type="wd:elementLootSet" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="schematic" type="wd:elementSchematic" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="schematicSet" type="wd:elementSchematicSet" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="structure" type="wd:elementStructure" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="celestialObject" type="wd:elementCelestialObject" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
@@ -315,11 +336,11 @@
 				<xs:element name="for" type="wd:elementForRoot" minOccurs="0" maxOccurs="unbounded" />
 				<xs:element name="fillerSet" type="wd:elementFillerSet" minOccurs="0" maxOccurs="unbounded" />
 				<xs:element name="lootSet" type="wd:elementLootSet" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element name="schematic" type="wd:elementSchematic" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="schematicSet" type="wd:elementSchematicSet" minOccurs="0" maxOccurs="unbounded" />
 				<xs:element name="structure" type="wd:elementStructure" minOccurs="0" maxOccurs="unbounded" />
 				<xs:element name="celestialObject" type="wd:elementCelestialObject" minOccurs="0" maxOccurs="unbounded" />
 			</xs:choice>
-			<xs:attribute name="version" type="xs:string" use="required" fixed="2" />
+			<xs:attribute name="version" type="xs:string" use="required" fixed="3" />
 			<xs:attribute name="mods" type="xs:string" use="optional" />
 		</xs:complexType>
 	</xs:element>

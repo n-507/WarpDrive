@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<worldGeneration version="2"
+<?xml version="1.0" encoding="utf-8"?>
+<worldGeneration version="3"
 				 xmlns="http://warpdrive.lemadec.org"
 				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 				 xsi:schemaLocation="http://warpdrive.lemadec.org WarpDrive.xsd">
 	
-	<schematic group="ship" name="legacy" filename="legacy" weight="1">
+	<structure group="ship_small" name="legacy" weight="1">
 		<replacement block="minecraft:stone" metadata="0">
 			<import group="hull_plain" name="%hull1%" />
 		</replacement>
@@ -31,9 +31,18 @@
 			<filler block="computercraft:CC-Computer" weight="1" mods="computercraft" />
 			<filler block="minecraft:air" ratio="0.5" />
 		</replacement>
-	</schematic>
+		<insertion blockState="opencomputers:case1">
+			<import group="ship_computerCore" name="OpenComputers" />
+		</insertion>
+		<insertion blockState="opencomputers:case2">
+			<import group="ship_computerCore" name="OpenComputers" />
+		</insertion>
+		<insertion blockState="opencomputers:diskdrive">
+			<import group="ship_computerFloppy" name="OpenComputers" />
+		</insertion>
+	</structure>
 	
-	<schematic group="ship" name="legacy" filename="legacy_corrupted" weight="1">
+	<structure group="ship_small" name="legacy" weight="1">
 		<replacement block="minecraft:stone" metadata="0">
 			<import group="hull_plain" name="%hull1%" />
 			<filler block="minecraft:air" ratio="0.1" />
@@ -86,7 +95,7 @@
 			<filler block="computercraft:CC-Computer" weight="1" mods="computercraft" />
 			<filler block="minecraft:air" ratio="0.5" />
 		</replacement>
-	</schematic>
+	</structure>
 	
 	<structure group="ship" name="legacy" ratio="0.2">
 	</structure>

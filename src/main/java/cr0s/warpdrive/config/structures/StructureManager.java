@@ -60,23 +60,22 @@ public class StructureManager extends XmlFileManager {
 		
 		AbstractStructure abstractStructure = xmlRandomCollection.getNamedEntry(name);
 		if (abstractStructure == null) {
-			final EnumStructureGroup enumStructureGroup = EnumStructureGroup.byName(group);
-			switch (enumStructureGroup) {
-			case STARS:
+			if (group.equals("star")) {
 				abstractStructure = new Star(group, name);
-				break;
 				
-			case MOONS:
-				abstractStructure = new Orb(group, name);
-				break;
-			
-			case SCHEMATIC:
+			} else if (!getChildrenElementByTagName(element, "schematic").isEmpty()) {
 				abstractStructure = new Schematic(group, name);
-				break;
 				
-			default:
-				abstractStructure = new MetaOrb(group, name);
-				break;
+			} else if (!getChildrenElementByTagName(element, "shell").isEmpty()) {
+				if (!getChildrenElementByTagName(element, "metashell").isEmpty()) {
+					abstractStructure = new MetaOrb(group, name);
+				} else {
+					abstractStructure = new Orb(group, name);
+				}
+				
+			} else {
+				throw new InvalidXmlException(String.format("%s contains unrecognized structure format, check your configuration!",
+				                                            location));
 			}
 		}
 		xmlRandomCollection.loadFromXML(abstractStructure, element);

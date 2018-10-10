@@ -81,22 +81,30 @@ public class WarpDriveConfig {
 	private static final boolean unused = false; // TODO
 	
 	private static String          stringConfigDirectory;
-	private static File            configDirectory;
+	private static File            fileConfigDirectory;
 	private static DocumentBuilder xmlDocumentBuilder;
-	private static final String[]  defaultXML_fillers = {
-			"filler-default.xml",
-			"filler-netherores.xml",
-			"filler-undergroundbiomes.xml",
+	private static final String[]  defaultXML_fillerSets = {
+			"fillerSets-default.xml",
+			"fillerSets-netherores.xml",
+			"fillerSets-undergroundbiomes.xml",
 	};
-	private static final String[]  defaultXML_loots = {
-			"loot-default.xml",
+	private static final String[]  defaultXML_lootSets = {
+			"lootSets-default.xml",
+	};
+	private static final String[]  defaultXML_schematicSets = {
+			"schematicSets-default.xml",
 	};
 	private static final String[]  defaultXML_structures = {
 			"structures-default.xml",
 			"structures-netherores.xml",
+			"structures-ship.xml",
 	};
 	private static final String[]  defaultXML_celestialObjects = {
-			"celestialObjects-default.xml"
+			"celestialObjects-default.xml",
+	};
+	private static final String[]  defaultSchematics = {
+			"default-legacy_1.schematic",
+			"default-legacy_2.schematic",
 	};
 	
 	public static GenericSetManager<Filler> FillerManager = new GenericSetManager<>("filler", "filler", "fillerSet", Filler.DEFAULT);
@@ -597,27 +605,40 @@ public class WarpDriveConfig {
 		WarpDriveConfig.stringConfigDirectory = stringConfigDirectory;
 		
 		// create mod folder
-		configDirectory = new File(stringConfigDirectory, WarpDrive.MODID);
+		fileConfigDirectory = new File(stringConfigDirectory, WarpDrive.MODID);
 		//noinspection ResultOfMethodCallIgnored
-		configDirectory.mkdir();
-		if (!configDirectory.isDirectory()) {
+		fileConfigDirectory.mkdir();
+		if (!fileConfigDirectory.isDirectory()) {
 			throw new RuntimeException(String.format("Unable to create config directory %s",
-			                                         configDirectory));
+			                                         fileConfigDirectory));
 		}
 		
 		// unpack default XML files if none are defined
-		unpackResourcesToFolder("filler", ".xml", defaultXML_fillers, "config", configDirectory);
-		unpackResourcesToFolder("loot", ".xml", defaultXML_loots, "config", configDirectory);
-		unpackResourcesToFolder("structures", ".xml", defaultXML_structures, "config", configDirectory);
-		unpackResourcesToFolder("celestialObjects", ".xml", defaultXML_celestialObjects, "config", configDirectory);
+		unpackResourcesToFolder("fillerSets", ".xml", defaultXML_fillerSets, "config", fileConfigDirectory);
+		unpackResourcesToFolder("lootSets", ".xml", defaultXML_lootSets, "config", fileConfigDirectory);
+		unpackResourcesToFolder("schematicSets", ".xml", defaultXML_schematicSets, "config", fileConfigDirectory);
+		unpackResourcesToFolder("structures", ".xml", defaultXML_structures, "config", fileConfigDirectory);
+		unpackResourcesToFolder("celestialObjects", ".xml", defaultXML_celestialObjects, "config", fileConfigDirectory);
 		
 		// always unpack the XML Schema
-		unpackResourceToFolder("WarpDrive.xsd", "config", configDirectory);
+		unpackResourceToFolder("WarpDrive.xsd", "config", fileConfigDirectory);
 		
 		// read configuration files
-		loadConfig(new File(configDirectory, "config.yml"));
-		loadDictionary(new File(configDirectory, "dictionary.yml"));
-		CelestialObjectManager.load(configDirectory);
+		loadConfig(new File(fileConfigDirectory, "config.yml"));
+		loadDictionary(new File(fileConfigDirectory, "dictionary.yml"));
+		CelestialObjectManager.load(fileConfigDirectory);
+		
+		// create schematics folder
+		final File fileSchematicsDirectory = new File(G_SCHEMATICS_LOCATION);
+		//noinspection ResultOfMethodCallIgnored
+		fileSchematicsDirectory.mkdir();
+		if (!fileSchematicsDirectory.isDirectory()) {
+			throw new RuntimeException(String.format("Unable to create schematic directory %s",
+			                                         fileSchematicsDirectory));
+		}
+		
+		// unpack default schematic files if none are defined
+		unpackResourcesToFolder("default", ".schematic", defaultSchematics, "schematics", fileSchematicsDirectory);
 		
 		// read mod dependencies
 		isCoFHCoreLoaded = Loader.isModLoaded("redstoneflux");
@@ -1312,9 +1333,9 @@ public class WarpDriveConfig {
 	
 	public static void onFMLPostInitialization() {
 		// load XML files
-		FillerManager.load(configDirectory);
-		LootManager.load(configDirectory);
-		StructureManager.load(configDirectory);
+		FillerManager.load(fileConfigDirectory);
+		LootManager.load(fileConfigDirectory);
+		StructureManager.load(fileConfigDirectory);
 		
 		Dictionary.apply();
 	}
@@ -1397,10 +1418,10 @@ public class WarpDriveConfig {
 	 * Target folder should be already created
 	 **/
 	private static void unpackResourcesToFolder(final String prefix, final String suffix, final String[] filenames, final String resourcePathSource, final File folderTarget) {
-		final File[] files = configDirectory.listFiles((file_notUsed, name) -> name.startsWith(prefix) && name.endsWith(suffix));
+		final File[] files = fileConfigDirectory.listFiles((file_notUsed, name) -> name.startsWith(prefix) && name.endsWith(suffix));
 		if (files == null) {
-			throw new RuntimeException(String.format("Critical error accessing configuration directory, searching for %s*%s files: %s",
-			                                         prefix, suffix, configDirectory));
+			throw new RuntimeException(String.format("Critical error accessing target directory, searching for %s*%s files: %s",
+			                                         prefix, suffix, folderTarget));
 		}
 		if (files.length == 0) {
 			for (final String filename : filenames) {
