@@ -516,7 +516,7 @@ public class JumpSequencer extends AbstractSequencer {
 	protected void state_saveToDisk() {
 		LocalProfiler.start("Jump.saveToDisk");
 		
-		final File file = new File(WarpDriveConfig.G_SCHEMALOCATION + "/auto");
+		final File file = new File(WarpDriveConfig.G_SCHEMATICS_LOCATION + "/auto");
 		if (!file.exists() || !file.isDirectory()) {
 			if (!file.mkdirs()) {
 				WarpDrive.logger.warn("Unable to create auto-backup folder, skipping...");
@@ -533,7 +533,7 @@ public class JumpSequencer extends AbstractSequencer {
 			String schematicFileName;
 			do {
 				final Date now = new Date();
-				schematicFileName = WarpDriveConfig.G_SCHEMALOCATION + "/auto/" + shipName + "_" + sdfDate.format(now) + ".schematic";
+				schematicFileName = WarpDriveConfig.G_SCHEMATICS_LOCATION + "/auto/" + shipName + "_" + sdfDate.format(now) + ".schematic";
 			} while (new File(schematicFileName).exists());
 			
 			// Save header

@@ -382,7 +382,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 	private boolean scanShip(final WarpDriveText reason) {
 		// Enable scanner
 		setState(EnumShipScannerState.SCANNING);
-		final File file = new File(WarpDriveConfig.G_SCHEMALOCATION);
+		final File file = new File(WarpDriveConfig.G_SCHEMATICS_LOCATION);
 		if (!file.exists() || !file.isDirectory()) {
 			if (!file.mkdirs()) {
 				return false;
@@ -396,9 +396,9 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		do {
 			final Date now = new Date();
 			schematicFileName = shipName + "_" + sdfDate.format(now);
-		} while (new File(WarpDriveConfig.G_SCHEMALOCATION + "/" + schematicFileName + ".schematic").exists());
+		} while (new File(WarpDriveConfig.G_SCHEMATICS_LOCATION + "/" + schematicFileName + ".schematic").exists());
 		
-		if (!saveShipToSchematic(WarpDriveConfig.G_SCHEMALOCATION + "/" + schematicFileName + ".schematic", reason)) {
+		if (!saveShipToSchematic(WarpDriveConfig.G_SCHEMATICS_LOCATION + "/" + schematicFileName + ".schematic", reason)) {
 			return false;
 		}
 		reason.appendSibling(new TextComponentString(schematicFileName));
@@ -694,7 +694,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		final int z = Commons.toInt(arguments[3]);
 		final byte rotationSteps = (byte) Commons.toInt(arguments[4]);
 		
-		if (!new File(WarpDriveConfig.G_SCHEMALOCATION + "/" + fileName + ".schematic").exists()) {
+		if (!new File(WarpDriveConfig.G_SCHEMATICS_LOCATION + "/" + fileName + ".schematic").exists()) {
 			return new Object[] { 0, "Specified schematic file was not found!" };
 		}
 		
