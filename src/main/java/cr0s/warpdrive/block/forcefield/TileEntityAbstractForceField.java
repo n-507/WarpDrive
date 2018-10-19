@@ -25,7 +25,6 @@ public abstract class TileEntityAbstractForceField extends TileEntityAbstractEne
 	
 	// persistent properties
 	protected int beamFrequency = -1;
-	public boolean isEnabled = true;
 	protected boolean isConnected = false;
 	
 	// computed properties

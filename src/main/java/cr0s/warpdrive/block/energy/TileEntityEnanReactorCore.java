@@ -37,7 +37,6 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	private boolean hold = true; // hold updates and power output until reactor is controlled (i.e. don't explode on chunk-loading while computer is booting)
 	
 	// persistent properties
-	private boolean isEnabled = false;
 	private EnumReactorOutputMode enumReactorOutputMode = EnumReactorOutputMode.OFF;
 	private int outputThreshold = 0;
 	private double instabilityTarget = 50.0D;
