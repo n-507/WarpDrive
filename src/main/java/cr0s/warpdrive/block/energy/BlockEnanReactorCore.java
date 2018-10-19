@@ -57,7 +57,7 @@ public class BlockEnanReactorCore extends BlockAbstractContainer {
 	}
 	
 	@Override
-	public void breakBlock(World world, @Nonnull BlockPos blockPos, @Nonnull IBlockState blockState) {
+	public void breakBlock(final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
 		super.breakBlock(world, blockPos, blockState);
 		
 		for (final EnumReactorFace reactorFace : EnumReactorFace.getLasers(enumTier)) {

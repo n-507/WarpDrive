@@ -134,7 +134,7 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 	
 	// Common OC/CC methods
 	@Override
-	public void setIsEnabled(boolean isEnabled) {
+	public void setIsEnabled(final boolean isEnabled) {
 		super.setIsEnabled(isEnabled);
 		// enabling up => redeploy
 		if (isEnabled) {

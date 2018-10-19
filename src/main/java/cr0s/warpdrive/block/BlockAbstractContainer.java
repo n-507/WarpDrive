@@ -174,6 +174,11 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 		return super.rotateBlock(world, blockPos, axis);
 	}
 	
+	// Triggers on server side when placing a comparator compatible block
+	// May trigger twice for the same placement action (placing a vanilla chest)
+	// Triggers on server side when removing a comparator compatible block
+	// Triggers on both sides when removing a TileEntity
+	// (by extension, it'll trigger twice for the same removal of a TileEntity with comparator output)
 	@Override
 	public void onNeighborChange(final IBlockAccess blockAccess, final BlockPos blockPos, final BlockPos blockPosNeighbor) {
 		super.onNeighborChange(blockAccess, blockPos, blockPosNeighbor);

@@ -1566,7 +1566,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 	}
 	
 	@Override
-	public void setIsEnabled(boolean isEnabled) {
+	public void setIsEnabled(final boolean isEnabled) {
 		super.setIsEnabled(isEnabled);
 		if (isEnabled) {
 			markDirty();
