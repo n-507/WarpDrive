@@ -32,11 +32,9 @@ public class TileEntityEnanReactorController extends TileEntityAbstractEnergyCor
 		
 		peripheralName = "warpdriveEnanReactorController";
 		addMethods(new String[] {
-				"instability",	// returns ins0,1,2,3
+				"instability",
 				"instabilityTarget",
-				"release",		// releases all energy
-				"releaseRate",	// releases energy when more than arg0 is produced
-				"releaseAbove",	// releases any energy above arg0 amount
+				"outputMode",
 				"stabilizerEnergy",
 				"state"
 		});

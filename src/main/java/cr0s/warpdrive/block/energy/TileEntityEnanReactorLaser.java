@@ -96,6 +96,12 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	}
 	
 	public void setReactorFace(@Nonnull final EnumReactorFace reactorFace, final TileEntityEnanReactorCore reactorCore) {
+		// skip if it's already set to save resources
+		if (this.reactorFace == reactorFace) {
+			return;
+		}
+		
+		// update properties
 		this.reactorFace = reactorFace;
 		this.weakReactorCore = reactorCore != null && reactorFace != EnumReactorFace.UNKNOWN ? new WeakReference<>(reactorCore) : null;
 		
@@ -130,8 +136,10 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 				weakReactorCore = new WeakReference<>(reactorCore);
 				vReactorCore = new Vector3(reactorCore).translate(0.5);
 			} else {
-				WarpDrive.logger.error(String.format("%s Invalid TileEntityEnanReactorCore: %s",
-				                                     this, tileEntity));
+				WarpDrive.logger.error(String.format("%s Invalid TileEntityEnanReactorCore %s: %s",
+				                                     this,
+				                                     Commons.format(world, pos),
+				                                     tileEntity));
 			}
 		}
 		return reactorCore;
@@ -229,6 +237,9 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	
 	@Override
 	public Object[] side() {
+		if (reactorFace == null) {
+			return new Object[] { null, null, null };
+		}
 		return new Object[] { reactorFace.indexStability, reactorFace.enumTier.getName(), reactorFace.getName() };
 	}
 	
