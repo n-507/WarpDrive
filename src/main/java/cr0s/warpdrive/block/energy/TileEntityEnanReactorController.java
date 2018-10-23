@@ -25,6 +25,7 @@ public class TileEntityEnanReactorController extends TileEntityAbstractEnergyCor
 	// computed properties
 	// (none)
 	
+	// @TODO implement reactor controller
 	private WeakReference<TileEntityEnanReactorCore> tileEntityEnanReactorCoreWeakReference = null;
 	
 	public TileEntityEnanReactorController() {
@@ -32,7 +33,7 @@ public class TileEntityEnanReactorController extends TileEntityAbstractEnergyCor
 		
 		peripheralName = "warpdriveEnanReactorController";
 		addMethods(new String[] {
-				"instability",
+				"getInstabilities",
 				"instabilityTarget",
 				"outputMode",
 				"stabilizerEnergy",

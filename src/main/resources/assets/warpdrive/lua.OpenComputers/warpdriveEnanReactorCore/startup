@@ -9,8 +9,8 @@ local data
 local reactor
 local reactorlasers = {}
 
-local reactor_mode = 0
-local reactor_rate = 100
+local reactor_outputMode = "off"
+local reactor_outputThreshold = 100
 local reactor_targetStability = 50
 local reactor_laserAmount = 10000
 
@@ -23,21 +23,21 @@ end
 function reactor_boot()
   if reactor ~= nil then
     w.writeLn("Booting Reactor...")
-    local  _, _, _, strMode, _ = reactor.state()
-    if strMode == "off" then
-      reactor_mode = 0
-    elseif strMode == "unlimited" then
-      reactor_mode = 1
-    elseif strMode == "above" then
-      reactor_mode = 2
-    elseif strMode == "at_rate" then
-      reactor_mode = 3
-    else
-      reactor_mode = 0
-    end
-    _, reactor_rate = reactor.releaseRate()
+    reactor_outputMode, reactor_outputThreshold = reactor.outputMode()
     reactor_targetStability = 100.0 - reactor.instabilityTarget()
     reactor_laserAmount = reactor.stabilizerEnergy()
+  end
+end
+
+function reactor_cycleOutputMode()
+  if reactor_outputMode == "off" then
+    reactor_outputMode = "unlimited"
+  elseif reactor_outputMode == "unlimited" then
+    reactor_outputMode = "above"
+  elseif reactor_outputMode == "above" then
+    reactor_outputMode = "at_rate"
+  else
+    reactor_outputMode = "off"
   end
 end
 
@@ -52,15 +52,15 @@ function reactor_key(character, keycode)
     reactor_laser()
     return true
   elseif character == 'o' or character == 'O' then -- O
-    reactor_mode = (reactor_mode + 1) % 4
+    reactor_cycleOutputMode()
     reactor_setMode()
     return true
   elseif character == 'g' or character == 'G' then -- G
-    reactor_rate = reactor_rate - 1000
+    reactor_outputThreshold = reactor_outputThreshold - 1000
     reactor_setMode()
     return true
   elseif character == 't' or character == 'T' then -- T
-    reactor_rate = reactor_rate + 1000
+    reactor_outputThreshold = reactor_outputThreshold + 1000
     reactor_setMode()
     return true
   elseif character == 'j' or character == 'J' then -- J
@@ -98,14 +98,16 @@ function reactor_page()
     w.write("Reactor stability")
     local instabilities = { reactor.getInstabilities() }
     for key, instability in pairs(instabilities) do
-      w.setCursorPos(12, 2 + key)
+      local y = (key - 1) % 4
+      local x = (key - y - 1) / 4
+      w.setCursorPos(2 + 6 * x, 3 + y)
       local stability = math.floor((100.0 - instability) * 10) / 10.0
       if stability >= reactor_targetStability then
         w.setColorSuccess()
       else
         w.setColorWarning()
       end
-      w.write(w.format_float(stability, 5) .. " %")
+      w.write(w.format_float(stability, 5))
     end
     
     w.setColorNormal()
@@ -113,14 +115,14 @@ function reactor_page()
     w.setCursorPos(1, 7)
     w.write("Energy   : ")
     if energy[2] ~= nil then
-      w.write(w.format_integer(energy[1], 10) .. " / " .. w.format_integer(energy[2]) .. " RF +" .. w.format_integer(reactor_output, 5) .. " RF/t")
+      w.write(w.format_integer(energy[1], 10) .. " / " .. w.format_integer(energy[2], 10) .. " RF +" .. w.format_integer(reactor_output, 6) .. " RF/t")
     else
       w.write("???")
     end
     w.setCursorPos(1, 8)
     w.write("Outputing: ")
     if energy[3] ~= nil then
-      w.write(w.format_integer(energy[3]) .. " RF/t")
+      w.write(w.format_integer(energy[3], 6) .. " RF/t")
     end
     
     w.setCursorPos(1, 9)
@@ -140,14 +142,14 @@ function reactor_page()
     w.write("Lasers")
     
     for key, reactorlaser in pairs(reactorlasers) do
-      local side = reactorlaser.side
-      if side ~= nil then
-        side = side % 4
-        w.setCursorPos(4, 3 + side)
-        w.setColorNormal()
-        w.write("Side " .. w.format_integer(side) .. ":")
-        w.setCursorPos(30, 3 + side)
+      if reactorlaser.wrap ~= nil then
+        local y = (key - 1) % 4
+        local x = (key - y - 1) / 4
+        w.setCursorPos(26 + 7 * x, 3 + y)
         local energy = reactorlaser.wrap.energy()
+        if energy == nil then
+          energy = -1
+        end
         if not reactorlaser.wrap.isAssemblyValid() then
           w.setColorDisabled()
         elseif energy > 3 * reactor_laserAmount then
@@ -165,21 +167,21 @@ function reactor_page()
   w.write("  -----------------------------------------------")
   w.setCursorPos(1, 11)
   w.write("Output mode     : ")
-  if reactor_mode == 0 then
+  if reactor_outputMode == "off" then
     w.setColorDisabled()
     w.write("hold")
-  elseif reactor_mode == 1 then
+  elseif reactor_outputMode == "unlimited" then
     w.write("manual/unlimited")
-  elseif reactor_mode == 2 then
-    w.write("surplus above " .. reactor_rate .. " RF")
+  elseif reactor_outputMode == "above" then
+    w.write("surplus above " .. reactor_outputThreshold .. " RF")
   else
-    w.write("rated at " .. reactor_rate .. " RF")
+    w.write("rated at " .. reactor_outputThreshold .. " RF")
   end
   w.setCursorPos( 1, 12)
   w.setColorNormal()
   w.write("Target stability: " .. reactor_targetStability .. "%")
   w.setCursorPos(30, 12)
-  w.write("Laser amount: " .. reactor_laserAmount)
+  w.write("Laser amount: " .. w.format_integer(reactor_laserAmount))
   
   w.setCursorPos(1, 18)
   w.setColorControl()
@@ -190,21 +192,13 @@ function reactor_page()
 end
 
 function reactor_setMode()
-  if reactor_rate < 1 then
-    reactor_rate = 1
-  elseif reactor_rate > 100000 then
-    reactor_rate = 100000
+  if reactor_outputThreshold < 1 then
+    reactor_outputThreshold = 1
+  elseif reactor_outputThreshold > 100000 then
+    reactor_outputThreshold = 100000
   end
   if reactor ~= nil then
-    if reactor_mode == 0 then
-      reactor.release(false)
-    elseif reactor_mode == 1 then
-      reactor.release(true)
-    elseif reactor_mode == 2 then
-      reactor.releaseAbove(reactor_rate)
-    else
-      reactor.releaseRate(reactor_rate)
-    end
+    reactor.outputMode(reactor_outputMode, reactor_outputThreshold)
   end
 end
 
@@ -259,56 +253,56 @@ function reactor_pulse(output)
     w.reboot()
   end
   local instabilities = { reactor.getInstabilities() }
-  reactor_pulseStep = (reactor_pulseStep + 1) % 6
+  reactor_pulseStep = (reactor_pulseStep + 1) % 16
   if w.page_getCallbackDisplay() == reactor_page and (not reactor_configPageLoaded) then
-    if reactor_pulseStep == 0 then
-      for key, instability in pairs(instabilities) do
-        w.setCursorPos(12, 2 + key)
-        local stability = math.floor((100.0 - instability) * 10) / 10
-        if stability >= reactor_targetStability then
-          w.setColorSuccess()
-        else
-          w.setColorWarning()
-        end
-        w.write(w.format_float(stability, 5) .. " %")
+    for key, instability in pairs(instabilities) do
+      local y = (key - 1) % 4
+      local x = (key - y - 1) / 4
+      w.setCursorPos(2 + 6 * x, 3 + y)
+      local stability = math.floor((100.0 - instability) * 10) / 10
+      if stability >= reactor_targetStability then
+        w.setColorSuccess()
+      else
+        w.setColorWarning()
       end
+      w.write(w.format_float(stability, 5))
+    end
     
-    elseif reactor_pulseStep == 2 then
+    if reactor_pulseStep % 6 == 1 then
       local energy = { reactor.energy() }
       w.setCursorPos(12, 7)
       w.setColorNormal()
-      if energy[2] ~= nil then
+      if energy[1] ~= nil then
         w.write(w.format_integer(energy[1], 10))
-        w.setCursorPos(39, 7)
-        w.write(w.format_integer(reactor_output, 5))
+        w.setCursorPos(40, 7)
+        w.write(w.format_integer(reactor_output, 6))
       else
         w.write("???")
       end
       if energy[3] ~= nil then
         w.setCursorPos(12, 8)
-        w.write(w.format_integer(energy[3]) .. " RF/t     ")
+        w.write(w.format_integer(energy[3], 6))
       end
+    end
     
-    elseif reactor_pulseStep == 4 then
-      if #reactorlasers ~= 0 then
-        for key, reactorlaser in pairs(reactorlasers) do
-          local side = reactorlaser.side
-          if side ~= nil and reactorlaser.wrap ~= nil then
-            side = side % 4
-            w.setCursorPos(30, 3 + side)
-            local energy = reactorlaser.wrap.energy()
-            if energy == nil then
-              energy = -1
-            end
-            if not reactorlaser.wrap.isAssemblyValid() then
-              w.setColorDisabled()
-            elseif energy > 3 * reactor_laserAmount then
-              w.setColorSuccess()
-            else
-              w.setColorWarning()
-            end
-            w.write(w.format_integer(energy, 6))
+    if #reactorlasers ~= 0 then
+      for key, reactorlaser in pairs(reactorlasers) do
+        if reactor_pulseStep == key and reactorlaser.wrap ~= nil then
+          local y = (key - 1) % 4
+          local x = (key - y - 1) / 4
+          w.setCursorPos(26 + 7 * x, 3 + y)
+          local energy = reactorlaser.wrap.energy()
+          if energy == nil then
+            energy = -1
           end
+          if not reactorlaser.wrap.isAssemblyValid() then
+            w.setColorDisabled()
+          elseif energy > 3 * reactor_laserAmount then
+            w.setColorSuccess()
+          else
+            w.setColorWarning()
+          end
+          w.write(w.format_integer(energy, 6))
         end
       end
     end
@@ -331,8 +325,8 @@ function reactor_config()
     
     w.setCursorPos(1, 4)
     w.setColorNormal()
-    w.write("Reactor output rate (" .. w.format_integer(reactor_rate) .. " RF): ")
-    reactor_rate = w.input_readInteger(reactor_rate)
+    w.write("Reactor output rate (" .. w.format_integer(reactor_outputThreshold) .. " RF): ")
+    reactor_outputThreshold = w.input_readInteger(reactor_outputThreshold)
     reactor_setMode()
     w.setCursorPos(1, 5)
     w.write("Reactor output rate set")

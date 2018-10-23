@@ -47,7 +47,7 @@ local page_endText = ""
 local page_callbackDisplay
 local page_callbackKey
 
-local event_refreshPeriod_s = 5.0
+local event_refreshPeriod_s = 20.0
 local event_refreshTimerId = -1
 
 local styles = {

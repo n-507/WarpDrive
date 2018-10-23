@@ -119,7 +119,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		
 		// cache reactor coordinates
 		if (reactorCore != null) {
-			vReactorCore = new Vector3(reactorCore).translate(0.5);
+			vReactorCore = reactorCore.getCenter();
 		}
 	}
 	
@@ -134,7 +134,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 			if (tileEntity instanceof TileEntityEnanReactorCore) {
 				reactorCore = (TileEntityEnanReactorCore) tileEntity;
 				weakReactorCore = new WeakReference<>(reactorCore);
-				vReactorCore = new Vector3(reactorCore).translate(0.5);
+				vReactorCore = reactorCore.getCenter();
 			} else {
 				WarpDrive.logger.error(String.format("%s Invalid TileEntityEnanReactorCore %s: %s",
 				                                     this,
@@ -170,24 +170,35 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	
 	private void doStabilize(final int energy) {
 		if (energy <= 0) {
+			WarpDrive.logger.error(String.format("ReactorLaser %s on %s side can't increase instability %d",
+			                                     Commons.format(world, pos), reactorFace, energy));
 			return;
 		}
 		
 		if (laserMedium_direction == null) {
+			WarpDrive.logger.warn(String.format("ReactorLaser %s on %s side doesn't have a laser medium, unable to stabilize %d",
+			                                    Commons.format(world, pos), reactorFace, energy));
 			return;
 		}
 		
 		final TileEntityEnanReactorCore reactorCore = getReactorCore();
 		if (reactorCore == null) {
+			WarpDrive.logger.error(String.format("ReactorLaser %s on %s side doesn't have a core to stabilize %d",
+			                                     Commons.format(world, pos), reactorFace, energy));
 			return;
 		}
-		if (laserMedium_consumeExactly(energy, false)) {
-			if (WarpDriveConfig.LOGGING_ENERGY && WarpDriveConfig.LOGGING_LUA) {
-				WarpDrive.logger.info(String.format("ReactorLaser on %s side sending %d", reactorFace, energy));
-			}
-			reactorCore.decreaseInstability(reactorFace, energy);
-			PacketHandler.sendBeamPacket(world, vLaser, vReactorCore, 0.1F, 0.2F, 1.0F, 25, 50, 100);
+		if (!laserMedium_consumeExactly(energy, false)) {
+			WarpDrive.logger.warn(String.format("ReactorLaser %s on %s side doesn't have enough energy %d",
+			                                    Commons.format(world, pos), reactorFace, energy));
+			return;
 		}
+		
+		if (WarpDriveConfig.LOGGING_ENERGY && WarpDriveConfig.LOGGING_LUA) {
+			WarpDrive.logger.info(String.format("ReactorLaser %s on %s side stabilizing %d",
+			                                    Commons.format(world, pos), reactorFace, energy));
+		}
+		reactorCore.decreaseInstability(reactorFace, energy);
+		PacketHandler.sendBeamPacket(world, vLaser, vReactorCore, 0.1F, 0.2F, 1.0F, 25, 50, 100);
 	}
 	
 	@Nonnull

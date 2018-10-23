@@ -2,6 +2,7 @@ package cr0s.warpdrive.block;
 
 import cr0s.warpdrive.api.computer.IAbstractLaser;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.EnumTier;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import li.cil.oc.api.machine.Arguments;
@@ -155,8 +156,9 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 		// Compute average energy to get per laser medium, capped at its capacity
 		int energyAverage = amount / count;
 		int energyLeftOver = amount - energyAverage * count;
-		if (energyAverage >= WarpDriveConfig.LASER_MEDIUM_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()]) {
-			energyAverage = WarpDriveConfig.LASER_MEDIUM_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()];
+		if (energyAverage >= WarpDriveConfig.LASER_MEDIUM_MAX_ENERGY_STORED_BY_TIER[EnumTier.SUPERIOR.getIndex()]) {
+			// (we're set to consume all available energy, so we cap it to prevent overflows)
+			energyAverage = WarpDriveConfig.LASER_MEDIUM_MAX_ENERGY_STORED_BY_TIER[EnumTier.SUPERIOR.getIndex()];
 			energyLeftOver = 0;
 		}
 		

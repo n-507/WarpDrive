@@ -9,6 +9,8 @@ import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.network.PacketHandler;
 
 import javax.annotation.Nonnull;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -43,7 +45,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	private int stabilizerEnergy = 10000;
 	
 	private int containedEnergy = 0;
-	private double[] instabilityValues = new double[EnumReactorFace.maxInstabilities]; // no instability  = 0, explosion = 100
+	private final double[] instabilityValues = new double[EnumReactorFace.maxInstabilities]; // no instability  = 0, explosion = 100
 	
 	// computed properties
 	private int energyStored_max;
@@ -58,6 +60,9 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	private int releasedThisTick = 0; // amount of energy released during current tick update
 	private long releasedThisCycle = 0; // amount of energy released during current cycle
 	private long energyReleasedLastCycle = 0;
+	
+	@SuppressWarnings("unchecked")
+	private final WeakReference<TileEntityEnanReactorLaser>[] weakTileEntityLasers = (WeakReference<TileEntityEnanReactorLaser>[]) Array.newInstance(WeakReference.class, EnumReactorFace.maxInstabilities);
 	
 	public TileEntityEnanReactorCore() {
 		super();
@@ -211,13 +216,48 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	private void runControlLoop() {
 		for (final EnumReactorFace reactorFace : EnumReactorFace.getLasers(enumTier)) {
 			if (instabilityValues[reactorFace.indexStability] > instabilityTarget) {
-				final TileEntity tileEntity = world.getTileEntity(
-					pos.add(reactorFace.x, reactorFace.y, reactorFace.z));
-				if (tileEntity instanceof TileEntityEnanReactorLaser) {
-					((TileEntityEnanReactorLaser) tileEntity).stabilize(stabilizerEnergy);
+				final TileEntityEnanReactorLaser tileEntityEnanReactorLaser = getLaser(reactorFace);
+				if (tileEntityEnanReactorLaser != null) {
+					tileEntityEnanReactorLaser.stabilize(stabilizerEnergy);
 				}
 			}
 		}
+	}
+	
+	private TileEntityEnanReactorLaser getLaser(final EnumReactorFace reactorFace) {
+		final WeakReference<TileEntityEnanReactorLaser> weakTileEntityLaser = weakTileEntityLasers[reactorFace.indexStability];
+		TileEntityEnanReactorLaser tileEntityEnanReactorLaser;
+		if (weakTileEntityLaser != null) {
+			tileEntityEnanReactorLaser = weakTileEntityLaser.get();
+			if ( tileEntityEnanReactorLaser != null
+			  && !tileEntityEnanReactorLaser.isInvalid() ) {
+				return tileEntityEnanReactorLaser;
+			}
+		}
+		final TileEntity tileEntity = world.getTileEntity(
+				pos.add(reactorFace.x, reactorFace.y, reactorFace.z));
+		if (tileEntity instanceof TileEntityEnanReactorLaser) {
+			tileEntityEnanReactorLaser =(TileEntityEnanReactorLaser) tileEntity;
+			weakTileEntityLasers[reactorFace.indexStability] = new WeakReference<>(tileEntityEnanReactorLaser);
+			return tileEntityEnanReactorLaser;
+		}
+		return null;
+	}
+	
+	Vector3 getCenter() {
+		final Vector3 vCenter = new Vector3(this).translate(0.5D);
+		switch (enumTier) {
+		case BASIC:
+		default:
+			break;
+		case ADVANCED:
+			vCenter.y += 3;
+			break;
+		case SUPERIOR:
+			vCenter.y += 4;
+			break;
+		}
+		return vCenter;
 	}
 	
 	private boolean shouldExplode() {
