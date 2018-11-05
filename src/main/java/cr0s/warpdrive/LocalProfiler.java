@@ -100,10 +100,10 @@ public class LocalProfiler {
 		final long self = (timeElapsed - stackElement.internal) / 1000;
 		final long total = timeElapsed / 1000;
 		if (total == self) {
-			WarpDrive.logger.info(String.format("Profiling %s: %f ms", 
+			WarpDrive.logger.info(String.format("Profiling %s: %.3f ms",
 			                                    stackElement.name, (self / 1000.0F) ));
 		} else {
-			WarpDrive.logger.info(String.format("Profiling %s: %f ms, total; %f ms", 
+			WarpDrive.logger.info(String.format("Profiling %s: %.3f ms, total; %.3f ms",
 			                                    stackElement.name, (self / 1000.0F), total / 1000.0F ));
 		}
 	}
