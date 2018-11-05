@@ -91,7 +91,7 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 			return;
 		}
 		
-		IBlockState blockState = world.getBlockState(pos);
+		final IBlockState blockState = world.getBlockState(pos);
 		if (currentState == STATE_IDLE) {
 			delayTicks = WarpDriveConfig.MINING_LASER_WARMUP_DELAY_TICKS;
 			updateBlockState(blockState, BlockMiningLaser.MODE, EnumMiningLaserMode.INACTIVE);
