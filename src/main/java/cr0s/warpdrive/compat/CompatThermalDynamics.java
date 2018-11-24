@@ -5,23 +5,22 @@ import cr0s.warpdrive.api.ITransformation;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import net.minecraftforge.common.util.Constants;
+
 public class CompatThermalDynamics implements IBlockTransformer {
 	
-	private static Class<?> blockTDBase;
+	private static Class<?> classBlockTDBase;
 	
 	public static void register() {
 		try {
-			blockTDBase = Class.forName("cofh.thermaldynamics.block.BlockTDBase");
+			classBlockTDBase = Class.forName("cofh.thermaldynamics.block.BlockTDBase");
 			
 			WarpDriveConfig.registerBlockTransformer("ThermalDynamics", new CompatThermalDynamics());
 		} catch(final ClassNotFoundException exception) {
@@ -31,7 +30,7 @@ public class CompatThermalDynamics implements IBlockTransformer {
 	
 	@Override
 	public boolean isApplicable(final Block block, final int metadata, final TileEntity tileEntity) {
-		return blockTDBase.isInstance(block);
+		return classBlockTDBase.isInstance(block);
 	}
 	
 	@Override
@@ -51,22 +50,35 @@ public class CompatThermalDynamics implements IBlockTransformer {
 		// nothing to do
 	}
 	
-	private static final Map<String, String> rotConAttachmentNames;
-	static {
-		final Map<String, String> map = new HashMap<>();
-		map.put("attachment2", "attachment5");
-		map.put("attachment5", "attachment3");
-		map.put("attachment3", "attachment4");
-		map.put("attachment4", "attachment2");
-		map.put("conTypes2", "conTypes5");
-		map.put("conTypes5", "conTypes3");
-		map.put("conTypes3", "conTypes4");
-		map.put("conTypes4", "conTypes2");
-		map.put("facade2", "facade5");
-		map.put("facade5", "facade3");
-		map.put("facade3", "facade4");
-		map.put("facade4", "facade2");
-		rotConAttachmentNames = Collections.unmodifiableMap(map);
+	//                                              0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
+	private static final int[] rotSide         = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	
+	private void rotateComponent(final NBTTagCompound nbtTileEntity, final byte rotationSteps, final String nameComponents) {
+		if (nbtTileEntity.hasKey(nameComponents)) {
+			final NBTTagList nbtOldComponents = nbtTileEntity.getTagList(nameComponents, Constants.NBT.TAG_COMPOUND);
+			final NBTTagList nbtNewComponents = new NBTTagList();
+			for (int index = 0; index < nbtOldComponents.tagCount(); index++) {
+				final NBTTagCompound nbtOldComponent = nbtOldComponents.getCompoundTagAt(index);
+				final NBTTagCompound nbtNewComponent = nbtOldComponent.copy();
+				final int side = nbtOldComponent.getInteger("side");
+				switch (rotationSteps) {
+				case 1:
+					nbtNewComponent.setInteger("side", rotSide[side]);
+					break;
+				case 2:
+					nbtNewComponent.setInteger("side", rotSide[rotSide[side]]);
+					break;
+				case 3:
+					nbtNewComponent.setInteger("side", rotSide[rotSide[rotSide[side]]]);
+					break;
+				default:
+					// nbtNewComponent.setInteger("side", side);
+					break;
+				}
+				nbtNewComponents.appendTag(nbtNewComponent);
+			}
+			nbtTileEntity.setTag(nameComponents, nbtNewComponents);
+		}
 	}
 	
 	@Override
@@ -76,30 +88,34 @@ public class CompatThermalDynamics implements IBlockTransformer {
 			return metadata;
 		}
 		
-		// ducts
-		final HashMap<String, NBTBase> mapRotated = new HashMap<>(9);
-		for (final String key : rotConAttachmentNames.keySet()) {
-			if (nbtTileEntity.hasKey(key)) {
-				final NBTBase nbtBase = nbtTileEntity.getTag(key);
-				nbtTileEntity.removeTag(key);
+		// Ducts attachments (servos)
+		rotateComponent(nbtTileEntity, rotationSteps, "Attachments");
+		
+		// Ducts covers (facades)
+		rotateComponent(nbtTileEntity, rotationSteps, "Covers");
+		
+		// Ducts connections
+		if (nbtTileEntity.hasKey("Connections")) {
+			final byte[] bytesOldConnections = nbtTileEntity.getByteArray("Connections");
+			final byte[] bytesNewConnections = bytesOldConnections.clone();
+			for (int sideOld = 0; sideOld < 6; sideOld++) {
+				final byte byteConnection = bytesOldConnections[sideOld];
 				switch (rotationSteps) {
 				case 1:
-					mapRotated.put(rotConAttachmentNames.get(key), nbtBase);
+					bytesNewConnections[rotSide[sideOld]] = byteConnection;
 					break;
 				case 2:
-					mapRotated.put(rotConAttachmentNames.get(rotConAttachmentNames.get(key)), nbtBase);
+					bytesNewConnections[rotSide[rotSide[sideOld]]] = byteConnection;
 					break;
 				case 3:
-					mapRotated.put(rotConAttachmentNames.get(rotConAttachmentNames.get(rotConAttachmentNames.get(key))), nbtBase);
+					bytesNewConnections[rotSide[rotSide[rotSide[sideOld]]]] = byteConnection;
 					break;
 				default:
-					mapRotated.put(key, nbtBase);
+					// bytesNewConnections[sideOld] = byteConnection;
 					break;
 				}
 			}
-		}
-		for (final Map.Entry<String, NBTBase> entry : mapRotated.entrySet()) {
-			nbtTileEntity.setTag(entry.getKey(), entry.getValue());
+			nbtTileEntity.setByteArray("Connections", bytesNewConnections);
 		}
 		
 		return metadata;

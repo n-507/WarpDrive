@@ -13,11 +13,11 @@ import net.minecraft.world.World;
 
 public class CompatThermalExpansion implements IBlockTransformer {
 	
-	private static Class<?> tileEntityTEBase;
+	private static Class<?> classBlockTEBase;
 	
 	public static void register() {
 		try {
-			tileEntityTEBase = Class.forName("cofh.thermalexpansion.block.TileTEBase");
+			classBlockTEBase = Class.forName("cofh.thermalexpansion.block.BlockTEBase");
 			
 			WarpDriveConfig.registerBlockTransformer("thermalexpansion", new CompatThermalExpansion());
 		} catch(final ClassNotFoundException exception) {
@@ -27,7 +27,7 @@ public class CompatThermalExpansion implements IBlockTransformer {
 	
 	@Override
 	public boolean isApplicable(final Block block, final int metadata, final TileEntity tileEntity) {
-		return tileEntityTEBase.isInstance(tileEntity);
+		return classBlockTEBase.isInstance(block);
 	}
 	
 	@Override
@@ -50,8 +50,6 @@ public class CompatThermalExpansion implements IBlockTransformer {
 	private static final short[] mrot            = {  0,  1,  5,  4,  2,  3 };
 	
 	private static final int[]   rotFacing       = {  0,  1,  5,  4,  2,  3 };
-	private static final byte[]  rotLightDefault = {  0,  1,  5,  4,  2,  3 };
-	private static final byte[]  rotLightStyle4  = {  8,  9, 13, 12,  4,  5,  6,  7,  0,  1, 10, 11,  2,  3, 14, 15 };
 	
 	private byte[] rotate_byteArray(final byte rotationSteps, final byte[] data) {
 		final byte[] newData = data.clone();
@@ -77,43 +75,6 @@ public class CompatThermalExpansion implements IBlockTransformer {
 	public int rotate(final Block block, final int metadata, final NBTTagCompound nbtTileEntity, final ITransformation transformation) {
 		final byte rotationSteps = transformation.getRotationSteps();
 		if (rotationSteps == 0 || nbtTileEntity == null) {
-			return metadata;
-		}
-		
-		// lights
-		if (nbtTileEntity.hasKey("Align")) {
-			final byte style = nbtTileEntity.getByte("Style");
-			final byte align = nbtTileEntity.getByte("Align");
-			if (style == 4) {
-				switch (rotationSteps) {
-				case 1:
-					nbtTileEntity.setByte("Align", rotLightStyle4[align]);
-					break;
-				case 2:
-					nbtTileEntity.setByte("Align", rotLightStyle4[rotLightStyle4[align]]);
-					break;
-				case 3:
-					nbtTileEntity.setByte("Align", rotLightStyle4[rotLightStyle4[rotLightStyle4[align]]]);
-					break;
-				default:
-					break;
-				}
-				
-			} else {
-				switch (rotationSteps) {
-				case 1:
-					nbtTileEntity.setByte("Align", rotLightDefault[align]);
-					break;
-				case 2:
-					nbtTileEntity.setByte("Align", rotLightDefault[rotLightDefault[align]]);
-					break;
-				case 3:
-					nbtTileEntity.setByte("Align", rotLightDefault[rotLightDefault[rotLightDefault[align]]]);
-					break;
-				default:
-					break;
-				}
-			}
 			return metadata;
 		}
 		
