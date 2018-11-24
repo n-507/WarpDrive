@@ -70,8 +70,8 @@ public class Filler implements IXmlRepresentableUnit {
 			try {
 				metadata = Integer.parseInt(stringMetadata);
 			} catch (final NumberFormatException exception) {
-				throw new InvalidXmlException(String.format("Invalid metadata for block %s",
-				                                            nameBlock));
+				throw new InvalidXmlException(String.format("Invalid metadata for block %s: %s",
+				                                            nameBlock, stringMetadata));
 			}
 		}
 		
@@ -83,8 +83,8 @@ public class Filler implements IXmlRepresentableUnit {
 				tagCompound = JsonToNBT.getTagFromJson(stringNBT);
 			} catch (final NBTException exception) {
 				WarpDrive.logger.error(exception.getMessage());
-				throw new InvalidXmlException(String.format("Invalid nbt for block %s",
-				                                            nameBlock));
+				throw new InvalidXmlException(String.format("Invalid nbt for block %s: %s",
+				                                            nameBlock, stringNBT));
 			}
 		}
 		
