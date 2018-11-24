@@ -528,7 +528,7 @@ public class JumpSequencer extends AbstractSequencer {
 		try {
 			// Generate unique file name
 			final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd_HH'h'mm'm'ss's'SSS");
-			final String shipName = Commons.sanitizeFileName(ship.shipCore.name.replaceAll("[^-~]", "")
+			final String shipName = Commons.sanitizeFileName(ship.shipCore.name.replaceAll("[-~]", "")
 			                                                                   .replaceAll(" ", "_"));
 			String schematicFileName;
 			do {
