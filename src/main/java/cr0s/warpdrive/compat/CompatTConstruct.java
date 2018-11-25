@@ -14,18 +14,18 @@ import net.minecraft.world.World;
 public class CompatTConstruct implements IBlockTransformer {
 	
 	private static Class<?> classBlockDryingRack;
-	private static Class<?> classTileFurnaceLogic;
-	private static Class<?> classTileFaucetLogic;
-	private static Class<?> classTileSmelteryDrainLogic;
-	private static Class<?> classTileSmelteryLogic;
+	private static Class<?> classBlockFaucet;
+	private static Class<?> classBlockMultiblockController;
+	private static Class<?> classBlockSmelteryIO;
+	private static Class<?> classTileEntityChannel;
 	
 	public static void register() {
 		try {
-			classBlockDryingRack = Class.forName("tconstruct.armor.blocks.DryingRack");
-			classTileFurnaceLogic = Class.forName("tconstruct.tools.logic.FurnaceLogic");
-			classTileFaucetLogic = Class.forName("tconstruct.smeltery.logic.FaucetLogic");
-			classTileSmelteryDrainLogic = Class.forName("tconstruct.smeltery.logic.SmelteryDrainLogic");
-			classTileSmelteryLogic = Class.forName("tconstruct.smeltery.logic.SmelteryLogic");
+			classBlockDryingRack = Class.forName("slimeknights.tconstruct.gadgets.block.BlockRack");
+			classBlockFaucet = Class.forName("slimeknights.tconstruct.smeltery.block.BlockFaucet");
+			classBlockMultiblockController = Class.forName("slimeknights.tconstruct.smeltery.block.BlockMultiblockController");
+			classBlockSmelteryIO = Class.forName("slimeknights.tconstruct.smeltery.block.BlockSmelteryIO"); // Smeltery Drain
+			classTileEntityChannel = Class.forName("slimeknights.tconstruct.smeltery.tileentity.TileChannel");
 			WarpDriveConfig.registerBlockTransformer("tconstruct", new CompatTConstruct());
 		} catch(final ClassNotFoundException exception) {
 			exception.printStackTrace();
@@ -35,10 +35,10 @@ public class CompatTConstruct implements IBlockTransformer {
 	@Override
 	public boolean isApplicable(final Block block, final int metadata, final TileEntity tileEntity) {
 		return classBlockDryingRack.isInstance(block)
-			|| classTileFurnaceLogic.isInstance(tileEntity)
-			|| classTileFaucetLogic.isInstance(tileEntity)
-			|| classTileSmelteryDrainLogic.isInstance(tileEntity)
-			|| classTileSmelteryLogic.isInstance(tileEntity);
+		    || classBlockFaucet.isInstance(block)
+			|| classBlockMultiblockController.isInstance(block)
+		    || classBlockSmelteryIO.isInstance(block)
+		    || classTileEntityChannel.isInstance(tileEntity);
 	}
 	
 	@Override
@@ -58,8 +58,9 @@ public class CompatTConstruct implements IBlockTransformer {
 		// nothing to do
 	}
 	
-	private static final int[]  mrotDryingRack = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-	private static final byte[] rotDirection   = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	//                                              0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
+	private static final int[]  mrotDryingRack = { 14,  1,  6,  3,  8,  5,  4,  7,  2,  9, 12, 11, 10, 13,  0, 15 };
+	private static final int[]  mrotFacing     = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
 	
 	@Override
 	public int rotate(final Block block, final int metadata, final NBTTagCompound nbtTileEntity, final ITransformation transformation) {
@@ -69,7 +70,26 @@ public class CompatTConstruct implements IBlockTransformer {
 		}
 		
 		// metadata = 2 5 3 4 Drying rack
-		if (classBlockDryingRack.isInstance(block)) {
+		if ( classBlockDryingRack.isInstance(block) ) {
+			if (nbtTileEntity.hasKey("ForgeData")) {
+				final NBTTagCompound nbtForgeData = nbtTileEntity.getCompoundTag("ForgeData");
+				if (nbtForgeData.hasKey("facing")) {
+					final int facing = nbtForgeData.getInteger("facing");
+					switch (rotationSteps) {
+					case 1:
+						nbtForgeData.setInteger("facing", mrotFacing[facing]);
+						break;
+					case 2:
+						nbtForgeData.setInteger("facing", mrotFacing[mrotFacing[metadata]]);
+						break;
+					case 3:
+						nbtForgeData.setInteger("facing", mrotFacing[mrotFacing[mrotFacing[metadata]]]);
+						break;
+					default:
+						break;
+					}
+				}
+			}
 			switch (rotationSteps) {
 			case 1:
 				return mrotDryingRack[metadata];
@@ -82,21 +102,31 @@ public class CompatTConstruct implements IBlockTransformer {
 			}
 		}
 		
-		if (nbtTileEntity.hasKey("Direction")) {
-			final short direction = nbtTileEntity.getByte("Direction");
+		// metadata = 2 5 3 4 Faucet, Multiblock controller, Smeltery drain
+		if ( classBlockFaucet.isInstance(block)
+		  || classBlockMultiblockController.isInstance(block)
+		  || classBlockSmelteryIO.isInstance(block) ) {
 			switch (rotationSteps) {
 			case 1:
-				nbtTileEntity.setByte("Direction", rotDirection[direction]);
-				return metadata;
+				return mrotFacing[metadata];
 			case 2:
-				nbtTileEntity.setByte("Direction", rotDirection[rotDirection[direction]]);
-				return metadata;
+				return mrotFacing[mrotFacing[metadata]];
 			case 3:
-				nbtTileEntity.setByte("Direction", rotDirection[rotDirection[rotDirection[direction]]]);
-				return metadata;
+				return mrotFacing[mrotFacing[mrotFacing[metadata]]];
 			default:
 				return metadata;
 			}
+		}
+		
+		// Channel connections 0 1 2 3
+		if (nbtTileEntity.hasKey("connections")) {
+			final byte[] bytesOldConnections = nbtTileEntity.getByteArray("connections");
+			final byte[] bytesNewConnections = bytesOldConnections.clone();
+			for (int sideOld = 0; sideOld < 4; sideOld++) {
+				final byte byteConnection = bytesOldConnections[sideOld];
+				bytesNewConnections[(sideOld + rotationSteps) % 4] = byteConnection;
+			}
+			nbtTileEntity.setByteArray("connections", bytesNewConnections);
 		}
 		
 		return metadata;
