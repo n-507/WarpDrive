@@ -14,17 +14,21 @@ import net.minecraft.world.World;
 
 public class CompatBotania implements IBlockTransformer {
 	
-	private static Class<?> classBlockModContainer;
+	private static Class<?> classBlockMod;
 	private static Class<?> classBlockAvatar;
 	private static Class<?> classBlockFelPumpkin;
 	private static Class<?> classBlockSpecialFlower;
+	private static Class<?> classBlockRedString;
+	private static Class<?> classBlockTinyPotato;
 	
 	public static void register() {
 		try {
-			classBlockModContainer  = Class.forName("vazkii.botania.common.block.BlockModContainer");
+			classBlockMod           = Class.forName("vazkii.botania.common.block.BlockMod");
 			classBlockAvatar        = Class.forName("vazkii.botania.common.block.BlockAvatar");
 			classBlockFelPumpkin    = Class.forName("vazkii.botania.common.block.BlockFelPumpkin");
 			classBlockSpecialFlower = Class.forName("vazkii.botania.common.block.BlockSpecialFlower");
+			classBlockRedString     = Class.forName("vazkii.botania.common.block.string.BlockRedString");
+			classBlockTinyPotato    = Class.forName("vazkii.botania.common.block.decor.BlockTinyPotato");
 			WarpDriveConfig.registerBlockTransformer("botania", new CompatBotania());
 		} catch(final ClassNotFoundException exception) {
 			exception.printStackTrace();
@@ -33,8 +37,7 @@ public class CompatBotania implements IBlockTransformer {
 	
 	@Override
 	public boolean isApplicable(final Block block, final int metadata, final TileEntity tileEntity) {
-		return classBlockModContainer.isInstance(block)
-			|| classBlockFelPumpkin.isInstance(block)
+		return classBlockMod.isInstance(block)
 			|| classBlockSpecialFlower.isInstance(block);
 	}
 	
@@ -57,26 +60,28 @@ public class CompatBotania implements IBlockTransformer {
 	}
 	
 	// -----------------------------------------    {  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-	private static final int[]   mrotAvatar       = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	private static final int[]   mrotFacing       = { 0, 1, 5, 4, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 	private static final int[]   mrotFelPumpkin   = {  1,  2,  3,  0,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
 	
 	@Override
 	public int rotate(final Block block, final int metadata, final NBTTagCompound nbtTileEntity, final ITransformation transformation) {
 		final byte rotationSteps = transformation.getRotationSteps();
 		
-		if (classBlockAvatar.isInstance(block)) {
+		if ( classBlockAvatar.isInstance(block)
+		  || classBlockRedString.isInstance(block) ) {
 			switch (rotationSteps) {
 			case 1:
-				return mrotAvatar[metadata];
+				return mrotFacing[metadata];
 			case 2:
-				return mrotAvatar[mrotAvatar[metadata]];
+				return mrotFacing[mrotFacing[metadata]];
 			case 3:
-				return mrotAvatar[mrotAvatar[mrotAvatar[metadata]]];
+				return mrotFacing[mrotFacing[mrotFacing[metadata]]];
 			default:
 				return metadata;
 			}
 		}
-		if (classBlockFelPumpkin.isInstance(block)) {
+		if ( classBlockFelPumpkin.isInstance(block)
+		  || classBlockTinyPotato.isInstance(block) ) {// 0 1 2 3
 			switch (rotationSteps) {
 			case 1:
 				return mrotFelPumpkin[metadata];
