@@ -291,16 +291,6 @@ public class JumpBlock {
 				nbtToDeploy.setInteger("y", target.getY());
 				nbtToDeploy.setInteger("z", target.getZ());
 				
-				if (nbtToDeploy.hasKey("mainX") && nbtToDeploy.hasKey("mainY") && nbtToDeploy.hasKey("mainZ")) {// Mekanism 6.0.4.44
-					if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
-						WarpDrive.logger.info(String.format("%s deploy: TileEntity has mainXYZ", this));
-					}
-					final BlockPos mainTarget = transformation.apply(nbtToDeploy.getInteger("mainX"), nbtToDeploy.getInteger("mainY"), nbtToDeploy.getInteger("mainZ"));
-					nbtToDeploy.setInteger("mainX", mainTarget.getX());
-					nbtToDeploy.setInteger("mainY", mainTarget.getY());
-					nbtToDeploy.setInteger("mainZ", mainTarget.getZ());
-				}
-				
 				if (nbtToDeploy.hasKey("screenData")) {// IC2NuclearControl 2.2.5a
 					final NBTTagCompound nbtScreenData = nbtToDeploy.getCompoundTag("screenData");
 					if ( nbtScreenData.hasKey("minX") && nbtScreenData.hasKey("minY") && nbtScreenData.hasKey("minZ")
@@ -422,7 +412,7 @@ public class JumpBlock {
 						}
 						// not needed: if ic2.core.block.machine.tileentity.TileEntityMatter then updated "state"
 					}
-				} else {// IC2 extensions without network optimization (transferring all fields) 
+				} else if (!superClassName.startsWith("mekanism.")) {// IC2 extensions without network optimization (transferring all fields)
 					try {
 						final Method getNetworkedFields = teClass.getMethod("getNetworkedFields");
 						@SuppressWarnings("unchecked")

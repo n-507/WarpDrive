@@ -13,15 +13,23 @@ import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class CompatMekanism implements IBlockTransformer {
 	
 	private static Class<?> tileEntityBasicBlock;
+	private static Class<?> tileEntityBoundingBlock;
+	private static Class<?> tileEntityGlowPanel;
+	private static Class<?> tileEntitySidedPipe;
 	
 	public static void register() {
 		try {
-			tileEntityBasicBlock = Class.forName("mekanism.common.tile.TileEntityBasicBlock");
+			tileEntityBasicBlock = Class.forName("mekanism.common.tile.prefab.TileEntityBasicBlock");
+			tileEntityBoundingBlock = Class.forName("mekanism.common.tile.TileEntityBoundingBlock");
+			// (not needed: mekanism.common.tile.TileEntityCardboardBox)
+			tileEntityGlowPanel = Class.forName("mekanism.common.tile.TileEntityGlowPanel");
+			tileEntitySidedPipe = Class.forName("mekanism.common.tile.transmitter.TileEntitySidedPipe");
 			
 			WarpDriveConfig.registerBlockTransformer("Mekanism", new CompatMekanism());
 		} catch(final ClassNotFoundException exception) {
@@ -31,7 +39,10 @@ public class CompatMekanism implements IBlockTransformer {
 	
 	@Override
 	public boolean isApplicable(final Block block, final int metadata, final TileEntity tileEntity) {
-		return tileEntityBasicBlock.isInstance(tileEntity);
+		return tileEntityBasicBlock.isInstance(tileEntity)
+		    || tileEntityBoundingBlock.isInstance(tileEntity)
+		    || tileEntityGlowPanel.isInstance(tileEntity)
+		    || tileEntitySidedPipe.isInstance(tileEntity);
 	}
 	
 	@Override
@@ -53,18 +64,14 @@ public class CompatMekanism implements IBlockTransformer {
 	
 	private static final int[] rotFacing           = {  0,  1,  5,  4,  2,  3 };
 	
-	private static final Map<String, String> rotConAttachmentNames;
+	private static final Map<String, String> rotConnectionNames;
 	static {
 		final Map<String, String> map = new HashMap<>();
-		map.put("conTypes2", "conTypes5");
-		map.put("conTypes5", "conTypes3");
-		map.put("conTypes3", "conTypes4");
-		map.put("conTypes4", "conTypes2");
-		map.put("attachment2", "attachment5");
-		map.put("attachment5", "attachment3");
-		map.put("attachment3", "attachment4");
-		map.put("attachment4", "attachment2");
-		rotConAttachmentNames = Collections.unmodifiableMap(map);
+		map.put("connection2", "connection5");
+		map.put("connection5", "connection3");
+		map.put("connection3", "connection4");
+		map.put("connection4", "connection2");
+		rotConnectionNames = Collections.unmodifiableMap(map);
 	}
 	
 	@Override
@@ -74,7 +81,7 @@ public class CompatMekanism implements IBlockTransformer {
 			return metadata;
 		}
 		
-		// machines
+		// basic blocks
 		if (nbtTileEntity.hasKey("facing")) {
 			final int facing = nbtTileEntity.getInteger("facing");
 			switch (rotationSteps) {
@@ -92,21 +99,39 @@ public class CompatMekanism implements IBlockTransformer {
 			}
 		}
 		
-		// ducts
-		final HashMap<String, NBTBase> mapRotated = new HashMap<>(9);
-		for (final String key : rotConAttachmentNames.keySet()) {
+		// glowstone panels
+		if (nbtTileEntity.hasKey("side")) {
+			final int side = nbtTileEntity.getInteger("side");
+			switch (rotationSteps) {
+			case 1:
+				nbtTileEntity.setInteger("side", rotFacing[side]);
+				break;
+			case 2:
+				nbtTileEntity.setInteger("side", rotFacing[rotFacing[side]]);
+				break;
+			case 3:
+				nbtTileEntity.setInteger("side", rotFacing[rotFacing[rotFacing[side]]]);
+				break;
+			default:
+				break;
+			}
+		}
+		
+		// sided pipes, including duct/pipe/cable/etc.
+		final HashMap<String, NBTBase> mapRotated = new HashMap<>(rotConnectionNames.size());
+		for (final String key : rotConnectionNames.keySet()) {
 			if (nbtTileEntity.hasKey(key)) {
 				final NBTBase nbtBase = nbtTileEntity.getTag(key);
 				nbtTileEntity.removeTag(key);
 				switch (rotationSteps) {
 				case 1:
-					mapRotated.put(rotConAttachmentNames.get(key), nbtBase);
+					mapRotated.put(rotConnectionNames.get(key), nbtBase);
 					break;
 				case 2:
-					mapRotated.put(rotConAttachmentNames.get(rotConAttachmentNames.get(key)), nbtBase);
+					mapRotated.put(rotConnectionNames.get(rotConnectionNames.get(key)), nbtBase);
 					break;
 				case 3:
-					mapRotated.put(rotConAttachmentNames.get(rotConAttachmentNames.get(rotConAttachmentNames.get(key))), nbtBase);
+					mapRotated.put(rotConnectionNames.get(rotConnectionNames.get(rotConnectionNames.get(key))), nbtBase);
 					break;
 				default:
 					mapRotated.put(key, nbtBase);
@@ -116,6 +141,16 @@ public class CompatMekanism implements IBlockTransformer {
 		}
 		for (final Map.Entry<String, NBTBase> entry : mapRotated.entrySet()) {
 			nbtTileEntity.setTag(entry.getKey(), entry.getValue());
+		}
+		
+		// bounding blocks
+		if ( nbtTileEntity.hasKey("mainX")
+		  && nbtTileEntity.hasKey("mainY")
+		  && nbtTileEntity.hasKey("mainZ") ) {
+			final BlockPos mainTarget = transformation.apply(nbtTileEntity.getInteger("mainX"), nbtTileEntity.getInteger("mainY"), nbtTileEntity.getInteger("mainZ"));
+			nbtTileEntity.setInteger("mainX", mainTarget.getX());
+			nbtTileEntity.setInteger("mainY", mainTarget.getY());
+			nbtTileEntity.setInteger("mainZ", mainTarget.getZ());
 		}
 		
 		return metadata;

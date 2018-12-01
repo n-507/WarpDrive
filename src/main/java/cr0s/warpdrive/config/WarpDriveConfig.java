@@ -1270,7 +1270,7 @@ public class WarpDriveConfig {
 			CompatJABBA.register();
 		}
 		
-		final boolean isMekanismLoaded = Loader.isModLoaded("Mekanism");
+		final boolean isMekanismLoaded = Loader.isModLoaded("mekanism");
 		if (isMekanismLoaded) {
 			CompatMekanism.register();
 		}
