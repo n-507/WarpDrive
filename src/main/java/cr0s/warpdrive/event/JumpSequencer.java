@@ -1130,8 +1130,8 @@ public class JumpSequencer extends AbstractSequencer {
 			
 			if (jumpBlock.externals != null) {
 				if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
-					WarpDrive.logger.info(String.format("Moving externals for block %s@%d at (%d %d %d)",
-					                                    jumpBlock.block, jumpBlock.blockMeta, jumpBlock.x, jumpBlock.y, jumpBlock.z));
+					WarpDrive.logger.info(String.format("Moving externals from (%d %d %d) of %s@%d",
+					                                    jumpBlock.x, jumpBlock.y, jumpBlock.z, jumpBlock.block, jumpBlock.blockMeta));
 				}
 				final TileEntity tileEntitySource = jumpBlock.getTileEntity(sourceWorld);
 				for (final Entry<String, NBTBase> external : jumpBlock.externals.entrySet()) {

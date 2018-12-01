@@ -75,6 +75,9 @@ public class JumpBlock {
 	}
 	
 	public JumpBlock(final World world, final BlockPos blockPos, final IBlockState blockState, final TileEntity tileEntity) {
+		this.x = blockPos.getX();
+		this.y = blockPos.getY();
+		this.z = blockPos.getZ();
 		this.block = blockState.getBlock();
 		this.blockMeta = blockState.getBlock().getMetaFromState(blockState);
 		if (tileEntity == null) {
@@ -84,10 +87,11 @@ public class JumpBlock {
 			weakTileEntity = new WeakReference<>(tileEntity);
 			blockNBT = new NBTTagCompound();
 			tileEntity.writeToNBT(blockNBT);
+			if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
+				WarpDrive.logger.info(String.format("Saving from (%d %d %d) with TileEntity %s",
+				                                    x, y, z, blockNBT));
+			}
 		}
-		this.x = blockPos.getX();
-		this.y = blockPos.getY();
-		this.z = blockPos.getZ();
 		
 		// save externals
 		for (final Entry<String, IBlockTransformer> entryBlockTransformer : WarpDriveConfig.blockTransformers.entrySet()) {
@@ -101,7 +105,8 @@ public class JumpBlock {
 	
 	public JumpBlock(final Filler filler, final int x, final int y, final int z) {
 		if (filler.block == null) {
-			WarpDrive.logger.info(String.format("Forcing glass for invalid filler with null block at (%d %d %d)", x, y, z));
+			WarpDrive.logger.info(String.format("Forcing glass for invalid filler with null block at (%d %d %d)",
+			                                    x, y, z));
 			filler.block = Blocks.GLASS;
 		}
 		block = filler.block;
@@ -147,8 +152,8 @@ public class JumpBlock {
 		}
 		final NBTBase nbtExternal = externals.get(modId);
 		if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
-			WarpDrive.logger.info(String.format("Returning %s externals at (%d %d %d) %s",
-			                                    modId, x, y, z, nbtExternal));
+			WarpDrive.logger.info(String.format("Returning externals from (%d %d %d) of %s: %s",
+			                                    x, y, z, modId, nbtExternal));
 		}
 		if (nbtExternal == null) {
 			return null;
@@ -162,8 +167,8 @@ public class JumpBlock {
 		}
 		externals.put(modId, nbtExternal);
 		if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
-			WarpDrive.logger.info(String.format("Saved %s externals at (%d %d %d) %s",
-			                                    modId, x, y, z, nbtExternal));
+			WarpDrive.logger.info(String.format("Saved externals from (%d %d %d) of %s: %s",
+			                                    x, y, z, modId, nbtExternal));
 		}
 	}
 	
@@ -283,6 +288,11 @@ public class JumpBlock {
 				newBlockMeta = getMetadataRotation(nbtToDeploy, transformation.getRotationSteps());
 			}
 			final BlockPos target = transformation.apply(x, y, z);
+			if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
+				WarpDrive.logger.info(String.format("Deploying to (%d %d %d) of %s@%d: %s",
+				                                    target.getX(), target.getY(), target.getZ(),
+				                                    block, newBlockMeta, nbtToDeploy));
+			}
 			final IBlockState blockState = block.getStateFromMeta(newBlockMeta);
 			setBlockNoLight(targetWorld, target, blockState, 2);
 			
@@ -359,13 +369,8 @@ public class JumpBlock {
 			
 		} catch (final Exception exception) {
 			exception.printStackTrace();
-			String coordinates;
-			try {
-				coordinates = " at " + x + " " + y + " " + z + " blockId " + block + ":" + blockMeta;
-			} catch (final Exception dropMe) {
-				coordinates = " (unknown coordinates)";
-			}
-			WarpDrive.logger.error(String.format("moveBlockSimple exception %s", coordinates));
+			WarpDrive.logger.error(String.format("Deploy failed from (%d %d %d) of %s:%d",
+			                                     x, y, z, block, blockMeta));
 		}
 		return null;
 	}
