@@ -18,16 +18,20 @@ import cr0s.warpdrive.compat.CompatEvilCraft;
 import cr0s.warpdrive.compat.CompatForgeMultipart;
 import cr0s.warpdrive.compat.CompatImmersiveEngineering;
 import cr0s.warpdrive.compat.CompatIndustrialCraft2;
+import cr0s.warpdrive.compat.CompatIronChest;
 import cr0s.warpdrive.compat.CompatJABBA;
 import cr0s.warpdrive.compat.CompatMekanism;
+import cr0s.warpdrive.compat.CompatMetalChests;
 import cr0s.warpdrive.compat.CompatMetallurgy;
 import cr0s.warpdrive.compat.CompatNatura;
 import cr0s.warpdrive.compat.CompatOpenComputers;
 import cr0s.warpdrive.compat.CompatParziStarWars;
 import cr0s.warpdrive.compat.CompatPneumaticCraft;
 import cr0s.warpdrive.compat.CompatRedstonePaste;
+import cr0s.warpdrive.compat.CompatRoots;
 import cr0s.warpdrive.compat.CompatSGCraft;
 import cr0s.warpdrive.compat.CompatStargateTech2;
+import cr0s.warpdrive.compat.CompatStorageDrawers;
 import cr0s.warpdrive.compat.CompatTConstruct;
 import cr0s.warpdrive.compat.CompatTechguns;
 import cr0s.warpdrive.compat.CompatThaumcraft;
@@ -1265,6 +1269,11 @@ public class WarpDriveConfig {
 			CompatEvilCraft.register();
 		}
 		
+		final boolean isIronChestLoaded = Loader.isModLoaded("ironchest");
+		if (isIronChestLoaded) {
+			CompatIronChest.register();
+		}
+		
 		final boolean isJABBAloaded = Loader.isModLoaded("JABBA");
 		if (isJABBAloaded) {
 			CompatJABBA.register();
@@ -1273,6 +1282,11 @@ public class WarpDriveConfig {
 		final boolean isMekanismLoaded = Loader.isModLoaded("mekanism");
 		if (isMekanismLoaded) {
 			CompatMekanism.register();
+		}
+		
+		final boolean isMetalChestsLoaded = Loader.isModLoaded("metalchests");
+		if (isMetalChestsLoaded) {
+			CompatMetalChests.register();
 		}
 		
 		final boolean isMetallurgyLoaded = Loader.isModLoaded("Metallurgy");
@@ -1288,6 +1302,11 @@ public class WarpDriveConfig {
 		final boolean isPneumaticCraftLoaded = Loader.isModLoaded("pneumaticcraft");
 		if (isPneumaticCraftLoaded) {
 			CompatPneumaticCraft.register();
+		}
+		
+		final boolean isRootsLoaded = Loader.isModLoaded("roots");
+		if (isRootsLoaded) {
+			CompatRoots.register();
 		}
 		
 		final boolean isParziStarWarsLoaded = Loader.isModLoaded("starwarsmod");
@@ -1308,6 +1327,11 @@ public class WarpDriveConfig {
 		final boolean isStargateTech2Loaded = Loader.isModLoaded("StargateTech2");
 		if (isStargateTech2Loaded) {
 			CompatStargateTech2.register();
+		}
+		
+		final boolean isStorageDrawersLoaded = Loader.isModLoaded("storagedrawers");
+		if (isStorageDrawersLoaded) {
+			CompatStorageDrawers.register();
 		}
 		
 		final boolean isTConstructLoaded = Loader.isModLoaded("tconstruct");
