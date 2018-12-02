@@ -68,7 +68,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	public EnumFacing facing;
 	public UUID uuid = null;
 	private double isolationRate = 0.0D;
-	private Set<BlockPos> blockPosShipControllers = new CopyOnWriteArraySet<>();
+	private final Set<BlockPos> blockPosShipControllers = new CopyOnWriteArraySet<>();
 	private int ticksCooldown = 0;
 	private int warmupTime_ticks = 0;
 	protected int jumpCount = 0;
@@ -310,10 +310,12 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			  && enumShipCommand != EnumShipCommand.MAINTENANCE ) {
 				commandCurrent = enumShipCommand;
 				stateCurrent = EnumShipCoreState.ONLINE;
+				/*
 				if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
-//					WarpDrive.logger.info(String.format("%s state IDLE -> ONLINE",
-//					                                    this));
+					WarpDrive.logger.info(String.format("%s state IDLE -> ONLINE",
+					                                    this));
 				}
+				/**/
 			}
 			break;
 		
@@ -483,6 +485,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		return ticksCooldown > 0;
 	}
 	
+	@Override
 	public boolean refreshLink(final IMultiBlockCoreOrController multiblockController) {
 		assert multiblockController instanceof TileEntityShipController;
 		final TileEntityShipController tileEntityShipController = (TileEntityShipController) multiblockController;
@@ -504,6 +507,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		return isValid;
 	}
 	
+	@Override
 	public void removeLink(final IMultiBlockCoreOrController multiblockController) {
 		assert multiblockController instanceof TileEntityShipController;
 		final TileEntityShipController tileEntityShipController = (TileEntityShipController) multiblockController;
@@ -1072,7 +1076,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	@Override
 	public WarpDriveText getStatus() {
 		final String strIsolationRate = String.format("%.1f", isolationRate * 100.0D);
-		WarpDriveText textStatus = super.getStatus();
+		final WarpDriveText textStatus = super.getStatus();
 		if (ticksCooldown > 0) {
 			textStatus.append(null, "warpdrive.ship.status_line.cooling",
 			                  ticksCooldown / 20);
@@ -1143,7 +1147,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	}
 	
 	@Override
-	public void onDataPacket(NetworkManager networkManager, SPacketUpdateTileEntity packet) {
+	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
 		final NBTTagCompound tagCompound = packet.getNbtCompound();
 		readFromNBT(tagCompound);
 		minX = tagCompound.getInteger("minX");
