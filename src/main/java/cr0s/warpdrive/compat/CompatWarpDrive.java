@@ -19,9 +19,11 @@ import cr0s.warpdrive.data.StateAir;
 import cr0s.warpdrive.event.ChunkHandler;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class CompatWarpDrive implements IBlockTransformer {
@@ -157,8 +159,8 @@ public class CompatWarpDrive implements IBlockTransformer {
 	}
 	
 	@Override
-	public void restoreExternals(final World world, final int x, final int y, final int z,
-	                             final Block block, final int blockMeta, final TileEntity tileEntity,
+	public void restoreExternals(final World world, final BlockPos blockPos,
+	                             final IBlockState blockState, final TileEntity tileEntity,
 	                             final ITransformation transformation, final NBTBase nbtBase) {
 		if (nbtBase == null) {
 			return;
@@ -169,13 +171,13 @@ public class CompatWarpDrive implements IBlockTransformer {
 		if (((NBTTagCompound) nbtBase).hasKey("dataAir")) {
 			final byte rotationSteps = transformation.getRotationSteps();
 			final int dataAir = ((NBTTagCompound) nbtBase).getInteger("dataAir");
-			final ChunkData chunkData = ChunkHandler.getChunkData(world, x, y, z);
+			final ChunkData chunkData = ChunkHandler.getChunkData(world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			if (chunkData == null) {
 				// chunk isn't loaded, skip it
 				return;
 			}
 			final int dataAirRotated = StateAir.rotate(dataAir, rotationSteps);
-			chunkData.setDataAir(x, y, z, dataAirRotated);
+			chunkData.setDataAir(blockPos.getX(), blockPos.getY(), blockPos.getZ(), dataAirRotated);
 		}
 	}
 }

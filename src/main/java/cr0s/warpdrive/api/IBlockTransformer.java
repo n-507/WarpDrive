@@ -1,9 +1,11 @@
 package cr0s.warpdrive.api;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public interface IBlockTransformer {
@@ -37,8 +39,7 @@ public interface IBlockTransformer {
 	// Called when placing back a ship in the world, if saveExternals() returned non-null for that block.
 	// Use this to restore external data from the ship schematic, right after block & tile entity placement.
 	// Use priority placement to ensure dependent blocks are placed first.
-	// This is will be called whether saveExternals returned null or not.
-	void restoreExternals(final World world, final int x, final int y, final int z,
-	                      final Block block, final int blockMeta, final TileEntity tileEntity,
+	void restoreExternals(final World world, final BlockPos blockPos,
+	                      final IBlockState blockState, final TileEntity tileEntity,
 	                      final ITransformation transformation, final NBTBase nbtBase);
 }

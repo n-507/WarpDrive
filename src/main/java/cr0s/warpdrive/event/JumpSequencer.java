@@ -1143,10 +1143,11 @@ public class JumpSequencer extends AbstractSequencer {
 							                                 jumpBlock.block, jumpBlock.blockMeta, tileEntitySource);
 						}
 						
-						final BlockPos target = transformation.apply(jumpBlock.x, jumpBlock.y, jumpBlock.z);
-						final TileEntity newTileEntity = jumpBlock.weakTileEntity == null ? null : targetWorld.getTileEntity(target);
-						blockTransformer.restoreExternals(targetWorld, target.getX(), target.getY(), target.getZ(),
-						                                  jumpBlock.block, jumpBlock.blockMeta, newTileEntity, transformation, external.getValue());
+						final BlockPos blockPosTarget = transformation.apply(jumpBlock.x, jumpBlock.y, jumpBlock.z);
+						final IBlockState blockStateTarget = targetWorld.getBlockState(blockPosTarget);
+						final TileEntity newTileEntity = jumpBlock.weakTileEntity == null ? null : targetWorld.getTileEntity(blockPosTarget);
+						blockTransformer.restoreExternals(targetWorld, blockPosTarget,
+						                                  blockStateTarget, newTileEntity, transformation, external.getValue());
 					}
 				}
 				index++;

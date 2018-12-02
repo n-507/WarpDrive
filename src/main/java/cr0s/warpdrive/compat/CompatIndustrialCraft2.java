@@ -6,6 +6,7 @@ import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -87,8 +88,8 @@ public class CompatIndustrialCraft2 implements IBlockTransformer {
 	}
 	
 	@Override
-	public void restoreExternals(final World world, final int x, final int y, final int z,
-	                             final Block block, final int blockMeta, final TileEntity tileEntity,
+	public void restoreExternals(final World world, final BlockPos blockPos,
+	                             final IBlockState blockState, final TileEntity tileEntity,
 	                             final ITransformation transformation, final NBTBase nbtBase) {
 		// nothing to do
 	}
