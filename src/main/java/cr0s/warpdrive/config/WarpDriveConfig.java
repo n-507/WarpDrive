@@ -37,6 +37,7 @@ import cr0s.warpdrive.compat.CompatTechguns;
 import cr0s.warpdrive.compat.CompatThaumcraft;
 import cr0s.warpdrive.compat.CompatThermalDynamics;
 import cr0s.warpdrive.compat.CompatThermalExpansion;
+import cr0s.warpdrive.compat.CompatUndergroundBiomes;
 import cr0s.warpdrive.compat.CompatWarpDrive;
 import cr0s.warpdrive.config.structures.StructureManager;
 import cr0s.warpdrive.data.CelestialObject;
@@ -1352,6 +1353,11 @@ public class WarpDriveConfig {
 		final boolean isThermalDynamicsLoaded = Loader.isModLoaded("thermaldynamics");
 		if (isThermalDynamicsLoaded) {
 			CompatThermalDynamics.register();
+		}
+		
+		final boolean isUndergroundBiomesLoaded = Loader.isModLoaded("undergroundbiomes");
+		if (isUndergroundBiomesLoaded) {
+			CompatUndergroundBiomes.register();
 		}
 	}
 	
