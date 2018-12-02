@@ -1628,21 +1628,27 @@ public class JumpSequencer extends AbstractSequencer {
 		return new VectorI((int) Math.round(moveX * ratio), (int) Math.round(moveY * ratio), (int) Math.round(moveZ * ratio));
 	}
 	
-	private static List<TileEntity> removeDuplicates(final List<TileEntity> l) {
+	private static List<TileEntity> removeDuplicates(final List<TileEntity> listTileEntities) {
 		@SuppressWarnings("Convert2Lambda")
-		final Set<TileEntity> s = new TreeSet<>(new Comparator<TileEntity>() {
+		final Set<TileEntity> setTileEntities = new TreeSet<>(new Comparator<TileEntity>() {
 			@Override
-			public int compare(final TileEntity o1, final TileEntity o2) {
-				if (o1.getPos().getX() == o2.getPos().getX() && o1.getPos().getY() == o2.getPos().getY() && o1.getPos().getZ() == o2.getPos().getZ()) {
+			public int compare(final TileEntity tileEntity1, final TileEntity tileEntity2) {
+				if ( tileEntity1.getPos().getX() == tileEntity2.getPos().getX()
+				  && tileEntity1.getPos().getY() == tileEntity2.getPos().getY()
+				  && tileEntity1.getPos().getZ() == tileEntity2.getPos().getZ()
+				  && !tileEntity1.isInvalid()
+				  && !tileEntity2.isInvalid() ) {
 					if (WarpDriveConfig.LOGGING_JUMP) {
 						WarpDrive.logger.warn(String.format("Removing TE duplicates: detected duplicate %s: %s vs %s",
-						                                    Commons.format(o1.getWorld(), o1.getPos()),
-						                                    o1, o2));
+						                                    Commons.format(tileEntity1.getWorld(), tileEntity1.getPos()),
+						                                    tileEntity1, tileEntity2));
+						
 						final NBTTagCompound nbtTagCompound1 = new NBTTagCompound();
-						o1.writeToNBT(nbtTagCompound1);
-						final NBTTagCompound nbtTagCompound2 = new NBTTagCompound();
-						o2.writeToNBT(nbtTagCompound2);
+						tileEntity1.writeToNBT(nbtTagCompound1);
 						WarpDrive.logger.warn(String.format("First  NBT is %s", nbtTagCompound1));
+						
+						final NBTTagCompound nbtTagCompound2 = new NBTTagCompound();
+						tileEntity2.writeToNBT(nbtTagCompound2);
 						WarpDrive.logger.warn(String.format("Second NBT is %s", nbtTagCompound2));
 					}
 					return 0;
@@ -1651,8 +1657,8 @@ public class JumpSequencer extends AbstractSequencer {
 				}
 			}
 		});
-		s.addAll(l);
-		return new ArrayList<>(s);
+		setTileEntities.addAll(listTileEntities);
+		return new ArrayList<>(setTileEntities);
 	}
 	
 	@Override
