@@ -123,6 +123,7 @@ public class Dictionary {
 				// @TODO MC1.12 config.get("block_tags", "ic2:blockPersonal"                               , "Anchor SkipMining").getString(); // IC2 personal chest, need property filtering
 				// @TODO MC1.12 config.get("block_tags", "malisisdoors:null"                               , "Anchor").getString(); // improper registration of block causing NPE
 				config.get("block_tags", "malisisdoors:rustyhatch"                         , "Anchor").getString();
+				config.get("block_tags", "rangedpumps:pump"                                , "Anchor").getString(); // need to reset its search area after each jump
 				config.get("block_tags", "storagedrawers:framingtable"                     , "Anchor").getString(); // invalid metadata conversion, see https://github.com/jaquadro/StorageDrawers/issues/683
 				config.get("block_tags", "warpdrive:bedrock_glass"                         , "Anchor StopMining NoBlink").getString();
 				
