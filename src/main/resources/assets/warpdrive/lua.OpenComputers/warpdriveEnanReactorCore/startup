@@ -6,6 +6,14 @@ local data
 
 ----------- Reactor support
 
+--  0000000001111111111222222222233333333334444444444
+--  1234567890123456789012345678901234567890123456789
+-- [Reactor stability %      Laser level k           ]
+-- [ 99.9 99.9 99.9 99.9     56 123456 123456 123456 ]
+-- [ 99.9 99.9 99.9 99.9     123.4 123.4 123.4 123.4 ]
+-- [ 99.9 99.9 99.9 99.9     4.5 x 456 123456 123456 ]
+-- [ 99.9 99.9 99.9 99.9 123456 123456 123456 123456 ]
+
 local reactor
 local reactorlasers = {}
 
@@ -95,7 +103,7 @@ function reactor_page()
     w.write("Reactor not detected")
   else
     w.setColorNormal()
-    w.write("Reactor stability")
+    w.write("Reactor stability (%)")
     local instabilities = { reactor.getInstabilities() }
     for key, instability in pairs(instabilities) do
       local y = (key - 1) % 4
@@ -133,13 +141,13 @@ function reactor_page()
     w.write(w.format_boolean(isEnabled, "YES", "no"))
   end
   
-  w.setCursorPos(30, 2)
+  w.setCursorPos(26, 2)
   if #reactorlasers == 0 then
     w.setColorDisabled()
     w.write("Lasers not detected")
   else
     w.setColorNormal()
-    w.write("Lasers")
+    w.write("Lasers charge (k)")
     
     for key, reactorlaser in pairs(reactorlasers) do
       if reactorlaser.wrap ~= nil then
@@ -150,6 +158,7 @@ function reactor_page()
         if energy == nil then
           energy = -1
         end
+        local energy_k = math.floor(energy / 100) / 10.0
         if not reactorlaser.wrap.isAssemblyValid() then
           w.setColorDisabled()
         elseif energy > 3 * reactor_laserAmount then
@@ -157,7 +166,7 @@ function reactor_page()
         else
           w.setColorWarning()
         end
-        w.write(w.format_integer(energy, 6))
+        w.write(w.format_integer(energy_k, 5))
       end
     end
   end
@@ -295,6 +304,7 @@ function reactor_pulse(output)
           if energy == nil then
             energy = -1
           end
+          local energy_k = math.floor(energy / 100) / 10.0
           if not reactorlaser.wrap.isAssemblyValid() then
             w.setColorDisabled()
           elseif energy > 3 * reactor_laserAmount then
@@ -302,7 +312,7 @@ function reactor_pulse(output)
           else
             w.setColorWarning()
           end
-          w.write(w.format_integer(energy, 6))
+          w.write(w.format_integer(energy_k, 5))
         end
       end
     end
