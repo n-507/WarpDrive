@@ -30,6 +30,7 @@ import cr0s.warpdrive.compat.CompatParziStarWars;
 import cr0s.warpdrive.compat.CompatPneumaticCraft;
 import cr0s.warpdrive.compat.CompatRedstonePaste;
 import cr0s.warpdrive.compat.CompatRoots;
+import cr0s.warpdrive.compat.CompatRustic;
 import cr0s.warpdrive.compat.CompatSGCraft;
 import cr0s.warpdrive.compat.CompatStargateTech2;
 import cr0s.warpdrive.compat.CompatStorageDrawers;
@@ -1314,6 +1315,11 @@ public class WarpDriveConfig {
 		final boolean isRootsLoaded = Loader.isModLoaded("roots");
 		if (isRootsLoaded) {
 			CompatRoots.register();
+		}
+		
+		final boolean isRusticLoaded = Loader.isModLoaded("rustic");
+		if (isRusticLoaded) {
+			CompatRustic.register();
 		}
 		
 		final boolean isParziStarWarsLoaded = Loader.isModLoaded("starwarsmod");

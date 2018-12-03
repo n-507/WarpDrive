@@ -124,6 +124,7 @@ public class Dictionary {
 				// @TODO MC1.12 config.get("block_tags", "malisisdoors:null"                               , "Anchor").getString(); // improper registration of block causing NPE
 				config.get("block_tags", "malisisdoors:rustyhatch"                         , "Anchor").getString();
 				config.get("block_tags", "rangedpumps:pump"                                , "Anchor").getString(); // need to reset its search area after each jump
+				config.get("block_tags", "rustic:stake_tied"                               , "Anchor").getString();
 				config.get("block_tags", "storagedrawers:framingtable"                     , "Anchor").getString(); // invalid metadata conversion, see https://github.com/jaquadro/StorageDrawers/issues/683
 				config.get("block_tags", "warpdrive:bedrock_glass"                         , "Anchor StopMining NoBlink").getString();
 				
@@ -168,6 +169,7 @@ public class Dictionary {
 				config.get("block_tags", "opencomputers:casecreative"                      , "PlaceLatest").getString();
 				config.get("block_tags", "opencomputers:keyboard"                          , "PlaceLatest").getString();
 				config.get("block_tags", "pneumaticcraft:pressure_chamber_valve"           , "PlaceEarlier").getString();
+				config.get("block_tags", "rustic:candle"                                   , "PlaceLatest").getString();
 				// config.get("block_tags", "StargateTech2:block.shieldEmitter"               , "PlaceLater StopMining NoBlink").getString();
 				// config.get("block_tags", "StargateTech2:block.shieldController"            , "PlaceNormal StopMining NoBlink").getString();
 				// config.get("block_tags", "StargateTech2:block.shield"                      , "PlaceNormal StopMining NoBlink").getString();

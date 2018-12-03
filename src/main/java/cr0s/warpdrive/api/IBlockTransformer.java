@@ -2,9 +2,11 @@ package cr0s.warpdrive.api;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -42,4 +44,15 @@ public interface IBlockTransformer {
 	void restoreExternals(final World world, final BlockPos blockPos,
 	                      final IBlockState blockState, final TileEntity tileEntity,
 	                      final ITransformation transformation, final NBTBase nbtBase);
+	
+	// Support method to disable compatibility module on error
+	static Block getBlockOrThrowException(final String blockId) {
+		final ResourceLocation resourceLocation = new ResourceLocation(blockId);
+		final Block block = Block.REGISTRY.getObject(resourceLocation);
+		if (block == Blocks.AIR) {
+			throw new RuntimeException(String.format("Invalid %s version, please report to mod author, %s is missing",
+			                                         resourceLocation.getNamespace(), blockId));
+		}
+		return block;
+	}
 }
