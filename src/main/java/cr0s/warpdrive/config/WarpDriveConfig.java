@@ -23,6 +23,7 @@ import cr0s.warpdrive.compat.CompatJABBA;
 import cr0s.warpdrive.compat.CompatMekanism;
 import cr0s.warpdrive.compat.CompatMetalChests;
 import cr0s.warpdrive.compat.CompatMetallurgy;
+import cr0s.warpdrive.compat.CompatMysticalAgriculture;
 import cr0s.warpdrive.compat.CompatNatura;
 import cr0s.warpdrive.compat.CompatOpenComputers;
 import cr0s.warpdrive.compat.CompatParziStarWars;
@@ -1293,6 +1294,11 @@ public class WarpDriveConfig {
 		final boolean isMetallurgyLoaded = Loader.isModLoaded("Metallurgy");
 		if (isMetallurgyLoaded) {
 			CompatMetallurgy.register();
+		}
+		
+		final boolean isMysticalAgricultureLoaded = Loader.isModLoaded("mysticalagriculture");
+		if (isMysticalAgricultureLoaded) {
+			CompatMysticalAgriculture.register();
 		}
 		
 		final boolean isNaturaLoaded = Loader.isModLoaded("Natura");
