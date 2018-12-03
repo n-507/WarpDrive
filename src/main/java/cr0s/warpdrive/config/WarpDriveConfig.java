@@ -28,6 +28,7 @@ import cr0s.warpdrive.compat.CompatNatura;
 import cr0s.warpdrive.compat.CompatOpenComputers;
 import cr0s.warpdrive.compat.CompatParziStarWars;
 import cr0s.warpdrive.compat.CompatPneumaticCraft;
+import cr0s.warpdrive.compat.CompatRealFilingCabinet;
 import cr0s.warpdrive.compat.CompatRedstonePaste;
 import cr0s.warpdrive.compat.CompatRoots;
 import cr0s.warpdrive.compat.CompatRustic;
@@ -1330,6 +1331,11 @@ public class WarpDriveConfig {
 		final boolean isRedstonePasteLoaded = Loader.isModLoaded("RedstonePasteMod");
 		if (isRedstonePasteLoaded) {
 			CompatRedstonePaste.register();
+		}
+		
+		final boolean isRealFilingCabinetLoaded = Loader.isModLoaded("realfilingcabinet");
+		if (isRealFilingCabinetLoaded) {
+			CompatRealFilingCabinet.register();
 		}
 		
 		final boolean isSGCraftLoaded = Loader.isModLoaded("SGCraft");
