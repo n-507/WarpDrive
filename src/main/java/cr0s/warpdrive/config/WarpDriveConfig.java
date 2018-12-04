@@ -15,6 +15,7 @@ import cr0s.warpdrive.compat.CompatCustomNpcs;
 import cr0s.warpdrive.compat.CompatDraconicEvolution;
 import cr0s.warpdrive.compat.CompatEnderIO;
 import cr0s.warpdrive.compat.CompatEvilCraft;
+import cr0s.warpdrive.compat.CompatExtraUtilities2;
 import cr0s.warpdrive.compat.CompatForgeMultipart;
 import cr0s.warpdrive.compat.CompatImmersiveEngineering;
 import cr0s.warpdrive.compat.CompatIndustrialCraft2;
@@ -1271,6 +1272,11 @@ public class WarpDriveConfig {
 		final boolean isEvilCraftLoaded = Loader.isModLoaded("evilcraft");
 		if (isEvilCraftLoaded) {
 			CompatEvilCraft.register();
+		}
+		
+		final boolean isExtraUtilities2Loaded = Loader.isModLoaded("extrautils2");
+		if (isExtraUtilities2Loaded) {
+			CompatExtraUtilities2.register();
 		}
 		
 		final boolean isIronChestLoaded = Loader.isModLoaded("ironchest");
