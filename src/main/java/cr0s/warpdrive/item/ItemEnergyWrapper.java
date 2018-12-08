@@ -21,12 +21,12 @@ public class ItemEnergyWrapper {
 		boolean bResult = false;
 		// IndustrialCraft2
 		if (WarpDriveConfig.isIndustrialCraft2Loaded) {
-			bResult = IC2_isContainer(itemStack);
+			bResult = IC2_isEnergyContainer(itemStack);
 		}
 		
 		// Thermal Expansion
-		if (!bResult && WarpDriveConfig.isCoFHCoreLoaded) {
-			bResult = CoFH_isContainer(itemStack);
+		if (!bResult && WarpDriveConfig.isRedstoneFluxLoaded) {
+			bResult = RF_isEnergyContainer(itemStack);
 		}
 		return bResult;
 	}
@@ -34,13 +34,13 @@ public class ItemEnergyWrapper {
 	public static boolean canInput(final ItemStack itemStack) {
 		boolean bResult = false;
 		// IndustrialCraft2
-		if (WarpDriveConfig.isIndustrialCraft2Loaded && IC2_isContainer(itemStack)) {
+		if (WarpDriveConfig.isIndustrialCraft2Loaded && IC2_isEnergyContainer(itemStack)) {
 			bResult = IC2_canInput(itemStack);
 		}
 		
 		// Thermal Expansion
-		if (!bResult && WarpDriveConfig.isCoFHCoreLoaded && CoFH_isContainer(itemStack)) {
-			bResult = CoFH_canInput(itemStack);
+		if (!bResult && WarpDriveConfig.isRedstoneFluxLoaded && RF_isEnergyContainer(itemStack)) {
+			bResult = RF_canInput(itemStack);
 		}
 		return bResult;
 	}
@@ -48,27 +48,27 @@ public class ItemEnergyWrapper {
 	public static boolean canOutput(final ItemStack itemStack) {
 		boolean bResult = false;
 		// IndustrialCraft2
-		if (WarpDriveConfig.isIndustrialCraft2Loaded && IC2_isContainer(itemStack)) {
+		if (WarpDriveConfig.isIndustrialCraft2Loaded && IC2_isEnergyContainer(itemStack)) {
 			bResult = IC2_canOutput(itemStack);
 		}
 		
 		// Thermal Expansion
-		if (!bResult && WarpDriveConfig.isCoFHCoreLoaded && CoFH_isContainer(itemStack)) {
-			bResult = CoFH_canOutput(itemStack);
+		if (!bResult && WarpDriveConfig.isRedstoneFluxLoaded && RF_isEnergyContainer(itemStack)) {
+			bResult = RF_canOutput(itemStack);
 		}
 		return bResult;
 	}
 	
 	public static int getEnergyStored(final ItemStack itemStack) {
 		// IndustrialCraft2
-		if (WarpDriveConfig.isIndustrialCraft2Loaded && IC2_isContainer(itemStack)) {
+		if (WarpDriveConfig.isIndustrialCraft2Loaded && IC2_isEnergyContainer(itemStack)) {
 			final double amount_EU = Commons.clamp(0, IC2_getMaxEnergyStorage(itemStack), IC2_getEnergyStored(itemStack));
 			return (int) TileEntityAbstractEnergy.convertEUtoInternal_floor(amount_EU);
 		}
 		
 		// Thermal Expansion
-		if (WarpDriveConfig.isCoFHCoreLoaded && CoFH_isContainer(itemStack)) {
-			final int amount_RF = Commons.clamp(0, CoFH_getMaxEnergyStorage(itemStack), CoFH_getEnergyStored(itemStack));
+		if (WarpDriveConfig.isRedstoneFluxLoaded && RF_isEnergyContainer(itemStack)) {
+			final int amount_RF = Commons.clamp(0, RF_getMaxEnergyStorage(itemStack), RF_getEnergyStored(itemStack));
 			return (int) TileEntityAbstractEnergy.convertRFtoInternal_floor(amount_RF);
 		}
 		return 0;
@@ -76,14 +76,14 @@ public class ItemEnergyWrapper {
 	
 	public static int getMaxEnergyStorage(final ItemStack itemStack) {
 		// IndustrialCraft2
-		if (WarpDriveConfig.isIndustrialCraft2Loaded && IC2_isContainer(itemStack)) {
+		if (WarpDriveConfig.isIndustrialCraft2Loaded && IC2_isEnergyContainer(itemStack)) {
 			final double amount_EU = IC2_getMaxEnergyStorage(itemStack);
 			return (int) TileEntityAbstractEnergy.convertEUtoInternal_floor(amount_EU);
 		}
 		
 		// Thermal Expansion
-		if (WarpDriveConfig.isCoFHCoreLoaded && CoFH_isContainer(itemStack)) {
-			final int amount_RF = CoFH_getMaxEnergyStorage(itemStack);
+		if (WarpDriveConfig.isRedstoneFluxLoaded && RF_isEnergyContainer(itemStack)) {
+			final int amount_RF = RF_getMaxEnergyStorage(itemStack);
 			return (int) TileEntityAbstractEnergy.convertRFtoInternal_floor(amount_RF);
 		}
 		return 0;
@@ -91,30 +91,30 @@ public class ItemEnergyWrapper {
 	
 	public static ItemStack consume(final ItemStack itemStack, final int amount, final boolean simulate) {
 		// IndustrialCraft2
-		if (WarpDriveConfig.isIndustrialCraft2Loaded && IC2_isContainer(itemStack)) {
+		if (WarpDriveConfig.isIndustrialCraft2Loaded && IC2_isEnergyContainer(itemStack)) {
 			final double amount_EU = TileEntityAbstractEnergy.convertInternalToEU_ceil(amount);
 			return IC2_consume(itemStack, amount_EU, simulate);
 		}
 		
 		// Thermal Expansion
-		if (WarpDriveConfig.isCoFHCoreLoaded && CoFH_isContainer(itemStack)) {
+		if (WarpDriveConfig.isRedstoneFluxLoaded && RF_isEnergyContainer(itemStack)) {
 			final int amount_RF = TileEntityAbstractEnergy.convertInternalToRF_ceil(amount);
-			return CoFH_consume(itemStack, amount_RF, simulate);
+			return RF_consume(itemStack, amount_RF, simulate);
 		}
 		return null;
 	}
 	
 	public static ItemStack charge(final ItemStack itemStack, final int amount, final boolean simulate) {
 		// IndustrialCraft2
-		if (WarpDriveConfig.isIndustrialCraft2Loaded && IC2_isContainer(itemStack)) {
+		if (WarpDriveConfig.isIndustrialCraft2Loaded && IC2_isEnergyContainer(itemStack)) {
 			final double amount_EU = TileEntityAbstractEnergy.convertInternalToEU_floor(amount);
 			return IC2_charge(itemStack, amount_EU, simulate);
 		}
 		
 		// Thermal Expansion
-		if (WarpDriveConfig.isCoFHCoreLoaded && CoFH_isContainer(itemStack)) {
+		if (WarpDriveConfig.isRedstoneFluxLoaded && RF_isEnergyContainer(itemStack)) {
 			final int amount_RF = TileEntityAbstractEnergy.convertInternalToRF_floor(amount);
-			return CoFH_charge(itemStack, amount_RF, simulate);
+			return RF_charge(itemStack, amount_RF, simulate);
 		}
 		return null;
 	}
@@ -136,7 +136,7 @@ public class ItemEnergyWrapper {
 	}
 	
 	@Optional.Method(modid = "ic2")
-	private static boolean IC2_isContainer(final ItemStack itemStack) {
+	private static boolean IC2_isEnergyContainer(final ItemStack itemStack) {
 		return itemStack.getItem() instanceof IElectricItem;
 	}
 	
@@ -195,34 +195,34 @@ public class ItemEnergyWrapper {
 	}
 	
 	
-	// CoFH IEnergyContainerItem interface
+	// RedstoneFlux IEnergyContainerItem interface
 	@Optional.Method(modid = "redstoneflux")
-	private static boolean CoFH_isContainer(final ItemStack itemStack) {
+	private static boolean RF_isEnergyContainer(final ItemStack itemStack) {
 		return itemStack.getItem() instanceof IEnergyContainerItem;
 	}
 	
 	@Optional.Method(modid = "redstoneflux")
-	private static boolean CoFH_canOutput(final ItemStack itemStack) {
+	private static boolean RF_canOutput(final ItemStack itemStack) {
 		return ((IEnergyContainerItem) itemStack.getItem()).getEnergyStored(itemStack) > 0;
 	}
 	
 	@Optional.Method(modid = "redstoneflux")
-	private static boolean CoFH_canInput(final ItemStack itemStack) {
+	private static boolean RF_canInput(final ItemStack itemStack) {
 		return ((IEnergyContainerItem) itemStack.getItem()).getEnergyStored(itemStack) < ((IEnergyContainerItem) itemStack.getItem()).getMaxEnergyStored(itemStack);
 	}
 	
 	@Optional.Method(modid = "redstoneflux")
-	private static int CoFH_getEnergyStored(final ItemStack itemStack) {
+	private static int RF_getEnergyStored(final ItemStack itemStack) {
 		return (int) Math.floor( ((IEnergyContainerItem)itemStack.getItem()).getEnergyStored(itemStack) );
 	}
 	
 	@Optional.Method(modid = "redstoneflux")
-	private static int CoFH_getMaxEnergyStorage(final ItemStack itemStack) {
+	private static int RF_getMaxEnergyStorage(final ItemStack itemStack) {
 		return (int) Math.floor( ((IEnergyContainerItem)itemStack.getItem()).getMaxEnergyStored(itemStack) );
 	}
 	
 	@Optional.Method(modid = "redstoneflux")
-	private static ItemStack CoFH_consume(final ItemStack itemStack, final int amount_RF, final boolean simulate) {
+	private static ItemStack RF_consume(final ItemStack itemStack, final int amount_RF, final boolean simulate) {
 		if (((IEnergyContainerItem)itemStack.getItem()).extractEnergy(itemStack, amount_RF, simulate) > 0) {
 			return itemStack;
 		}
@@ -230,7 +230,7 @@ public class ItemEnergyWrapper {
 	}
 	
 	@Optional.Method(modid = "redstoneflux")
-	private static ItemStack CoFH_charge(final ItemStack itemStack, final int amount_RF, final boolean simulate) {
+	private static ItemStack RF_charge(final ItemStack itemStack, final int amount_RF, final boolean simulate) {
 		if ( ((IEnergyContainerItem)itemStack.getItem()).receiveEnergy(itemStack, amount_RF, simulate) > 0) {
 			return itemStack;
 		}

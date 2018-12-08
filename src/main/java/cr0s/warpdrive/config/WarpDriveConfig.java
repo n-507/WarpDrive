@@ -125,7 +125,7 @@ public class WarpDriveConfig {
 	 */
 	public static boolean              isAdvancedRepulsionSystemLoaded = false;
 	public static boolean              isAdvancedSolarPanelLoaded = false;
-	public static boolean              isCoFHCoreLoaded = false;
+	public static boolean              isRedstoneFluxLoaded = false;
 	public static boolean              isComputerCraftLoaded = false;
 	public static boolean              isDefenseTechLoaded = false;
 	public static boolean              isEnderIOLoaded = false;
@@ -651,7 +651,7 @@ public class WarpDriveConfig {
 		unpackResourcesToFolder("default", ".schematic", defaultSchematics, "schematics", fileSchematicsDirectory);
 		
 		// read mod dependencies
-		isCoFHCoreLoaded = Loader.isModLoaded("redstoneflux");
+		isRedstoneFluxLoaded = Loader.isModLoaded("redstoneflux");
 		isComputerCraftLoaded = Loader.isModLoaded("computercraft");
 		isEnderIOLoaded = Loader.isModLoaded("enderio");
 		isDefenseTechLoaded = Loader.isModLoaded("DefenseTech");

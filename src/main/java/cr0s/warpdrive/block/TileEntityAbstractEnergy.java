@@ -58,8 +58,8 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 	public TileEntityAbstractEnergy() {
 		super();
 		
-		if (WarpDriveConfig.isCoFHCoreLoaded) {
-			CoFH_initialiseAPI();
+		if (WarpDriveConfig.isRedstoneFluxLoaded) {
+			RF_initialiseAPI();
 		}
 		addMethods(new String[] { "energy" });
 	}
@@ -215,8 +215,8 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 		}
 		
 		// Thermal Expansion
-		if (WarpDriveConfig.isCoFHCoreLoaded) {
-			CoFH_scanForEnergyHandlers();
+		if (WarpDriveConfig.isRedstoneFluxLoaded) {
+			RF_scanForEnergyHandlers();
 		}
 	}
 	
@@ -237,14 +237,14 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 			IC2_addToEnergyNet();
 		}
 		
-		// Thermal Expansion
-		if (WarpDriveConfig.isCoFHCoreLoaded) {
+		// RedstoneFlux
+		if (WarpDriveConfig.isRedstoneFluxLoaded) {
 			scanTickCount--;
 			if (scanTickCount <= 0) {
 				scanTickCount = SCAN_INTERVAL_TICKS;
-				CoFH_scanForEnergyHandlers();
+				RF_scanForEnergyHandlers();
 			}
-			CoFH_outputEnergy();
+			RF_outputEnergy();
 		}
 	}
 	
@@ -363,7 +363,7 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 	@Optional.Method(modid = "redstoneflux")	/* IEnergyReceiver */
 	public int receiveEnergy(final EnumFacing from, final int maxReceive_RF, final boolean simulate) {
 		if (WarpDriveConfig.LOGGING_ENERGY) {
-			WarpDrive.logger.info(this + " [CoFH]receiveEnergy from " + from + " maxReceive_RF " + maxReceive_RF + " simulate " + simulate);
+			WarpDrive.logger.info(this + " [RF]receiveEnergy from " + from + " maxReceive_RF " + maxReceive_RF + " simulate " + simulate);
 		}
 		if (!energy_canInput(from)) {
 			return 0;
@@ -377,7 +377,7 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 		
 		final int toAdd_RF = Math.min(maxReceive_RF, maxStored_RF - energyStored_RF);
 		if (WarpDriveConfig.LOGGING_ENERGY) {
-			WarpDrive.logger.info(this + " [CoFH]receiveEnergy from " + from + " maxReceive_RF " + maxReceive_RF + " simulate " + simulate + " energy_RF " + energyStored_RF + "/" + maxStored_RF + " toAdd_RF " + toAdd_RF);
+			WarpDrive.logger.info(this + " [RF]receiveEnergy from " + from + " maxReceive_RF " + maxReceive_RF + " simulate " + simulate + " energy_RF " + energyStored_RF + "/" + maxStored_RF + " toAdd_RF " + toAdd_RF);
 		}
 		if (!simulate) {
 			energyStored_internal = Math.min(energy_getMaxStorage(), energy_getEnergyStored() + convertRFtoInternal_floor(toAdd_RF));
@@ -390,7 +390,7 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 	@Optional.Method(modid = "redstoneflux")	/* IEnergyProvider */
 	public int extractEnergy(final EnumFacing from, final int maxExtract_RF, final boolean simulate) {
 		if (WarpDriveConfig.LOGGING_ENERGY) {
-			WarpDrive.logger.info(this + " [CoFH]extractEnergy from " + from + " maxExtract_RF " + maxExtract_RF + " simulate " + simulate);
+			WarpDrive.logger.info(this + " [RF]extractEnergy from " + from + " maxExtract_RF " + maxExtract_RF + " simulate " + simulate);
 		}
 		if (!energy_canOutput(from)) {
 			return 0;
@@ -425,7 +425,7 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 	
 	// WarpDrive overrides for CoFH RedstoneFlux
 	@Optional.Method(modid = "redstoneflux")
-	private void CoFH_outputEnergy(final EnumFacing from, final IEnergyReceiver energyReceiver) {
+	private void RF_outputEnergy(final EnumFacing from, final IEnergyReceiver energyReceiver) {
 		if ( energyReceiver == null
 		  || world.getTileEntity(pos.add(from.getXOffset(), from.getYOffset(), from.getZOffset())) == null ) {
 			return;
@@ -445,16 +445,16 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 	}
 	
 	@Optional.Method(modid = "redstoneflux")
-	private void CoFH_outputEnergy() {
+	private void RF_outputEnergy() {
 		for (final EnumFacing from : EnumFacing.VALUES) {
 			if (cofhEnergyReceivers[from.ordinal()] != null) {
-				CoFH_outputEnergy(from, (IEnergyReceiver) cofhEnergyReceivers[from.ordinal()]);
+				RF_outputEnergy(from, (IEnergyReceiver) cofhEnergyReceivers[from.ordinal()]);
 			}
 		}
 	}
 	
 	@Optional.Method(modid = "redstoneflux")
-	private void CoFH_initialiseAPI() {
+	private void RF_initialiseAPI() {
 		cofhEnergyReceivers = new IEnergyReceiver[EnumFacing.VALUES.length];
 	}
 	
@@ -490,8 +490,8 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 	public void onBlockUpdateDetected() {
 		super.onBlockUpdateDetected();
 		
-		if (WarpDriveConfig.isCoFHCoreLoaded) {
-			CoFH_scanForEnergyHandlers();
+		if (WarpDriveConfig.isRedstoneFluxLoaded) {
+			RF_scanForEnergyHandlers();
 		}
 	}
 	
@@ -504,16 +504,16 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 	}
 	
 	@Optional.Method(modid = "redstoneflux")
-	private void CoFH_scanForEnergyHandlers() {
+	private void RF_scanForEnergyHandlers() {
 		if (WarpDriveConfig.LOGGING_ENERGY) {
-			WarpDrive.logger.info(this + " [CoFH]CoFH_scanForEnergyHandlers");
+			WarpDrive.logger.info(this + " [RF]RF_scanForEnergyHandlers");
 		}
 		for (final EnumFacing from : EnumFacing.VALUES) {
 			boolean energyReceiverFound = false;
 			if (canConnectEnergy(from)) {
 				final TileEntity tileEntity = world.getTileEntity(pos.add(from.getXOffset(), from.getYOffset(), from.getZOffset()));
 				if (tileEntity instanceof IEnergyReceiver) {
-					IEnergyReceiver energyReceiver = (IEnergyReceiver) tileEntity;
+					final IEnergyReceiver energyReceiver = (IEnergyReceiver) tileEntity;
 					if (energyReceiver.canConnectEnergy(from.getOpposite())) {
 						energyReceiverFound = true;
 						cofhEnergyReceivers[from.ordinal()] = energyReceiver;
