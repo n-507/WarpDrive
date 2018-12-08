@@ -15,13 +15,12 @@ import net.minecraft.world.World;
 
 public class CompatBiblioCraft implements IBlockTransformer {
 	
-	private static Class<?> classBlockArmorStand;
-	private static Class<?> classBlockPrintingPress;
+	private static Class<?> classBiblioBlock;
 	
 	public static void register() {
 		try {
-			classBlockArmorStand = Class.forName("jds.bibliocraft.blocks.BlockArmorStand");
-			classBlockPrintingPress = Class.forName("jds.bibliocraft.blocks.BlockPrintPress");
+			classBiblioBlock = Class.forName("jds.bibliocraft.blocks.BiblioBlock");
+			
 			WarpDriveConfig.registerBlockTransformer("BiblioCraft", new CompatBiblioCraft());
 		} catch(final ClassNotFoundException exception) {
 			exception.printStackTrace();
@@ -30,11 +29,7 @@ public class CompatBiblioCraft implements IBlockTransformer {
 	
 	@Override
 	public boolean isApplicable(final Block block, final int metadata, final TileEntity tileEntity) {
-		if (block == null) {
-			return false;
-		}
-		final String canonicalName = block.getClass().getCanonicalName();
-		return canonicalName != null && canonicalName.startsWith("jds.bibliocraft.");
+		return classBiblioBlock.isInstance(block);
 	}
 	
 	@Override
@@ -54,9 +49,7 @@ public class CompatBiblioCraft implements IBlockTransformer {
 		// nothing to do
 	}
 	
-	private static final byte[] mrotArmorStand = {  1,  2,  3,  0,  5,  6,  7,  4,  8,  9, 10, 11, 12, 13, 14, 15 };
-	private static final int[]  rotAngle       = {  1,  2,  3,  0,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-	private static final int[]  rotCaseAngle   = {  0,  1,  2,  3,  5,  6,  7,  4,  8,  9, 10, 11, 12, 13, 14, 15 };
+	private static final int[]  rotAngle       = {  1,  2,  3,  0 };
 	
 	@Override
 	public int rotate(final Block block, final int metadata, final NBTTagCompound nbtTileEntity, final ITransformation transformation) {
@@ -65,68 +58,18 @@ public class CompatBiblioCraft implements IBlockTransformer {
 			return metadata;
 		}
 		
-		// metadata rotations
-		if (classBlockArmorStand.isInstance(block) || classBlockPrintingPress.isInstance(block)) {
-			switch (rotationSteps) {
-			case 1:
-				return mrotArmorStand[metadata];
-			case 2:
-				return mrotArmorStand[mrotArmorStand[metadata]];
-			case 3:
-				return mrotArmorStand[mrotArmorStand[mrotArmorStand[metadata]]];
-			default:
-				return metadata;
-			}
-		}
-		
 		// tile entity rotations
-		String key = null;
 		if (nbtTileEntity.hasKey("angle")) {
-			key = "angle";
-		} else if (nbtTileEntity.hasKey("Angle")) {
-			key = "Angle";
-		} else if (nbtTileEntity.hasKey("deskAngle")) {
-			key = "deskAngle";
-		} else if (nbtTileEntity.hasKey("labelAngle")) {
-			key = "labelAngle";
-		} else if (nbtTileEntity.hasKey("bookcaseAngle")) {
-			key = "bookcaseAngle";
-		} else if (nbtTileEntity.hasKey("rackAngle")) {
-			key = "rackAngle";
-		} else if (nbtTileEntity.hasKey("genericShelfAngle")) {
-			key = "genericShelfAngle";
-		} else if (nbtTileEntity.hasKey("potionshelfAngle")) {
-			key = "potionshelfAngle";
-		}
-		if (key != null) {
-			final int angle = nbtTileEntity.getInteger(key);
+			final int angle = nbtTileEntity.getInteger("angle");
 			switch (rotationSteps) {
 			case 1:
-				nbtTileEntity.setInteger(key, rotAngle[angle]);
+				nbtTileEntity.setInteger("angle", rotAngle[angle]);
 				return metadata;
 			case 2:
-				nbtTileEntity.setInteger(key, rotAngle[rotAngle[angle]]);
+				nbtTileEntity.setInteger("angle", rotAngle[rotAngle[angle]]);
 				return metadata;
 			case 3:
-				nbtTileEntity.setInteger(key, rotAngle[rotAngle[rotAngle[angle]]]);
-				return metadata;
-			default:
-				return metadata;
-			}
-		}
-		
-		
-		if (nbtTileEntity.hasKey("caseAngle")) {
-			final int angle = nbtTileEntity.getInteger("caseAngle");
-			switch (rotationSteps) {
-			case 1:
-				nbtTileEntity.setInteger("caseAngle", rotCaseAngle[angle]);
-				return metadata;
-			case 2:
-				nbtTileEntity.setInteger("caseAngle", rotCaseAngle[rotCaseAngle[angle]]);
-				return metadata;
-			case 3:
-				nbtTileEntity.setInteger("caseAngle", rotCaseAngle[rotCaseAngle[rotCaseAngle[angle]]]);
+				nbtTileEntity.setInteger("angle", rotAngle[rotAngle[rotAngle[angle]]]);
 				return metadata;
 			default:
 				return metadata;

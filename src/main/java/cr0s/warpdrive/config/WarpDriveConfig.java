@@ -1246,7 +1246,7 @@ public class WarpDriveConfig {
 			CompatBotania.register();
 		}
 		
-		final boolean isBiblioCraftLoaded = Loader.isModLoaded("BiblioCraft");
+		final boolean isBiblioCraftLoaded = Loader.isModLoaded("bibliocraft");
 		if (isBiblioCraftLoaded) {
 			CompatBiblioCraft.register();
 		}
