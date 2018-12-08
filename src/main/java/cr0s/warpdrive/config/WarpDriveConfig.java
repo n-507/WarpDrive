@@ -20,6 +20,7 @@ import cr0s.warpdrive.compat.CompatExtraUtilities2;
 import cr0s.warpdrive.compat.CompatForgeMultipart;
 import cr0s.warpdrive.compat.CompatImmersiveEngineering;
 import cr0s.warpdrive.compat.CompatIndustrialCraft2;
+import cr0s.warpdrive.compat.CompatIndustrialForegoing;
 import cr0s.warpdrive.compat.CompatIronChest;
 import cr0s.warpdrive.compat.CompatJABBA;
 import cr0s.warpdrive.compat.CompatMekanism;
@@ -1283,6 +1284,11 @@ public class WarpDriveConfig {
 		final boolean isExtraUtilities2Loaded = Loader.isModLoaded("extrautils2");
 		if (isExtraUtilities2Loaded) {
 			CompatExtraUtilities2.register();
+		}
+		
+		final boolean isIndustrialForegoingLoaded = Loader.isModLoaded("industrialforegoing");
+		if (isIndustrialForegoingLoaded) {
+			CompatIndustrialForegoing.register();
 		}
 		
 		final boolean isIronChestLoaded = Loader.isModLoaded("ironchest");

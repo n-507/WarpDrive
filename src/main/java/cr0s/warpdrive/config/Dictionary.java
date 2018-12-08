@@ -145,6 +145,7 @@ public class Dictionary {
 				config.get("block_tags", "ic2:foam"                                        , "PlaceEarliest StopMining").getString();
 				// @TODO MC1.12 config.get("block_tags", "ic2:blockAlloy"                                  , "PlaceEarliest StopMining").getString();
 				config.get("block_tags", "ic2:glass"                                       , "PlaceEarliest StopMining").getString();
+				config.get("block_tags", "industrialforegoing:black_hole_label"            , "PlaceLatest").getString();
 				config.get("block_tags", "minecraft:obsidian"                              , "PlaceEarliest Mining").getString();
 				// config.get("block_tags", "AdvancedRepulsionSystems:field"                  , "PlaceEarlier StopMining NoBlink").getString();
 				// config.get("block_tags", "MFFS:field"                                                   , "PlaceEarlier StopMining NoBlink").getString();
