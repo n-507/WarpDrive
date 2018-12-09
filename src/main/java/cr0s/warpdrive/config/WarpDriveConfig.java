@@ -7,6 +7,7 @@ import cr0s.warpdrive.compat.CompatAdvancedRepulsionSystems;
 import cr0s.warpdrive.compat.CompatAppliedEnergistics2;
 import cr0s.warpdrive.compat.CompatArsMagica2;
 import cr0s.warpdrive.compat.CompatBiblioCraft;
+import cr0s.warpdrive.compat.CompatBlockcraftery;
 import cr0s.warpdrive.compat.CompatBotania;
 import cr0s.warpdrive.compat.CompatBuildCraft;
 import cr0s.warpdrive.compat.CompatCarpentersBlocks;
@@ -1249,6 +1250,11 @@ public class WarpDriveConfig {
 		final boolean isBiblioCraftLoaded = Loader.isModLoaded("bibliocraft");
 		if (isBiblioCraftLoaded) {
 			CompatBiblioCraft.register();
+		}
+		
+		final boolean isBlockcrafteryLoaded = Loader.isModLoaded("blockcraftery");
+		if (isBlockcrafteryLoaded) {
+			CompatBlockcraftery.register();
 		}
 		
 		final boolean isBuildCraftLoaded = Loader.isModLoaded("BuildCraft|Core");
