@@ -6,32 +6,81 @@ import cr0s.warpdrive.api.ITransformation;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagByteArray;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class CompatDraconicEvolution implements IBlockTransformer {
 	
+	// common block for fast detection
 	private static Class<?> classBlockBlockDE;
-	private static Class<?> classBlockDraconiumBlock;
+	
+	// block anchors by lore (portal)
+	private static Class<?> classBlockDislocatorReceptacle;
+	private static Class<?> classBlockPortal;
+	
+	// blocks with only metadata
+	private static Class<?> classBlockFlowGate;
 	private static Class<?> classBlockGenerator;
-	private static Class<?> classBlockTeleporterStand;
+	private static Class<?> classBlockGrinder;
+	private static Class<?> classBlockPotentiometer;
+	
+	// blocks with just rotation
+	private static Class<?> classBlockDislocatorPedestal;
+	private static Class<?> classBlockDraconiumChest;
 	private static Class<?> classBlockPlacedItem;
+	
+	// blocks with rotation and position(s)
+	// private static Class<?> classBlockCraftingInjector;
+	// private static Class<?> classBlockEnergyCrystal;
+	// private static Class<?> classBlockEnergyStorageCore;
+	// private static Class<?> classBlockEnergyPylon;
+	private static Class<?> classBlockInvisECoreBlock;
+	// private static Class<?> classBlockParticleGenerator;
+	// private static Class<?> classBlockReactorComponent;
+	// private static Class<?> classBlockReactorCore;
 	
 	public static void register() {
 		try {
-			classBlockBlockDE = Class.forName("com.brandon3055.draconicevolution.common.blocks.BlockDE");
-			classBlockDraconiumBlock = Class.forName("com.brandon3055.draconicevolution.common.blocks.DraconiumBlock");
-			classBlockGenerator = Class.forName("com.brandon3055.draconicevolution.common.blocks.machine.Generator");
-			classBlockPlacedItem = Class.forName("com.brandon3055.draconicevolution.common.blocks.PlacedItem");
-			classBlockTeleporterStand = Class.forName("com.brandon3055.draconicevolution.common.blocks.TeleporterStand");
+			classBlockBlockDE = Class.forName("com.brandon3055.brandonscore.blocks.BlockBCore");
+			
+			// *** block anchors by lore (portal)
+			classBlockDislocatorReceptacle = Class.forName("com.brandon3055.draconicevolution.blocks.DislocatorReceptacle");
+			classBlockPortal = Class.forName("com.brandon3055.draconicevolution.blocks.Portal");
+			
+			// *** blocks with only metadata
+			classBlockFlowGate = Class.forName("com.brandon3055.draconicevolution.blocks.machines.FlowGate");
+			classBlockGenerator = Class.forName("com.brandon3055.draconicevolution.blocks.machines.Generator");
+			classBlockGrinder = Class.forName("com.brandon3055.draconicevolution.blocks.machines.Grinder");
+			classBlockPotentiometer = Class.forName("com.brandon3055.draconicevolution.blocks.Potentiometer");
+			
+			// *** blocks with just rotation
+			classBlockDislocatorPedestal = Class.forName("com.brandon3055.draconicevolution.blocks.DislocatorPedestal");
+			classBlockDraconiumChest = Class.forName("com.brandon3055.draconicevolution.blocks.DraconiumChest");
+			classBlockPlacedItem = Class.forName("com.brandon3055.draconicevolution.blocks.PlacedItem");
+			
+			// *** blocks with rotation and position(s)
+			// classBlockCraftingInjector = Class.forName("com.brandon3055.draconicevolution.blocks.machines.CraftingInjector");
+			// classBlockEnergyCrystal = Class.forName("com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal");
+			// classBlockEnergyStorageCore = Class.forName("com.brandon3055.draconicevolution.blocks.machines.EnergyStorageCore");
+			// classBlockEnergyPylon = Class.forName("com.brandon3055.draconicevolution.blocks.machines.EnergyPylon");
+			classBlockInvisECoreBlock = Class.forName("com.brandon3055.draconicevolution.blocks.InvisECoreBlock");
+			// classBlockParticleGenerator = Class.forName("com.brandon3055.draconicevolution.blocks.ParticleGenerator");
+			// classBlockReactorComponent = Class.forName("com.brandon3055.draconicevolution.blocks.reactor.ReactorComponent");
+			// classBlockReactorCore = Class.forName("com.brandon3055.draconicevolution.blocks.reactor.ReactorCore");
+			
 			WarpDriveConfig.registerBlockTransformer("DraconicEvolution", new CompatDraconicEvolution());
 		} catch(final ClassNotFoundException exception) {
 			exception.printStackTrace();
@@ -45,9 +94,9 @@ public class CompatDraconicEvolution implements IBlockTransformer {
 	
 	@Override
 	public boolean isJumpReady(final Block block, final int metadata, final TileEntity tileEntity, final WarpDriveText reason) {
-		if ( classBlockDraconiumBlock.isInstance(block)
-		  && metadata == 1) {
-			reason.append(Commons.styleWarning, "warpdrive.compat.guide.ender_resurrection_ritual");
+		if ( classBlockDislocatorReceptacle.isInstance(block)
+		  || classBlockPortal.isInstance(block) ) {
+			reason.append(Commons.styleWarning, "warpdrive.compat.guide.draconic_evolution_portal");
 			return false;
 		}
 		return true;
@@ -66,55 +115,63 @@ public class CompatDraconicEvolution implements IBlockTransformer {
 	}
 	
 	/*
-	Blacklisted for movement:
-	DraconicEvolution:draconium@1
-		TileEntityId = draconicevolution:TileEnderResurrection
-		BlockClass = com.brandon3055.draconicevolution.common.blocks.DraconiumBlock
-		Metadata = 0 is valid, consequently we can't use the dictionary for that one
+	// *** block anchors by lore (portal)
+	com.brandon3055.draconicevolution.blocks.DislocatorReceptacle
+		list<int>    BCManagedData.CRYSTAL_LINK_POS (x y z to be clarified)
+		list<int>    BCManagedData.CRYSTAL_POS (x y z to be clarified)
+		list<int>    BCManagedData.SPAWN_POS (x y z to be clarified)
+	com.brandon3055.draconicevolution.blocks.Portal
+		list<int>    BCManagedData.masterPos (x y z offset from dislocator to this block)
 	
-	Whitelisted for movement:
-	Generator
-		metadata 1 2 3 0
-	com.brandon3055.draconicevolution.common.tileentities.energynet.TileEnergyTransceiver
-		int	Facing  0 1 5 3 4 2
-		int	LinkCount
-		int	X_LinkedDevice_0 Y_LinkedDevice_0 Z_LinkedDevice_0
-	com.brandon3055.draconicevolution.common.tileentities.energynet.TileRemoteEnergyBase    (TileEnergyTransceiver, TileWirelessEnergyTransceiver & TileEnergyRelay)
-		int	LinkCount
-		int	X_LinkedDevice_0 Y_LinkedDevice_0 Z_LinkedDevice_0
-	
-	com.brandon3055.draconicevolution.common.tileentities.TilePlacedItem
-		float Rotation  (x + 270.0F) % 360.0F only when metadata is 0 or 1
+	// *** blocks with only metadata
+	com.brandon3055.draconicevolution.blocks.machines.FlowGate
+		metadata    0 / 1 3 2 4 / 5 / (6 7 ?) / 8 / 9 11 10 12 / 13 / (14 15 ?)
+	com.brandon3055.draconicevolution.blocks.machines.Generator
+	com.brandon3055.draconicevolution.blocks.machines.Grinder
 		metadata    0 1 5 3 4 2
-	com.brandon3055.draconicevolution.common.tileentities.TileTeleporterStand
-		int	Rotation (degrees?)
-	com.brandon3055.draconicevolution.common.tileentities.TileDraconiumChest
-		byte	facing  0 1 5 3 4 2
-	com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorStabilizer
-		int	Facing	0 1 5 3 4 2
-		int	X_Master Y_Master Z_Master
-	com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorEnergyInjector
-		int	Facing	0 1 5 3 4 2
-		int	X_Master Y_Master Z_Master
-	com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore
-		list	Stabilizers     (optional)
-			int	X_tag	Y_tag	Z_tag
-	com.brandon3055.draconicevolution.common.tileentities.TileParticleGenerator
-		int	X_Key	Y_Key	Z_Key
-	com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileInvisibleMultiblock
-		int	X_Key	Y_Key	Z_Key
-	com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyPylon
-		int Cores
-		int	X_Core0	Y_Core0	Z_Core0
-	com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.TileEnergyStorageCore
-		int	X_0	Y_0	Z_0 (optional)
-		int	X_1	Y_1	Z_1 (optional)
-		int	X_2	Y_2	Z_2 (optional)
-		int	X_3	Y_3	Z_3 (optional)
+	com.brandon3055.draconicevolution.blocks.Potentiometer
+		metadata 0 / 1 3 2 4 / 5
+	
+	// *** blocks with just rotation
+	com.brandon3055.draconicevolution.blocks.DislocatorPedestal
+		int   BCManagedData.rotation int -7 to 8 clockwise => ((old + 8 + 4) % 16) - 8
+	com.brandon3055.draconicevolution.blocks.DraconiumChest
+		byte  BCManagedData.facing  0 1 5 3 4 2
+	com.brandon3055.draconicevolution.blocks.PlacedItem
+	    int   BCManagedData.rotation0 + 4 or -4 only when metadata is 0 or 1
+		int   Facing 0 1 5 3 4 2
+		metadata    0 1 5 3 4 2
+	
+	// *** blocks with rotation and position(s)
+	com.brandon3055.draconicevolution.blocks.machines.CraftingInjector
+		list<int>    BCManagedData.lastCorePos x y z (defaults to 0 0 0, absolute position)
+	com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal
+		int          BCManagedData.facing 0 1 5 3 4 2 (optional)
+		list<byte[]> LinkedCrystals (x y z offset from another crystal to this block)
+	com.brandon3055.draconicevolution.blocks.machines.EnergyStorageCore
+		bool         BCManagedData.stabilizersOK 1 when offsets are valid
+		list<int>    BCManagedData.stabOffset0/1/2/3 x y z (defaults to 0 -1 0, offset from stabilizer to this block)
+	com.brandon3055.draconicevolution.blocks.machines.EnergyPylon
+		list<int>    BCManagedData.coreOffset (defaults to 0 -1 0, x y z offset from core to this block)
+		bool         BCManagedData.structureValid 1 when offsets are valid
+	com.brandon3055.draconicevolution.blocks.InvisECoreBlock
+		list<int>    BCManagedData.coreOffset (defaults to ? ? ?, x y z offset from core to this block)
+	com.brandon3055.draconicevolution.blocks.ParticleGenerator
+		list<int>    BCManagedData.coreOffset (defaults to 0 -1 0, x y z offset from core to this block)
+		bool         BCManagedData.hasCoreLock 1 when offsets are valid
+	com.brandon3055.draconicevolution.blocks.reactor.ReactorComponent
+		list<int>    BCManagedData.coreOffset (defaults to 0 0 0, x y z offset from core to this block)
+		bool         BCManagedData.isBound 1 when offset is valid
+	com.brandon3055.draconicevolution.blocks.reactor.ReactorCore
+		list<int>    BCManagedData.componentPosition0/1/2/3/4/5 (defaults to 0 0 0, x y z offset from component to this block)
+		(0 to 5 are ordered like EnumFacing)
 	*/
 	
-	private static final int[]  rotRotation       = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-	private static final int[]  rotGenerator      = {  1,  2,  3,  0,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	//                                                   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
+	private static final byte[] byteFacing          = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	private static final int[]  intFacing           = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	private static final int[]  rotFlowGate         = {  0,  3,  4,  2,  1,  5,  6,  7,  8, 11, 12, 10,  9, 13, 14, 15 };
+	private static final int[]  rotPotentiometer    = {  0,  3,  4,  2,  1,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
 	
 	@Override
 	public int rotate(final Block block, final int metadata, final NBTTagCompound nbtTileEntity, final ITransformation transformation) {
@@ -123,201 +180,325 @@ public class CompatDraconicEvolution implements IBlockTransformer {
 			return metadata;
 		}
 		
-		// TileDraconiumChest rotation only has "facing" with no other field => return
-		if (nbtTileEntity.hasKey("facing")) {
-			final int facing = nbtTileEntity.getInteger("facing");
+		// *** blocks with only metadata
+		// FlowGate
+		if (classBlockFlowGate.isInstance(block)) {
 			switch (rotationSteps) {
 			case 1:
-				nbtTileEntity.setInteger("facing", rotRotation[facing]);
-				return metadata;
+				return rotFlowGate[metadata];
 			case 2:
-				nbtTileEntity.setInteger("facing", rotRotation[rotRotation[facing]]);
-				return metadata;
+				return rotFlowGate[rotFlowGate[metadata]];
 			case 3:
-				nbtTileEntity.setInteger("facing", rotRotation[rotRotation[rotRotation[facing]]]);
-				return metadata;
+				return rotFlowGate[rotFlowGate[rotFlowGate[metadata]]];
 			default:
 				return metadata;
 			}
 		}
 		
-		// generator only has metadata with no other field => return
-		if (classBlockGenerator.isInstance(block)) {
+		// Generator & Grinder
+		if ( classBlockGenerator.isInstance(block)
+		  || classBlockGrinder.isInstance(block) ) {
 			switch (rotationSteps) {
 			case 1:
-				return rotGenerator[metadata];
+				return intFacing[metadata];
 			case 2:
-				return rotGenerator[rotGenerator[metadata]];
+				return intFacing[intFacing[metadata]];
 			case 3:
-				return rotGenerator[rotGenerator[rotGenerator[metadata]]];
+				return intFacing[intFacing[intFacing[metadata]]];
 			default:
 				return metadata;
 			}
 		}
 		
-		// generic tile entity rotations for TileEnergyTransceiver, TileReactorStabilizer, TileReactorEnergyInjector
-		if (nbtTileEntity.hasKey("Facing")) {
-			final int facing = nbtTileEntity.getInteger("Facing");
+		// Potentiometer
+		if (classBlockPotentiometer.isInstance(block)) {
 			switch (rotationSteps) {
 			case 1:
-				nbtTileEntity.setInteger("Facing", rotRotation[facing]);
-				break;
+				return rotPotentiometer[metadata];
 			case 2:
-				nbtTileEntity.setInteger("Facing", rotRotation[rotRotation[facing]]);
-				break;
+				return rotPotentiometer[rotPotentiometer[metadata]];
 			case 3:
-				nbtTileEntity.setInteger("Facing", rotRotation[rotRotation[rotRotation[facing]]]);
-				break;
+				return rotPotentiometer[rotPotentiometer[rotPotentiometer[metadata]]];
 			default:
-				break;
+				return metadata;
 			}
 		}
 		
-		// generic linked devices for TileEnergyTransceiver and derived from TileRemoteEnergyBase (TileEnergyTransceiver, TileWirelessEnergyTransceiver & TileEnergyRelay)
-		if (nbtTileEntity.hasKey("LinkCount")) {
-			final int countLinks = nbtTileEntity.getInteger("LinkCount");
-			if (countLinks > 0) {
-				for (int indexLink = 0; indexLink < countLinks; indexLink++) {
-					final BlockPos targetLink = transformation.apply(
-						nbtTileEntity.getInteger(String.format("X_LinkedDevice_%d", indexLink)),
-						nbtTileEntity.getInteger(String.format("Y_LinkedDevice_%d", indexLink)),
-						nbtTileEntity.getInteger(String.format("Z_LinkedDevice_%d", indexLink)) );
-					nbtTileEntity.setInteger(String.format("X_LinkedDevice_%d", indexLink), targetLink.getX());
-					nbtTileEntity.setInteger(String.format("Y_LinkedDevice_%d", indexLink), targetLink.getY());
-					nbtTileEntity.setInteger(String.format("Z_LinkedDevice_%d", indexLink), targetLink.getZ());
-				}
+		
+		final NBTTagCompound tagCompoundBCManagedData;
+		if (nbtTileEntity != null && nbtTileEntity.hasKey("BCManagedData")) {
+			tagCompoundBCManagedData = nbtTileEntity.getCompoundTag("BCManagedData");
+		} else {
+			tagCompoundBCManagedData = null;
+		}
+		
+		// *** blocks with just rotation
+		// Dislocator pedestal
+		if (classBlockDislocatorPedestal.isInstance(block)) {
+			if (tagCompoundBCManagedData == null) {
+				return metadata;
 			}
-		}
-		
-		// generic link to master for TileReactorStabilizer and TileReactorEnergyInjector
-		if (nbtTileEntity.hasKey("X_Master")) {
-			final BlockPos targetLink = transformation.apply(
-				nbtTileEntity.getInteger("X_Master"),
-				nbtTileEntity.getInteger("Y_Master"),
-				nbtTileEntity.getInteger("Z_Master") );
-			nbtTileEntity.setInteger("X_Master", targetLink.getX());
-			nbtTileEntity.setInteger("Y_Master", targetLink.getY());
-			nbtTileEntity.setInteger("Z_Master", targetLink.getZ());
-		}
-		
-		// generic link to master for TileParticleGenerator and TileInvisibleMultiblock
-		if (nbtTileEntity.hasKey("X_Key")) {
-			final BlockPos targetLink = transformation.apply(
-				nbtTileEntity.getInteger("X_Key"),
-				nbtTileEntity.getInteger("Y_Key"),
-				nbtTileEntity.getInteger("Z_Key") );
-			nbtTileEntity.setInteger("X_Key", targetLink.getX());
-			nbtTileEntity.setInteger("Y_Key", targetLink.getY());
-			nbtTileEntity.setInteger("Z_Key", targetLink.getZ());
-		}
-		
-		// linked stabilizers for TileReactorCore
-		if (nbtTileEntity.hasKey("Stabilizers")) {
-			// we can't directly access it, hence removing then adding back later on
-			final NBTTagList stabilizers = nbtTileEntity.getTagList("Stabilizers", Constants.NBT.TAG_COMPOUND);
-			if (stabilizers != null) {
-				for (int nodeIndex = 0; nodeIndex < stabilizers.tagCount(); nodeIndex++) {
-					// remove
-					final NBTTagCompound stabilizer = (NBTTagCompound) stabilizers.removeTag(0);
-					// update coordinates
-					final BlockPos target = transformation.apply(
-						stabilizer.getInteger("X_tag"),
-						stabilizer.getInteger("Y_tag"),
-						stabilizer.getInteger("Z_tag"));
-					stabilizer.setInteger("X_tag", target.getX());
-					stabilizer.setInteger("Y_tag", target.getY());
-					stabilizer.setInteger("Z_tag", target.getZ());
-					// add
-					stabilizers.appendTag(stabilizer);
-				}
-			}
-		}
-		
-		// linked cores for TileEnergyPylon
-		if (nbtTileEntity.hasKey("Cores")) {
-			final int countCores = nbtTileEntity.getInteger("Cores");
-			if (countCores > 0) {
-				for (int indexCore = 0; indexCore < countCores; indexCore++) {
-					final BlockPos targetLink = transformation.apply(
-						nbtTileEntity.getInteger(String.format("X_Core%d", indexCore)),
-						nbtTileEntity.getInteger(String.format("Y_Core%d", indexCore)),
-						nbtTileEntity.getInteger(String.format("Z_Core%d", indexCore)) );
-					nbtTileEntity.setInteger(String.format("X_Core%d", indexCore), targetLink.getX());
-					nbtTileEntity.setInteger(String.format("Y_Core%d", indexCore), targetLink.getY());
-					nbtTileEntity.setInteger(String.format("Z_Core%d", indexCore), targetLink.getZ());
-				}
-			}
-		}
-		
-		// linked emitters for TileEnergyStorageCore
-		if (nbtTileEntity.hasKey("X_0")) {
-			final BlockPos targetLink = transformation.apply(
-				nbtTileEntity.getInteger("X_0"),
-				nbtTileEntity.getInteger("Y_0"),
-				nbtTileEntity.getInteger("Z_0") );
-			nbtTileEntity.setInteger("X_0", targetLink.getX());
-			nbtTileEntity.setInteger("Y_0", targetLink.getY());
-			nbtTileEntity.setInteger("Z_0", targetLink.getZ());
-		}
-		if (nbtTileEntity.hasKey("X_1")) {
-			final BlockPos targetLink = transformation.apply(
-				nbtTileEntity.getInteger("X_1"),
-				nbtTileEntity.getInteger("Y_1"),
-				nbtTileEntity.getInteger("Z_1") );
-			nbtTileEntity.setInteger("X_1", targetLink.getX());
-			nbtTileEntity.setInteger("Y_1", targetLink.getY());
-			nbtTileEntity.setInteger("Z_1", targetLink.getZ());
-		}
-		if (nbtTileEntity.hasKey("X_2")) {
-			final BlockPos targetLink = transformation.apply(
-				nbtTileEntity.getInteger("X_2"),
-				nbtTileEntity.getInteger("Y_2"),
-				nbtTileEntity.getInteger("Z_2") );
-			nbtTileEntity.setInteger("X_2", targetLink.getX());
-			nbtTileEntity.setInteger("Y_2", targetLink.getY());
-			nbtTileEntity.setInteger("Z_2", targetLink.getZ());
-		}
-		if (nbtTileEntity.hasKey("X_3")) {
-			final BlockPos targetLink = transformation.apply(
-				nbtTileEntity.getInteger("X_3"),
-				nbtTileEntity.getInteger("Y_3"),
-				nbtTileEntity.getInteger("Z_3") );
-			nbtTileEntity.setInteger("X_3", targetLink.getX());
-			nbtTileEntity.setInteger("Y_3", targetLink.getY());
-			nbtTileEntity.setInteger("Z_3", targetLink.getZ());
-		}
-		
-		// rotation for placed item only applies for top/bottom position
-		if (classBlockPlacedItem.isInstance(block)) {
 			if (rotationSteps > 0) {
-				if (metadata == 0) {
-					final float rotation = nbtTileEntity.getInteger("Rotation");
-					nbtTileEntity.setFloat("Rotation", (rotation + rotationSteps * 90.0F) % 360.0F);
-				} else if (metadata == 1) {
-					final float rotation = nbtTileEntity.getInteger("Rotation");
-					nbtTileEntity.setFloat("Rotation", (rotation + rotationSteps * 270.0F) % 360.0F);
-				}
-			}
-			
-			switch (rotationSteps) {
-			case 1:
-				return rotRotation[metadata];
-			case 2:
-				return rotRotation[rotRotation[metadata]];
-			case 3:
-				return rotRotation[rotRotation[rotRotation[metadata]]];
-			default:
-				return metadata;
-			}
-		}
-		
-		// rotation for dislocator stand / TileTeleporterStand
-		if (classBlockTeleporterStand.isInstance(block)) {
-			if (rotationSteps > 0) {
-				final float rotation = nbtTileEntity.getInteger("Rotation");
-				nbtTileEntity.setFloat("Rotation", (rotation + rotationSteps * 90.0F) % 360.0F);
+				final int rotationOld = tagCompoundBCManagedData.getInteger("rotation");
+				final int rotationNew = ((rotationOld + 8 + 4 * rotationSteps) % 16) - 8;
+				tagCompoundBCManagedData.setInteger("rotation", rotationNew);
 			}
 			return metadata;
+		}
+		
+		// Draconium chest
+		if (classBlockDraconiumChest.isInstance(block)) {
+			switch (rotationSteps) {
+			case 1:
+				return rotPotentiometer[metadata];
+			case 2:
+				return rotPotentiometer[rotPotentiometer[metadata]];
+			case 3:
+				return rotPotentiometer[rotPotentiometer[rotPotentiometer[metadata]]];
+			default:
+				return metadata;
+			}
+		}
+		
+		// Placed item rotates by metadata vertically, by NBT horizontally
+		if (classBlockPlacedItem.isInstance(block)) {
+			if (tagCompoundBCManagedData == null) {
+				return metadata;
+			}
+			if (metadata == 0 || metadata == 1) {// placed horizontally
+				final int rotationOld = tagCompoundBCManagedData.getInteger("rotation0");
+				final int rotationNew;
+				if (metadata == 0) {
+					rotationNew = (rotationOld + 4 * rotationSteps) % 16;
+				} else {
+					rotationNew = (rotationOld + 12 * rotationSteps) % 16;
+				}
+				tagCompoundBCManagedData.setInteger("rotation0", rotationNew);
+				return metadata;
+			}
+			
+			// (placed vertically)
+			final byte facing = nbtTileEntity.getByte("Facing");
+			switch (rotationSteps) {
+			case 1:
+				nbtTileEntity.setByte("Facing", byteFacing[facing]);
+				return intFacing[metadata];
+			case 2:
+				nbtTileEntity.setByte("Facing", byteFacing[byteFacing[facing]]);
+				return intFacing[intFacing[metadata]];
+			case 3:
+				nbtTileEntity.setByte("Facing", byteFacing[byteFacing[byteFacing[facing]]]);
+				return intFacing[intFacing[intFacing[metadata]]];
+			default:
+				return metadata;
+			}
+		}
+		
+		// from there on, we need BCManagedData, so skip the other blocks altogether
+		if (tagCompoundBCManagedData == null) {
+			return metadata;
+		}
+		
+		// *** blocks with rotation and position(s)
+		// common optional "facing" property for EnergyCrystal and ReactorComponent
+		if (tagCompoundBCManagedData.hasKey("facing")) {
+			final int facing = tagCompoundBCManagedData.getInteger("facing");
+			switch (rotationSteps) {
+			case 1:
+				tagCompoundBCManagedData.setInteger("facing", intFacing[facing]);
+				break;
+			case 2:
+				tagCompoundBCManagedData.setInteger("facing", intFacing[intFacing[facing]]);
+				break;
+			case 3:
+				tagCompoundBCManagedData.setInteger("facing", intFacing[intFacing[intFacing[facing]]]);
+				break;
+			default:
+				break;
+			}
+		}
+		
+		// common optional "CoreDirection" property for ParticleGenerator
+		if (tagCompoundBCManagedData.hasKey("CoreDirection")) {
+			final int facing = tagCompoundBCManagedData.getInteger("CoreDirection");
+			switch (rotationSteps) {
+			case 1:
+				tagCompoundBCManagedData.setInteger("CoreDirection", intFacing[facing]);
+				break;
+			case 2:
+				tagCompoundBCManagedData.setInteger("CoreDirection", intFacing[intFacing[facing]]);
+				break;
+			case 3:
+				tagCompoundBCManagedData.setInteger("CoreDirection", intFacing[intFacing[intFacing[facing]]]);
+				break;
+			default:
+				break;
+			}
+		}
+		
+		// absolute coordinate "lastCorePos" for CraftingInjector
+		if (tagCompoundBCManagedData.hasKey("lastCorePos")) {
+			final NBTTagList tagListLastCorePos = tagCompoundBCManagedData.getTagList("lastCorePos", NBT.TAG_INT);
+			// There's "isValid" flag and it's an absolute coordinate defaulting to 0 0 0.
+			// After jump, it would load 'random' chunks, so we're checking if it's inside the ship before transforming.
+			// Position can be far outside the ship, so we'll reset to default if it's outside the ship.
+			final int x = tagListLastCorePos.getIntAt(0);
+			final int y = tagListLastCorePos.getIntAt(1);
+			final int z = tagListLastCorePos.getIntAt(2);
+			if (transformation.isInside(x, y, z)) {
+				final BlockPos targetLink = transformation.apply(x, y, z);
+				tagListLastCorePos.set(0, new NBTTagInt(targetLink.getX()));
+				tagListLastCorePos.set(1, new NBTTagInt(targetLink.getY()));
+				tagListLastCorePos.set(2, new NBTTagInt(targetLink.getZ()));
+			} else {
+				tagListLastCorePos.set(0, new NBTTagInt(0));
+				tagListLastCorePos.set(1, new NBTTagInt(0));
+				tagListLastCorePos.set(2, new NBTTagInt(0));
+			}
+		}
+		
+		// from now on we're transforming relative coordinates, so we'll need the block old and new coordinates of this block
+		final BlockPos blockPosOld = new BlockPos(
+				nbtTileEntity.getInteger("x"),
+				nbtTileEntity.getInteger("y"),
+				nbtTileEntity.getInteger("z"));
+		final BlockPos blockPosNew = transformation.apply(blockPosOld);
+		
+		// EnergyCrystal
+		if (nbtTileEntity.hasKey("LinkedCrystals")) {
+			final NBTTagList tagListOldLinkedCrystals = nbtTileEntity.getTagList("LinkedCrystals", NBT.TAG_BYTE_ARRAY);
+			final int countLinks = tagListOldLinkedCrystals.tagCount();
+			if (countLinks > 0) {
+				final NBTTagList tagListNewLinkedCrystals = new NBTTagList();
+				for (int index = 0; index < countLinks; index++) {
+					final NBTTagByteArray listLinkedCrystal = (NBTTagByteArray) tagListOldLinkedCrystals.get(index);
+					final byte[] byteLink = listLinkedCrystal.getByteArray();
+					final int x = blockPosOld.getX() - byteLink[0];
+					final int y = blockPosOld.getY() - byteLink[1];
+					final int z = blockPosOld.getZ() - byteLink[2];
+					if (transformation.isInside(x, y, z)) {
+						final BlockPos targetLink = transformation.apply(x, y, z);
+						byteLink[0] = (byte) (targetLink.getX() - blockPosNew.getX());
+						byteLink[1] = (byte) (targetLink.getY() - blockPosNew.getY());
+						byteLink[2] = (byte) (targetLink.getZ() - blockPosNew.getZ());
+						tagListNewLinkedCrystals.appendTag(listLinkedCrystal);
+					} else {// (outside ship)
+						// remove the link
+						byteLink[0] = (byte) 0;
+						byteLink[1] = (byte) 0;
+						byteLink[2] = (byte) 0;
+					}
+				}
+				nbtTileEntity.setTag("LinkedCrystals", tagListNewLinkedCrystals);
+			}
+		}
+		
+		// EnergyStorageCore
+		if (tagCompoundBCManagedData.getBoolean("stabilizersOK")) {
+			for (int index = 0; index < 4; index++) {
+				final String tagName = String.format("stabOffset%d", index);
+				final NBTTagList tagListOffset = tagCompoundBCManagedData.getTagList(tagName, NBT.TAG_INT);
+				final int x = blockPosOld.getX() - tagListOffset.getIntAt(0);
+				final int y = blockPosOld.getY() - tagListOffset.getIntAt(1);
+				final int z = blockPosOld.getZ() - tagListOffset.getIntAt(2);
+				if (transformation.isInside(x, y, z)) {
+					final BlockPos targetStabilizer = transformation.apply(x, y, z);
+					tagListOffset.set(0, new NBTTagInt(targetStabilizer.getX() - blockPosNew.getX()));
+					tagListOffset.set(1, new NBTTagInt(targetStabilizer.getY() - blockPosNew.getY()));
+					tagListOffset.set(2, new NBTTagInt(targetStabilizer.getZ() - blockPosNew.getZ()));
+				} else {// (outside ship)
+					// remove the link
+					tagListOffset.set(0, new NBTTagInt(0));
+					tagListOffset.set(1, new NBTTagInt(0));
+					tagListOffset.set(2, new NBTTagInt(0));
+				}
+			}
+		}
+		
+		// EnergyPylon, InvisECoreBlock, ParticleGenerator, ReactorComponent
+		if (tagCompoundBCManagedData.hasKey("coreOffset")) {
+			final NBTTagList tagListOffset = tagCompoundBCManagedData.getTagList("coreOffset", NBT.TAG_INT);
+			if ( tagCompoundBCManagedData.getBoolean("structureValid")
+			  || classBlockInvisECoreBlock.isInstance(block)
+			  || tagCompoundBCManagedData.getBoolean("hasCoreLock")
+			  || tagCompoundBCManagedData.getBoolean("isBound") ) {
+				final int x = blockPosOld.getX() - tagListOffset.getIntAt(0);
+				final int y = blockPosOld.getY() - tagListOffset.getIntAt(1);
+				final int z = blockPosOld.getZ() - tagListOffset.getIntAt(2);
+				if (transformation.isInside(x, y, z)) {
+					final BlockPos targetStabilizer = transformation.apply(x, y, z);
+					tagListOffset.set(0, new NBTTagInt(targetStabilizer.getX() - blockPosNew.getX()));
+					tagListOffset.set(1, new NBTTagInt(targetStabilizer.getY() - blockPosNew.getY()));
+					tagListOffset.set(2, new NBTTagInt(targetStabilizer.getZ() - blockPosNew.getZ()));
+				} else {// (outside ship)
+					// remove the link
+					tagListOffset.set(0, new NBTTagInt(0));
+					tagListOffset.set(1, new NBTTagInt(0));
+					tagListOffset.set(2, new NBTTagInt(0));
+				}
+			} else {// (not bound or invalid)
+				// remove the link
+				tagListOffset.set(0, new NBTTagInt(0));
+				tagListOffset.set(1, new NBTTagInt(0));
+				tagListOffset.set(2, new NBTTagInt(0));
+			}
+		}
+		
+		// ReactorCore
+		if (tagCompoundBCManagedData.hasKey("componentPosition0")) {
+			final HashMap<String, NBTTagList> mapNewPosition = new HashMap<>(6);
+			
+			for (int facing = 0; facing < 6; facing++) {
+				// rotate the key name
+				final String tagOldName = String.format("componentPosition%d", facing);
+				final String tagNewName;
+				switch (rotationSteps) {
+				case 1:
+					tagNewName = String.format("componentPosition%d", intFacing[facing]);
+					break;
+				case 2:
+					tagNewName = String.format("componentPosition%d", intFacing[intFacing[facing]]);
+					break;
+				case 3:
+					tagNewName = String.format("componentPosition%d", intFacing[intFacing[intFacing[facing]]]);
+					break;
+				default:
+					tagNewName = tagOldName;
+					break;
+				}
+				
+				// get current offset
+				final NBTTagList tagListOffset = tagCompoundBCManagedData.getTagList(tagOldName, NBT.TAG_INT);
+				
+				// transform as needed
+				if ( tagListOffset.getIntAt(0) != 0
+				  || tagListOffset.getIntAt(1) != 0
+				  || tagListOffset.getIntAt(2) != 0 ) {
+					final int x = blockPosOld.getX() - tagListOffset.getIntAt(0);
+					final int y = blockPosOld.getY() - tagListOffset.getIntAt(1);
+					final int z = blockPosOld.getZ() - tagListOffset.getIntAt(2);
+					if (transformation.isInside(x, y, z)) {
+						final BlockPos targetComponent = transformation.apply(x, y, z);
+						tagListOffset.set(0, new NBTTagInt(targetComponent.getX() - blockPosNew.getX()));
+						tagListOffset.set(1, new NBTTagInt(targetComponent.getY() - blockPosNew.getY()));
+						tagListOffset.set(2, new NBTTagInt(targetComponent.getZ() - blockPosNew.getZ()));
+					} else {// (outside ship)
+						// remove the link
+						tagListOffset.set(0, new NBTTagInt(0));
+						tagListOffset.set(1, new NBTTagInt(0));
+						tagListOffset.set(2, new NBTTagInt(0));
+					}
+				}
+				
+				// save the new value
+				mapNewPosition.put(tagNewName, tagListOffset);
+				tagCompoundBCManagedData.removeTag(tagOldName);
+			}
+			
+			// apply the new position
+			for (final Entry<String, NBTTagList> entry : mapNewPosition.entrySet()) {
+				tagCompoundBCManagedData.setTag(entry.getKey(), entry.getValue());
+			}
 		}
 		
 		return metadata;

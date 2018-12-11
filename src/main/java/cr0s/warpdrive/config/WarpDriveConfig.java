@@ -1278,7 +1278,7 @@ public class WarpDriveConfig {
 			CompatDeepResonance.register();
 		}
 		
-		final boolean isDraconicEvolutionLoaded = Loader.isModLoaded("DraconicEvolution");
+		final boolean isDraconicEvolutionLoaded = Loader.isModLoaded("draconicevolution");
 		if (isDraconicEvolutionLoaded) {
 			CompatDraconicEvolution.register();
 		}

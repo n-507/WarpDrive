@@ -719,7 +719,7 @@ warpdrive.cloaking_core.cloaking=Een Niveau %1$d dekmantelveld bedekt huidig %2$
 
 warpdrive.compat.guide.block_detected_on_board=%1$s detected on board!
 warpdrive.compat.guide.quantum_field_interference=Quantum field interference detected!
-warpdrive.compat.guide.ender_resurrection_ritual=Active Ender resurrection ritual!
+warpdrive.compat.guide.draconic_evolution_portal=Portal detected!
 warpdrive.compat.guide.stargate_is_active=Stargate is active (%1$s)!
 
 warpdrive.energy.status_line=Energielevel is op %1$s / %2$s EU.
