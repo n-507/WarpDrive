@@ -25,6 +25,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -253,11 +254,18 @@ public class JumpShip {
 	}
 	
 	public boolean checkBorders(final WarpDriveText reason) {
+		final MutableBlockPos mutableBlockPos = new MutableBlockPos();
 		// Abort jump if blocks with TE are connecting to the ship (avoid crash when splitting multi-blocks)
 		for (int x = minX - 1; x <= maxX + 1; x++) {
 			final boolean xBorder = (x == minX - 1) || (x == maxX + 1);
 			for (int z = minZ - 1; z <= maxZ + 1; z++) {
 				final boolean zBorder = (z == minZ - 1) || (z == maxZ + 1);
+				
+				// skip the corners
+				if (xBorder && zBorder) {
+					continue;
+				}
+				
 				for (int y = minY - 1; y <= maxY + 1; y++) {
 					final boolean yBorder = (y == minY - 1) || (y == maxY + 1);
 					if ((y < 0) || (y > 255)) {
@@ -266,13 +274,19 @@ public class JumpShip {
 					if (!(xBorder || yBorder || zBorder)) {
 						continue;
 					}
-					BlockPos blockPos = new BlockPos(x, y, z);
-					IBlockState blockState = world.getBlockState(blockPos);
+					
+					// skip the corners
+					if (yBorder && (xBorder || zBorder)) {
+						continue;
+					}
+					
+					mutableBlockPos.setPos(x, y, z);
+					final IBlockState blockState = world.getBlockState(mutableBlockPos);
 					
 					final Block block = blockState.getBlock();
 					
 					// Skipping any air block & ignored blocks
-					if ( world.isAirBlock(blockPos)
+					if ( world.isAirBlock(mutableBlockPos)
 					  || Dictionary.BLOCKS_LEFTBEHIND.contains(block) ) {
 						continue;
 					}
@@ -283,8 +297,27 @@ public class JumpShip {
 					}
 					
 					// Skipping blocks without tile entities
-					final TileEntity tileEntity = world.getTileEntity(blockPos);
-					if (tileEntity == null) {
+					if (!block.hasTileEntity(blockState)) {
+						continue;
+					}
+					
+					
+					// Check inner block
+					mutableBlockPos.setPos(
+							x == minX - 1 ? minX : x == maxX + 1 ? maxX : x,
+							y == minY - 1 ? minY : y == maxY + 1 ? maxY : y,
+							z == minZ - 1 ? minZ : z == maxZ + 1 ? maxZ : z );
+					final IBlockState blockStateInner = world.getBlockState(mutableBlockPos);
+					final Block blockInner = blockStateInner.getBlock();
+					
+					// Skipping any air block & ignored blocks
+					if ( world.isAirBlock(mutableBlockPos)
+					  || Dictionary.BLOCKS_LEFTBEHIND.contains(blockInner) ) {
+						continue;
+					}
+					
+					// Skipping blocks without tile entities
+					if (!blockInner.hasTileEntity(blockStateInner)) {
 						continue;
 					}
 					
@@ -292,7 +325,7 @@ public class JumpShip {
 					              blockState.getBlock().getLocalizedName(),
 					              x, y, z);
 					reason.append(Commons.styleCommand, "warpdrive.ship.guide.ship_snagged2");
-					world.createExplosion(null, x, y, z, Math.min(4F * 30, 4F * (jumpBlocks.length / 50)), false);
+					world.createExplosion(null, x, y, z, Math.min(4F * 30, 4F * (jumpBlocks.length / 50.0F)), false);
 					return false;
 				}
 			}
