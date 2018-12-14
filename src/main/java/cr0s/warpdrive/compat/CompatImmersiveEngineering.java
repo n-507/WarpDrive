@@ -3,12 +3,16 @@ package cr0s.warpdrive.compat;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+
+import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBlockTransformer;
 import cr0s.warpdrive.api.ITransformation;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -16,9 +20,12 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.Optional;
 
 public class CompatImmersiveEngineering implements IBlockTransformer {
@@ -28,7 +35,9 @@ public class CompatImmersiveEngineering implements IBlockTransformer {
 	public static void register() {
 		try {
 			classTileEntityIEBase = Class.forName("blusunrize.immersiveengineering.common.blocks.TileEntityIEBase");
-			WarpDriveConfig.registerBlockTransformer("immersiveengineering", new CompatImmersiveEngineering());
+			// note: this also covers ImmersiveTech and ImmersivePetroleum
+			
+			WarpDriveConfig.registerBlockTransformer("ImmersiveEngineering", new CompatImmersiveEngineering());
 		} catch(final ClassNotFoundException exception) {
 			exception.printStackTrace();
 		}
@@ -68,28 +77,274 @@ public class CompatImmersiveEngineering implements IBlockTransformer {
 		// nothing to do
 	}
 	
+	/*
+	generic
+	    facing int vanilla facing (optional)
+	immersiveengineering:capacitormv
+		sideConfig_0 to 5 integer 0, 1, 2
+	immersiveengineering:floodlight
+		facing int vanilla facing
+		side int vanilla facing
+	immersiveengineering:fluidpump
+		sideConfig integer[6] 0, -1 or 1
+	immersiveengineering:fluidsorter
+		facing int vanilla facing
+		filter_0 to 5 list<TagCompound>
+	immersiveengineering:watermill
+		facing int vanilla facing
+		offset integer[2] a b offset to core
+	immersiveengineering:alloysmelter
+	immersiveengineering:cokeoven
+	immersiveengineering:crusher
+	immersiveengineering:metalpress
+	immersivepetroleum:pumpjack
+	immersivetech:boiler
+	immersivetech:distiller
+	immersivetech:solartower
+		facing int vanilla facing
+		offset integer[3] x y z offset to core
+	conveyor 'upgrades'
+		facing int vanilla facing
+		conveyorBeltSubtypeNBT.direction int (always 0 ?)
+		conveyorBeltSubtypeNBT.extraDirection int 2 - 5 vanilla facing (optional)
+	*/
+	
+	//                                                   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
+	private static final int[]  rotFacing           = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	
 	@Override
 	public int rotate(final Block block, final int metadata, final NBTTagCompound nbtTileEntity, final ITransformation transformation) {
 		final byte rotationSteps = transformation.getRotationSteps();
-		if (rotationSteps == 0 || !nbtTileEntity.hasKey("facing")) {
+		if (rotationSteps == 0) {
 			return metadata;
 		}
 		
-		final int facing = nbtTileEntity.getInteger("facing");
-		final int[] mrot = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-		switch (rotationSteps) {
-		case 1:
-			nbtTileEntity.setInteger("facing", mrot[facing]);
-			return metadata;
-		case 2:
-			nbtTileEntity.setInteger("facing", mrot[mrot[facing]]);
-			return metadata;
-		case 3:
-			nbtTileEntity.setInteger("facing", mrot[mrot[mrot[facing]]]);
-			return metadata;
-		default:
-			return metadata;
+		// Capacitor
+		if (nbtTileEntity.hasKey("sideConfig_0")) {
+			final HashMap<String, NBTBase> mapNewSideConfig = new HashMap<>(6);
+			
+			for (int facing = 0; facing < 6; facing++) {
+				// rotate the key name
+				final String tagOldName = String.format("sideConfig_%d", facing);
+				final String tagNewName;
+				switch (rotationSteps) {
+				case 1:
+					tagNewName = String.format("sideConfig_%d", rotFacing[facing]);
+					break;
+				case 2:
+					tagNewName = String.format("sideConfig_%d", rotFacing[rotFacing[facing]]);
+					break;
+				case 3:
+					tagNewName = String.format("sideConfig_%d", rotFacing[rotFacing[rotFacing[facing]]]);
+					break;
+				default:
+					tagNewName = tagOldName;
+					break;
+				}
+				
+				// rotate config name
+				final NBTBase tagListOldSideConfig = nbtTileEntity.getTag(tagOldName);
+				mapNewSideConfig.put(tagNewName, tagListOldSideConfig);
+				nbtTileEntity.removeTag(tagOldName);
+			}
+			
+			// apply the new side configurations
+			for (final Entry<String, NBTBase> entry : mapNewSideConfig.entrySet()) {
+				nbtTileEntity.setTag(entry.getKey(), entry.getValue());
+			}
 		}
+		
+		// Conveyor
+		if (nbtTileEntity.hasKey("conveyorBeltSubtypeNBT")) {
+			final NBTTagCompound conveyorBeltSubtypeNBT = nbtTileEntity.getCompoundTag("conveyorBeltSubtypeNBT");
+			if (conveyorBeltSubtypeNBT.hasKey("extractDirection")) {
+				final int extraDirection = conveyorBeltSubtypeNBT.getInteger("extractDirection");
+				switch (rotationSteps) {
+				case 1:
+					conveyorBeltSubtypeNBT.setInteger("extractDirection", rotFacing[extraDirection]);
+					break;
+				case 2:
+					conveyorBeltSubtypeNBT.setInteger("extractDirection", rotFacing[rotFacing[extraDirection]]);
+					break;
+				case 3:
+					conveyorBeltSubtypeNBT.setInteger("extractDirection", rotFacing[rotFacing[rotFacing[extraDirection]]]);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		
+		// Floodlight
+		if (nbtTileEntity.hasKey("side")) {
+			final int side = nbtTileEntity.getInteger("side");
+			switch (rotationSteps) {
+			case 1:
+				nbtTileEntity.setInteger("side", rotFacing[side]);
+				break;
+			case 2:
+				nbtTileEntity.setInteger("side", rotFacing[rotFacing[side]]);
+				break;
+			case 3:
+				nbtTileEntity.setInteger("side", rotFacing[rotFacing[rotFacing[side]]]);
+				break;
+			default:
+				break;
+			}
+		}
+		
+		// FluidPump
+		if (nbtTileEntity.hasKey("sideConfig")) {
+			final int[] intOldSideConfig = nbtTileEntity.getIntArray("sideConfig");
+			final int[] intNewSideConfig = new int[6];
+			
+			for (int facingOld = 0; facingOld < 6; facingOld++) {
+				// rotate the key name
+				final int facingNew;
+				switch (rotationSteps) {
+				case 1:
+					facingNew = rotFacing[facingOld];
+					break;
+				case 2:
+					facingNew = rotFacing[rotFacing[facingOld]];
+					break;
+				case 3:
+					facingNew = rotFacing[rotFacing[rotFacing[facingOld]]];
+					break;
+				default:
+					facingNew = facingOld;
+					break;
+				}
+				
+				// rotate config name
+				intNewSideConfig[facingNew] = intOldSideConfig[facingOld];
+			}
+			
+			// apply the new side configurations
+			nbtTileEntity.setIntArray("sideConfig", intNewSideConfig);
+		}
+		
+		// FluidSorter
+		if (nbtTileEntity.hasKey("filter_0")) {
+			final HashMap<String, NBTBase> mapNewFilter = new HashMap<>(6);
+			
+			for (int facing = 0; facing < 6; facing++) {
+				// rotate the key name
+				final String tagOldName = String.format("filter_%d", facing);
+				final String tagNewName;
+				switch (rotationSteps) {
+				case 1:
+					tagNewName = String.format("filter_%d", rotFacing[facing]);
+					break;
+				case 2:
+					tagNewName = String.format("filter_%d", rotFacing[rotFacing[facing]]);
+					break;
+				case 3:
+					tagNewName = String.format("filter_%d", rotFacing[rotFacing[rotFacing[facing]]]);
+					break;
+				default:
+					tagNewName = tagOldName;
+					break;
+				}
+				
+				// rotate filter
+				final NBTBase tagListOldFilter = nbtTileEntity.getTag(tagOldName);
+				mapNewFilter.put(tagNewName, tagListOldFilter);
+				nbtTileEntity.removeTag(tagOldName);
+			}
+			
+			// apply the new filters
+			for (final Entry<String, NBTBase> entry : mapNewFilter.entrySet()) {
+				nbtTileEntity.setTag(entry.getKey(), entry.getValue());
+			}
+		}
+		
+		// Watermill and other multi-blocks
+		if (nbtTileEntity.hasKey("offset", NBT.TAG_INT_ARRAY)) {
+			// we're transforming relative coordinates, so we'll need the block old and new coordinates of this block
+			final BlockPos blockPosOld = new BlockPos(
+					nbtTileEntity.getInteger("x"),
+					nbtTileEntity.getInteger("y"),
+					nbtTileEntity.getInteger("z"));
+			final BlockPos blockPosNew = transformation.apply(blockPosOld);
+			
+			// facing 4 or 5 (WEST or EAST) is X axis, offset is along Z axis
+			// facing 2 or 3 (NORTH or SOUTH) is Z axis, offset is along X axis
+			final int facing = nbtTileEntity.getInteger("facing");
+			final EnumFacing enumFacingOld = EnumFacing.byIndex(facing);
+			final EnumFacing enumFacingNew;
+			switch (rotationSteps) {
+			case 1:
+				enumFacingNew = EnumFacing.byIndex(rotFacing[facing]);
+				break;
+			case 2:
+				enumFacingNew = EnumFacing.byIndex(rotFacing[rotFacing[facing]]);
+				break;
+			case 3:
+				enumFacingNew = EnumFacing.byIndex(rotFacing[rotFacing[rotFacing[facing]]]);
+				break;
+			default:
+				enumFacingNew = enumFacingOld;
+				break;
+			}
+			
+			
+			final int[] intOffsets = nbtTileEntity.getIntArray("offset");
+			if (intOffsets.length == 2) {// watermill use 2 offset relative to facing
+				final int x = blockPosOld.getX() + (enumFacingOld.getAxis() == Axis.Z ? intOffsets[0] : 0);
+				final int y = blockPosOld.getY() + intOffsets[1];
+				final int z = blockPosOld.getZ() + (enumFacingOld.getAxis() == Axis.X ? intOffsets[0] : 0);
+				if (transformation.isInside(x, y, z)) {
+					final BlockPos targetStabilizer = transformation.apply(x, y, z);
+					intOffsets[0] = enumFacingNew.getAxis() == Axis.Z ? targetStabilizer.getX() - blockPosNew.getX()
+					                                                  : targetStabilizer.getZ() - blockPosNew.getZ();
+					intOffsets[1] = targetStabilizer.getY() - blockPosNew.getY();
+				} else {// (outside ship)
+					// remove the link
+					intOffsets[0] = 0;
+					intOffsets[1] = 0;
+					// note: this may cause a dup bug but its TileEntities can't be cut by a ship during jump anyway.
+				}
+			} else if (nbtTileEntity.getBoolean("formed")) {// other multi-blocks uses 3 offset along the world x y z axis
+				final int x = blockPosOld.getX() + intOffsets[0];
+				final int y = blockPosOld.getY() + intOffsets[1];
+				final int z = blockPosOld.getZ() + intOffsets[2];
+				if (transformation.isInside(x, y, z)) {
+					final BlockPos targetStabilizer = transformation.apply(x, y, z);
+					intOffsets[0] = targetStabilizer.getX() - blockPosNew.getX();
+					intOffsets[1] = targetStabilizer.getY() - blockPosNew.getY();
+					intOffsets[2] = targetStabilizer.getZ() - blockPosNew.getZ();
+				} else {// (outside ship)
+					// remove the link
+					intOffsets[0] = 0;
+					intOffsets[1] = 0;
+					intOffsets[2] = 0;
+				}
+			} else {
+				WarpDrive.logger.error(String.format("Unexpected context for offset int array in %s for %s",
+				                                     nbtTileEntity, block));
+			}
+		}
+		
+		// generic facing property is rotated last so other transformer can access its original value
+		if (nbtTileEntity.hasKey("facing")) {
+			final int facing = nbtTileEntity.getInteger("facing");
+			switch (rotationSteps) {
+			case 1:
+				nbtTileEntity.setInteger("facing", rotFacing[facing]);
+				break;
+			case 2:
+				nbtTileEntity.setInteger("facing", rotFacing[rotFacing[facing]]);
+				break;
+			case 3:
+				nbtTileEntity.setInteger("facing", rotFacing[rotFacing[rotFacing[facing]]]);
+				break;
+			default:
+				break;
+			}
+		}
+		
+		return metadata;
 	}
 	
 	@Override
@@ -127,7 +382,7 @@ public class CompatImmersiveEngineering implements IBlockTransformer {
 			}
 			if (!existing) {
 				ImmersiveNetHandler.INSTANCE.addConnection(targetWorld, connectionToAdd.start, connectionToAdd);
-		}
+			}
 		}
 	}
 }
