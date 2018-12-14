@@ -347,8 +347,9 @@ public class WorldGenStructure {
 					jumpBlock.deploy(world, transformation);
 				} else {
 					if (WarpDriveConfig.LOGGING_WORLD_GENERATION && WarpDrive.isDev) {
-						WarpDrive.logger.info(String.format("Deployment collision detected %s",
-						                                    Commons.format(world, targetX + jumpBlock.x, targetY + jumpBlock.y, targetZ + jumpBlock.z)));
+						WarpDrive.logger.info(String.format("Deployment collision detected %s with %s during world generation, skipping this block...",
+						                                    Commons.format(world, targetX + jumpBlock.x, targetY + jumpBlock.y, targetZ + jumpBlock.z),
+						                                    blockAtTarget.getRegistryName()));
 					}
 				}
 			}
