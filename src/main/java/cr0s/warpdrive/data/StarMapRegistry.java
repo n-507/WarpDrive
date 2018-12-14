@@ -86,6 +86,7 @@ public class StarMapRegistry {
 			if ( registryItem.type.equals(tileEntity.getStarMapType())
 			  && registryItem.uuid.equals(uuidTileEntity) ) {// already registered
 				registryItem.update(tileEntity);    // in-place update only works as long as hashcode remains unchanged
+				setRegistryItems.removeAll(listToRemove);
 				return;
 			} else if (registryItem.sameCoordinates(tileEntity)) {
 				listToRemove.add(registryItem);
@@ -451,13 +452,15 @@ public class StarMapRegistry {
 		for (final StarMapRegistryItem registryItem : setRegistryItems) {
 			assert registryItem.dimensionId == shipCore1.getWorld().provider.getDimension();
 			
-			// only check cores
+			// only check ships
 			if (registryItem.type != EnumStarMapEntryType.SHIP) {
 				continue;
 			}
 			
 			// Skip self
-			if (registryItem.x == shipCore1.getPos().getX() && registryItem.y == shipCore1.getPos().getY() && registryItem.z == shipCore1.getPos().getZ()) {
+			if ( registryItem.x == shipCore1.getPos().getX()
+			  && registryItem.y == shipCore1.getPos().getY()
+			  && registryItem.z == shipCore1.getPos().getZ() ) {
 				continue;
 			}
 			
