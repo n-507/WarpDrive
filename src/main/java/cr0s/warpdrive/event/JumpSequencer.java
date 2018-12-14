@@ -1247,7 +1247,17 @@ public class JumpSequencer extends AbstractSequencer {
 					sourceWorld.removeTileEntity(new BlockPos(jumpBlock.x, jumpBlock.y, jumpBlock.z));
 				}
 				try {
-					JumpBlock.setBlockNoLight(sourceWorld, new BlockPos(jumpBlock.x, jumpBlock.y, jumpBlock.z), Blocks.AIR.getDefaultState(), 2);
+					final BlockPos blockPos = new BlockPos(jumpBlock.x, jumpBlock.y, jumpBlock.z);
+					boolean isRemoved = JumpBlock.setBlockNoLight(sourceWorld, blockPos, Blocks.AIR.getDefaultState(), 2);
+					if (!isRemoved) {
+						WarpDrive.logger.info(String.format("Failed to remove %s@%d at (%d %d %d), retrying...",
+						                                    jumpBlock.block, jumpBlock.blockMeta, jumpBlock.x, jumpBlock.y, jumpBlock.z));
+						isRemoved = JumpBlock.setBlockNoLight(sourceWorld, blockPos, Blocks.AIR.getDefaultState(), 2);
+						if (!isRemoved) {
+							WarpDrive.logger.error(String.format("Failed to remove %s@%d at (%d %d %d), still failing?",
+							                                     jumpBlock.block, jumpBlock.blockMeta, jumpBlock.x, jumpBlock.y, jumpBlock.z));
+						}
+					}
 				} catch (final Exception exception) {
 					WarpDrive.logger.info(String.format("Exception while removing %s@%d at (%d %d %d)",
 					                                    jumpBlock.block, jumpBlock.blockMeta, jumpBlock.x, jumpBlock.y, jumpBlock.z));
