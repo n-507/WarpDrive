@@ -454,7 +454,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 			if (isForced) {
 				if (!isShipCoreClear(world, new BlockPos(targetX, targetY, targetZ), playerName, reason)) {
 					if (WarpDriveConfig.LOGGING_BUILDING) {
-						WarpDrive.logger.info(String.format("Deployment collision detected at (%d %d %d)",
+						WarpDrive.logger.info(String.format("Deployment collision detected at (%d %d %d): no room for Ship core",
 						                                    targetX, targetY, targetZ));
 					}
 					return 2;
