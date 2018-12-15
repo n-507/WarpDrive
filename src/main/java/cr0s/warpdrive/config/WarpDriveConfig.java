@@ -15,6 +15,7 @@ import cr0s.warpdrive.compat.CompatComputerCraft;
 import cr0s.warpdrive.compat.CompatCustomNpcs;
 import cr0s.warpdrive.compat.CompatDeepResonance;
 import cr0s.warpdrive.compat.CompatDraconicEvolution;
+import cr0s.warpdrive.compat.CompatEmbers;
 import cr0s.warpdrive.compat.CompatEnderIO;
 import cr0s.warpdrive.compat.CompatEnvironmentalTech;
 import cr0s.warpdrive.compat.CompatEvilCraft;
@@ -1283,9 +1284,9 @@ public class WarpDriveConfig {
 			CompatDraconicEvolution.register();
 		}
 		
-		final boolean isEvilCraftLoaded = Loader.isModLoaded("evilcraft");
-		if (isEvilCraftLoaded) {
-			CompatEvilCraft.register();
+		final boolean isEmbersLoaded = Loader.isModLoaded("embers");
+		if (isEmbersLoaded) {
+			CompatEmbers.register();
 		}
 		
 		final boolean isEnvironmentalTechLoaded = Loader.isModLoaded("environmentaltech");
@@ -1296,6 +1297,11 @@ public class WarpDriveConfig {
 		final boolean isExtraUtilities2Loaded = Loader.isModLoaded("extrautils2");
 		if (isExtraUtilities2Loaded) {
 			CompatExtraUtilities2.register();
+		}
+		
+		final boolean isEvilCraftLoaded = Loader.isModLoaded("evilcraft");
+		if (isEvilCraftLoaded) {
+			CompatEvilCraft.register();
 		}
 		
 		final boolean isIndustrialForegoingLoaded = Loader.isModLoaded("industrialforegoing");

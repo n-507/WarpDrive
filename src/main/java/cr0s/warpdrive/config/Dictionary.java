@@ -142,6 +142,7 @@ public class Dictionary {
 				config.get("block_tags", "warpdrive:force_field.basic"                     , "PlaceLatest StopMining NoMass").getString();
 				config.get("block_tags", "warpdrive:force_field.advanced"                  , "PlaceLatest StopMining NoMass").getString();
 				config.get("block_tags", "warpdrive:force_field.superior"                  , "PlaceLatest StopMining NoMass").getString();
+				config.get("block_tags", "embers:caminite_lever"                           , "PlaceLatest").getString();
 				config.get("block_tags", "ic2:foam"                                        , "PlaceEarliest StopMining").getString();
 				// @TODO MC1.12 config.get("block_tags", "ic2:blockAlloy"                                  , "PlaceEarliest StopMining").getString();
 				config.get("block_tags", "ic2:glass"                                       , "PlaceEarliest StopMining").getString();
