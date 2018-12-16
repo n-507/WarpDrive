@@ -19,7 +19,8 @@ public class CompatNatura implements IBlockTransformer {
 	
 	public static void register() {
 		try {
-			classTileNetherFurnace = Class.forName("mods.natura.blocks.tech.NetherrackFurnaceLogic");
+			classTileNetherFurnace = Class.forName("com.progwml6.natura.nether.block.furnace.BlockNetherrackFurnace");
+			
 			WarpDriveConfig.registerBlockTransformer("Natura", new CompatNatura());
 		} catch(final ClassNotFoundException exception) {
 			exception.printStackTrace();
@@ -28,7 +29,7 @@ public class CompatNatura implements IBlockTransformer {
 	
 	@Override
 	public boolean isApplicable(final Block block, final int metadata, final TileEntity tileEntity) {
-		return classTileNetherFurnace.isInstance(tileEntity);
+		return classTileNetherFurnace.isInstance(block);
 	}
 	
 	@Override
@@ -48,7 +49,8 @@ public class CompatNatura implements IBlockTransformer {
 		// nothing to do
 	}
 	
-	private static final byte[] mrot = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	//                                               0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
+	private static final byte[] rotFacing       = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
 	
 	@Override
 	public int rotate(final Block block, final int metadata, final NBTTagCompound nbtTileEntity, final ITransformation transformation) {
@@ -56,23 +58,18 @@ public class CompatNatura implements IBlockTransformer {
 		if (rotationSteps == 0) {
 			return metadata;
 		}
-		if (nbtTileEntity.hasKey("Direction")) {
-			final byte direction = nbtTileEntity.getByte("Direction");
-			switch (rotationSteps) {
-			case 1:
-				nbtTileEntity.setByte("Direction", mrot[direction]);
-				break;
-			case 2:
-				nbtTileEntity.setByte("Direction", mrot[mrot[direction]]);
-				break;
-			case 3:
-				nbtTileEntity.setByte("Direction", mrot[mrot[mrot[direction]]]);
-				break;
-			default:
-				break;
-			}
+		
+		// furnace
+		switch (rotationSteps) {
+		case 1:
+			return rotFacing[metadata];
+		case 2:
+			return rotFacing[rotFacing[metadata]];
+		case 3:
+			return rotFacing[rotFacing[rotFacing[metadata]]];
+		default:
+			return metadata;
 		}
-		return metadata;
 	}
 	
 	@Override

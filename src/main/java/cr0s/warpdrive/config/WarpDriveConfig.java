@@ -1339,7 +1339,7 @@ public class WarpDriveConfig {
 			CompatMysticalAgriculture.register();
 		}
 		
-		final boolean isNaturaLoaded = Loader.isModLoaded("Natura");
+		final boolean isNaturaLoaded = Loader.isModLoaded("natura");
 		if (isNaturaLoaded) {
 			CompatNatura.register();
 		}
