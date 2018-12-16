@@ -1192,7 +1192,7 @@ public class WarpDriveConfig {
 		// read non-explicit mod dependencies
 		isAdvancedRepulsionSystemLoaded = Loader.isModLoaded("AdvancedRepulsionSystems");
 		isAdvancedSolarPanelLoaded = Loader.isModLoaded("AdvancedSolarPanel");
-		isForgeMultipartLoaded = Loader.isModLoaded("ForgeMultipart");
+		isForgeMultipartLoaded = Loader.isModLoaded("forgemultipartcbe");
 		isICBMClassicLoaded = Loader.isModLoaded("icbmclassic");
 		isNotEnoughItemsLoaded = Loader.isModLoaded("NotEnoughItems");
 		isImmersiveEngineeringLoaded = Loader.isModLoaded("immersiveengineering");

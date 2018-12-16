@@ -29,15 +29,21 @@ public class CompatForgeMultipart implements IBlockTransformer {
 	
 	public static boolean register() {
 		try {
+			/*
+			helper no longer exist on 1.12.2, not sure if the underlying issue is still applicable (hidden block in multiplayer after jump)
+			=> keep in comments for now
+			
 			final Class<?> forgeMultipart_helper = Class.forName("codechicken.multipart.MultipartHelper");
 			methodMultipartHelper_createTileFromNBT = forgeMultipart_helper.getDeclaredMethod("createTileFromNBT", World.class, NBTTagCompound.class);
 			methodMultipartHelper_sendDescPacket = forgeMultipart_helper.getDeclaredMethod("sendDescPacket", World.class, TileEntity.class);
 			final Class<?> forgeMultipart_tileMultipart = Class.forName("codechicken.multipart.TileMultipart");
 			methodTileMultipart_onChunkLoad = forgeMultipart_tileMultipart.getDeclaredMethod("onChunkLoad");
+			*/
 			
 			classBlockMultipart = Class.forName("codechicken.multipart.BlockMultipart");
+			
 			WarpDriveConfig.registerBlockTransformer("ForgeMultipart", new CompatForgeMultipart());
-		} catch(final ClassNotFoundException | SecurityException | NoSuchMethodException exception) {
+		} catch (final ClassNotFoundException | SecurityException /* | NoSuchMethodException */ exception) {
 			exception.printStackTrace();
 			return false;
 		}
@@ -95,42 +101,49 @@ public class CompatForgeMultipart implements IBlockTransformer {
 			String propertyName = null;
 			byte mask = (byte) 0xFF;
 			byte[] rot = null;
+			
 			// microblocks
 			switch (id) {
-				case "mcr_cnr":
-					propertyName = "shape";
-					mask = (byte) 0x0F;
-					rot = rotMicroblockCorner;
-					break;
-				case "mcr_face":
-				case "mcr_hllw":
-					propertyName = "shape";
-					mask = (byte) 0x0F;
-					rot = rotMicroblockFace;
-					break;
-				case "mcr_edge":
-					propertyName = "shape";
-					mask = (byte) 0x0F;
-					rot = rotMicroblockEdge;
-					break;
-				case "mcr_post":
-					propertyName = "shape";
-					mask = (byte) 0x0F;
-					rot = rotMicroblockPost;
-					// wireless redstone
-					break;
-				case "wrcbe-recv":
-				case "wrcbe-tran":
-				case "wrcbe-jamm":
-					propertyName = "state";
-					mask = (byte) 0x1F;
-					rot = rotWRCBEstate;
-					break;
-				default:
-					WarpDrive.logger.error(String.format("Ignoring part of ForgeMultipart with unknown id: %d",
-					                                     nbtPart));
-					break;
+			case "ccmb:mcr_cnr":
+				propertyName = "shape";
+				mask = (byte) 0x0F;
+				rot = rotMicroblockCorner;
+				break;
+				
+			case "ccmb:mcr_face":
+			case "ccmb:mcr_hllw":
+				propertyName = "shape";
+				mask = (byte) 0x0F;
+				rot = rotMicroblockFace;
+				break;
+				
+			case "ccmb:mcr_edge":
+				propertyName = "shape";
+				mask = (byte) 0x0F;
+				rot = rotMicroblockEdge;
+				break;
+				
+			case "ccmb:mcr_post":
+				propertyName = "shape";
+				mask = (byte) 0x0F;
+				rot = rotMicroblockPost;
+				break;
+			
+			// wireless redstone
+			case "wrcbe:receiver":
+			case "wrcbe:transmitter":
+			case "wrcbe:jammer":
+				propertyName = "state";
+				mask = (byte) 0x1F;
+				rot = rotWRCBEstate;
+				break;
+				
+			default:
+				WarpDrive.logger.error(String.format("Ignoring part of ForgeMultipart with unknown id: %s",
+				                                     nbtPart));
+				break;
 			}
+			
 			// actual rotation
 			if (propertyName != null && rot != null) {
 				if (nbtPart.hasKey(propertyName)) {
@@ -174,7 +187,7 @@ public class CompatForgeMultipart implements IBlockTransformer {
 			}
 			nbtTileEntity.setTag("parts", nbtNewParts);
 		} else {
-			WarpDrive.logger.error(String.format("Ignoring ForgeMultipart with no 'parts': %d",
+			WarpDrive.logger.error(String.format("Ignoring ForgeMultipart with no 'parts': %s",
 			                                     nbtTileEntity));
 		}
 		
