@@ -185,6 +185,8 @@ public class Dictionary {
 				// config.get("block_tags", "InvisibLights:blockLightSource"                  , "NoMass Expandable").getString();
 				config.get("block_tags", "warpdrive:air_flow"                              , "NoMass Expandable PlaceLatest").getString();
 				config.get("block_tags", "warpdrive:air_source"                            , "NoMass Expandable PlaceLatest").getString();
+				config.get("block_tags", "buildcraftcore:marker_path"                      , "NoMass LeftBehind Expandable").getString(); // depends on an unsupported separate cache
+				config.get("block_tags", "buildcraftcore:marker_volume"                    , "NoMass LeftBehind Expandable").getString(); // depends on an unsupported separate cache
 				
 				// mining a mineshaft...
 				config.get("block_tags", "minecraft:web"                                   , "Mining").getString();

@@ -1259,7 +1259,7 @@ public class WarpDriveConfig {
 			CompatBlockcraftery.register();
 		}
 		
-		final boolean isBuildCraftLoaded = Loader.isModLoaded("BuildCraft|Core");
+		final boolean isBuildCraftLoaded = Loader.isModLoaded("buildcraftcore");
 		if (isBuildCraftLoaded) {
 			CompatBuildCraft.register();
 		}
