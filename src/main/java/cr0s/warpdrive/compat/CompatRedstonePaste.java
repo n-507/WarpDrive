@@ -19,9 +19,10 @@ public class CompatRedstonePaste implements IBlockTransformer {
 	
 	public static void register() {
 		try {
-			classTileEntityRedstonePaste = Class.forName("fyber.redstonepastemod.TileEntityRedstonePaste");
+			classTileEntityRedstonePaste = Class.forName("net.fybertech.redstonepaste.TileEntityRedstonePaste");
+			
 			WarpDriveConfig.registerBlockTransformer("RedstonePasteMod", new CompatRedstonePaste());
-		} catch(final ClassNotFoundException exception) {
+		} catch (final ClassNotFoundException exception) {
 			exception.printStackTrace();
 		}
 	}

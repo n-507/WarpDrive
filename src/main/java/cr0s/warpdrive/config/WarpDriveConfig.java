@@ -1364,7 +1364,7 @@ public class WarpDriveConfig {
 			CompatParziStarWars.register();
 		}
 		
-		final boolean isRedstonePasteLoaded = Loader.isModLoaded("RedstonePasteMod");
+		final boolean isRedstonePasteLoaded = Loader.isModLoaded("redstonepaste");
 		if (isRedstonePasteLoaded) {
 			CompatRedstonePaste.register();
 		}
