@@ -194,6 +194,10 @@ item.warpdrive.tool.tuning_fork.black.name=Zwarte Afstemmingsvork
 item.warpdrive.tool.tuning_fork.tooltip.usage=§bRechts-klik op een blok§7 om zijn kristal af te stemmen\n§bbuk§7 om zijn andere kristallen af te stemmen
 
 
+item.warpdrive.tool.wrench.name=Wrench
+item.warpdrive.tool.wrench.tooltip=§bRight click a block§7 to rotate it
+
+
 tile.warpdrive.decoration.bedrock_glass.name=Bedrock Glass
 tile.warpdrive.decoration.decorative.energized.name=Geactiveerd Blok
 tile.warpdrive.decoration.decorative.network.name=Netwerk Blok

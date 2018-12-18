@@ -194,6 +194,10 @@ item.warpdrive.tool.tuning_fork.black.name=黑色音叉
 item.warpdrive.tool.tuning_fork.tooltip.usage=§b右击方块§7调节水晶频率\n§b潜行右击§7轮替水晶
 
 
+item.warpdrive.tool.wrench.name=Wrench
+item.warpdrive.tool.wrench.tooltip=§bRight click a block§7 to rotate it
+
+
 tile.warpdrive.decoration.bedrock_glass.name=基岩玻璃
 tile.warpdrive.decoration.decorative.energized.name=能量方块
 tile.warpdrive.decoration.decorative.network.name=网络方块

@@ -197,6 +197,10 @@ item.warpdrive.tool.tuning_fork.black.name=Schwarze Stimmgabel
 item.warpdrive.tool.tuning_fork.tooltip.usage=§bRecktsklicke einen Block§7 um seine Kristalle einzustellen\n§bSchleiche§7 um alternative Kristalle einzustellen
 
 
+item.warpdrive.tool.wrench.name=Wrench
+item.warpdrive.tool.wrench.tooltip=§bRight click a block§7 to rotate it
+
+
 tile.warpdrive.decoration.bedrock_glass.name=Bedrock Glass !!!
 tile.warpdrive.decoration.decorative.energized.name=Energiegeladener Block
 tile.warpdrive.decoration.decorative.network.name=Netzwerk Block

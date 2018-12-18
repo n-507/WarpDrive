@@ -194,6 +194,10 @@ item.warpdrive.tool.tuning_fork.black.name=Черный камертон
 item.warpdrive.tool.tuning_fork.tooltip.usage=§bИспользуйте на блоке§7, чтобы настроить его кристаллы\n§bПрисядьте§7, чтобы настроить вторичные кристаллы
 
 
+item.warpdrive.tool.wrench.name=Wrench
+item.warpdrive.tool.wrench.tooltip=§bRight click a block§7 to rotate it
+
+
 tile.warpdrive.decoration.bedrock_glass.name=Bedrock Glass
 tile.warpdrive.decoration.decorative.energized.name=Энергизированный блок
 tile.warpdrive.decoration.decorative.network.name=Сетевой блок

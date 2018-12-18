@@ -194,6 +194,10 @@ item.warpdrive.tool.tuning_fork.black.name=Diapason noir
 item.warpdrive.tool.tuning_fork.tooltip.usage=§bCliques droit sur un block§r pour ajuster ses cristaux\n§bAccroupi§r pour ajuster les cristaux alternatifs
 
 
+item.warpdrive.tool.wrench.name=Clé tournante
+item.warpdrive.tool.wrench.tooltip=§bCliques droit sur un block§7 pour le tourner
+
+
 tile.warpdrive.decoration.bedrock_glass.name=Vitre de bedrock
 tile.warpdrive.decoration.decorative.energized.name=Block energisé
 tile.warpdrive.decoration.decorative.network.name=Bloc de réseau

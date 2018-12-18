@@ -194,6 +194,10 @@ item.warpdrive.tool.tuning_fork.black.name=Black Tuning Fork
 item.warpdrive.tool.tuning_fork.tooltip.usage=§bRight click a block§7 to tune its crystals\n§bSneak§7 to tune alternate crystals
 
 
+item.warpdrive.tool.wrench.name=Wrench
+item.warpdrive.tool.wrench.tooltip=§bRight click a block§7 to rotate it
+
+
 tile.warpdrive.decoration.bedrock_glass.name=Bedrock Glass
 tile.warpdrive.decoration.decorative.energized.name=Energized Block
 tile.warpdrive.decoration.decorative.network.name=Network Block
