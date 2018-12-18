@@ -18,52 +18,52 @@
 	  When used on machines, we'll give a few trials to find a valid slot for each loot, eventually try another loot, eventually skipping it altogether.
 	  -->
 	<lootSet group="ship" name="legacy" weight="1">
-		<loot item="ic2:te"                           damage="2"  minQuantity="1" maxQuantity="3"  weight="7"  /><!-- Nuke -->
-		<loot item="ic2:te"                           damage="24" minQuantity="1" maxQuantity="1"  weight="5"  /><!-- Reactor chamber -->
-		<loot item="ic2:te"                           damage="52" minQuantity="1" maxQuantity="1"  weight="10" /><!-- Thermal centrifuge -->
-		<loot item="ic2:te"                           damage="55" minQuantity="1" maxQuantity="1"  weight="10" /><!-- Metal former -->
-		<loot item="ic2:te"                           damage="56" minQuantity="1" maxQuantity="1"  weight="7"  /><!-- Ore washing -->
-		<loot item="ic2:resource"                     damage="11" minQuantity="7" maxQuantity="20" weight="10" /><!-- Reinforced stone -->
-		<loot item="ic2:glass"                        damage="0"  minQuantity="5" maxQuantity="12" weight="10" /><!-- Reinforced glass -->
-		<loot item="ic2:scaffold"                     damage="0"  minQuantity="8" maxQuantity="35" weight="10" /><!-- (wooden) scaffolding -->
-		<loot item="ic2:scaffold"                     damage="2"  minQuantity="3" maxQuantity="32" weight="10" /><!-- Iron scaffolding -->
-		<loot item="ic2:te"                           damage="3"  minQuantity="1" maxQuantity="3"  weight="10" /><!-- Generator -->
-		<loot item="ic2:te"                           damage="17" minQuantity="1" maxQuantity="3"  weight="10" /><!-- Manual Kinetic Generator -->
-		<loot item="ic2:te"                           damage="14" minQuantity="1" maxQuantity="3"  weight="5"  /><!-- Radioisotope Heat Generator -->
-		<loot item="ic2:te"                           damage="10" minQuantity="1" maxQuantity="3"  weight="10" /><!-- Water mill -->
-		<loot item="ic2:te"                           damage="8"  minQuantity="1" maxQuantity="2"  weight="10" /><!-- Solar panel -->
-		<loot item="ic2:te"                           damage="68" minQuantity="1" maxQuantity="2"  weight="10" /><!-- ChargePad (BatBox) No energy -->
-		<loot item="ic2:te"                           damage="69" minQuantity="1" maxQuantity="2"  weight="10" /><!-- ChargePad (CESU) No energy -->
-		<loot item="ic2:te"                           damage="70" minQuantity="1" maxQuantity="1"  weight="5"  /><!-- ChargePad (MFE) No energy -->
-		<loot item="ic2:te"                           damage="71" minQuantity="1" maxQuantity="1"  weight="1"  /><!-- ChargePad (MFSU) No energy -->
-		<loot item="ic2:resource"                     damage="12" minQuantity="1" maxQuantity="8"  weight="15" /><!-- Machine casing -->
-		<loot item="ic2:resource"                     damage="13" minQuantity="1" maxQuantity="1"  weight="1"  /><!-- Advanced Machine casing -->
-		<loot item="ic2:te"                           damage="43" minQuantity="1" maxQuantity="2"  weight="15" /><!-- Compressor -->
-		<loot item="ic2:te"                           damage="92" minQuantity="1" maxQuantity="1"  weight="10" /><!-- Mass fabricator -->
-		<loot item="ic2:rubber_boots"                 damage="20" minQuantity="1" maxQuantity="1"  weight="5"  /><!-- Damaged rubber boots -->
-		<loot item="ic2:rubber_boots"                 damage="0"  minQuantity="1" maxQuantity="1"  weight="2"  /><!-- Rubber boots -->
-		<loot item="ic2:crafting"                     damage="9"  minQuantity="1" maxQuantity="4"  weight="10" /><!-- Fuel rod (Empty) -->
-		<loot item="ic2:crafting"                     damage="0"  minQuantity="5" maxQuantity="24" weight="15" /><!-- Rubber -->
-		<loot item="ic2:crafting"                     damage="1"  minQuantity="1" maxQuantity="5"  weight="10" /><!-- Basic circuit -->
-		<loot item="ic2:crafting"                     damage="13" minQuantity="1" maxQuantity="4"  weight="10" /><!-- Raw Carbon Fiber -->
-		<loot item="ic2:crafting"                     damage="14" minQuantity="1" maxQuantity="4"  weight="9"  /><!-- Raw Carbon Mesh -->
-		<loot item="ic2:crafting"                     damage="15" minQuantity="1" maxQuantity="4"  weight="8"  /><!-- Carbon Plate -->
-		<loot item="ic2:energy_crystal"               damage="0"  minQuantity="1" maxQuantity="1"  weight="12" /><!-- Energy crystal (Empty) -->
+		<loot item="ic2:te"                           damage="2"  minQuantity="1" maxQuantity="3"  weight="7"  mods="ic2" /><!-- Nuke -->
+		<loot item="ic2:te"                           damage="24" minQuantity="1" maxQuantity="1"  weight="5"  mods="ic2" /><!-- Reactor chamber -->
+		<loot item="ic2:te"                           damage="52" minQuantity="1" maxQuantity="1"  weight="10" mods="ic2" /><!-- Thermal centrifuge -->
+		<loot item="ic2:te"                           damage="55" minQuantity="1" maxQuantity="1"  weight="10" mods="ic2" /><!-- Metal former -->
+		<loot item="ic2:te"                           damage="56" minQuantity="1" maxQuantity="1"  weight="7"  mods="ic2" /><!-- Ore washing -->
+		<loot item="ic2:resource"                     damage="11" minQuantity="7" maxQuantity="20" weight="10" mods="ic2" /><!-- Reinforced stone -->
+		<loot item="ic2:glass"                        damage="0"  minQuantity="5" maxQuantity="12" weight="10" mods="ic2" /><!-- Reinforced glass -->
+		<loot item="ic2:scaffold"                     damage="0"  minQuantity="8" maxQuantity="35" weight="10" mods="ic2" /><!-- (wooden) scaffolding -->
+		<loot item="ic2:scaffold"                     damage="2"  minQuantity="3" maxQuantity="32" weight="10" mods="ic2" /><!-- Iron scaffolding -->
+		<loot item="ic2:te"                           damage="3"  minQuantity="1" maxQuantity="3"  weight="10" mods="ic2" /><!-- Generator -->
+		<loot item="ic2:te"                           damage="17" minQuantity="1" maxQuantity="3"  weight="10" mods="ic2" /><!-- Manual Kinetic Generator -->
+		<loot item="ic2:te"                           damage="14" minQuantity="1" maxQuantity="3"  weight="5"  mods="ic2" /><!-- Radioisotope Heat Generator -->
+		<loot item="ic2:te"                           damage="10" minQuantity="1" maxQuantity="3"  weight="10" mods="ic2" /><!-- Water mill -->
+		<loot item="ic2:te"                           damage="8"  minQuantity="1" maxQuantity="2"  weight="10" mods="ic2" /><!-- Solar panel -->
+		<loot item="ic2:te"                           damage="68" minQuantity="1" maxQuantity="2"  weight="10" mods="ic2" /><!-- ChargePad (BatBox) No energy -->
+		<loot item="ic2:te"                           damage="69" minQuantity="1" maxQuantity="2"  weight="10" mods="ic2" /><!-- ChargePad (CESU) No energy -->
+		<loot item="ic2:te"                           damage="70" minQuantity="1" maxQuantity="1"  weight="5"  mods="ic2" /><!-- ChargePad (MFE) No energy -->
+		<loot item="ic2:te"                           damage="71" minQuantity="1" maxQuantity="1"  weight="1"  mods="ic2" /><!-- ChargePad (MFSU) No energy -->
+		<loot item="ic2:resource"                     damage="12" minQuantity="1" maxQuantity="8"  weight="15" mods="ic2" /><!-- Machine casing -->
+		<loot item="ic2:resource"                     damage="13" minQuantity="1" maxQuantity="1"  weight="1"  mods="ic2" /><!-- Advanced Machine casing -->
+		<loot item="ic2:te"                           damage="43" minQuantity="1" maxQuantity="2"  weight="15" mods="ic2" /><!-- Compressor -->
+		<loot item="ic2:te"                           damage="92" minQuantity="1" maxQuantity="1"  weight="10" mods="ic2" /><!-- Mass fabricator -->
+		<loot item="ic2:rubber_boots"                 damage="20" minQuantity="1" maxQuantity="1"  weight="5"  mods="ic2" /><!-- Damaged rubber boots -->
+		<loot item="ic2:rubber_boots"                 damage="0"  minQuantity="1" maxQuantity="1"  weight="2"  mods="ic2" /><!-- Rubber boots -->
+		<loot item="ic2:crafting"                     damage="9"  minQuantity="1" maxQuantity="4"  weight="10" mods="ic2" /><!-- Fuel rod (Empty) -->
+		<loot item="ic2:crafting"                     damage="0"  minQuantity="5" maxQuantity="24" weight="15" mods="ic2" /><!-- Rubber -->
+		<loot item="ic2:crafting"                     damage="1"  minQuantity="1" maxQuantity="5"  weight="10" mods="ic2" /><!-- Basic circuit -->
+		<loot item="ic2:crafting"                     damage="13" minQuantity="1" maxQuantity="4"  weight="10" mods="ic2" /><!-- Raw Carbon Fiber -->
+		<loot item="ic2:crafting"                     damage="14" minQuantity="1" maxQuantity="4"  weight="9"  mods="ic2" /><!-- Raw Carbon Mesh -->
+		<loot item="ic2:crafting"                     damage="15" minQuantity="1" maxQuantity="4"  weight="8"  mods="ic2" /><!-- Carbon Plate -->
+		<loot item="ic2:energy_crystal"               damage="0"  minQuantity="1" maxQuantity="1"  weight="12" mods="ic2" /><!-- Energy crystal (Empty) -->
 
-		<loot item="ic2:fluid_cell"                                                          damage="0"  minQuantity="4" maxQuantity="35" weight="15" /><!-- Empty cell -->
-		<loot item="ic2:fluid_cell"  nbt='{Fluid:{FluidName:"ic2uu_matter",Amount:1000}}'    damage="0"  minQuantity="2" maxQuantity="16" weight="12" /><!-- UU matter cell -->
-		<loot item="ic2:fluid_cell"  nbt='{Fluid:{FluidName:"ic2air",Amount:1000}}'          damage="0"  minQuantity="1" maxQuantity="18" weight="12" /><!-- Compressed air -->
-		<loot item="ic2:cable"       nbt="{type:0b,insulation:1b}" damage="0"  minQuantity="1" maxQuantity="18" weight="15" /><!-- Insulated copper cable -->
-		<loot item="ic2:cable"       nbt="{type:0b,insulation:0b}" damage="0"  minQuantity="1" maxQuantity="18" weight="12" /><!-- Copper cable -->
-		<loot item="ic2:cable"       nbt="{type:2b,insulation:0b}" damage="2"  minQuantity="1" maxQuantity="18" weight="12" /><!-- Gold cable -->
-		<loot item="ic2:cable"       nbt="{type:2b,insulation:1b}" damage="2"  minQuantity="1" maxQuantity="18" weight="13" /><!-- Insulated gold cable -->
-		<loot item="ic2:cable"       nbt="{type:3b,insulation:0b}" damage="3"  minQuantity="1" maxQuantity="18" weight="8"  /><!-- HV cable  -->
-		<loot item="ic2:cable"       nbt="{type:3b,insulation:1b}" damage="3"  minQuantity="1" maxQuantity="6"  weight="4"  /><!-- Insulated HV cable -->
-		<loot item="ic2:cable"       nbt="{type:3b,insulation:2b}" damage="3"  minQuantity="1" maxQuantity="8"  weight="4"  /><!-- Insulated HV cable -->
-		<loot item="ic2:cable"       nbt="{type:3b,insulation:3b}" damage="3"  minQuantity="1" maxQuantity="18" weight="10" /><!-- Insulated HV cable -->
-		<loot item="ic2:cable"       nbt="{type:1b,insulation:0b}" damage="1"  minQuantity="1" maxQuantity="18" weight="8"  /><!-- Glass fiber cable -->
-		<loot item="ic2:cable"       nbt="{type:4b,insulation:0b}" damage="4"  minQuantity="1" maxQuantity="18" weight="15" /><!-- Tin cable -->
-		<loot item="ic2:cable"       nbt="{type:4b,insulation:1b}" damage="4"  minQuantity="1" maxQuantity="18" weight="15" /><!-- Insulated tin cable -->
+		<loot item="ic2:fluid_cell"                                                          damage="0"  minQuantity="4" maxQuantity="35" weight="15" mods="ic2" /><!-- Empty cell -->
+		<loot item="ic2:fluid_cell"  nbt='{Fluid:{FluidName:"ic2uu_matter",Amount:1000}}'    damage="0"  minQuantity="2" maxQuantity="16" weight="12" mods="ic2" /><!-- UU matter cell -->
+		<loot item="ic2:fluid_cell"  nbt='{Fluid:{FluidName:"ic2air",Amount:1000}}'          damage="0"  minQuantity="1" maxQuantity="18" weight="12" mods="ic2" /><!-- Compressed air -->
+		<loot item="ic2:cable"       nbt="{type:0b,insulation:1b}" damage="0"  minQuantity="1" maxQuantity="18" weight="15" mods="ic2" /><!-- Insulated copper cable -->
+		<loot item="ic2:cable"       nbt="{type:0b,insulation:0b}" damage="0"  minQuantity="1" maxQuantity="18" weight="12" mods="ic2" /><!-- Copper cable -->
+		<loot item="ic2:cable"       nbt="{type:2b,insulation:0b}" damage="2"  minQuantity="1" maxQuantity="18" weight="12" mods="ic2" /><!-- Gold cable -->
+		<loot item="ic2:cable"       nbt="{type:2b,insulation:1b}" damage="2"  minQuantity="1" maxQuantity="18" weight="13" mods="ic2" /><!-- Insulated gold cable -->
+		<loot item="ic2:cable"       nbt="{type:3b,insulation:0b}" damage="3"  minQuantity="1" maxQuantity="18" weight="8"  mods="ic2" /><!-- HV cable  -->
+		<loot item="ic2:cable"       nbt="{type:3b,insulation:1b}" damage="3"  minQuantity="1" maxQuantity="6"  weight="4"  mods="ic2" /><!-- Insulated HV cable -->
+		<loot item="ic2:cable"       nbt="{type:3b,insulation:2b}" damage="3"  minQuantity="1" maxQuantity="8"  weight="4"  mods="ic2" /><!-- Insulated HV cable -->
+		<loot item="ic2:cable"       nbt="{type:3b,insulation:3b}" damage="3"  minQuantity="1" maxQuantity="18" weight="10" mods="ic2" /><!-- Insulated HV cable -->
+		<loot item="ic2:cable"       nbt="{type:1b,insulation:0b}" damage="1"  minQuantity="1" maxQuantity="18" weight="8"  mods="ic2" /><!-- Glass fiber cable -->
+		<loot item="ic2:cable"       nbt="{type:4b,insulation:0b}" damage="4"  minQuantity="1" maxQuantity="18" weight="15" mods="ic2" /><!-- Tin cable -->
+		<loot item="ic2:cable"       nbt="{type:4b,insulation:1b}" damage="4"  minQuantity="1" maxQuantity="18" weight="15" mods="ic2" /><!-- Insulated tin cable -->
 		<!-- nano armor? -->
 
 		<!-- vanilla crap -->
@@ -90,54 +90,54 @@
 		<loot item="minecraft:dye"                    damage="13" minQuantity="1" maxQuantity="9"  weight="3"  />
 		<loot item="minecraft:dye"                    damage="14" minQuantity="1" maxQuantity="9"  weight="3"  />
 
-		<loot item="icbmclassic:antidote"             damage="0"  minQuantity="1" maxQuantity="11" weight="10" />
-		<loot item="icbmclassic:radargun"             damage="0"  minQuantity="1" maxQuantity="1"  weight="10" />
-		<loot item="icbmclassic:saltpeter"            damage="0"  minQuantity="4" maxQuantity="37" weight="15" />
-		<loot item="icbmclassic:sulfurdust"           damage="0"  minQuantity="6" maxQuantity="23" weight="15" />
-		<loot item="icbmclassic:rocketlauncher"       damage="0"  minQuantity="1" maxQuantity="1"  weight="3"  />
-		<loot item="icbmclassic:concrete"             damage="0"  minQuantity="8" maxQuantity="64" weight="15" />
-		<loot item="icbmclassic:concrete"             damage="1"  minQuantity="1" maxQuantity="8"  weight="8"  />
-		<loot item="icbmclassic:concrete"             damage="2"  minQuantity="1" maxQuantity="4"  weight="1"  />
-		<loot item="icbmclassic:reinforcedglass"      damage="0"  minQuantity="1" maxQuantity="4"  weight="1"  />
-		<loot item="icbmclassic:spikes"               damage="0"  minQuantity="1" maxQuantity="6"  weight="10" />
-		<loot item="icbmclassic:glasspressureplate"   damage="0"  minQuantity="1" maxQuantity="5"  weight="7"  />
-		<loot item="icbmclassic:launcherbase"         damage="0"  minQuantity="1" maxQuantity="1"  weight="7"  /><!-- Launcher Platform T1 -->
-		<loot item="icbmclassic:launcherframe"        damage="0"  minQuantity="1" maxQuantity="1"  weight="10" /><!-- Launcher Support Frame T1 -->
-		<loot item="icbmclassic:launcherscreen"       damage="0"  minQuantity="1" maxQuantity="1"  weight="4"  /><!-- Launcher Control Panel T1 -->
-		<loot item="icbmclassic:grenade"              damage="0"  minQuantity="1" maxQuantity="5"  weight="4"  /><!-- Conventional Grenade -->
-		<loot item="icbmclassic:rocketauncher"        damage="0"  minQuantity="1" maxQuantity="1"  weight="1"  /><!-- Rocket Launcher -->
-		<loot item="icbmclassic:missile"              damage="0"  minQuantity="1" maxQuantity="1"  weight="4"  /><!-- Conventional Missile -->
-		<loot item="icbmclassic:missile"              damage="2"  minQuantity="1" maxQuantity="1"  weight="4"  /><!-- Incendiary Missile -->
-		<loot item="icbmclassic:missile"              damage="6"  minQuantity="1" maxQuantity="1"  weight="4"  /><!-- Repulsive Missile -->
-		<loot item="icbmclassic:missile"              damage="7"  minQuantity="1" maxQuantity="1"  weight="4"  /><!-- Attractive Missile -->
-		<loot item="icbmclassic:missile"              damage="24" minQuantity="1" maxQuantity="1"  weight="15" /><!-- Missile Module -->
+		<loot item="icbmclassic:antidote"             damage="0"  minQuantity="1" maxQuantity="11" weight="10" mods="icbmclassic" />
+		<loot item="icbmclassic:radargun"             damage="0"  minQuantity="1" maxQuantity="1"  weight="10" mods="icbmclassic" />
+		<loot item="icbmclassic:saltpeter"            damage="0"  minQuantity="4" maxQuantity="37" weight="15" mods="icbmclassic" />
+		<loot item="icbmclassic:sulfurdust"           damage="0"  minQuantity="6" maxQuantity="23" weight="15" mods="icbmclassic" />
+		<loot item="icbmclassic:rocketlauncher"       damage="0"  minQuantity="1" maxQuantity="1"  weight="3"  mods="icbmclassic" />
+		<loot item="icbmclassic:concrete"             damage="0"  minQuantity="8" maxQuantity="64" weight="15" mods="icbmclassic" />
+		<loot item="icbmclassic:concrete"             damage="1"  minQuantity="1" maxQuantity="8"  weight="8"  mods="icbmclassic" />
+		<loot item="icbmclassic:concrete"             damage="2"  minQuantity="1" maxQuantity="4"  weight="1"  mods="icbmclassic" />
+		<loot item="icbmclassic:reinforcedglass"      damage="0"  minQuantity="1" maxQuantity="4"  weight="1"  mods="icbmclassic" />
+		<loot item="icbmclassic:spikes"               damage="0"  minQuantity="1" maxQuantity="6"  weight="10" mods="icbmclassic" />
+		<loot item="icbmclassic:glasspressureplate"   damage="0"  minQuantity="1" maxQuantity="5"  weight="7"  mods="icbmclassic" />
+		<loot item="icbmclassic:launcherbase"         damage="0"  minQuantity="1" maxQuantity="1"  weight="7"  mods="icbmclassic" /><!-- Launcher Platform T1 -->
+		<loot item="icbmclassic:launcherframe"        damage="0"  minQuantity="1" maxQuantity="1"  weight="10" mods="icbmclassic" /><!-- Launcher Support Frame T1 -->
+		<loot item="icbmclassic:launcherscreen"       damage="0"  minQuantity="1" maxQuantity="1"  weight="4"  mods="icbmclassic" /><!-- Launcher Control Panel T1 -->
+		<loot item="icbmclassic:grenade"              damage="0"  minQuantity="1" maxQuantity="5"  weight="4"  mods="icbmclassic" /><!-- Conventional Grenade -->
+		<loot item="icbmclassic:rocketauncher"        damage="0"  minQuantity="1" maxQuantity="1"  weight="1"  mods="icbmclassic" /><!-- Rocket Launcher -->
+		<loot item="icbmclassic:missile"              damage="0"  minQuantity="1" maxQuantity="1"  weight="4"  mods="icbmclassic" /><!-- Conventional Missile -->
+		<loot item="icbmclassic:missile"              damage="2"  minQuantity="1" maxQuantity="1"  weight="4"  mods="icbmclassic" /><!-- Incendiary Missile -->
+		<loot item="icbmclassic:missile"              damage="6"  minQuantity="1" maxQuantity="1"  weight="4"  mods="icbmclassic" /><!-- Repulsive Missile -->
+		<loot item="icbmclassic:missile"              damage="7"  minQuantity="1" maxQuantity="1"  weight="4"  mods="icbmclassic" /><!-- Attractive Missile -->
+		<loot item="icbmclassic:missile"              damage="24" minQuantity="1" maxQuantity="1"  weight="15" mods="icbmclassic" /><!-- Missile Module -->
 
-		<loot item="computercraft:cable"              damage="0"  minQuantity="1" maxQuantity="27" weight="10" /><!-- Networking Cable -->
-		<loot item="computercraft:cable"              damage="1"  minQuantity="1" maxQuantity="4"  weight="5"  /><!-- Wired Modem -->
-		<loot item="computercraft:peripheral"         damage="0"  minQuantity="1" maxQuantity="2"  weight="7"  /><!-- Speaker -->
-		<loot item="computercraft:peripheral"         damage="1"  minQuantity="1" maxQuantity="3"  weight="4"  /><!-- Wireless Modem -->
+		<loot item="computercraft:cable"              damage="0"  minQuantity="1" maxQuantity="27" weight="10" mods="computercraft" /><!-- Networking Cable -->
+		<loot item="computercraft:cable"              damage="1"  minQuantity="1" maxQuantity="4"  weight="5"  mods="computercraft" /><!-- Wired Modem -->
+		<loot item="computercraft:peripheral"         damage="0"  minQuantity="1" maxQuantity="2"  weight="7"  mods="computercraft" /><!-- Speaker -->
+		<loot item="computercraft:peripheral"         damage="1"  minQuantity="1" maxQuantity="3"  weight="4"  mods="computercraft" /><!-- Wireless Modem -->
 
-		<loot item="ironbackpacks:upgrade"            damage="0"  minQuantity="1" maxQuantity="11" weight="10" /><!-- Blank Upgrade -->
+		<loot item="ironbackpacks:upgrade"            damage="0"  minQuantity="1" maxQuantity="11" weight="10" mods="ironbackpacks" /><!-- Blank Upgrade -->
 
-		<loot item="mekanism:compressedcarbon"        damage="0"  minQuantity="1" maxQuantity="14" weight="15" />
-		<loot item="mekanism:compressedredstone"      damage="0"  minQuantity="1" maxQuantity="7"  weight="8"  />
-		<loot item="mekanism:compressedobsidian"      damage="0"  minQuantity="1" maxQuantity="12" weight="10" />
-		<loot item="mekanism:enrichedalloy"           damage="0"  minQuantity="1" maxQuantity="4"  weight="5"  />
-		<loot item="mekanism:reinforcedalloy"         damage="0"  minQuantity="1" maxQuantity="2"  weight="3"  />
-		<loot item="mekanism:energytablet"            damage="0"  minQuantity="1" maxQuantity="1"  weight="1"  />
+		<loot item="mekanism:compressedcarbon"        damage="0"  minQuantity="1" maxQuantity="14" weight="15" mods="mekanism" />
+		<loot item="mekanism:compressedredstone"      damage="0"  minQuantity="1" maxQuantity="7"  weight="8"  mods="mekanism" />
+		<loot item="mekanism:compressedobsidian"      damage="0"  minQuantity="1" maxQuantity="12" weight="10" mods="mekanism" />
+		<loot item="mekanism:enrichedalloy"           damage="0"  minQuantity="1" maxQuantity="4"  weight="5"  mods="mekanism" />
+		<loot item="mekanism:reinforcedalloy"         damage="0"  minQuantity="1" maxQuantity="2"  weight="3"  mods="mekanism" />
+		<loot item="mekanism:energytablet"            damage="0"  minQuantity="1" maxQuantity="1"  weight="1"  mods="mekanism" />
 
-		<loot item="opencomputers:cable"              damage="0"  minQuantity="1" maxQuantity="27" weight="10" />
-		<loot item="opencomputers:keyboard"           damage="0"  minQuantity="1" maxQuantity="4"  weight="5"  />
-		<loot item="opencomputers:screen1"            damage="0"  minQuantity="1" maxQuantity="2"  weight="4"  />
-		<loot item="opencomputers:screen2"            damage="0"  minQuantity="1" maxQuantity="2"  weight="3"  />
+		<loot item="opencomputers:cable"              damage="0"  minQuantity="1" maxQuantity="27" weight="10" mods="opencomputers" />
+		<loot item="opencomputers:keyboard"           damage="0"  minQuantity="1" maxQuantity="4"  weight="5"  mods="opencomputers" />
+		<loot item="opencomputers:screen1"            damage="0"  minQuantity="1" maxQuantity="2"  weight="4"  mods="opencomputers" />
+		<loot item="opencomputers:screen2"            damage="0"  minQuantity="1" maxQuantity="2"  weight="3"  mods="opencomputers" />
 
-		<loot item="openmodularturrets:ammo_meta"     damage="0"  minQuantity="4" maxQuantity="23" weight="10" /><!-- Ammo - Blazing Clay -->
-		<loot item="openmodularturrets:ammo_meta"     damage="1"  minQuantity="4" maxQuantity="23" weight="10" /><!-- Ammo - Bullet -->
-		<loot item="openmodularturrets:ammo_meta"     damage="2"  minQuantity="1" maxQuantity="13" weight="10" /><!-- Ammo - Ferro-Magnetic Slug -->
-		<loot item="openmodularturrets:ammo_meta"     damage="3"  minQuantity="1" maxQuantity="13" weight="10" /><!-- Ammo - Grenade -->
-		<loot item="openmodularturrets:ammo_meta"     damage="4"  minQuantity="1" maxQuantity="13" weight="10" /><!-- Ammo - Rocket -->
-		<loot item="openmodularturrets:upgrade_meta"  damage="2"  minQuantity="1" maxQuantity="1"  weight="10" /><!-- Turret Memory Card -->
-		<loot item="openmodularturrets:lever_block"   damage="0"  minQuantity="1" maxQuantity="1"  weight="10" /><!-- Basic Turret Base Crank -->
+		<loot item="openmodularturrets:ammo_meta"     damage="0"  minQuantity="4" maxQuantity="23" weight="10" mods="openmodularturrets" /><!-- Ammo - Blazing Clay -->
+		<loot item="openmodularturrets:ammo_meta"     damage="1"  minQuantity="4" maxQuantity="23" weight="10" mods="openmodularturrets" /><!-- Ammo - Bullet -->
+		<loot item="openmodularturrets:ammo_meta"     damage="2"  minQuantity="1" maxQuantity="13" weight="10" mods="openmodularturrets" /><!-- Ammo - Ferro-Magnetic Slug -->
+		<loot item="openmodularturrets:ammo_meta"     damage="3"  minQuantity="1" maxQuantity="13" weight="10" mods="openmodularturrets" /><!-- Ammo - Grenade -->
+		<loot item="openmodularturrets:ammo_meta"     damage="4"  minQuantity="1" maxQuantity="13" weight="10" mods="openmodularturrets" /><!-- Ammo - Rocket -->
+		<loot item="openmodularturrets:upgrade_meta"  damage="2"  minQuantity="1" maxQuantity="1"  weight="10" mods="openmodularturrets" /><!-- Turret Memory Card -->
+		<loot item="openmodularturrets:lever_block"   damage="0"  minQuantity="1" maxQuantity="1"  weight="10" mods="openmodularturrets" /><!-- Basic Turret Base Crank -->
 
 	</lootSet>
 	

@@ -33,19 +33,43 @@
 	
 	<fillerSet group="overworld_commonOres" name="stone">
 		<import group="overworld_commonOres" name="allButVanilla" />
-		<filler block="minecraft:coal_ore" ratio=".08" />
-		<filler block="minecraft:iron_ore" ratio=".05" />
-		<filler block="minecraft:redstone_ore" ratio=".02" />
+		<filler block="minecraft:coal_ore" ratio=".06" />
+		<filler block="minecraft:iron_ore" ratio=".04" />
+		<filler block="minecraft:redstone_ore" ratio=".008" mods="!thermalfoundation" />
+		<filler block="minecraft:redstone_ore" ratio=".002" mods="thermalfoundation" />
+		<filler block="thermalfoundation:ore_fluid" metadata="2" ratio=".006" />
 	</fillerSet>
 	<fillerSet group="overworld_commonOres" name="allButVanilla">
-		<filler block="ic2:resource" metadata="3" ratio=".05" mods="ic2,!immersiveengineering" /><!-- Tin -->
-		<filler block="ic2:resource" metadata="1" ratio=".06" mods="ic2,!immersiveengineering" /><!-- Copper -->
-		<filler block="ic2:resource" metadata="2" ratio=".06" mods="ic2,!immersiveengineering" /><!-- Lead -->
-		<filler block="immersiveengineering:ore" metadata="0" ratio=".05" mods="immersiveengineering" /><!-- Copper -->
-		<filler block="immersiveengineering:ore" metadata="1" ratio=".06" mods="immersiveengineering" /><!-- Bauxite -->
-		<filler block="immersiveengineering:ore" metadata="2" ratio=".06" mods="immersiveengineering" /><!-- Lead -->
-		<filler block="arsmagica2:vinteumOre" metadata="0" ratio=".001" mods="arsmagica2" /><!-- Vinteum -->
-		<filler block="icbm:sulfur_ore" ratio=".001" /><!-- to be confirmed -->
+		<filler block="arsmagica2:vinteumOre" metadata="0" ratio=".024" mods="arsmagica2,!undergroundbiomes" /><!-- Vinteum -->
+		<filler block="ebwizardry:crystal_ore" metadata="0" ratio=".024" mods="arsmagica2,!undergroundbiomes" /><!-- Magic Crystal -->
+		<filler block="appliedenergistics2:quartz_ore" ratio=".008" mods="appliedenergistics2,!undergroundbiomes" /><!-- Certus quartz -->
+		<filler block="evilcraft:dark_ore" ratio=".016" mods="evilcraft,!undergroundbiomes" /><!-- Dark gem -->
+		<filler block="ic2:resource" metadata="1" ratio=".048" mods="ic2,!immersiveengineering,!Metallurgy" /><!-- Copper -->
+		<filler block="ic2:resource" metadata="3" ratio=".032" mods="ic2,!Metallurgy" /><!-- Tin -->
+		<filler block="ic2:resource" metadata="2" ratio=".024" mods="ic2,!immersiveengineering" /><!-- Lead -->
+		<filler block="immersiveengineering:ore" metadata="0" ratio=".048" mods="immersiveengineering,!Metallurgy,!undergroundbiomes" /><!-- Copper -->
+		<filler block="immersiveengineering:ore" metadata="1" ratio=".032" mods="immersiveengineering,!undergroundbiomes" /><!-- Bauxite/Aluminum -->
+		<filler block="immersiveengineering:ore" metadata="2" ratio=".024" mods="immersiveengineering,!undergroundbiomes" /><!-- Lead -->
+		<filler block="LanteaCraft:blockLanteaOre" metadata="2" ratio=".008" mods="LanteaCraft" /><!-- Trinium -->
+		<filler block="mekanism:oreblock" metadata="0" ratio=".004" mods="mekanism,!undergroundbiomes" /><!-- Osmium -->
+		<filler block="mekanism:oreblock" metadata="0" ratio=".048" mods="mekanism,!Metallurgy,!undergroundbiomes" /><!-- Copper -->
+		<filler block="mekanism:oreblock" metadata="0" ratio=".032" mods="mekanism,!Metallurgy,!undergroundbiomes" /><!-- Tin -->
+		<filler block="Metallurgy:base.ore" metadata="0" ratio=".048" mods="Metallurgy,!undergroundbiomes" /><!-- Copper -->
+		<filler block="Metallurgy:base.ore" metadata="1" ratio=".032" mods="Metallurgy,!undergroundbiomes" /><!-- Tin -->
+		<filler block="Metallurgy:base.ore" metadata="2" ratio=".008" mods="Metallurgy,!undergroundbiomes" /><!-- Manganese -->
+		<filler block="Metallurgy:fantasy.ore" metadata="0" ratio=".020" mods="Metallurgy,!undergroundbiomes" /><!-- Prometheum -->
+		<filler block="Metallurgy:fantasy.ore" metadata="1" ratio=".012" mods="Metallurgy,!undergroundbiomes" /><!-- Deep Iron -->
+		<filler block="Metallurgy:fantasy.ore" metadata="2" ratio=".012" mods="Metallurgy,!undergroundbiomes" /><!-- Infuscolium -->
+		<filler block="Metallurgy:fantasy.ore" metadata="4" ratio=".008" mods="Metallurgy,!undergroundbiomes" /><!-- Oureclase -->
+		<filler block="Metallurgy:utility.ore" metadata="0" ratio=".006" mods="Metallurgy,!undergroundbiomes" /><!-- Sulfur -->
+		<filler block="Metallurgy:utility.ore" metadata="1" ratio=".006" mods="Metallurgy,!undergroundbiomes" /><!-- Phosphorite -->
+		<filler block="Metallurgy:utility.ore" metadata="2" ratio=".007" mods="Metallurgy,!undergroundbiomes" /><!-- Saltpeter -->
+		<filler block="Metallurgy:utility.ore" metadata="3" ratio=".006" mods="Metallurgy,!undergroundbiomes" /><!-- Magnesium -->
+		<filler block="Metallurgy:utility.ore" metadata="4" ratio=".006" mods="offMetallurgy,!undergroundbiomes" /><!-- Bitumen -->
+		<filler block="Metallurgy:utility.ore" metadata="5" ratio=".006" mods="Metallurgy,!undergroundbiomes" /><!-- Potash -->
+		<filler block="thermalfoundation:ore" metadata="0" ratio=".048" mods="thermalfoundation,!immersiveengineering,!Metallurgy" /><!-- Copper -->
+		<filler block="thermalfoundation:ore" metadata="1" ratio=".032" mods="thermalfoundation,!immersiveengineering,!Metallurgy" /><!-- Tin -->
+		<filler block="thermalfoundation:ore" metadata="3" ratio=".024" mods="thermalfoundation,!immersiveengineering" /><!-- Lead -->
 	</fillerSet>
 	
 	
@@ -71,15 +95,36 @@
 	
 	<fillerSet group="overworld_uncommonOres" name="stone">
 		<import group="overworld_uncommonOres" name="allButVanilla" />
-		<filler block="minecraft:redstone_ore" ratio=".01" />
-		<filler block="minecraft:gold_ore" ratio=".008" />
-		<filler block="minecraft:lapis_ore" ratio=".005" />
+		<filler block="minecraft:redstone_ore" ratio=".008" mods="!thermalfoundation" />
+		<filler block="thermalfoundation:ore_fluid" metadata="2" ratio=".008" />
+		<filler block="minecraft:gold_ore" ratio=".010" />
+		<filler block="minecraft:lapis_ore" ratio=".008" />
 	</fillerSet>
 	<fillerSet group="overworld_uncommonOres" name="allButVanilla">
-		<filler block="ic2:resource" metadata="4" ratio=".005" mods="ic2,!netherores" /><!-- Uranium -->
-		<filler block="immersiveengineering:ore" metadata="3" ratio=".03" mods="immersiveengineering" /><!-- Silver -->
-		<filler block="immersiveengineering:ore" metadata="4" ratio=".02" mods="immersiveengineering" /><!-- Nickel -->
-		<filler block="arsmagica2:vinteumOre" metadata="1" ratio=".01" mods="arsmagica2" /><!-- Chimerite -->
+		<filler block="biomesoplenty:gem_ore" metadata="6" ratio="tbd" mods="biomesoplenty,!undergroundbiomes" /><!-- Sapphire -->
+		<filler block="appliedenergistics2:quartz_ore" ratio=".010" mods="appliedenergistics2,!undergroundbiomes" /><!-- Certus quartz -->
+		<filler block="appliedenergistics2:charged_quartz_ore" ratio=".004" mods="appliedenergistics2,!undergroundbiomes" /><!-- Charged Certus quartz -->
+		<filler block="arsmagica2:vinteumOre" metadata="1" ratio=".006" mods="arsmagica2,!undergroundbiomes" /><!-- Chimerite -->
+		<filler block="deepresonance:resonating_ore" metadata="0" ratio=".001" mods="ic2,!undergroundbiomes" /><!-- Resonating -->
+		<filler block="ic2:resource" metadata="4" ratio=".001" mods="ic2,!netherores,!undergroundbiomes" /><!-- Uranium -->
+		<filler block="nuclearcraft:ore" metadata="3" ratio=".002" mods="nuclearcraft,!undergroundbiomes" /><!-- Thorium -->
+		<filler block="nuclearcraft:ore" metadata="4" ratio=".002" mods="nuclearcraft,!ic2,!undergroundbiomes" /><!-- Uranium -->
+		<filler block="nuclearcraft:ore" metadata="5" ratio=".004" mods="nuclearcraft,!undergroundbiomes" /><!-- Boron -->
+		<filler block="nuclearcraft:ore" metadata="6" ratio=".003" mods="nuclearcraft,!undergroundbiomes" /><!-- Lithium -->
+		<filler block="nuclearcraft:ore" metadata="7" ratio=".006" mods="nuclearcraft,!undergroundbiomes" /><!-- Magnesium -->
+		<filler block="immersiveengineering:ore" metadata="3" ratio=".015" mods="immersiveengineering,!Metallurgy" /><!-- Silver -->
+		<filler block="immersiveengineering:ore" metadata="4" ratio=".015" mods="immersiveengineering,!undergroundbiomes" /><!-- Nickel -->
+		<filler block="LanteaCraft:blockLanteaOre" metadata="0" ratio=".005" mods="LanteaCraft" /><!-- Naquadah -->
+		<filler block="Metallurgy:fantasy.ore" metadata="5" ratio=".008" mods="Metallurgy,!undergroundbiomes" /><!-- Astral Silver -->
+		<filler block="Metallurgy:fantasy.ore" metadata="6" ratio=".0064" mods="Metallurgy,!undergroundbiomes" /><!-- Carmot -->
+		<filler block="Metallurgy:fantasy.ore" metadata="7" ratio=".0064" mods="Metallurgy,!undergroundbiomes" /><!-- Mithril -->
+		<filler block="Metallurgy:fantasy.ore" metadata="8" ratio=".004" mods="Metallurgy,!undergroundbiomes" /><!-- Rubracium -->
+		<filler block="Metallurgy:precious.ore" metadata="0" ratio=".015" mods="Metallurgy,!undergroundbiomes" /><!-- Zinc -->
+		<filler block="Metallurgy:precious.ore" metadata="1" ratio=".015" mods="Metallurgy,!undergroundbiomes" /><!-- Silver -->
+		<filler block="mekanism:oreblock" metadata="0" ratio=".010" mods="mekanism,!undergroundbiomes" /><!-- Osmium -->
+		<filler block="thermalfoundation:ore" metadata="2" ratio=".015" mods="thermalfoundation,!Metallurgy" /><!-- Silver -->
+		<filler block="thermalfoundation:ore" metadata="4" ratio=".015" mods="thermalfoundation,!immersiveengineering" /><!-- Ferrous/Nickel -->
+		<filler block="thermalfoundation:ore" metadata="6" ratio=".0064" mods="thermalfoundation,!Metallurgy" /><!-- Mana infused/Mithril -->
 	</fillerSet>
 	
 	
@@ -93,7 +138,7 @@
 	<fillerSet group="overworld_rare" name="obsidian" weight="2">
 		<import group="overworld_rareOres" name="stone" />
 		<filler block="minecraft:obsidian" weight="100" />
-		<filler block="minecraft:diamond_ore" weight="10" />
+		<filler block="minecraft:diamond_ore" weight="5" />
 		<filler block="minecraft:bedrock" weight="1" />
 	</fillerSet>
 	
@@ -104,8 +149,21 @@
 		<filler block="minecraft:emerald_ore" ratio=".001" />
 	</fillerSet>
 	<fillerSet group="overworld_rareOres" name="allButVanilla">
-		<filler block="ic2:resource" metadata="4" ratio=".03" mods="ic2,!netherores" />
-		<filler block="arsmagica2:vinteumOre" metadata="2" ratio=".01" mods="arsmagica2" /><!-- Blue topaz -->
+		<filler block="ic2:resource" metadata="4" ratio=".030" mods="off,ic2,!netherores,!undergroundbiomes" /><!-- Uranium -->
+		<filler block="nuclearcraft:ore" metadata="3" ratio=".015" mods="nuclearcraft,!undergroundbiomes" /><!-- Thorium -->
+		<filler block="nuclearcraft:ore" metadata="4" ratio=".015" mods="nuclearcraft,!ic2,!undergroundbiomes" /><!-- Uranium -->
+		<filler block="nuclearcraft:ore" metadata="5" ratio=".030" mods="nuclearcraft,!undergroundbiomes" /><!-- Boron -->
+		<filler block="nuclearcraft:ore" metadata="6" ratio=".020" mods="nuclearcraft,!undergroundbiomes" /><!-- Lithium -->
+		<filler block="nuclearcraft:ore" metadata="7" ratio=".030" mods="nuclearcraft,!undergroundbiomes" /><!-- Magnesium -->
+		<filler block="appliedenergistics2:charged_quartz_ore" ratio=".005" mods="appliedenergistics2,!undergroundbiomes" /><!-- Charged certus quartz -->
+		<filler block="arsmagica2:vinteumOre" metadata="2" ratio=".008" mods="arsmagica2,!undergroundbiomes" /><!-- Blue topaz -->
+		<filler block="LanteaCraft:blockLanteaOre" metadata="1" ratio=".006" mods="LanteaCraft" /><!-- Naquadriah -->
+		<filler block="Metallurgy:fantasy.ore" metadata="11" ratio=".006" mods="Metallurgy,!undergroundbiomes" /><!-- Orichalcum -->
+		<filler block="Metallurgy:fantasy.ore" metadata="13" ratio=".004" mods="Metallurgy,!undergroundbiomes" /><!-- Adamantine -->
+		<filler block="Metallurgy:fantasy.ore" metadata="14" ratio=".004" mods="Metallurgy,!undergroundbiomes" /><!-- Atlarus -->
+		<filler block="Metallurgy:precious.ore" metadata="2" ratio=".006" mods="Metallurgy,!undergroundbiomes" /><!-- Platinum -->
+		<filler block="StargateTech2:block.naquadah" ratio=".002" mods="StargateTech2,!undergroundbiomes" /><!-- Naquadah -->
+		<filler block="thermalfoundation:ore" metadata="5" ratio=".006" mods="thermalfoundation,!Metallurgy" /><!-- Shiny/Platinum -->
 	</fillerSet>
 	
 	
@@ -117,10 +175,28 @@
 	</fillerSet>
 	
 	<fillerSet group="nether_ores" name="netherrack">
-		<filler block="minecraft:quartz_ore" ratio="0.1" />
-		<filler block="minecraft:glowstone" ratio="0.01" />
-		<filler block="minecraft:lava" ratio="0.02" />
-		<filler block="arsmagica2:vinteumOre" metadata="4" ratio=".001" mods="arsmagica2" /><!-- Sunstone -->
+		<filler block="minecraft:quartz_ore" ratio="0.07" />
+		<filler block="minecraft:glowstone" ratio="0.0075" />
+		<filler block="minecraft:lava" ratio="0.01" />
+		<filler block="nex:amethyst_ore" ratio="0.009" mods="nex" />
+		<filler block="nex:rime_ore" ratio="0.007" mods="nex" />
+		<filler block="draconicevolution:draconium_ore" metadata="1" ratio="0.002" mods="draconicevolution" />
+		<filler block="deepresonance:resonating_ore" metadata="1" ratio="0.0028" mods="deepresonance" />
+		<filler block="deepresonance:resonating_crystal" ratio="0.0005" mods="deepresonance" />
+		<filler block="arsmagica2:vinteumOre" metadata="4" ratio=".0005" mods="arsmagica2" /><!-- Sunstone -->
+		<filler block="Metallurgy:nether.ore" metadata="0" ratio=".036" mods="Metallurgy" /><!-- Ignatius -->
+		<filler block="Metallurgy:nether.ore" metadata="1" ratio=".028" mods="Metallurgy" /><!-- Shadow Iron -->
+		<filler block="Metallurgy:nether.ore" metadata="2" ratio=".024" mods="Metallurgy" /><!-- Lemurite -->
+		<filler block="Metallurgy:nether.ore" metadata="3" ratio=".020" mods="Metallurgy" /><!-- Midasium -->
+		<filler block="Metallurgy:nether.ore" metadata="4" ratio=".018" mods="Metallurgy" /><!-- Vyroxeres -->
+		<filler block="Metallurgy:nether.ore" metadata="5" ratio=".010" mods="Metallurgy" /><!-- Ceruclase -->
+		<filler block="Metallurgy:nether.ore" metadata="6" ratio=".008" mods="Metallurgy" /><!-- Alduorite -->
+		<filler block="Metallurgy:nether.ore" metadata="7" ratio=".008" mods="Metallurgy" /><!-- Kalendrite -->
+		<filler block="Metallurgy:nether.ore" metadata="8" ratio=".012" mods="Metallurgy" /><!-- Vulcanite -->
+		<filler block="Metallurgy:nether.ore" metadata="9" ratio=".005" mods="Metallurgy" /><!-- Sanguinite -->
+		<filler block="tconstruct:ore" metadata="0" ratio=".004" mods="tconstruct" /><!-- Cobalt -->
+		<filler block="tconstruct:ore" metadata="1" ratio=".004" mods="tconstruct" /><!-- Ardite -->
+		<filler block="undergroundbiomes:igneous_stone_thaumcraft_ore_cinnabar" metadata="0" ratio=".004" mods="thaumcraft,undergroundbiomes" /><!-- Red granite Cinnabar -->
 		<filler block="minecraft:bedrock" ratio=".001" />
 	</fillerSet>
 	
@@ -128,14 +204,18 @@
 	<!-- end ores with simple base block -->
 	<fillerSet group="end" name="end" weight="10">
 		<import group="end_ores" name="endstone" />
-		<filler block="minecraft:netherrack" weight="100" />
-		<filler block="minecraft:lava" weight="5" />
+		<filler block="minecraft:end_stone" weight="100" />
 	</fillerSet>
 	
 	<fillerSet group="end_ores" name="endstone">
-		<filler block="arsmagica2:vinteumOre" metadata="3" ratio=".001" mods="arsmagica2" /><!-- Moonstone -->
-		<filler block="ae2:quartz" ratio=".0013" mods="appliedenergistics2" />
-		<filler block="warpdrive:iridium_block" ratio=".0001" mods="!netherores" />
+		<filler block="appliedenergistics2:quartz" ratio=".005" mods="appliedenergistics2" /><!-- Certus quartz -->
+		<filler block="arsmagica2:vinteumOre" metadata="3" ratio=".005" mods="arsmagica2,!undergroundbiomes" /><!-- Moonstone -->
+		<filler block="undergroundbiomes:metamorphic_arsmagica2:ores.3" metadata="2" ratio=".005" mods="arsmagica2,undergroundbiomes" /><!-- Marble Moonstone -->
+		<filler block="thaumcraft:ore_cinnabar" metadata="0" ratio=".005" mods="thaumcraft,!undergroundbiomes" /><!-- Cinnabar -->
+		<filler block="undergroundbiomes:metamorphic_stone_thaumcraft_ore_cinnabar" metadata="2" ratio=".005" mods="thaumcraft,undergroundbiomes" /><!-- Marble Cinnabar -->
+		<filler block="Metallurgy:ender.ore" metadata="0" ratio=".020" mods="Metallurgy" /><!-- Eximite -->
+		<filler block="Metallurgy:ender.ore" metadata="1" ratio=".010" mods="Metallurgy" /><!-- Meutoite -->
+		<filler block="warpdrive:iridium_block" ratio=".001" mods="!netherores" />
 	</fillerSet>
 	
 	
@@ -158,6 +238,9 @@
 		<fillerSet group="overworld_surface" name="stainedClay_%metadata%" weight="5">
 			<filler block="minecraft:stained_hardened_clay" metadata="%metadata%" weight="100" />
 		</fillerSet>
+		<fillerSet group="overworld_surface" name="concrete_%metadata%" weight="5">
+			<filler block="minecraft:concrete" metadata="%metadata%" weight="100" />
+		</fillerSet>
 	</for>
 	<fillerSet group="overworld_surface" name="hardenedClay" weight="5">
 		<filler block="minecraft:hardened_clay" weight="100" />
@@ -176,8 +259,11 @@
 		<filler block="minecraft:quartz_ore" weight="2" />
 	</fillerSet>
 	<for variable="metadata" in="1,6,14">
-		<fillerSet group="nether_surface" name="stainedClay_%metadata%" weight="15">
-			<filler block="minecraft:stained_hardened_clay" metadata="%metadata%" weight="5" />
+		<fillerSet group="nether_surface" name="stainedClay_%metadata%" weight="10">
+			<filler block="minecraft:stained_hardened_clay" metadata="%metadata%" weight="100" />
+		</fillerSet>
+		<fillerSet group="nether_surface" name="concrete_%metadata%" weight="10">
+			<filler block="minecraft:concrete" metadata="%metadata%" weight="100" />
 		</fillerSet>
 	</for>
 	<fillerSet group="nether_surface" name="soulsand" weight="20">
@@ -194,8 +280,11 @@
 		<filler block="minecraft:obsidian" weight="15" />
 	</fillerSet>
 	<for variable="metadata" in="0,4">
-		<fillerSet group="end_surface" name="stainedClay_%metadata%" weight="15">
+		<fillerSet group="end_surface" name="stainedClay_%metadata%" weight="10">
 			<filler block="minecraft:stained_hardened_clay" metadata="%metadata%" weight="100" />
+		</fillerSet>
+		<fillerSet group="end_surface" name="concrete_%metadata%" weight="10">
+			<filler block="minecraft:concrete" metadata="%metadata%" weight="100" />
 		</fillerSet>
 	</for>
 	<fillerSet group="end_surface" name="clay" weight="15">
@@ -216,10 +305,16 @@
 	
 	<!-- ship hull -->
 	<for variable="colorMetadata" in="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15">
-		<fillerSet group="hull_plain" name="clay_%colorMetadata%" weight="20">
+		<fillerSet group="hull_plain" name="clay_%colorMetadata%" weight="10">
 			<filler block="minecraft:stained_hardened_clay" metadata="%colorMetadata%" weight="100" />
 		</fillerSet>
-		<fillerSet group="hull_glass" name="clay_%colorMetadata%" weight="20">
+		<fillerSet group="hull_glass" name="clay_%colorMetadata%" weight="10">
+			<filler block="minecraft:stained_glass" metadata="%colorMetadata%" weight="100" />
+		</fillerSet>
+		<fillerSet group="hull_plain" name="concrete_%colorMetadata%" weight="10">
+			<filler block="minecraft:concrete" metadata="%colorMetadata%" weight="100" />
+		</fillerSet>
+		<fillerSet group="hull_glass" name="concrete_%colorMetadata%" weight="10">
 			<filler block="minecraft:stained_glass" metadata="%colorMetadata%" weight="100" />
 		</fillerSet>
 		<fillerSet group="hull_plain" name="basic_%colorMetadata%" weight="40">
@@ -293,9 +388,9 @@
 	
 	
 	<!-- ship solar panel -->
-	<fillerSet group="ship_solarPanel" name="AdvancedSolarPanel" weight="20" mods="AdvancedSolarPanel">
-		<filler block="AdvancedSolarPanel:BlockAdvSolarPanel" nbt="{facing:5}" metadata="0" weight="200" />
-		<filler block="AdvancedSolarPanel:BlockAdvSolarPanel" nbt="{facing:5}" metadata="1" weight="100" />
+	<fillerSet group="ship_solarPanel" name="advanced_solar_panels" weight="20" mods="advanced_solar_panels">
+		<filler block="advanced_solar_panels:machines" nbt="{facing:5}" metadata="2" weight="200" />
+		<filler block="advanced_solar_panels:machines" nbt="{facing:5}" metadata="3" weight="100" />
 	</fillerSet>
 	<fillerSet group="ship_solarPanel" name="ic2" weight="10" mods="ic2">
 		<filler block="ic2:te" metadata="3" nbt="{facing:5,id:&quot;ic2:solar_generator&quot;}" weight="100" />
@@ -317,7 +412,7 @@
 	
 	
 	<!-- ship wiring -->
-	<fillerSet group="ship_wiring" name="advancedSolarPanel" weight="10" mods="AdvancedSolarPanel">
+	<fillerSet group="ship_wiring" name="advanced_solar_panels" weight="10" mods="advanced_solar_panels">
 		<import group="ship_wiring" name="ic2" />
 	</fillerSet>
 	<fillerSet group="ship_wiring" name="ic2" weight="10" mods="ic2">
@@ -333,7 +428,10 @@
 	</fillerSet>
 	<fillerSet group="ship_wiring" name="enderio_with_thermaldynamics" weight="5" mods="enderio,thermaldynamics">
 		<import group="ship_wiring" name="enderio" />
-		<import group="ship_wiring" name="thermaldynamics_without_enderio" />
+		<!-- manual import of group "ship_wiring" with name "thermaldynamics_without_enderio" -->
+		<filler block="thermaldynamics:ThermalDynamics_0" metadata="0" weight="100" /><!-- Leadstone Fluxduct -->
+		<filler block="thermaldynamics:ThermalDynamics_0" metadata="1" weight="40" /><!-- Hardened Fluxduct -->
+		<filler block="thermaldynamics:ThermalDynamics_0" metadata="2" weight="10" /><!-- Redstone Energy Fluxduct -->
 	</fillerSet>
 	<fillerSet group="ship_wiring" name="thermaldynamics_without_enderio" weight="5" mods="thermaldynamics,!enderio">
 		<filler block="thermaldynamics:ThermalDynamics_0" metadata="0" weight="100" /><!-- Leadstone Fluxduct -->
@@ -343,13 +441,27 @@
 	<fillerSet group="ship_wiring" name="vanilla" weight="5" mods="!ic2,!enderio,!thermaldynamics">
 		<filler block="minecraft:fence" weight="100" />
 	</fillerSet>
-
-
+	
+	
 	<!-- ship propulsion -->
 	<fillerSet group="ship_propulsion" name="vanilla" weight="5">
-		<filler block="minecraft:redstone_block" weight="100" />
-		<filler block="minecraft:lapis_block" ratio="0.2" />
-		<filler block="minecraft:coal_block" ratio="0.2" />
+		<filler block="minecraft:redstone_block"                   weight="100" />
+		<filler block="minecraft:lapis_block"                      ratio="0.150" />
+		<filler block="minecraft:coal_block"                       ratio="0.150" />
+		<filler block="bigreactors:blockmetals" metadata="1"       ratio="0.025" mods="bigreactors" /><!-- Cyanite -->
+		<filler block="embers:block_dawnstone"                     ratio="0.010" mods="embers" /><!-- Dawnstone (gold + copper) -->
+		<filler block="environmentaltech:litherite" metadata="11"  ratio="0.015" mods="environmentaltech" /><!-- Litherite -->
+		<filler block="environmentaltech:erodium" metadata="11"    ratio="0.015" mods="environmentaltech" /><!-- Erodium -->
+		<filler block="mekanism:basicblock" metadata="3"           ratio="0.080" mods="mekanism" /><!-- Charcoal -->
+		<filler block="mekanism:basicblock" metadata="4"           ratio="0.070" mods="mekanism" /><!-- Refined glowstone -->
+		<filler block="nuclearcraft:block_depleted_uranium"        ratio="0.010" mods="nuclearcraft" /><!-- Deplered uranium -->
+		<filler block="nuclearcraft:block_depleted_thorium"        ratio="0.010" mods="nuclearcraft" /><!-- Deplered thorium -->
+		<filler block="nex:amethyst_block"                         ratio="0.010" mods="nex" /><!-- Amethyst -->
+		<filler block="nex:rime_block"                             ratio="0.010" mods="nex" /><!-- Rime -->
+		<filler block="projectred-exploration:stone" metadata="5"  ratio="0.015" mods="projectred-exploration" /><!-- Ruby -->
+		<filler block="projectred-exploration:stone" metadata="6"  ratio="0.015" mods="projectred-exploration" /><!-- Sapphire -->
+		<filler block="projectred-exploration:stone" metadata="7"  ratio="0.015" mods="projectred-exploration" /><!-- Peridot -->
+		<filler block="projectred-exploration:stone" metadata="11" ratio="0.060" mods="projectred-exploration" /><!-- Electrotine -->
 	</fillerSet>
 	
 	
@@ -365,6 +477,8 @@
 	</fillerSet>
 	<fillerSet group="moon.flow" name="ice" weight="3">
 		<filler block="minecraft:ice" weight="100" />
+		<filler block="minecraft:packed_ice" weight="10" />
+		<filler block="appliedenergistics2:quartz_block" weight="2" mods="appliedenergistics2" /><!-- Certus quartz block -->
 	</fillerSet>
 	<fillerSet group="moon.flow" name="clay" weight="5">
 		<filler block="minecraft:clay" weight="100" />
@@ -372,6 +486,15 @@
 	<fillerSet group="moon.flow" name="water" weight="5">
 		<filler block="minecraft:water" weight="100" />
 	</fillerSet>
+    <fillerSet group="moon.flow" name="oil" weight="50" mods="buildcraftenergy">
+        <filler block="buildcraftenergy:fluid_block_oil_heat_0" weight="5" />
+    </fillerSet>
+    <fillerSet group="moon.flow" name="oil" weight="50" mods="buildcraftenergy">
+        <filler block="buildcraftenergy:fluid_block_oil_heat_1" weight="5" />
+    </fillerSet>
+    <fillerSet group="moon.flow" name="oil" weight="50" mods="buildcraftenergy">
+        <filler block="buildcraftenergy:fluid_block_oil_heat_2" weight="5" />
+    </fillerSet>
 	<fillerSet group="moon.flow" name="empty" ratio="0.35">
 		<!-- empty fillerSet gives a random chance for the related shell to not exist at all -->
 	</fillerSet>
@@ -380,36 +503,48 @@
 	<!-- core variation for moons -->
 	<fillerSet group="moon.core" name="lava" weight="6">
 		<filler block="minecraft:lava" weight="100" />
-		<filler block="arsmagica2:vinteumOre" metadata="4" ratio=".001" mods="arsmagica2" /><!-- Sunstone -->
+        <filler block="arsmagica2:vinteumOre" metadata="4" ratio=".005" mods="arsmagica2" /><!-- Sunstone -->
+		<filler block="StargateTech2:block.naquadah" ratio=".005" mods="StargateTech2" /><!-- Naquadah -->
+        <filler block="enderio:block_alloy" metadata="1" ratio="0.001" mods="enderio" /><!-- Energetic alloy block -->
 	</fillerSet>
 	<fillerSet group="moon.core" name="stone" weight="5">
 		<import group="overworld_rare" name="stone" />
 	</fillerSet>
 	<fillerSet group="moon.core" name="obsidian" weight="1">
 		<import group="overworld_rare" name="obsidian" />
+        <filler block="enderio:block_alloy" metadata="6" ratio="0.001" mods="enderio" /><!-- Dark steel block -->
 	</fillerSet>
 	<fillerSet group="moon.core" name="water" weight="2">
 		<filler block="minecraft:water" weight="100" />
-		<filler block="minecraft:ice" ratio="0.05" />
+		<filler block="minecraft:ice" ratio="0.075" />
+ 		<filler block="minecraft:packed_ice" ratio="0.005" />
+		<filler block="appliedenergistics2:quartz_block" ratio=".005" mods="appliedenergistics2" /><!-- Certus quartz block -->
 	</fillerSet>
 	<fillerSet group="moon.core" name="ice" weight="1">
-		<filler block="minecraft:packed_ice" weight="100" />
-		<filler block="minecraft:lapis_block" ratio="0.02" />
+        <filler block="minecraft:packed_ice" weight="100" />
+        <filler block="minecraft:lapis_block" ratio="0.02" />
+		<filler block="ebwizardry:crystal_block" metadata="0" ratio="0.001" mods="ebwizardry" /><!-- Crystal block -->
+		<filler block="appliedenergistics2:quartz_block" ratio=".010" mods="appliedenergistics2" /><!-- Certus quartz block -->
 	</fillerSet>
 	<fillerSet group="moon.core" name="diaquartz" weight="1">
 		<filler block="minecraft:quartz_block" metadata="0" weight="100" />
 		<filler block="minecraft:quartz_block" metadata="1" weight="100" />
-		<filler block="minecraft:diamond_block" ratio="0.01" />
+        <filler block="minecraft:diamond_block" ratio="0.005" />
+		<filler block="ebwizardry:crystal_block" metadata="0" ratio="0.006" mods="ebwizardry" /><!-- Crystal block -->
+        <filler block="enderio:block_alloy" metadata="2" ratio="0.001" mods="enderio" /><!-- Vibrant alloy block -->
 	</fillerSet>
 	<fillerSet group="moon.core" name="iriquartz" weight="1">
 		<filler block="minecraft:quartz_block" metadata="0" weight="100" />
-		<filler block="warpdrive:iridium_block" ratio="0.001" />
+		<filler block="warpdrive:iridium_block" ratio="0.0015" />
+		<filler block="ebwizardry:crystal_block" metadata="0" ratio="0.001" mods="ebwizardry" /><!-- Crystal block -->
+		<filler block="StargateTech2:block.naquadah" metadata="8" ratio=".001" mods="StargateTech2" /><!-- Naquadah block -->
 	</fillerSet>
 	<fillerSet group="moon.core" name="iroquartz" weight="1">
 		<filler block="minecraft:quartz_block" metadata="2" weight="33" />
 		<filler block="minecraft:quartz_block" metadata="3" weight="33" />
 		<filler block="minecraft:quartz_block" metadata="4" weight="33" />
-		<filler block="minecraft:iron_block" ratio="0.01" />
+        <filler block="minecraft:iron_block" ratio="0.005" />
+        <filler block="enderio:block_alloy" metadata="0" ratio="0.001" mods="enderio" /><!-- Electrical steel block -->
 	</fillerSet>
 	<!-- TODO: add GT granite cores -->
 	<!-- TODO: add TE/EIO block of sort -->

@@ -42,7 +42,7 @@
 		  dimension.gravity: this is the gravity simulation type. Valid keywords are 'none' (0.0), 'legacySpace', 'legacyHyperspace', 'normal' (1.0) or any value between 0 and 1.
 		  dimension.center.x, dimension.center.z: those are the center coordinate of that dimension world border, measured in blocks. For convenience, it's usually 0, 0.
 		  -->
-		<dimension id="-3" isBreathable="false" isHyperspace="true" gravity="legacyHyperspace">
+		<dimension id="-100" isBreathable="false" isHyperspace="true" gravity="legacyHyperspace">
 			<center x="0" z="0" />
 			<!--
 			  provider defines how the world biomes are generated. If it's missing, the mod tries to self-assign space and hyperspace dimensions.
@@ -84,7 +84,7 @@
 			<size x="200000" z="200000" />
 			<name>Space</name>
 			<description>The void, filled with §6resources§r.</description>
-			<dimension id="-2" isBreathable="false" gravity="legacySpace">
+			<dimension id="-101" isBreathable="false" gravity="legacySpace">
 				<center x="0" z="0" />
 				<provider type="WarpDriveSpace" />
 				<!--
