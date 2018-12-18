@@ -48,6 +48,7 @@ import cr0s.warpdrive.compat.CompatThermalDynamics;
 import cr0s.warpdrive.compat.CompatThermalExpansion;
 import cr0s.warpdrive.compat.CompatUndergroundBiomes;
 import cr0s.warpdrive.compat.CompatWarpDrive;
+import cr0s.warpdrive.compat.CompatYABBA;
 import cr0s.warpdrive.config.structures.StructureManager;
 import cr0s.warpdrive.data.CelestialObject;
 import cr0s.warpdrive.data.CelestialObjectManager;
@@ -1407,6 +1408,11 @@ public class WarpDriveConfig {
 		final boolean isUndergroundBiomesLoaded = Loader.isModLoaded("undergroundbiomes");
 		if (isUndergroundBiomesLoaded) {
 			CompatUndergroundBiomes.register();
+		}
+		
+		final boolean isYABBAloaded = Loader.isModLoaded("yabba");
+		if (isYABBAloaded) {
+			CompatYABBA.register();
 		}
 	}
 	
