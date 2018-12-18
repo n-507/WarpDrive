@@ -116,9 +116,6 @@ public class Dictionary {
 				config.get("block_tags", "minecraft:portal"                                , "Anchor StopMining").getString();
 				config.get("block_tags", "minecraft:repeating_command_block"               , "Anchor StopMining").getString();
 				config.get("block_tags", "minecraft:structure_block"                       , "Anchor StopMining").getString();
-				// config.get("block_tags", "Artifacts:invisible_bedrock"                     , "Anchor StopMining NoBlink").getString();
-				// config.get("block_tags", "Artifacts:anti_anti_builder_stone"               , "Anchor StopMining").getString();
-				// config.get("block_tags", "Artifacts:anti_builder"                          , "Anchor StopMining").getString();
 				config.get("block_tags", "computercraft:command_computer"                  , "Anchor SkipMining").getString();
 				// @TODO MC1.12 config.get("block_tags", "ic2:blockPersonal"                               , "Anchor SkipMining").getString(); // IC2 personal chest, need property filtering
 				// @TODO MC1.12 config.get("block_tags", "malisisdoors:null"                               , "Anchor").getString(); // improper registration of block causing NPE
@@ -182,7 +179,6 @@ public class Dictionary {
 				config.get("block_tags", "chisel:cloud"                                    , "LeftBehind Expandable").getString();
 				config.get("block_tags", "railcraft:residual.heat"                         , "LeftBehind Expandable").getString();
 				config.get("block_tags", "warpdrive:gas"                                   , "LeftBehind Expandable").getString();
-				// config.get("block_tags", "InvisibLights:blockLightSource"                  , "NoMass Expandable").getString();
 				config.get("block_tags", "warpdrive:air_flow"                              , "NoMass Expandable PlaceLatest").getString();
 				config.get("block_tags", "warpdrive:air_source"                            , "NoMass Expandable PlaceLatest").getString();
 				config.get("block_tags", "buildcraftcore:marker_path"                      , "NoMass LeftBehind Expandable").getString(); // depends on an unsupported separate cache
@@ -210,8 +206,6 @@ public class Dictionary {
 				config.get("block_tags", "thermalexpansion:cache"                          , "NoCamouflage").getString();
 				config.get("block_tags", "thermalexpansion:device"                         , "NoCamouflage").getString();
 				config.get("block_tags", "thermalexpansion:machine"                        , "NoCamouflage").getString();
-				// config.get("block_tags", "thermalexpansion:Sponge"                          , "NoCamouflage").getString(); // not found
-				// config.get("block_tags", "witchery:leechchest"                              , "NoCamouflage").getString();
 				
 				taggedBlocksName = categoryBlockTags.getValues().keySet().toArray(new String[0]);
 			}

@@ -128,15 +128,12 @@ public class WarpDriveConfig {
 	 * The variables which store whether or not individual mods are loaded
 	 */
 	public static boolean              isAdvancedRepulsionSystemLoaded = false;
-	public static boolean              isAdvancedSolarPanelLoaded = false;
 	public static boolean              isRedstoneFluxLoaded = false;
 	public static boolean              isComputerCraftLoaded = false;
-	public static boolean              isDefenseTechLoaded = false;
 	public static boolean              isEnderIOLoaded = false;
 	public static boolean              isForgeMultipartLoaded = false;
 	public static boolean              isGregTechLoaded = false;
 	public static boolean              isICBMClassicLoaded = false;
-	public static boolean              isImmersiveEngineeringLoaded = false;
 	public static boolean              isIndustrialCraft2Loaded = false;
 	public static boolean              isNotEnoughItemsLoaded = false;
 	public static boolean              isOpenComputersLoaded = false;
@@ -658,7 +655,6 @@ public class WarpDriveConfig {
 		isRedstoneFluxLoaded = Loader.isModLoaded("redstoneflux");
 		isComputerCraftLoaded = Loader.isModLoaded("computercraft");
 		isEnderIOLoaded = Loader.isModLoaded("enderio");
-		isDefenseTechLoaded = Loader.isModLoaded("DefenseTech");
 		isGregTechLoaded = Loader.isModLoaded("gregtech");
 		isIndustrialCraft2Loaded = Loader.isModLoaded("ic2");
 		isOpenComputersLoaded = Loader.isModLoaded("opencomputers");
@@ -1191,11 +1187,9 @@ public class WarpDriveConfig {
 		
 		// read non-explicit mod dependencies
 		isAdvancedRepulsionSystemLoaded = Loader.isModLoaded("AdvancedRepulsionSystems");
-		isAdvancedSolarPanelLoaded = Loader.isModLoaded("AdvancedSolarPanel");
 		isForgeMultipartLoaded = Loader.isModLoaded("forgemultipartcbe");
 		isICBMClassicLoaded = Loader.isModLoaded("icbmclassic");
 		isNotEnoughItemsLoaded = Loader.isModLoaded("NotEnoughItems");
-		isImmersiveEngineeringLoaded = Loader.isModLoaded("immersiveengineering");
 		isThermalExpansionLoaded = Loader.isModLoaded("thermalexpansion");
 		isThermalFoundationLoaded = Loader.isModLoaded("thermalfoundation");
 		
@@ -1227,6 +1221,7 @@ public class WarpDriveConfig {
 			isForgeMultipartLoaded = CompatForgeMultipart.register();
 		}
 		
+		final boolean isImmersiveEngineeringLoaded = Loader.isModLoaded("immersiveengineering");
 		if (isImmersiveEngineeringLoaded) {
 			CompatImmersiveEngineering.register();
 		}

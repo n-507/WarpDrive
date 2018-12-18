@@ -392,7 +392,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		carryPlaceSpeed = floatPlaceSpeed - countMaxPlaced;
 		
 		// evaluate force field block metadata
-		IBlockState blockStateForceField;
+		final IBlockState blockStateForceField;
 		if (forceFieldSetup.getCamouflageBlockState() == null) {
 			blockStateForceField = WarpDrive.blockForceFields[enumTier.getIndex()].getStateFromMeta(
 					Math.min(15, (beamFrequency * 16) / IBeamFrequency.BEAM_FREQUENCY_MAX));

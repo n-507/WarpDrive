@@ -40,13 +40,13 @@ import net.minecraftforge.registries.ForgeRegistry;
  */
 public class Recipes {
 	
-	private static ResourceLocation groupComponents   = new ResourceLocation("components");
-	private static ResourceLocation groupDecorations  = new ResourceLocation("decoration");
-	private static ResourceLocation groupMachines     = new ResourceLocation("machines");
-	private static ResourceLocation groupTools        = new ResourceLocation("tools");
+	private static final ResourceLocation groupComponents   = new ResourceLocation("components");
+	private static final ResourceLocation groupDecorations  = new ResourceLocation("decoration");
+	private static final ResourceLocation groupMachines     = new ResourceLocation("machines");
+	private static final ResourceLocation groupTools        = new ResourceLocation("tools");
 	
-	private static ResourceLocation groupHulls        = new ResourceLocation("hulls");
-	private static ResourceLocation groupTaintedHulls = new ResourceLocation("tainted_hulls");
+	private static final ResourceLocation groupHulls        = new ResourceLocation("hulls");
+	private static final ResourceLocation groupTaintedHulls = new ResourceLocation("tainted_hulls");
 	
 	public static final HashMap<EnumDyeColor, String> oreDyes = new HashMap<>(16);
 	static {
@@ -98,7 +98,7 @@ public class Recipes {
 			registerOreDictionary("blockVoidShell", new ItemStack(WarpDrive.blockVoidShellPlain, 1));
 			registerOreDictionary("blockVoidShell", new ItemStack(WarpDrive.blockVoidShellGlass, 1));
 			for (int tier = 1; tier <= 3; tier++) {
-				int index = tier - 1;
+				final int index = tier - 1;
 				registerOreDictionary("blockElectromagnet" + tier, new ItemStack(WarpDrive.blockElectromagnets_plain[index], 1));
 				registerOreDictionary("blockElectromagnet" + tier, new ItemStack(WarpDrive.blockElectromagnets_glass[index], 1));
 			}
@@ -141,10 +141,10 @@ public class Recipes {
 	
 	private static void initIngredients() {
 		// Get the machine casing to use
-		ItemStack itemStackMachineCasingLV;
-		ItemStack itemStackMachineCasingMV;
-		ItemStack itemStackMachineCasingHV;
-		ItemStack itemStackMachineCasingEV;
+		final ItemStack itemStackMachineCasingLV;
+		final ItemStack itemStackMachineCasingMV;
+		final ItemStack itemStackMachineCasingHV;
+		final ItemStack itemStackMachineCasingEV;
 		ItemStack itemStackMotorLV = ItemComponent.getItemStack(EnumComponentType.MOTOR);
 		ItemStack itemStackMotorMV = ItemComponent.getItemStack(EnumComponentType.MOTOR);
 		ItemStack itemStackMotorHV = ItemComponent.getItemStack(EnumComponentType.MOTOR);
@@ -1502,12 +1502,12 @@ public class Recipes {
 		}
 		
 		// Tier 2 = 4 Tier 1, 4 GregTech 5 TungstenSteel reinforced block, IC2 Carbon plate, DarkSteel ingots or Obsidian, gives 4
-		final Object oreObsidianTungstenSteelPlate = WarpDriveConfig.getOreOrItemStack("ore:plateTungstenSteel", 0, // GregTech CE TungstenSteel Plate
-		                                                                               "ic2:crafting", 15,                       // IC2 Carbon plate
-		                                                                               "thermalfoundation:glass", 3,                    // ThermalFoundation Hardened glass
-		                                                                               "ore:ingotDarkSteel", 0,                         // EnderIO DarkSteel ingot
+		final Object oreObsidianTungstenSteelPlate = WarpDriveConfig.getOreOrItemStack("ore:plateTungstenSteel", 0,     // GregTech CE TungstenSteel Plate
+		                                                                               "ic2:crafting", 15,              // IC2 Carbon plate
+		                                                                               "thermalfoundation:glass", 3,    // ThermalFoundation Hardened glass
+		                                                                               "ore:ingotDarkSteel", 0,         // EnderIO DarkSteel ingot
 		                                                                               "minecraft:obsidian", 0);
-		for (EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
+		for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
 			final int metadataColor = enumDyeColor.getMetadata();
 			WarpDrive.register(new ShapedOreRecipe(groupTaintedHulls,
 			                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.ADVANCED.getIndex()][0], 4, metadataColor), false, "cbc", "b b", "cbc",
@@ -1521,11 +1521,11 @@ public class Recipes {
 		}
 		
 		// Tier 3 = 4 Tier 2, 1 GregTech Naquadah plate, IC2 Iridium plate, EnderIO Pulsating crystal or Diamond, gives 4
-		final Object oreDiamondOrNaquadahPlate = WarpDriveConfig.getOreOrItemStack("ore:plateNaquadah", 0, // GregTech CE Naquadah plate
-		                                                                           "ore:plateAlloyIridium", 0,          // IC2 Iridium alloy
-		                                                                           "ore:itemPulsatingCrystal", 0,                  // EnderIO Pulsating crystal
+		final Object oreDiamondOrNaquadahPlate = WarpDriveConfig.getOreOrItemStack("ore:plateNaquadah", 0,         // GregTech CE Naquadah plate
+		                                                                           "ore:plateAlloyIridium", 0,     // IC2 Iridium alloy
+		                                                                           "ore:itemPulsatingCrystal", 0,  // EnderIO Pulsating crystal
 		                                                                           "ore:gemDiamond", 0);
-		for (EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
+		for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
 			final int metadataColor = enumDyeColor.getMetadata();
 			WarpDrive.register(new ShapedOreRecipe(groupTaintedHulls,
 			                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.SUPERIOR.getIndex()][0], 4, metadataColor), false, " b ", "bcb", " b ",
@@ -1540,8 +1540,8 @@ public class Recipes {
 		
 		// Hull blocks variation
 		for (final EnumTier enumTier : EnumTier.nonCreative()) {
-			int index = enumTier.getIndex();
-			for (EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
+			final int index = enumTier.getIndex();
+			for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
 				final int metadataColor = enumDyeColor.getMetadata();
 				
 				// crafting glass

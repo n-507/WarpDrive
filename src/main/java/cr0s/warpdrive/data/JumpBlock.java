@@ -304,7 +304,7 @@ public class JumpBlock {
 				if (nbtToDeploy.hasKey("screenData")) {// IC2NuclearControl 2.2.5a
 					final NBTTagCompound nbtScreenData = nbtToDeploy.getCompoundTag("screenData");
 					if ( nbtScreenData.hasKey("minX") && nbtScreenData.hasKey("minY") && nbtScreenData.hasKey("minZ")
-					  && nbtScreenData.hasKey("maxX") && nbtScreenData.hasKey("maxY") && nbtScreenData.hasKey("maxZ")) {
+					  && nbtScreenData.hasKey("maxX") && nbtScreenData.hasKey("maxY") && nbtScreenData.hasKey("maxZ") ) {
 						if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
 							WarpDrive.logger.info(String.format("%s deploy: TileEntity has screenData.min/maxXYZ", this));
 						}
@@ -327,10 +327,11 @@ public class JumpBlock {
 				
 				TileEntity newTileEntity = null;
 				boolean isForgeMultipart = false;
-				if (WarpDriveConfig.isForgeMultipartLoaded && nbtToDeploy.hasKey("id") && nbtToDeploy.getString("id").equals("savedMultipart")) {
+				if ( WarpDriveConfig.isForgeMultipartLoaded
+				  && nbtToDeploy.hasKey("id")
+				  && nbtToDeploy.getString("id").equals("savedMultipart") ) {
 					isForgeMultipart = true;
 					newTileEntity = (TileEntity) CompatForgeMultipart.methodMultipartHelper_createTileFromNBT.invoke(null, targetWorld, nbtToDeploy);
-					
 				}
 				
 				if (newTileEntity == null) {

@@ -57,7 +57,7 @@ public class BlockShipCore extends BlockAbstractRotatingContainer {
 	                     @Nonnull final IBlockState blockState, final int fortune) {
 		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
 		if (tileEntity instanceof TileEntityShipCore) {
-			if (((TileEntityShipCore)tileEntity).jumpCount == 0) {
+			if (((TileEntityShipCore) tileEntity).jumpCount == 0) {
 				super.getDrops(itemStacks, blockAccess, blockPos, blockState, fortune);
 				return;
 			}

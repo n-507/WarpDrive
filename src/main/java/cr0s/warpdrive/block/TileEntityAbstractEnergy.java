@@ -358,9 +358,9 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 	}
 	
 	
-	// ThermalExpansion IEnergyHandler interface
+	// RedstoneFlux IEnergyReceiver interface
 	@Override
-	@Optional.Method(modid = "redstoneflux")	/* IEnergyReceiver */
+	@Optional.Method(modid = "redstoneflux")
 	public int receiveEnergy(final EnumFacing from, final int maxReceive_RF, final boolean simulate) {
 		if (WarpDriveConfig.LOGGING_ENERGY) {
 			WarpDrive.logger.info(this + " [RF]receiveEnergy from " + from + " maxReceive_RF " + maxReceive_RF + " simulate " + simulate);
@@ -386,8 +386,9 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 		return toAdd_RF;
 	}
 	
+	// RedstoneFlux IEnergyProvider interface
 	@Override
-	@Optional.Method(modid = "redstoneflux")	/* IEnergyProvider */
+	@Optional.Method(modid = "redstoneflux")
 	public int extractEnergy(final EnumFacing from, final int maxExtract_RF, final boolean simulate) {
 		if (WarpDriveConfig.LOGGING_ENERGY) {
 			WarpDrive.logger.info(this + " [RF]extractEnergy from " + from + " maxExtract_RF " + maxExtract_RF + " simulate " + simulate);
@@ -404,20 +405,22 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 		return convertInternalToRF_floor(energyExtracted_internal);
 	}
 	
+	// RedstoneFlux IEnergyConnection interface
 	@Override
-	@Optional.Method(modid = "redstoneflux")	/* IEnergyConnection */
+	@Optional.Method(modid = "redstoneflux")
 	public boolean canConnectEnergy(final EnumFacing from) {
 		return (energy_getMaxStorage() != 0) && (energy_canInput(from) || energy_canOutput(from)); // Warning: deadlock risk depending on child implementation
 	}
 	
+	// RedstoneFlux IEnergyHandler interface
 	@Override
-	@Optional.Method(modid = "redstoneflux")	/* IEnergyReceiver and IEnergyProvider */
+	@Optional.Method(modid = "redstoneflux")
 	public int getEnergyStored(final EnumFacing from) {
 		return canConnectEnergy(from) ? convertInternalToRF_floor(energy_getEnergyStored()) : 0;
 	}
 	
 	@Override
-	@Optional.Method(modid = "redstoneflux")	/* IEnergyReceiver and IEnergyProvider */
+	@Optional.Method(modid = "redstoneflux")
 	public int getMaxEnergyStored(final EnumFacing from) {
 		return canConnectEnergy(from) ? convertInternalToRF_floor(energy_getMaxStorage()) : 0;
 	}

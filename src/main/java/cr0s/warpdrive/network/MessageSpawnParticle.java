@@ -110,8 +110,8 @@ public class MessageSpawnParticle implements IMessage, IMessageHandler<MessageSp
 	private void handle(final World world) {
 		// Directly spawn particle as per RenderGlobal.doSpawnParticle, bypassing range check
 		// adjust color as needed
-		Minecraft mc = Minecraft.getMinecraft();
-		Entity entity = mc.getRenderViewEntity();
+		final Minecraft mc = Minecraft.getMinecraft();
+		final Entity entity = mc.getRenderViewEntity();
 		if (entity == null || mc.effectRenderer == null) {
 			return;
 		}
