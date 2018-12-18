@@ -179,17 +179,25 @@ public class WarpDriveConfig {
 	public static float                CLIENT_LOCATION_WIDTH_RATIO = 0.0F;
 	public static int                  CLIENT_LOCATION_WIDTH_MIN = 90;
 	
-	public static EnumTooltipCondition CLIENT_TOOLTIP_REGISTRY_NAME = EnumTooltipCondition.ADVANCED_TOOLTIPS;
-	public static EnumTooltipCondition CLIENT_TOOLTIP_ORE_DICTIONARY_NAME = EnumTooltipCondition.ALWAYS;
-	public static EnumTooltipCondition CLIENT_TOOLTIP_ARMOR = EnumTooltipCondition.ALWAYS;
-	public static EnumTooltipCondition CLIENT_TOOLTIP_BURN_TIME = EnumTooltipCondition.ADVANCED_TOOLTIPS;
-	public static EnumTooltipCondition CLIENT_TOOLTIP_DURABILITY = EnumTooltipCondition.ALWAYS;
-	public static EnumTooltipCondition CLIENT_TOOLTIP_FLAMMABILITY = EnumTooltipCondition.ADVANCED_TOOLTIPS;
-	public static EnumTooltipCondition CLIENT_TOOLTIP_FLUID = EnumTooltipCondition.ALWAYS;
-	public static EnumTooltipCondition CLIENT_TOOLTIP_HARDNESS = EnumTooltipCondition.ADVANCED_TOOLTIPS;
-	public static EnumTooltipCondition CLIENT_TOOLTIP_HARVESTING = EnumTooltipCondition.ALWAYS;
-	public static EnumTooltipCondition CLIENT_TOOLTIP_OPACITY = EnumTooltipCondition.ADVANCED_TOOLTIPS;
-	public static EnumTooltipCondition CLIENT_TOOLTIP_REPAIR_WITH = EnumTooltipCondition.ON_SNEAK;
+	// Tooltip
+	public static EnumTooltipCondition TOOLTIP_ENABLE_DEDUPLICATION = EnumTooltipCondition.ALWAYS;
+	public static String[]             TOOLTIP_CLEANUP_LIST = new String[] {
+			"fuel details",
+			"burn time",
+			"durability"
+	};
+	public static EnumTooltipCondition TOOLTIP_ADD_REGISTRY_NAME = EnumTooltipCondition.ADVANCED_TOOLTIPS;
+	public static EnumTooltipCondition TOOLTIP_ADD_ORE_DICTIONARY_NAME = EnumTooltipCondition.ALWAYS;
+	public static EnumTooltipCondition TOOLTIP_ADD_ARMOR = EnumTooltipCondition.ALWAYS;
+	public static EnumTooltipCondition TOOLTIP_ADD_BURN_TIME = EnumTooltipCondition.ADVANCED_TOOLTIPS;
+	public static EnumTooltipCondition TOOLTIP_ADD_DURABILITY = EnumTooltipCondition.ALWAYS;
+	public static EnumTooltipCondition TOOLTIP_ADD_ENTITY_ID = EnumTooltipCondition.ADVANCED_TOOLTIPS;
+	public static EnumTooltipCondition TOOLTIP_ADD_FLAMMABILITY = EnumTooltipCondition.ADVANCED_TOOLTIPS;
+	public static EnumTooltipCondition TOOLTIP_ADD_FLUID = EnumTooltipCondition.ALWAYS;
+	public static EnumTooltipCondition TOOLTIP_ADD_HARDNESS = EnumTooltipCondition.ADVANCED_TOOLTIPS;
+	public static EnumTooltipCondition TOOLTIP_ADD_HARVESTING = EnumTooltipCondition.ALWAYS;
+	public static EnumTooltipCondition TOOLTIP_ADD_OPACITY = EnumTooltipCondition.ADVANCED_TOOLTIPS;
+	public static EnumTooltipCondition TOOLTIP_ADD_REPAIR_WITH = EnumTooltipCondition.ON_SNEAK;
 	
 	// Logging
 	public static boolean LOGGING_JUMP = false;
@@ -730,29 +738,43 @@ public class WarpDriveConfig {
 		CLIENT_LOCATION_WIDTH_MIN = config.get("client", "location_width_min", CLIENT_LOCATION_WIDTH_MIN,
 		                                       "Text width as a minimum 'pixel' count").getInt();
 		
+		// Tooltip
 		final String commentTooltip = "When to show %s in tooltips. Valid values are " + EnumTooltipCondition.formatAllValues() + ".";
-		CLIENT_TOOLTIP_REGISTRY_NAME = EnumTooltipCondition.valueOf(config.get("client", "tooltip_registry_name", CLIENT_TOOLTIP_REGISTRY_NAME.name(),
-		                                                                       String.format(commentTooltip, "registry name")).getString());
-		CLIENT_TOOLTIP_ORE_DICTIONARY_NAME = EnumTooltipCondition.valueOf(config.get("client", "tooltip_ore_dictionary_name", CLIENT_TOOLTIP_ORE_DICTIONARY_NAME.name(),
-		                                                                              String.format(commentTooltip, "ore dictionary names")).getString());
-		CLIENT_TOOLTIP_ARMOR = EnumTooltipCondition.valueOf(config.get("client", "tooltip_armor_stats", CLIENT_TOOLTIP_ARMOR.name(),
-		                                                               String.format(commentTooltip, "armor stats")).getString());
-		CLIENT_TOOLTIP_BURN_TIME = EnumTooltipCondition.valueOf(config.get("client", "tooltip_burn_time", CLIENT_TOOLTIP_BURN_TIME.name(),
-		                                                                   String.format(commentTooltip, "burn time")).getString());
-		CLIENT_TOOLTIP_DURABILITY = EnumTooltipCondition.valueOf(config.get("client", "tooltip_durability", CLIENT_TOOLTIP_DURABILITY.name(),
-		                                                                    String.format(commentTooltip, "durability")).getString());
-		CLIENT_TOOLTIP_FLAMMABILITY = EnumTooltipCondition.valueOf(config.get("client", "tooltip_flammability", CLIENT_TOOLTIP_FLAMMABILITY.name(),
-		                                                                      String.format(commentTooltip, "flammability")).getString());
-		CLIENT_TOOLTIP_FLUID = EnumTooltipCondition.valueOf(config.get("client", "tooltip_fluid_stats", CLIENT_TOOLTIP_FLUID.name(),
-		                                                               String.format(commentTooltip, "fluid stats")).getString());
-		CLIENT_TOOLTIP_HARDNESS = EnumTooltipCondition.valueOf(config.get("client", "tooltip_hardness", CLIENT_TOOLTIP_HARDNESS.name(),
-		                                                                  String.format(commentTooltip, "hardness & explosion resistance")).getString());
-		CLIENT_TOOLTIP_HARVESTING = EnumTooltipCondition.valueOf(config.get("client", "tooltip_harvesting_stats", CLIENT_TOOLTIP_HARVESTING.name(),
-		                                                                    String.format(commentTooltip, "harvesting stats")).getString());
-		CLIENT_TOOLTIP_OPACITY = EnumTooltipCondition.valueOf(config.get("client", "tooltip_opacity", CLIENT_TOOLTIP_OPACITY.name(),
-		                                                                 String.format(commentTooltip, "opacity")).getString());
-		CLIENT_TOOLTIP_REPAIR_WITH = EnumTooltipCondition.valueOf(config.get("client", "tooltip_repair_material", CLIENT_TOOLTIP_REPAIR_WITH.name(),
-		                                                                     String.format(commentTooltip, "repair material")).getString());
+		TOOLTIP_ADD_REGISTRY_NAME = EnumTooltipCondition.valueOf(config.get("tooltip", "add_registry_name", TOOLTIP_ADD_REGISTRY_NAME.name(),
+		                                                                     String.format(commentTooltip, "registry name")).getString());
+		TOOLTIP_ADD_ORE_DICTIONARY_NAME = EnumTooltipCondition.valueOf(config.get("tooltip", "add_ore_dictionary_name", TOOLTIP_ADD_ORE_DICTIONARY_NAME.name(),
+		                                                                           String.format(commentTooltip, "ore dictionary names")).getString());
+		TOOLTIP_ADD_ARMOR = EnumTooltipCondition.valueOf(config.get("tooltip", "add_armor_stats", TOOLTIP_ADD_ARMOR.name(),
+		                                                             String.format(commentTooltip, "armor stats")).getString());
+		TOOLTIP_ADD_BURN_TIME = EnumTooltipCondition.valueOf(config.get("tooltip", "add_burn_time", TOOLTIP_ADD_BURN_TIME.name(),
+		                                                                 String.format(commentTooltip, "burn time")).getString());
+		TOOLTIP_ADD_DURABILITY = EnumTooltipCondition.valueOf(config.get("tooltip", "add_durability", TOOLTIP_ADD_DURABILITY.name(),
+		                                                                  String.format(commentTooltip, "durability")).getString());
+		TOOLTIP_ADD_ENTITY_ID = EnumTooltipCondition.valueOf(config.get("tooltip", "add_entity_id", TOOLTIP_ADD_ENTITY_ID.name(),
+		                                                                 String.format(commentTooltip, "entity id")).getString());
+		TOOLTIP_ADD_FLAMMABILITY = EnumTooltipCondition.valueOf(config.get("tooltip", "add_flammability", TOOLTIP_ADD_FLAMMABILITY.name(),
+		                                                                    String.format(commentTooltip, "flammability")).getString());
+		TOOLTIP_ADD_FLUID = EnumTooltipCondition.valueOf(config.get("tooltip", "add_fluid_stats", TOOLTIP_ADD_FLUID.name(),
+		                                                             String.format(commentTooltip, "fluid stats")).getString());
+		TOOLTIP_ADD_HARDNESS = EnumTooltipCondition.valueOf(config.get("tooltip", "add_hardness", TOOLTIP_ADD_HARDNESS.name(),
+		                                                                String.format(commentTooltip, "hardness & explosion resistance")).getString());
+		TOOLTIP_ADD_HARVESTING = EnumTooltipCondition.valueOf(config.get("tooltip", "add_harvesting_stats", TOOLTIP_ADD_HARVESTING.name(),
+		                                                                  String.format(commentTooltip, "harvesting stats")).getString());
+		TOOLTIP_ADD_OPACITY = EnumTooltipCondition.valueOf(config.get("tooltip", "add_opacity", TOOLTIP_ADD_OPACITY.name(),
+		                                                               String.format(commentTooltip, "opacity")).getString());
+		TOOLTIP_ADD_REPAIR_WITH = EnumTooltipCondition.valueOf(config.get("tooltip", "add_repair_material", TOOLTIP_ADD_REPAIR_WITH.name(),
+		                                                                   String.format(commentTooltip, "repair material")).getString());
+		
+		TOOLTIP_CLEANUP_LIST = config.get("tooltips", "cleanup_list", TOOLTIP_CLEANUP_LIST,
+		                                     "List of lines to remove from tooltips before adding ours. This can be a partial match in a line. Must be lowercase without formatting.").getStringList();
+		for (int index = 0; index < TOOLTIP_CLEANUP_LIST.length; index++) {
+			final String old = TOOLTIP_CLEANUP_LIST[index];
+			TOOLTIP_CLEANUP_LIST[index] = Commons.removeFormatting(old).toLowerCase();
+		}
+		
+		TOOLTIP_ENABLE_DEDUPLICATION = EnumTooltipCondition.valueOf(config.get("tooltip", "enable_deduplication", TOOLTIP_ENABLE_DEDUPLICATION.name(),
+		                                                                       String.format("When to remove duplicate lines in tooltips. Valid values are %s.", EnumTooltipCondition.formatAllValues())).getString());
+		
 		
 		// Logging
 		LOGGING_JUMP = config.get("logging", "enable_jump_logs", LOGGING_JUMP, "Basic jump logs, should always be enabled").getBoolean(true);

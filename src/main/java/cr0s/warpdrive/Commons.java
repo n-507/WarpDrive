@@ -169,48 +169,6 @@ public class Commons {
 		// logger.info(message);
 	}
 	
-	// remove redundant information in tooltips
-	public static void cleanupTooltip(final List<String> list) {
-		// skip empty tooltip
-		if (list.isEmpty()) {
-			return;
-		}
-		
-		// remove duplicates
-		final HashSet<String> setClean = new HashSet<>(list.size());
-		Iterator<String> iterator = list.iterator();
-		while (iterator.hasNext()) {
-			final String original = iterator.next();
-			final String clean = removeFormatting(original).trim().toLowerCase();
-			if (setClean.contains(clean)) {
-				iterator.remove();
-			} else if (!clean.isEmpty()) {
-				setClean.add(clean);
-			}
-		}
-		
-		// remove extra separator lines that might be resulting from the cleanup (i.e. 2 consecutive empty lines or a final empty line)
-		boolean wasEmpty = false;
-		iterator = list.iterator();
-		while (iterator.hasNext()) {
-			final String original = iterator.next();
-			final String clean = removeFormatting(original).trim();
-			// keep line with content or at least 4 spaces (for mods adding image overlays)
-			if ( !clean.isEmpty()
-			  || original.length() > 4 ) {
-				wasEmpty = false;
-				continue;
-			}
-			// only keep first empty line in a sequence
-			// always remove the last line when it's empty
-			if ( wasEmpty
-			  || !iterator.hasNext() ) {
-				iterator.remove();
-			}
-			wasEmpty = true;
-		}
-	}
-	
 	// add tooltip information with text formatting and line splitting
 	// will ensure it fits on minimum screen width
 	public static void addTooltip(final List<String> list, final String tooltip) {

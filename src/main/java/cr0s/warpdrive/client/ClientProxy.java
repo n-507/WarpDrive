@@ -6,6 +6,7 @@ import cr0s.warpdrive.api.IBlockBase;
 import cr0s.warpdrive.api.IItemBase;
 import cr0s.warpdrive.event.ClientHandler;
 import cr0s.warpdrive.event.ModelBakeEventHandler;
+import cr0s.warpdrive.event.TooltipHandler;
 import cr0s.warpdrive.render.*;
 
 import javax.annotation.Nonnull;
@@ -40,6 +41,7 @@ public class ClientProxy extends CommonProxy {
 		
 		// event handlers
 		MinecraftForge.EVENT_BUS.register(new ClientHandler());
+		MinecraftForge.EVENT_BUS.register(new TooltipHandler());
 		
 		// generic rendering
 		// MinecraftForge.EVENT_BUS.register(new WarpDriveKeyBindings());

@@ -5,6 +5,7 @@ import cr0s.warpdrive.api.IBlockBase;
 import cr0s.warpdrive.api.IItemBase;
 import cr0s.warpdrive.client.ClientProxy;
 import cr0s.warpdrive.data.EnumTier;
+import cr0s.warpdrive.event.TooltipHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -13,7 +14,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -24,7 +24,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -85,15 +84,10 @@ public class ItemBlockAbstractBase extends ItemBlock implements IItemBase {
 	}
 	
 	public ITextComponent getStatus(final World world, @Nonnull final ItemStack itemStack) {
-		final IBlockState blockState;
-		if (world != null) {// in-game
-			assert Minecraft.getMinecraft().player != null;
-			blockState = block.getStateForPlacement(world, new BlockPos(0, -1, 0),
-			                                        EnumFacing.DOWN, 0.0F, 0.0F, 0.0F,
-			                                        itemStack.getMetadata(), Minecraft.getMinecraft().player, EnumHand.MAIN_HAND);
-		} else {// search tree
-			blockState = block.getStateFromMeta(itemStack.getMetadata());
-		}
+		final IBlockState blockState = TooltipHandler.getStateForPlacement(block,
+		                                                                   world, null, EnumFacing.DOWN,
+		                                                                   0.0F, 0.0F, 0.0F, itemStack.getMetadata(),
+		                                                                   null, EnumHand.MAIN_HAND);
 		
 		final TileEntity tileEntity = block.createTileEntity(world, blockState);
 		if (tileEntity instanceof TileEntityAbstractBase) {

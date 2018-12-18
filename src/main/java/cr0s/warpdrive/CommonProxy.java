@@ -4,6 +4,7 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.event.EMPReceiver;
 import cr0s.warpdrive.event.ItemHandler;
 import cr0s.warpdrive.event.LivingHandler;
+import cr0s.warpdrive.event.TooltipHandler;
 
 import java.lang.ref.WeakReference;
 import java.util.UUID;
@@ -29,6 +30,7 @@ public class CommonProxy {
 	private static final WeakHashMap<GameProfile, WeakReference<EntityPlayer>> fakePlayers = new WeakHashMap<>(100);
 	
 	private static EntityPlayerMP getPlayer(final WorldServer world, final UUID uuidPlayer) {
+		assert world.getMinecraftServer() != null;
 		for (final EntityPlayerMP entityPlayerMP : world.getMinecraftServer().getPlayerList().getPlayers()) {
 			if (entityPlayerMP.getUniqueID() == uuidPlayer) {
 				return entityPlayerMP;
