@@ -14,6 +14,7 @@ import cr0s.warpdrive.item.ItemComponent;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.render.ClientCameraHandler;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
@@ -21,6 +22,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.Optional;
@@ -41,6 +43,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ConcurrentModificationException;
 
 @Optional.InterfaceList({
 	@Optional.Interface(iface = "defense.api.IEMPBlock", modid = "DefenseTech"),
@@ -182,6 +185,21 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	@Override
 	public void onNeighborChange(final IBlockAccess blockAccess, final BlockPos blockPos, final BlockPos blockPosNeighbor) {
 		super.onNeighborChange(blockAccess, blockPos, blockPosNeighbor);
+		if (!Commons.isSafeThread()) {
+			if (WarpDriveConfig.LOGGING_PROFILING_THREAD_SAFETY) {
+				final Block blockNeighbor = blockAccess.getBlockState(blockPosNeighbor).getBlock();
+				final ResourceLocation registryName = blockNeighbor.getRegistryName();
+				WarpDrive.logger.error(String.format("Bad multithreading detected from mod %s %s, please report to mod author",
+				                                     registryName == null ? blockNeighbor : registryName.getNamespace(),
+				                                     Commons.format(blockAccess, blockPosNeighbor) ));
+				try {
+					throw new ConcurrentModificationException();
+				} catch (final Exception exception) {
+					exception.printStackTrace();
+				}
+			}
+			return;
+		}
 		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
 		if (tileEntity instanceof IBlockUpdateDetector) {
 			((IBlockUpdateDetector) tileEntity).onBlockUpdateDetected();
