@@ -126,10 +126,6 @@ public class Recipes {
 				final ItemStack iridiumAlloy = WarpDriveConfig.getItemStackOrFire("ic2:crafting", 4); // IC2 Experimental Iridium alloy plate
 				OreDictionary.registerOre("plateAlloyIridium", iridiumAlloy);
 			}
-			if (WarpDriveConfig.isThermalFoundationLoaded) {
-				final ItemStack iridiumAlloy = WarpDriveConfig.getItemStackOrFire("thermalfoundation:material", 327);   // Thermal Foundation Iridium Plate
-				OreDictionary.registerOre("plateAlloyIridium", iridiumAlloy);
-			}
 		}
 	}
 	
@@ -238,32 +234,43 @@ public class Recipes {
 			WarpDrive.register(new ShapelessOreRecipe(groupComponents,
 			                                          new ItemStack(itemStackIridiumAlloy.getItem(), 9), new ItemStack(WarpDrive.blockIridium)));
 			
-		} else if (WarpDriveConfig.isIndustrialCraft2Loaded) {
+		} else if (OreDictionary.doesOreNameExist("plateAlloyIridium") && !OreDictionary.getOres("plateAlloyIridium").isEmpty()) {// IC2
 			WarpDrive.register(new ShapedOreRecipe(groupComponents,
 			                                       new ItemStack(WarpDrive.blockIridium), "iii", "iii", "iii",
 			                                       'i', "plateAlloyIridium"));
 			final ItemStack itemStackIridiumAlloy = WarpDriveConfig.getOreDictionaryEntry("plateAlloyIridium");
 			WarpDrive.register(new ShapelessOreRecipe(groupComponents,
-			                                          new ItemStack(itemStackIridiumAlloy.getItem(), 9), new ItemStack(WarpDrive.blockIridium)));
+			                                          new ItemStack(itemStackIridiumAlloy.getItem(), 9),
+			                                          new ItemStack(WarpDrive.blockIridium)));
 			
-		} else if (WarpDriveConfig.isThermalExpansionLoaded) {
-			WarpDrive.register(new ShapedOreRecipe(groupComponents,
-			                                       new ItemStack(WarpDrive.blockIridium), "ses", "ele", "ses",
-			                                       'l', "ingotLumium",
-			                                       's', "ingotSignalum",
-			                                       'e', "ingotEnderium"));
-			// no uncrafting
+		} else if ( WarpDriveConfig.isThermalFoundationLoaded
+		         || WarpDriveConfig.isEnderIOLoaded ) {// give alternate options when IC2 & GregTech are missing
+			// Warning: because those are alternatives, we're not giving an uncrafting recipe, nor registering the iridium block to the ore dictionary
 			
-		} else if (WarpDriveConfig.isEnderIOLoaded) {
-			final ItemStack itemStackVibrantAlloy = WarpDriveConfig.getItemStackOrFire("enderio:item_alloy_ingot", 2);
-			final ItemStack itemStackRedstoneAlloy = WarpDriveConfig.getItemStackOrFire("enderio:item_alloy_ingot", 3);
-			final ItemStack itemStackFranckNZombie = WarpDriveConfig.getItemStackOrFire("enderio:item_material", 42);
-			WarpDrive.register(new ShapedOreRecipe(groupComponents,
-			                                       new ItemStack(WarpDrive.blockIridium, 4), "ses", "ele", "ses",
-			                                       'l', itemStackFranckNZombie,
-			                                       's', itemStackRedstoneAlloy,
-			                                       'e', itemStackVibrantAlloy));
-			// no uncrafting
+			if (WarpDriveConfig.isThermalFoundationLoaded) {
+				WarpDrive.register(new ShapedOreRecipe(groupComponents,
+				                                       new ItemStack(WarpDrive.blockIridium, 2), "ses", "ele", "ses",
+				                                       'l', "ingotLumium",
+				                                       's', "ingotSignalum",
+				                                       'e', "ingotEnderium"), "_thermal");
+			}
+			
+			if (OreDictionary.doesOreNameExist("plateIridium") && !OreDictionary.getOres("plateIridium").isEmpty()) {// ThermalFoundation
+				WarpDrive.register(new ShapedOreRecipe(groupComponents,
+				                                       new ItemStack(WarpDrive.blockIridium), "iii", "iii", "iii",
+				                                       'i', "plateIridium"), "_plates");
+			}
+			
+			if (WarpDriveConfig.isEnderIOLoaded) {
+				final ItemStack itemStackVibrantAlloy = WarpDriveConfig.getItemStackOrFire("enderio:item_alloy_ingot", 2);
+				final ItemStack itemStackRedstoneAlloy = WarpDriveConfig.getItemStackOrFire("enderio:item_alloy_ingot", 3);
+				final ItemStack itemStackFranckNZombie = WarpDriveConfig.getItemStackOrFire("enderio:item_material", 42);
+				WarpDrive.register(new ShapedOreRecipe(groupComponents,
+				                                       new ItemStack(WarpDrive.blockIridium, 4), "ses", "ele", "ses",
+				                                       'l', itemStackFranckNZombie,
+				                                       's', itemStackRedstoneAlloy,
+				                                       'e', itemStackVibrantAlloy), "_enderio");
+			}
 			
 		} else {
 			WarpDrive.register(new ShapedOreRecipe(groupComponents,
@@ -1716,7 +1723,7 @@ public class Recipes {
 			oreMagnetizer = WarpDriveConfig.getItemStackOrFire("gregtech:machine", 420);	// Basic polarizer
 		} else if (WarpDriveConfig.isIndustrialCraft2Loaded) {
 			oreMagnetizer = WarpDriveConfig.getItemStackOrFire("ic2:te", 37); // Magnetizer
-		} else if (WarpDriveConfig.isThermalExpansionLoaded) {
+		} else if (WarpDriveConfig.isThermalFoundationLoaded) {
 			oreMagnetizer = WarpDriveConfig.getItemStackOrFire("forge:bucketfilled", 0, "{FluidName: \"ender\", Amount: 1000}"); // Ender bucket
 		} else if (OreDictionary.doesOreNameExist("ingotRedstoneAlloy") && !OreDictionary.getOres("ingotRedstoneAlloy").isEmpty()) {// EnderIO
 			oreMagnetizer = "ingotRedstoneAlloy";
