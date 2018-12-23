@@ -282,24 +282,26 @@ public class Recipes {
 		}
 		
 		// *** Laser medium
-		// basic    is 1 red dye, 1 green dye, 1 yellow dye, 3 glass bottles, 1 power interface, 1 LV casing, 1 computer interface
-		// advanced is 2 redstone dust, 1 nether wart, 2 lapis, 1 potion (any),  1 power interface, 1 LV casing, 1 computer interface
+		// basic    is 1 red dye, 1 green dye, 1 yellow dye, 3 water bottles, 1 power interface, 1 LV casing, 1 computer interface
+		// advanced is 2 redstone dust, 1 awkward potion, 2 lapis, 1 glass tank,  1 power interface, 1 LV casing, 1 computer interface
 		// superior is 1 laser medium (empty), 4 redstone blocks, 4 lapis blocks
+		final ItemStack itemStackWaterBottle = WarpDriveConfig.getItemStackOrFire("minecraft:potion", 0, "{Potion: \"minecraft:water\"}");
+		final ItemStack itemStackAwkwardPotion = WarpDriveConfig.getItemStackOrFire("minecraft:potion", 0, "{Potion: \"minecraft:awkward\"}");
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockLaserMediums[EnumTier.BASIC.getIndex()]), false, "rgy", "BBB", "pmc",
+		                                       new ItemStack(WarpDrive.blockLaserMediums[EnumTier.BASIC.getIndex()]), false, "rgy", "www", "pmc",
 		                                       'r', "dyeRed",
 		                                       'g', "dyeGreen",
 		                                       'y', "dyeYellow",
-		                                       'B', Items.GLASS_BOTTLE,
+		                                       'w', itemStackWaterBottle,
 		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
 		                                       'm', itemStackMachineCasings[0],
 		                                       'c', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE)));
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockLaserMediums[EnumTier.ADVANCED.getIndex()]), false, "rnr", "lBl", "pmc",
+		                                       new ItemStack(WarpDrive.blockLaserMediums[EnumTier.ADVANCED.getIndex()]), false, "rAr", "lBl", "pmc",
 		                                       'r', "dustRedstone",
-		                                       'n', "cropNetherWart",
+		                                       'A', itemStackAwkwardPotion,
 		                                       'l', "gemLapis",
-		                                       'B', Items.POTIONITEM,
+		                                       'B', ItemComponent.getItemStack(EnumComponentType.GLASS_TANK),
 		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
 		                                       'm', itemStackMachineCasings[1],
 		                                       'c', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE)));
@@ -430,17 +432,18 @@ public class Recipes {
 		// Bone charcoal is smelting 1 Bone
 		GameRegistry.addSmelting(Items.BONE, ItemComponent.getItemStackNoCache(EnumComponentType.BONE_CHARCOAL, 1), 1);
 		
-		// Activated carbon is 1 bone charcoal, 4 sticks, 4 leaves
+		// Activated carbon is 3 bone charcoal, 3 leaves, 2 water bottles, 1 sulfur dust or gunpowder
 		final Object leaves = WarpDriveConfig.getOreOrItemStack("ore:treeLeaves", 0,
 		                                                        "minecraft:leaves", 0);
 		final Object gunpowderOrSulfur = WarpDriveConfig.getOreOrItemStack("ore:dustSulfur", 0,
 		                                                                   "ore:gunpowder", 0,
 		                                                                   "minecraft:gunpowder", 0);
+		final ItemStack itemStackWaterBottle = WarpDriveConfig.getItemStackOrFire("minecraft:potion", 0, "{Potion: \"minecraft:water\"}");
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStack(EnumComponentType.ACTIVATED_CARBON), false, "lll", "aaa", "wgw",
 		                                       'l', leaves,
 		                                       'a', ItemComponent.getItemStack(EnumComponentType.BONE_CHARCOAL),
-		                                       'w', new ItemStack(Items.POTIONITEM, 1, 0),
+		                                       'w', itemStackWaterBottle,
 		                                       'g', gunpowderOrSulfur));
 		
 		// Air canister is 4 iron bars, 2 leather/rubber, 2 yellow wool, 1 tank
@@ -563,8 +566,10 @@ public class Recipes {
 		
 		// *** crafting components
 		// Laser medium (empty) is 3 Glass tanks, 1 Power interface, 1 Computer interface, 1 MV Machine casing
+		final ItemStack itemStackAwkwardPotion = WarpDriveConfig.getItemStackOrFire("minecraft:potion", 0, "{Potion: \"minecraft:awkward\"}");
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       ItemComponent.getItemStack(EnumComponentType.LASER_MEDIUM_EMPTY), false, "   ", "ggg", "pmc",
+		                                       ItemComponent.getItemStack(EnumComponentType.LASER_MEDIUM_EMPTY), false, "   ", "gBg", "pmc",
+		                                       'B', itemStackAwkwardPotion,
 		                                       'g', ItemComponent.getItemStack(EnumComponentType.GLASS_TANK),
 		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
 		                                       'm', itemStackMachineCasings[2],
@@ -1365,11 +1370,11 @@ public class Recipes {
 		                                       'C', ItemComponent.getItemStack(EnumComponentType.DIAMOND_COIL),
 		                                       'r', Items.REDSTONE,
 		                                       'g', Items.GOLD_NUGGET ));
-		// Force field item port upgrade is 3 Coil crystal, 3 Chests, 1 MV motor
+		// Force field item port upgrade is 3 Coil crystal, 3 wooden chests, 1 MV motor
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemForceFieldUpgrade.getItemStack(EnumForceFieldUpgrade.ITEM_PORT), false, "CCC", "cmc", " c ",
 		                                       'C', ItemComponent.getItemStack(EnumComponentType.DIAMOND_COIL),
-		                                       'c', Blocks.CHEST,
+		                                       'c', "chestWood",
 		                                       'm', itemStackMotors[1] ));
 		// Force field silencer upgrade is 3 Coil crystal, 3 Wool
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
