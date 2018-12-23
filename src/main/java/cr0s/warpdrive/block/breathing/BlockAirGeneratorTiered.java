@@ -58,10 +58,13 @@ public class BlockAirGeneratorTiered extends BlockAbstractRotatingContainer {
 			} else {
 				final Item itemHeld = itemStackHeld.getItem();
 				if (itemHeld instanceof IAirContainerItem) {
-					final IAirContainerItem airCanister = (IAirContainerItem) itemHeld;
-					if (airCanister.canContainAir(itemStackHeld) && airGenerator.energy_consume(WarpDriveConfig.BREATHING_ENERGY_PER_CANISTER, true)) {
+					final IAirContainerItem airContainerItem = (IAirContainerItem) itemHeld;
+					if ( airContainerItem.canContainAir(itemStackHeld)
+					  && airGenerator.energy_consume(WarpDriveConfig.BREATHING_ENERGY_PER_CANISTER, true) ) {
+						// save current held item, as the decrStackSize() call will clear the original
+						final ItemStack itemStackCopy = itemStackHeld.copy();
 						entityPlayer.inventory.decrStackSize(entityPlayer.inventory.currentItem, 1);
-						final ItemStack toAdd = airCanister.getFullAirContainer(itemStackHeld);
+						final ItemStack toAdd = airContainerItem.getFullAirContainer(itemStackCopy);
 						if (toAdd != null) {
 							if (!entityPlayer.inventory.addItemStackToInventory(toAdd)) {
 								final EntityItem entityItem = new EntityItem(entityPlayer.world, entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, toAdd);
