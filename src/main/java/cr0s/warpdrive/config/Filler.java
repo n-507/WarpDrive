@@ -7,6 +7,7 @@ import cr0s.warpdrive.data.JumpBlock;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import org.w3c.dom.Element;
 
@@ -94,26 +95,38 @@ public class Filler implements IXmlRepresentableUnit {
 	}
 	
 	public void setBlock(final World world, final BlockPos blockPos) {
-		JumpBlock.setBlockNoLight(world, blockPos, block.getStateFromMeta(metadata), 2);
+		final IBlockState blockState;
+		try {
+			blockState = block.getStateFromMeta(metadata);
+			JumpBlock.setBlockNoLight(world, blockPos, blockState, 2);
+		} catch (final Throwable throwable) {
+			WarpDrive.logger.error(String.format("Throwable detected in Filler.setBlock(%s), check your configuration for that block!",
+			                                     getName()));
+			throw throwable;
+		}
 		
 		if (tagCompound != null) {
+			// get tile entity
 			final TileEntity tileEntity = world.getTileEntity(blockPos);
 			if (tileEntity == null) {
-				WarpDrive.logger.error(String.format("No TileEntity found for Filler %s %s",
+				WarpDrive.logger.error(String.format("No TileEntity found for Filler %s %s, unable to apply NBT properties",
 				                                     getName(),
 				                                     Commons.format(world, blockPos)));
 				return;
 			}
 			
+			// save default NBT
 			final NBTTagCompound nbtTagCompoundTileEntity = new NBTTagCompound();
 			tileEntity.writeToNBT(nbtTagCompoundTileEntity);
 			
+			// overwrite with customization
 			for (final Object key : tagCompound.getKeySet()) {
 				if (key instanceof String) {
 					nbtTagCompoundTileEntity.setTag((String) key, tagCompound.getTag((String) key));
 				}
 			}
 			
+			// reload
 			tileEntity.onChunkUnload();
 			tileEntity.readFromNBT(nbtTagCompoundTileEntity);
 			tileEntity.validate();

@@ -72,11 +72,19 @@ public class XmlPreprocessor {
 				final Element elementChild = (Element) child;
 				final String result = checkModRequirements(elementChild);
 				if (!result.isEmpty()) {
-					WarpDrive.logger.info(String.format("Skipping %s/%s %s:%s %s due to %s",
-					                                    base.getNodeName(), elementChild.getNodeName(),
-					                                    elementChild.getAttribute("group"), elementChild.getAttribute("name"),
-					                                    elementChild.getAttribute("block"),
-					                                    result));
+					final String block = elementChild.getAttribute("block");
+					if (block == null || block.isEmpty()) {
+						WarpDrive.logger.info(String.format("Skipping %s/%s %s:%s due to %s",
+						                                    base.getNodeName(), elementChild.getNodeName(),
+						                                    elementChild.getAttribute("group"), elementChild.getAttribute("name"),
+						                                    result));
+					} else {
+						WarpDrive.logger.info(String.format("Skipping %s/%s %s:%s %s due to %s",
+						                                    base.getNodeName(), elementChild.getNodeName(),
+						                                    elementChild.getAttribute("group"), elementChild.getAttribute("name"),
+						                                    block,
+						                                    result));
+					}
 					base.removeChild(child);
 				} else {
 					doModReqSanitation(child);

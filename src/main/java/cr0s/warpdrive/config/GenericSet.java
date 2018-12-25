@@ -51,7 +51,8 @@ public class GenericSet<E extends IXmlRepresentableUnit> implements IXmlRepresen
 	public E getRandomUnit(final Random random) {
 		E unit = units.getRandomEntry(random);
 		if (unit == null) {
-			WarpDrive.logger.error(String.format("null %s encountered in set %s", nameElementUnit, getFullName()));
+			WarpDrive.logger.error(String.format("null %s encountered in set %s of %d elements, using default %s instead",
+			                                     nameElementUnit, getFullName(), units.elements().size(), unitDefault));
 			unit = unitDefault;
 		}
 		return unit;

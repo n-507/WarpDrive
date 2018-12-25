@@ -133,7 +133,7 @@ public class Schematic extends AbstractStructure {
 				for (final String importGroup : getImportGroups()) {
 					final GenericSet<Filler> fillerSet = WarpDriveConfig.FillerManager.getRandomSetFromGroup(random, importGroup);
 					if (fillerSet == null) {
-						WarpDrive.logger.info(String.format("Ignoring invalid group %s in replacement %s of structure %s",
+						WarpDrive.logger.warn(String.format("Ignoring invalid group %s in replacement %s of structure %s",
 						                                    importGroup, name, parentFullName));
 						continue;
 					}
@@ -233,7 +233,7 @@ public class Schematic extends AbstractStructure {
 				for (final String importGroup : getImportGroups()) {
 					final GenericSet<Loot> lootSet = WarpDriveConfig.LootManager.getRandomSetFromGroup(random, importGroup);
 					if (lootSet == null) {
-						WarpDrive.logger.info(String.format("Ignoring invalid group %s in insertion %s of structure %s",
+						WarpDrive.logger.warn(String.format("Ignoring invalid group %s in insertion %s of structure %s",
 						                                    importGroup, name, parentFullName));
 						continue;
 					}

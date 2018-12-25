@@ -2,6 +2,8 @@ package cr0s.warpdrive.config;
 
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IXmlRepresentableUnit;
+
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -132,6 +134,8 @@ public class GenericSetManager<E extends IXmlRepresentableUnit> extends XmlFileM
 	public GenericSet<E> getRandomSetFromGroup(final Random random, final String groupName) {
 		final XmlRandomCollection<GenericSet<E>> group = genericSetsByGroup.get(groupName);
 		if (group == null) {
+			WarpDrive.logger.warn(String.format("Invalid group %s, try one of %s",
+			                                    groupName, StringUtils.join(genericSetsByGroup.keySet(), ", ") ));
 			return null;
 		}
 		return group.getRandomEntry(random);

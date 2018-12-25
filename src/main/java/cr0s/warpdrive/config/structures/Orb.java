@@ -140,7 +140,7 @@ public class Orb extends AbstractStructure {
 				for (final String importGroup : getImportGroups()) {
 					final GenericSet<Filler> fillerSet = WarpDriveConfig.FillerManager.getRandomSetFromGroup(random, importGroup);
 					if (fillerSet == null) {
-						WarpDrive.logger.info(String.format("Ignoring invalid group %s in shell %s of structure %s",
+						WarpDrive.logger.warn(String.format("Ignoring invalid group %s in shell %s of structure %s",
 						                                    importGroup, name, parentFullName));
 						continue;
 					}
