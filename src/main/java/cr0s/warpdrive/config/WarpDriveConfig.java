@@ -48,6 +48,7 @@ import cr0s.warpdrive.compat.CompatThermalDynamics;
 import cr0s.warpdrive.compat.CompatThermalExpansion;
 import cr0s.warpdrive.compat.CompatUndergroundBiomes;
 import cr0s.warpdrive.compat.CompatWarpDrive;
+import cr0s.warpdrive.compat.CompatWoot;
 import cr0s.warpdrive.compat.CompatYABBA;
 import cr0s.warpdrive.config.structures.StructureManager;
 import cr0s.warpdrive.data.CelestialObject;
@@ -652,13 +653,21 @@ public class WarpDriveConfig {
 		// unpack default schematic files if none are defined
 		unpackResourcesToFolder("default", ".schematic", defaultSchematics, "schematics", fileSchematicsDirectory);
 		
-		// read mod dependencies
+		// read mod dependencies at runtime and for recipes
 		isRedstoneFluxLoaded = Loader.isModLoaded("redstoneflux");
 		isComputerCraftLoaded = Loader.isModLoaded("computercraft");
 		isEnderIOLoaded = Loader.isModLoaded("enderio");
 		isGregTechLoaded = Loader.isModLoaded("gregtech");
 		isIndustrialCraft2Loaded = Loader.isModLoaded("ic2");
 		isOpenComputersLoaded = Loader.isModLoaded("opencomputers");
+		
+		// read mod dependencies for recipes
+		isAdvancedRepulsionSystemLoaded = Loader.isModLoaded("AdvancedRepulsionSystems");
+		isForgeMultipartLoaded = Loader.isModLoaded("forgemultipartcbe");
+		isICBMClassicLoaded = Loader.isModLoaded("icbmclassic");
+		isNotEnoughItemsLoaded = Loader.isModLoaded("NotEnoughItems");
+		isThermalExpansionLoaded = Loader.isModLoaded("thermalexpansion");
+		isThermalFoundationLoaded = Loader.isModLoaded("thermalfoundation");
 	}
 	
 	public static void loadConfig(final File file) {
@@ -1186,14 +1195,6 @@ public class WarpDriveConfig {
 	public static void onFMLInitialization() {
 		CompatWarpDrive.register();
 		
-		// read non-explicit mod dependencies
-		isAdvancedRepulsionSystemLoaded = Loader.isModLoaded("AdvancedRepulsionSystems");
-		isForgeMultipartLoaded = Loader.isModLoaded("forgemultipartcbe");
-		isICBMClassicLoaded = Loader.isModLoaded("icbmclassic");
-		isNotEnoughItemsLoaded = Loader.isModLoaded("NotEnoughItems");
-		isThermalExpansionLoaded = Loader.isModLoaded("thermalexpansion");
-		isThermalFoundationLoaded = Loader.isModLoaded("thermalfoundation");
-		
 		// apply compatibility modules
 		if (isAdvancedRepulsionSystemLoaded) {
 			CompatAdvancedRepulsionSystems.register();
@@ -1408,6 +1409,11 @@ public class WarpDriveConfig {
 		final boolean isUndergroundBiomesLoaded = Loader.isModLoaded("undergroundbiomes");
 		if (isUndergroundBiomesLoaded) {
 			CompatUndergroundBiomes.register();
+		}
+		
+		final boolean isWootloaded = Loader.isModLoaded("woot");
+		if (isWootloaded) {
+			CompatWoot.register();
 		}
 		
 		final boolean isYABBAloaded = Loader.isModLoaded("yabba");
