@@ -325,6 +325,8 @@ public class Dictionary {
 	}
 	
 	public static void apply() {
+		WarpDrive.logger.info("Evaluating dictionary entries");
+		
 		// get default settings from parsing ore dictionary
 		BLOCKS_ORES = new HashSet<>();
 		BLOCKS_LOGS = new HashSet<>();
