@@ -127,6 +127,9 @@ public class WorldHandler {
 			WarpDrive.logger.info(String.format("onBlockUpdate args %s actual %s",
 			                                    blockEvent.getState(), blockEvent.getWorld().getBlockState(blockEvent.getPos())));
 		}
+		if (WarpDriveConfig.isGregTechLoaded && blockEvent.getWorld().getWorldInfo().getWorldName().equals("DummyServer")) {
+			return;
+		}
 		WarpDrive.starMap.onBlockUpdated(blockEvent.getWorld(), blockEvent.getPos(), blockEvent.getState());
 		ChunkHandler.onBlockUpdated(blockEvent.getWorld(), blockEvent.getPos().getX(), blockEvent.getPos().getY(), blockEvent.getPos().getZ());
 	}
