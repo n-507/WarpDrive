@@ -143,7 +143,7 @@ public class Schematic extends AbstractStructure {
 					}
 					replacement.loadFrom(fillerSet);
 				}
-			} catch (final InvalidXmlException exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				WarpDrive.logger.error(String.format("Failed to instantiate replacement %s from structure %s",
 				                                     name, parentFullName));
@@ -243,7 +243,7 @@ public class Schematic extends AbstractStructure {
 					}
 					insertion.loadFrom(lootSet);
 				}
-			} catch (final InvalidXmlException exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				WarpDrive.logger.error(String.format("Failed to instantiate insertion %s from structure %s",
 				                                     name, parentFullName));

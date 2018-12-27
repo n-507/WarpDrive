@@ -64,7 +64,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -78,7 +77,7 @@ import net.minecraftforge.fluids.FluidRegistry;
  */
 public class Commons {
 	
-	private static final String CHAR_FORMATTING = "" + (char)167;
+	private static final String CHAR_FORMATTING = "" + (char) 167;
 	private static final List<EnumBlockRenderType> ALLOWED_RENDER_TYPES = Arrays.asList(
 		EnumBlockRenderType.INVISIBLE,
 //		EnumBlockRenderType.LIQUID,
@@ -86,6 +85,7 @@ public class Commons {
 		EnumBlockRenderType.MODEL
 	);
 	
+	@SuppressWarnings("ConstantConditions") // IDE says "§" == CHAR_FORMATTING, execution says otherwise
 	public static String updateEscapeCodes(final String message) {
 		return message
 		       .replace("§", CHAR_FORMATTING)
@@ -881,11 +881,11 @@ public class Commons {
 				                                     blockState.getBlock().getRegistryName()));
 				Dictionary.BLOCKS_NOCAMOUFLAGE.add(blockState.getBlock());
 				return false;
-			} catch (IllegalArgumentException exception) {
+			} catch (final IllegalArgumentException exception) {
 				// success: this is valid block for us
 			}
 			// other mods camouflage blocks
-			for (IUnlistedProperty<?> property : ((IExtendedBlockState) blockState).getUnlistedNames()) {
+			for (final IUnlistedProperty<?> property : ((IExtendedBlockState) blockState).getUnlistedNames()) {
 				if (property.getType().toString().contains("IBlockState")) {
 					// failed: add it to the fast check
 					WarpDrive.logger.error(String.format("Suspicious camouflage block detected for block state %s, updating dictionary with %s = NOCAMOUFLAGE dictionary to prevent further errors",

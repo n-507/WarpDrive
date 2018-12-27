@@ -5,10 +5,8 @@ import cr0s.warpdrive.api.IXmlRepresentableUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -43,7 +41,7 @@ public class GenericSetManager<E extends IXmlRepresentableUnit> extends XmlFileM
 	}
 	
 	@Override
-	protected void parseRootElement(final String location, final Element elementGenericSet) throws InvalidXmlException, SAXException, IOException {
+	protected void parseRootElement(final String location, final Element elementGenericSet) throws InvalidXmlException {
 		final String group = elementGenericSet.getAttribute("group");
 		if (group.isEmpty()) {
 			throw new InvalidXmlException(location + " is missing a group attribute!");
@@ -67,7 +65,6 @@ public class GenericSetManager<E extends IXmlRepresentableUnit> extends XmlFileM
 		xmlRandomCollection.loadFromXML(genericSet, elementGenericSet);
 	}
 	
-	@SuppressWarnings("Convert2Diamond")
 	private void propagateGenericSets() {
 		HashMap<GenericSet<E>, ArrayList<String>> genericSetsDependencies = new HashMap<>();
 		
@@ -101,7 +98,7 @@ public class GenericSetManager<E extends IXmlRepresentableUnit> extends XmlFileM
 								WarpDrive.logger.info(String.format("Importing %s %s in %s ", nameElementSet, genericSet.getFullName(), entry.getKey().getFullName()));
 							}
 							entry.getKey().loadFrom(genericSet);
-						} catch (final InvalidXmlException exception) {
+						} catch (final Exception exception) {
 							exception.printStackTrace();
 							WarpDrive.logger.error(String.format("While importing %s into %s %s", dependency, nameElementSet, entry.getKey().getFullName()));
 						}

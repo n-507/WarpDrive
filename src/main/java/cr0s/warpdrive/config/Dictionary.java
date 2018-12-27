@@ -355,7 +355,7 @@ public class Dictionary {
 			}
 		}
 		
-		// translate tagged blocks
+		// apply tagged blocks
 		BLOCKS_SOILS = new HashSet<>(taggedBlocks.size());
 		BLOCKS_ANCHOR = new HashSet<>(taggedBlocks.size());
 		BLOCKS_NOMASS = new HashSet<>(taggedBlocks.size() + BLOCKS_LEAVES.size());
@@ -401,7 +401,7 @@ public class Dictionary {
 			}
 		}
 		
-		// translate tagged entities
+		// apply tagged entities
 		ENTITIES_ANCHOR = new HashSet<>(taggedEntities.size());
 		ENTITIES_NOMASS = new HashSet<>(taggedEntities.size());
 		ENTITIES_LEFTBEHIND = new HashSet<>(taggedEntities.size());
@@ -429,7 +429,7 @@ public class Dictionary {
 			}
 		}
 		
-		// translate tagged items
+		// apply tagged items
 		ITEMS_FLYINSPACE = new HashSet<>(taggedItems.size());
 		ITEMS_NOFALLDAMAGE = new HashSet<>(taggedItems.size());
 		ITEMS_BREATHING_HELMET = new HashSet<>(taggedItems.size());
@@ -457,7 +457,7 @@ public class Dictionary {
 	}
 	
 	private static void print() {
-		// translate tagged blocks
+		// print tagged blocks
 		WarpDrive.logger.info("Active blocks dictionary:");
 		WarpDrive.logger.info(String.format("- %s ores: %s"                   , BLOCKS_ORES.size(), getHashMessage(BLOCKS_ORES)));
 		WarpDrive.logger.info(String.format("- %s soils: %s"                  , BLOCKS_SOILS.size(), getHashMessage(BLOCKS_SOILS)));
@@ -472,7 +472,7 @@ public class Dictionary {
 		WarpDrive.logger.info(String.format("- %s with StopMining tag: %s"    , BLOCKS_STOPMINING.size(), getHashMessage(BLOCKS_STOPMINING)));
 		WarpDrive.logger.info(String.format("- %s with Placement priority: %s", BLOCKS_PLACE.size(), getHashMessage(BLOCKS_PLACE)));
 		
-		// translate tagged entities
+		// print tagged entities
 		WarpDrive.logger.info("Active entities dictionary:");
 		WarpDrive.logger.info(String.format("- %s anchors: %s"                  , ENTITIES_ANCHOR.size(), getHashMessage(ENTITIES_ANCHOR)));
 		WarpDrive.logger.info(String.format("- %s with NoMass tag: %s"          , ENTITIES_NOMASS.size(), getHashMessage(ENTITIES_NOMASS)));
@@ -480,7 +480,7 @@ public class Dictionary {
 		WarpDrive.logger.info(String.format("- %s with NonLivingTarget tag: %s" , ENTITIES_NONLIVINGTARGET.size(), getHashMessage(ENTITIES_NONLIVINGTARGET)));
 		WarpDrive.logger.info(String.format("- %s with LivingWithoutAir tag: %s", ENTITIES_LIVING_WITHOUT_AIR.size(), getHashMessage(ENTITIES_LIVING_WITHOUT_AIR)));
 		
-		// translate tagged items
+		// print tagged items
 		WarpDrive.logger.info("Active items dictionary:");
 		WarpDrive.logger.info(String.format("- %s allowing fly in space: %s" , ITEMS_FLYINSPACE.size(), getHashMessage(ITEMS_FLYINSPACE)));
 		WarpDrive.logger.info(String.format("- %s absorbing fall damages: %s", ITEMS_NOFALLDAMAGE.size(), getHashMessage(ITEMS_NOFALLDAMAGE)));

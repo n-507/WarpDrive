@@ -118,7 +118,7 @@ public class ItemBlockHullSlab extends ItemBlockHull {
 				if (enumFacingPlaced == blockStateSide.getValue(BlockHullSlab.VARIANT).getFacing()) {
 					final AxisAlignedBB boundingBox = blockStateWorld.getCollisionBoundingBox(world, blockPosSide);
 					if (boundingBox != null && world.checkNoEntityCollision(boundingBox)) {
-						EnumVariant variantNew;
+						final EnumVariant variantNew;
 						if (variantSide.getIsPlain()) {// plain
 							variantNew = EnumVariant.PLAIN_FULL;
 						} else {

@@ -234,7 +234,7 @@ public class ItemPlasmaTorch extends ItemAbstractBase implements IParticleContai
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(@Nonnull final ItemStack itemStack, @Nullable World world,
+	public void addInformation(@Nonnull final ItemStack itemStack, @Nullable final World world,
 	                           @Nonnull final List<String> list, @Nullable final ITooltipFlag advancedItemTooltips) {
 		super.addInformation(itemStack, world, list, advancedItemTooltips);
 		

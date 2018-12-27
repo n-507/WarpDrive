@@ -107,7 +107,7 @@ public class SpaceWorldProvider extends AbstractWorldProvider {
 	public boolean canBlockFreeze(@Nonnull final BlockPos blockPos, final boolean byWater) {
 		return false;
 	}
-		
+	
 	@Override
 	public boolean isDaytime() {
 		return true;

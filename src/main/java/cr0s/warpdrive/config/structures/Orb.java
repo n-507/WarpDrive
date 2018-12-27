@@ -150,7 +150,7 @@ public class Orb extends AbstractStructure {
 					}
 					orbShell.loadFrom(fillerSet);
 				}
-			} catch (final InvalidXmlException exception) {
+			} catch (final Exception exception) {
 				exception.printStackTrace();
 				WarpDrive.logger.error(String.format("Failed to instantiate shell %s from structure %s",
 				                                     name, parentFullName));

@@ -103,7 +103,7 @@ public class GenericSet<E extends IXmlRepresentableUnit> implements IXmlRepresen
 	 * @param genericSet
 	 *            The genericSet to add from
 	 */
-	public void loadFrom(final GenericSet<E> genericSet) throws InvalidXmlException {
+	public void loadFrom(final GenericSet<E> genericSet) {
 		units.loadFrom(genericSet.units);
 	}
 	

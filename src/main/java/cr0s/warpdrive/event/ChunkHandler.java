@@ -278,7 +278,6 @@ public class ChunkHandler {
 		final Map<Integer, Map<Long, ChunkData>> registry = isRemote ? registryClient : registryServer;
 		Map<Long, ChunkData> mapRegistryItems = registry.get(dimensionId);
 		// (lambda expressions are forcing synchronisation, so we don't use them here)
-		//noinspection Java8MapApi
 		if (mapRegistryItems == null) {
 			if (!doCreate) {
 				return null;
@@ -292,7 +291,6 @@ public class ChunkHandler {
 		final long index = ChunkPos.asLong(xChunk, zChunk);
 		ChunkData chunkData = mapRegistryItems.get(index);
 		// (lambda expressions are forcing synchronisation, so we don't use them here)
-		//noinspection Java8MapApi
 		if (chunkData == null) {
 			if (!doCreate) {
 				if (WarpDriveConfig.LOGGING_CHUNK_HANDLER) {

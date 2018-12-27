@@ -268,7 +268,7 @@ public class LivingHandler {
 		}
 		
 		// check for equipment with NOFALLDAMAGE tag
-		for (EntityEquipmentSlot entityEquipmentSlot : EntityEquipmentSlot.values()) {
+		for (final EntityEquipmentSlot entityEquipmentSlot : EntityEquipmentSlot.values()) {
 			final ItemStack itemStackInSlot = entityLivingBase.getItemStackFromSlot(entityEquipmentSlot);
 			if (!itemStackInSlot.isEmpty()) {
 				if (Dictionary.ITEMS_NOFALLDAMAGE.contains(itemStackInSlot.getItem())) {
