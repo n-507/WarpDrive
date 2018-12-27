@@ -367,6 +367,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			default:
 				WarpDrive.logger.error(String.format("%s Invalid controller command %s for current state %s",
 				                                     this, enumShipCommand, stateCurrent));
+				stateCurrent = EnumShipCoreState.IDLE;
 				break;
 			}
 			break;
@@ -523,6 +524,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		super.commandDone(success, reason);
 		if (!success) {
 			Commons.messageToAllPlayersInArea(this, reason);
+			stateCurrent = EnumShipCoreState.IDLE;
 		}
 		for (final BlockPos blockPos : blockPosShipControllers) {
 			if (!world.isBlockLoaded(blockPos, false)) {
