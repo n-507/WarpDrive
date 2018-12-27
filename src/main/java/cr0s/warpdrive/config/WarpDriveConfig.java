@@ -21,6 +21,7 @@ import cr0s.warpdrive.compat.CompatEnvironmentalTech;
 import cr0s.warpdrive.compat.CompatEvilCraft;
 import cr0s.warpdrive.compat.CompatExtraUtilities2;
 import cr0s.warpdrive.compat.CompatForgeMultipart;
+import cr0s.warpdrive.compat.CompatGregTech;
 import cr0s.warpdrive.compat.CompatImmersiveEngineering;
 import cr0s.warpdrive.compat.CompatIndustrialCraft2;
 import cr0s.warpdrive.compat.CompatIndustrialForegoing;
@@ -1321,6 +1322,11 @@ public class WarpDriveConfig {
 		final boolean isEvilCraftLoaded = Loader.isModLoaded("evilcraft");
 		if (isEvilCraftLoaded) {
 			CompatEvilCraft.register();
+		}
+		
+		// final boolean isGregTechLoaded = Loader.isModLoaded("gregtech");
+		if (isGregTechLoaded) {
+			CompatGregTech.register();
 		}
 		
 		final boolean isIndustrialForegoingLoaded = Loader.isModLoaded("industrialforegoing");
