@@ -354,9 +354,6 @@ public class JumpBlock {
 				}
 				
 				if (newTileEntity != null) {
-					newTileEntity.setWorld(targetWorld);
-					newTileEntity.validate();
-					
 					targetWorld.setTileEntity(target, newTileEntity);
 					if (isForgeMultipart) {
 						CompatForgeMultipart.methodTileMultipart_onChunkLoad.invoke(newTileEntity);
