@@ -61,6 +61,14 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 		nodeMap.put("read.desc", "(Lnet/minecraft/network/PacketBuffer;IZ)V");
 		nodeMap.put("generateHeightMap.name", "func_76590_a");
 		nodeMap.put("generateHeightMap.desc", "()V");
+		
+		nodeMap.put("AdvancementManager.class", "nq");
+		nodeMap.put("loadBuiltInAdvancements.name", "func_192777_a");
+		nodeMap.put("loadBuiltInAdvancements.desc", "(Ljava/util/Map;)V");
+		
+		nodeMap.put("ForgeHooks.class", "ForgeHooks");
+		nodeMap.put("loadAdvancements.name", "lambda$loadAdvancements$0");
+		nodeMap.put("loadAdvancements.desc", "(Lnet/minecraftforge/fml/common/ModContainer;Ljava/util/Map;Ljava/nio/file/Path;Ljava/nio/file/Path;)Ljava/lang/Boolean;");
 	}
 	
 	@Override
@@ -101,6 +109,14 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 			
 		case "net.minecraft.world.chunk.Chunk":
 			bytesNew = transformMinecraftChunk(bytesOld);
+			break;
+			
+		case "net.minecraft.advancements.AdvancementManager":
+			bytesNew = transformMinecraftAdvancementManager(bytesOld);
+			break;
+			
+		case "net.minecraftforge.common.ForgeHooks":
+			bytesNew = transformMinecraftForgeHooks(bytesOld);
 			break;
 			
 		default:
@@ -572,6 +588,147 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 		final byte[] bytesNew = writer.toByteArray();
 		FMLLoadingPlugin.logger.info(String.format("Successful injection in %s", classNode.name));
 		return bytesNew;
+	}
+	
+	private byte[] transformMinecraftAdvancementManager(@Nonnull final byte[] bytes) {
+		final ClassNode classNode = new ClassNode();
+		final ClassReader classReader = new ClassReader(bytes);
+		classReader.accept(classNode, 0);
+		
+		final int countExpected = 1;
+		int countTransformed = 0;
+		for (final MethodNode methodNode : classNode.methods) {
+			// if (debugLog) { FMLLoadingPlugin.logger.info(String.format("- Method %s %s", methodNode.name, methodNode.desc)); }
+			
+			if ( (methodNode.name.equals(nodeMap.get("loadBuiltInAdvancements.name")) || methodNode.name.equals("loadBuiltInAdvancements"))
+			  && methodNode.desc.equals(nodeMap.get("loadBuiltInAdvancements.desc")) ) {
+				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s",
+				                                           methodNode.name, methodNode.desc));
+				
+				int indexInstruction = 0;
+				
+				while (indexInstruction < methodNode.instructions.size()) {
+					final AbstractInsnNode abstractNode = methodNode.instructions.get(indexInstruction);
+					if (debugLog) { decompile(abstractNode); }
+					
+					if (abstractNode instanceof LdcInsnNode) {
+						final LdcInsnNode nodeAt = (LdcInsnNode) abstractNode;
+						
+						if ( nodeAt.cst instanceof String
+						  && ((String) nodeAt.cst).contains("Parsing error loading built-in advancement ") ) {
+							final AbstractInsnNode abstractNodeToRemove = methodNode.instructions.get(indexInstruction - 4);
+							if ( (abstractNodeToRemove instanceof FieldInsnNode)
+							  && ((FieldInsnNode) abstractNodeToRemove).desc.equals("Lorg/apache/logging/log4j/Logger;") ) {
+								indexInstruction -= 4;
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								indexInstruction--;
+								
+								if (debugLog) { FMLLoadingPlugin.logger.info(String.format("Injecting into %s.%s %s", classNode.name, methodNode.name, methodNode.desc)); }
+								countTransformed++;
+							}
+						}
+					}
+					
+					indexInstruction++;
+				}
+			}
+		}
+		
+		if (countTransformed != countExpected) {
+			FMLLoadingPlugin.logger.error(String.format("Transformation failed for %s (%d/%d), aborting...", classNode.name, countTransformed, countExpected));
+			return bytes;
+		}
+		
+		final ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS); // | ClassWriter.COMPUTE_FRAMES);
+		classNode.accept(writer);
+		final byte[] bytesNew = writer.toByteArray();
+		FMLLoadingPlugin.logger.info(String.format("Successful injection in %s", classNode.name));
+		return bytesNew;
+	}
+	
+	private byte[] transformMinecraftForgeHooks(@Nonnull final byte[] bytes) {
+		final ClassNode classNode = new ClassNode();
+		final ClassReader classReader = new ClassReader(bytes);
+		classReader.accept(classNode, 0);
+		
+		final int countExpected = 1;
+		int countTransformed = 0;
+		for (final MethodNode methodNode : classNode.methods) {
+			// if (debugLog) { FMLLoadingPlugin.logger.info(String.format("- Method %s %s", methodNode.name, methodNode.desc)); }
+			
+			if ( (methodNode.name.equals(nodeMap.get("loadAdvancements.name")) || methodNode.name.equals("loadAdvancements"))
+			  && methodNode.desc.equals(nodeMap.get("loadAdvancements.desc")) ) {
+				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s",
+				                                           methodNode.name, methodNode.desc));
+				
+				int indexInstruction = 0;
+				
+				while (indexInstruction < methodNode.instructions.size()) {
+					final AbstractInsnNode abstractNode = methodNode.instructions.get(indexInstruction);
+					if (debugLog) { decompile(abstractNode); }
+					
+					if (abstractNode instanceof LdcInsnNode) {
+						final LdcInsnNode nodeAt = (LdcInsnNode) abstractNode;
+						
+						if ( nodeAt.cst instanceof String
+						  && ((String) nodeAt.cst).contains("Parsing error loading built-in advancement ") ) {
+							final AbstractInsnNode abstractNodeToRemove = methodNode.instructions.get(indexInstruction - 4);
+							if ( (abstractNodeToRemove instanceof FieldInsnNode)
+							  && ((FieldInsnNode) abstractNodeToRemove).desc.equals("Lorg/apache/logging/log4j/Logger;") ) {
+								indexInstruction -= 4;
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								indexInstruction--;
+								
+								if (debugLog) { FMLLoadingPlugin.logger.info(String.format("Injecting into %s.%s %s", classNode.name, methodNode.name, methodNode.desc)); }
+								countTransformed++;
+							}
+						}
+					}
+					
+					indexInstruction++;
+				}
+			}
+		}
+		
+		if (countTransformed != countExpected) {
+			FMLLoadingPlugin.logger.error(String.format("Transformation failed for %s (%d/%d), aborting...", classNode.name, countTransformed, countExpected));
+			return bytes;
+		}
+		
+		final ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS); // | ClassWriter.COMPUTE_FRAMES);
+		classNode.accept(writer);
+		final byte[] bytesNew = writer.toByteArray();
+		FMLLoadingPlugin.logger.info(String.format("Successful injection in %s", classNode.name));
+		return bytesNew;
+	}
+	
+	private void removeInstruction(@Nonnull final MethodNode methodNode, final int indexInstruction) {
+		final AbstractInsnNode abstractNodeToRemove = methodNode.instructions.get(indexInstruction);
+		if (debugLog) {
+			FMLLoadingPlugin.logger.info("Removing instruction:");
+			decompile(abstractNodeToRemove);
+		}
+		methodNode.instructions.remove(abstractNodeToRemove);
 	}
 	
 	private void saveClassToFile(final String path, final String nameClass, final byte[] bytes) {
