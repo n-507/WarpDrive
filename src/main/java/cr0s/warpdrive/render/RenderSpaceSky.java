@@ -85,7 +85,7 @@ public class RenderSpaceSky extends IRenderHandler {
 				: CelestialObjectManager.get(world, (int) vec3Player.x, (int) vec3Player.z);
 		
 		final Tessellator tessellator = Tessellator.getInstance();
-		final BufferBuilder vertexBuffer = tessellator.getBuffer();
+		// final BufferBuilder vertexBuffer = tessellator.getBuffer();
 		
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glDepthMask(false);
@@ -330,9 +330,7 @@ public class RenderSpaceSky extends IRenderHandler {
 								+ 1.0D * transitionFar;
 		
 		// angles
-		@SuppressWarnings("SuspiciousNameCombination")
 		final double angleH = Math.atan2(distanceToCenterX, distanceToCenterZ);
-		@SuppressWarnings("SuspiciousNameCombination")
 		final double angleV_far = Math.atan2(Math.sqrt(distanceToCenterX * distanceToCenterX + distanceToCenterZ * distanceToCenterZ), planetY);
 		final double angleV = Math.PI * (1.0D - transitionOrbit) + angleV_far * transitionOrbit;
 		final double angleS = 0.15D * celestialObject.dimensionId * transitionApproaching // + (world.getTotalWorldTime() + partialTicks) * Math.PI / 6000.0D;
@@ -440,9 +438,7 @@ public class RenderSpaceSky extends IRenderHandler {
 			final double z0 = randomZ * renderRangeMax;
 			
 			// angles
-			@SuppressWarnings("SuspiciousNameCombination")
 			final double angleH = Math.atan2(randomX, randomZ);
-			@SuppressWarnings("SuspiciousNameCombination")
 			final double angleV = Math.atan2(Math.sqrt(randomX * randomX + randomZ * randomZ), randomY);
 			final double angleS = rand.nextDouble() * Math.PI * 2.0D;
 			

@@ -122,7 +122,7 @@ public class GravityManager {
 		return gravity * OVERWORLD_ITEM_GRAVITY2;
 	}
 	
-	public static boolean isEntityInGraviField(final Entity entity) {
+	private static boolean isEntityInGraviField(final Entity entity) {
 		final int y = MathHelper.floor(entity.posY);
 		final int x = MathHelper.floor(entity.posX);
 		final int z = MathHelper.floor(entity.posZ);
