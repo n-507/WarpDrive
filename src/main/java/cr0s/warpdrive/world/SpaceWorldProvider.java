@@ -68,7 +68,9 @@ public class SpaceWorldProvider extends AbstractWorldProvider {
 	
 	@Override
 	public float calculateCelestialAngle(final long time, final float partialTick) {
-		return 0.0F;
+		// returns the clock angle: 0 is noon, 0.5 is midnight on the vanilla clock
+		// daylight is required to enable IC2 and EnderIO solar panels
+		return 0.5F;
 	}
 	
 	@Override
@@ -105,11 +107,12 @@ public class SpaceWorldProvider extends AbstractWorldProvider {
 	
 	@Override
 	public boolean canBlockFreeze(@Nonnull final BlockPos blockPos, final boolean byWater) {
-		return false;
+		return true;
 	}
 	
 	@Override
 	public boolean isDaytime() {
+		// true is required to enable GregTech solar boiler and Mekanism solar panels
 		return true;
 	}
 	

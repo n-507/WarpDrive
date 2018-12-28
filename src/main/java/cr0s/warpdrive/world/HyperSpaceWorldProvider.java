@@ -68,6 +68,9 @@ public class HyperSpaceWorldProvider extends AbstractWorldProvider {
 	
 	@Override
 	public float calculateCelestialAngle(final long time, final float partialTick) {
+		// returns the clock angle: 0 is noon, 0.5 is midnight on the vanilla clock
+		// daylight is required to enable IC2 and EnderIO solar panels
+		// we want no solar power in hyperspace => permanent midnight
 		return 0.5F;
 	}
 	
@@ -105,11 +108,13 @@ public class HyperSpaceWorldProvider extends AbstractWorldProvider {
 	
 	@Override
 	public boolean canBlockFreeze(@Nonnull final BlockPos blockPos, final boolean byWater) {
-		return false;
+		return true;
 	}
 	
 	@Override
 	public boolean isDaytime() {
+		// true is required to enable GregTech solar boiler and Mekanism solar panels
+		// we want no solar power in hyperspace => false
 		return false;
 	}
 	
