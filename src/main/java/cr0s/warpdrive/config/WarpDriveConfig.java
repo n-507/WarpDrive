@@ -147,7 +147,6 @@ public class WarpDriveConfig {
 	public static ItemStack            IC2_emptyCell;
 	public static Block                IC2_rubberWood;
 	public static ItemStack            IC2_Resin;
-	public static Block                CC_Computer, CC_peripheral, CCT_Turtle, CCT_Expanded, CCT_Advanced;
 	
 	// Mod configuration (see loadConfig() for comments/definitions)
 	// General
@@ -1234,7 +1233,6 @@ public class WarpDriveConfig {
 		}
 		
 		if (isComputerCraftLoaded) {
-			loadCC();
 			CompatComputerCraft.register();
 		}
 		
@@ -1468,19 +1466,6 @@ public class WarpDriveConfig {
 			IC2_Resin = getItemStackOrFire("ic2:misc_resource", 4);
 		} catch (final Exception exception) {
 			WarpDrive.logger.error("Error loading IndustrialCraft2 classes");
-			exception.printStackTrace();
-		}
-	}
-	
-	private static void loadCC() {
-		try {
-			CC_Computer   = getBlockOrFire("computercraft:CC-Computer");
-			CC_peripheral = getBlockOrFire("computercraft:CC-Peripheral");
-			CCT_Turtle    = getBlockOrFire("computercraft:CC-Turtle");
-			CCT_Expanded  = getBlockOrFire("computercraft:CC-TurtleExpanded");
-			CCT_Advanced  = getBlockOrFire("computercraft:CC-TurtleAdvanced");
-		} catch (final Exception exception) {
-			WarpDrive.logger.error("Error loading ComputerCraft classes");
 			exception.printStackTrace();
 		}
 	}

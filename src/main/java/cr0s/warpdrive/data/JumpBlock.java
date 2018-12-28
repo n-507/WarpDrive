@@ -344,15 +344,6 @@ public class JumpBlock {
 					}
 				}
 				
-				if ( newTileEntity != null
-				  && ( block == WarpDriveConfig.CC_Computer
-				    || block == WarpDriveConfig.CC_peripheral
-				    || block == WarpDriveConfig.CCT_Turtle
-				    || block == WarpDriveConfig.CCT_Expanded
-				    || block == WarpDriveConfig.CCT_Advanced ) ) {
-					newTileEntity.invalidate();
-				}
-				
 				if (newTileEntity != null) {
 					targetWorld.setTileEntity(target, newTileEntity);
 					if (isForgeMultipart) {
