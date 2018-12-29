@@ -2,6 +2,10 @@ package cr0s.warpdrive.data;
 
 import cr0s.warpdrive.config.Dictionary;
 
+import javax.annotation.Nonnull;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -11,6 +15,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.MathHelper;
 
+@SuppressWarnings("unused") // Core mod
 public class GravityManager {
 	
 	private static final double OVERWORLD_ENTITY_GRAVITY = 0.080000000000000002D;	// Default value from Vanilla
@@ -24,6 +29,40 @@ public class GravityManager {
 	private static final double SPACE_VOID_GRAVITY = 0.001D;
 	private static final double SPACE_VOID_GRAVITY_JETPACK_SNEAK = 0.02D;
 	private static final double SPACE_VOID_GRAVITY_RAW_SNEAK = 0.005D; // 0.001 = no mvt
+	
+	private static boolean isAdvancedRocketryLoaded = false;
+	private static Class<?> classGravityHandler;
+	private static Method methodIPlanetaryProvider_applyGravity;
+	
+	@SuppressWarnings("unused") // Core mod
+	public static void applyEntityItemGravity(@Nonnull final EntityItem entityItem) {
+		final double gravity = StarMapRegistry.getGravity(entityItem);
+		if (gravity == CelestialObject.GRAVITY_NORMAL) {// reroute to AdvancedRocketry if we're set to normal, they'll reroute to Galacticraft on their own
+			if (!isAdvancedRocketryLoaded) {
+				isAdvancedRocketryLoaded = true;
+				try {
+					classGravityHandler = Class.forName("zmaster587.advancedRocketry.util.GravityHandler");
+					methodIPlanetaryProvider_applyGravity = classGravityHandler.getMethod("applyGravity", Entity.class);
+				} catch (final ClassNotFoundException | NoSuchMethodException exception) {
+					exception.printStackTrace();
+					classGravityHandler = null;
+				}
+			}
+			
+			if (classGravityHandler != null) {
+				try {
+					methodIPlanetaryProvider_applyGravity.invoke(null, entityItem);
+				} catch (final InvocationTargetException | IllegalAccessException  exception) {// report and prevent further calls
+					exception.printStackTrace();
+					classGravityHandler = null;
+				}
+				return;
+			}
+		}
+		
+		// fall-back to our own system
+		entityItem.motionY -= getItemGravity(entityItem);
+	}
 	
 	@SuppressWarnings("unused") // Core mod
 	public static double getGravityForEntity(final Entity entity) {

@@ -284,6 +284,16 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 							if (debugLog) { FMLLoadingPlugin.logger.info(String.format("Injecting into %s.%s %s", classNode.name, methodNode.name, methodNode.desc)); }
 							countTransformed++;
 						}
+						
+					} else if (abstractNode instanceof MethodInsnNode && (abstractNode.getOpcode() == Opcodes.INVOKESTATIC)) {
+						final MethodInsnNode methodInsnNode = (MethodInsnNode) abstractNode;
+						if (methodInsnNode.owner.equals("zmaster587/advancedRocketry/util/GravityHandler")) {
+							methodInsnNode.owner = GRAVITY_MANAGER_CLASS;
+							methodInsnNode.name = "applyEntityItemGravity";
+							methodInsnNode.desc = "(L" + "net/minecraft/entity/item/EntityItem" + ";)V";
+							if (debugLog) { FMLLoadingPlugin.logger.info(String.format("Rerouting into %s.%s %s", classNode.name, methodNode.name, methodNode.desc)); }
+							countTransformed++;
+						}
 					}
 					
 					indexInstruction++;
