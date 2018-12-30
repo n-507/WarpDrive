@@ -37,6 +37,7 @@ import cr0s.warpdrive.compat.CompatParziStarWars;
 import cr0s.warpdrive.compat.CompatPneumaticCraft;
 import cr0s.warpdrive.compat.CompatRealFilingCabinet;
 import cr0s.warpdrive.compat.CompatRedstonePaste;
+import cr0s.warpdrive.compat.CompatRefinedStorage;
 import cr0s.warpdrive.compat.CompatRoots;
 import cr0s.warpdrive.compat.CompatRustic;
 import cr0s.warpdrive.compat.CompatSGCraft;
@@ -1395,6 +1396,11 @@ public class WarpDriveConfig {
 		final boolean isRealFilingCabinetLoaded = Loader.isModLoaded("realfilingcabinet");
 		if (isRealFilingCabinetLoaded) {
 			CompatRealFilingCabinet.register();
+		}
+		
+		final boolean isRefinedStorageLoaded = Loader.isModLoaded("refinedstorage");
+		if (isRefinedStorageLoaded) {
+			CompatRefinedStorage.register();
 		}
 		
 		final boolean isSGCraftLoaded = Loader.isModLoaded("SGCraft");
