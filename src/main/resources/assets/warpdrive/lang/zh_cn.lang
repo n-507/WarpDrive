@@ -63,6 +63,7 @@ item.warpdrive.breathing.air_tank.canister.name=空气罐
 item.warpdrive.breathing.air_tank.basic.name=基础空气罐
 item.warpdrive.breathing.air_tank.advanced.name=先进空气罐
 item.warpdrive.breathing.air_tank.superior.name=卓越空气罐
+item.warpdrive.breathing.air_tank.tooltip.usage=§bRight click an Air generator§7 to refill me
 
 item.warpdrive.energy.IC2reactorLaserFocus.name=IC2反应堆激光焦点
 

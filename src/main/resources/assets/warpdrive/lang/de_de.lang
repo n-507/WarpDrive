@@ -63,6 +63,7 @@ item.warpdrive.breathing.air_tank.canister.name=Luftkanister
 item.warpdrive.breathing.air_tank.basic.name=Basic Air Tank !!!
 item.warpdrive.breathing.air_tank.advanced.name=Advanced Air Tank !!!
 item.warpdrive.breathing.air_tank.superior.name=Superior Air Tank !!!
+item.warpdrive.breathing.air_tank.tooltip.usage=§bRechtsklicke einen Luftgenerator um mich zu füllen
 
 item.warpdrive.energy.IC2reactorLaserFocus.name=IC2 Reaktor-Laser-Fokus
 

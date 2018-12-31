@@ -1,4 +1,4 @@
-
+﻿
 death.attack.warpdrive.asphyxia=%1$s died from asphyxia
 death.attack.warpdrive.asphyxia.player=%1$s was killed by %2$s using asphyxia
 death.attack.warpdrive.cold=%1$s died from cold
@@ -63,6 +63,7 @@ item.warpdrive.breathing.air_tank.canister.name=Air Canister
 item.warpdrive.breathing.air_tank.basic.name=Basic Air Tank
 item.warpdrive.breathing.air_tank.advanced.name=Advanced Air Tank
 item.warpdrive.breathing.air_tank.superior.name=Superior Air Tank
+item.warpdrive.breathing.air_tank.tooltip.usage=§bRight click an Air generator§7 to refill me
 
 item.warpdrive.energy.IC2reactorLaserFocus.name=IC2 Reactor Laser Focus
 

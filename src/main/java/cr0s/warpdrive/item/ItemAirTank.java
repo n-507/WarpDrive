@@ -1,14 +1,23 @@
 package cr0s.warpdrive.item;
 
+import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.api.IAirContainerItem;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnumAirTankTier;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemAirTank extends ItemAbstractBase implements IAirContainerItem {
 	
@@ -94,5 +103,14 @@ public class ItemAirTank extends ItemAbstractBase implements IAirContainerItem {
 			return itemStack;
 		}
 		return new ItemStack(itemStack.getItem(), 1);
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(@Nonnull final ItemStack itemStack, @Nullable final World world,
+	                           @Nonnull final List<String> list, @Nullable final ITooltipFlag advancedItemTooltips) {
+		super.addInformation(itemStack, world, list, advancedItemTooltips);
+		
+		Commons.addTooltip(list, new TextComponentTranslation("item.warpdrive.breathing.air_tank.tooltip.usage").getFormattedText());
 	}
 }

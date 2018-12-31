@@ -63,6 +63,7 @@ item.warpdrive.breathing.air_tank.canister.name=Cartouche d'air
 item.warpdrive.breathing.air_tank.basic.name=Réservoir d'air élémentaire
 item.warpdrive.breathing.air_tank.advanced.name=Réservoir d'air avancé
 item.warpdrive.breathing.air_tank.superior.name=Réservoir d'air supérieur
+item.warpdrive.breathing.air_tank.tooltip.usage=§bClique droit sur un Générateur d'air§r pour me remplir
 
 item.warpdrive.energy.IC2reactorLaserFocus.name=Focus laser pour réacteur IC2
 

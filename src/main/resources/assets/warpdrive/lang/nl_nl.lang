@@ -63,6 +63,7 @@ item.warpdrive.breathing.air_tank.canister.name=zuurstoffles
 item.warpdrive.breathing.air_tank.basic.name=Basic Air Tank
 item.warpdrive.breathing.air_tank.advanced.name=Advanced Air Tank
 item.warpdrive.breathing.air_tank.superior.name=Superior Air Tank
+item.warpdrive.breathing.air_tank.tooltip.usage=§bRight click an Air generator§7 to refill me
 
 item.warpdrive.energy.IC2reactorLaserFocus.name=IC2 Reactor Laser Lens
 
