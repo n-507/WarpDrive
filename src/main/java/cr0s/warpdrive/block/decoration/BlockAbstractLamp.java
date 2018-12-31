@@ -1,5 +1,6 @@
 package cr0s.warpdrive.block.decoration;
 
+import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.block.BlockAbstractBase;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
@@ -10,6 +11,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -18,6 +20,7 @@ import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -26,14 +29,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class BlockAbstractLamp extends BlockAbstractBase {
 	
 	BlockAbstractLamp(final String registryName, final EnumTier enumTier, final String unlocalizedName) {
 		super(registryName, enumTier, Material.ROCK);
 		
-		setHardness(WarpDriveConfig.HULL_HARDNESS[0]);
-		setResistance(WarpDriveConfig.HULL_BLAST_RESISTANCE[0] * 5 / 3);
+		setHardness(WarpDriveConfig.HULL_HARDNESS[1]);
+		setResistance(WarpDriveConfig.HULL_BLAST_RESISTANCE[1] * 5 / 3);
 		setSoundType(SoundType.METAL);
 		setTranslationKey(unlocalizedName);
 		setDefaultState(getDefaultState()
@@ -160,21 +164,25 @@ public class BlockAbstractLamp extends BlockAbstractBase {
 			return true;
 		}
 		
-		// get context
-		final ItemStack itemStackHeld = entityPlayer.getHeldItem(enumHand);
-		
-		// sneaking with empty hand to toggle lamp on/state
-		if ( itemStackHeld.isEmpty()
-		  && entityPlayer.isSneaking() ) {
+		// non-sneaking to toggle lamp on/state
+		if (!entityPlayer.isSneaking()) {
 			final boolean isActivated = !blockState.getValue(BlockProperties.ACTIVE);
 			world.setBlockState(blockPos, blockState.withProperty(BlockProperties.ACTIVE, isActivated));
 			// (visual feedback only, no message to player)
 			return true;
-			
 		}
 		
-		// (visual feedback only: no status reported on no sneaking and no item in hand)
+		// (visual feedback only: no status reported while sneaking)
 		
 		return false;
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(@Nonnull final ItemStack itemStack, @Nullable final World world,
+	                           @Nonnull final List<String> list, @Nullable final ITooltipFlag advancedItemTooltips) {
+		super.addInformation(itemStack, world, list, advancedItemTooltips);
+		
+		Commons.addTooltip(list, new TextComponentTranslation("item.warpdrive.decoration.lamp.tooltip.usage").getFormattedText());
 	}
 }

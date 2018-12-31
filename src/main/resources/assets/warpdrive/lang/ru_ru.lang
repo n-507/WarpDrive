@@ -206,6 +206,7 @@ tile.warpdrive.decoration.gas.name=Газ
 tile.warpdrive.decoration.lamp_bubble.name=Bubble Lamp
 tile.warpdrive.decoration.lamp_flat.name=Flat Lamp
 tile.warpdrive.decoration.lamp_long.name=Long Lamp
+item.warpdrive.decoration.lamp.tooltip.usage=§bRight click§7 to light on/off
 
 
 tile.warpdrive.passive.iridium_block.name=Блок иридия

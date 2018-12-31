@@ -205,7 +205,8 @@ tile.warpdrive.decoration.decorative.plain.name=Bloc ordinaire
 tile.warpdrive.decoration.gas.name=Bloc de gaz
 tile.warpdrive.decoration.lamp_bubble.name=Lampe bulle
 tile.warpdrive.decoration.lamp_flat.name=Lampe plate
-tile.warpdrive.decoration.lamp_long.name=Lamp allongée
+tile.warpdrive.decoration.lamp_long.name=Lampe allongée
+item.warpdrive.decoration.lamp.tooltip.usage=§bClique droit§7 pour allumer/éteindre
 
 
 tile.warpdrive.passive.iridium_block.name=Bloc d'iridium
