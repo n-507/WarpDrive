@@ -95,7 +95,7 @@ public class RecipeTuningDriver implements IRecipe {
 		boolean isConsumableFound = false;
 		int dye = 0;
 		int countDyesFound = 0;
-		for (int indexSlot = 0; indexSlot <= inventoryCrafting.getSizeInventory(); indexSlot++) {
+		for (int indexSlot = 0; indexSlot < inventoryCrafting.getSizeInventory(); indexSlot++) {
 			final ItemStack itemStackSlot = inventoryCrafting.getStackInSlot(indexSlot);
 			
 			//noinspection StatementWithEmptyBody
