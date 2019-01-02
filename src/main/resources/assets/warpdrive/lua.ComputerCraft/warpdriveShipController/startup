@@ -118,8 +118,8 @@ function ship_boot()
     w.writeLn("passed")
   end
   
-  ship.command("IDLE", true)
   ship.enable(true)
+  ship.command("IDLE", true)
   w.sleep(0.3)
 end
 
