@@ -320,11 +320,6 @@ public class JumpBlock {
 					}
 				}
 				
-				if (nbtToDeploy.hasKey("hasValidBubble")) {// Galacticraft 3.0.11.333
-					nbtToDeploy.setBoolean("hasValidBubble", false);
-					// old bubble will die naturally due to missing tile entity, new one will be spawned
-				}
-				
 				TileEntity newTileEntity = null;
 				boolean isForgeMultipart = false;
 				if ( WarpDriveConfig.isForgeMultipartLoaded
@@ -406,7 +401,8 @@ public class JumpBlock {
 						}
 						// not needed: if ic2.core.block.machine.tileentity.TileEntityMatter then updated "state"
 					}
-				} else if (!superClassName.startsWith("mekanism.")) {// IC2 extensions without network optimization (transferring all fields)
+				} else if ( !superClassName.startsWith("mekanism.")
+				         && !superClassName.startsWith("micdoodle8.") ) {// IC2 extensions without network optimization (transferring all fields)
 					try {
 						final Method getNetworkedFields = teClass.getMethod("getNetworkedFields");
 						@SuppressWarnings("unchecked")

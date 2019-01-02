@@ -118,6 +118,33 @@ public class Dictionary {
 				config.get("block_tags", "minecraft:structure_block"                       , "Anchor StopMining").getString();
 				config.get("block_tags", "computercraft:command_computer"                  , "Anchor SkipMining").getString();
 				// @TODO MC1.12 config.get("block_tags", "ic2:blockPersonal"                               , "Anchor SkipMining").getString(); // IC2 personal chest, need property filtering
+				config.get("block_tags", "galacticraftcore:arclamp"                        , "Anchor").getString(); // includes hard links to its fake air lights
+				config.get("block_tags", "galacticraftcore:boss_spawner"                   , "Anchor StopMining").getString(); // includes hard links to the boss room
+				config.get("block_tags", "galacticraftcore:grating"                        , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftcore:grating1"                       , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftcore:grating2"                       , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftcore:grating3"                       , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftcore:grating4"                       , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftcore:grating5"                       , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftcore:grating6"                       , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftcore:grating7"                       , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftcore:grating8"                       , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftcore:grating9"                       , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftcore:grating10"                      , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftcore:grating11"                      , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftcore:grating12"                      , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftcore:grating13"                      , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftcore:grating14"                      , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftcore:space_station_base"             , "Anchor StopMining").getString(); // unbreakable
+				config.get("block_tags", "galacticraftcore:telemetry"                      , "Anchor").getString(); // can't make it work, is it fully implemented yet?
+				config.get("block_tags", "galacticraftcore:view_screen"                    , "Anchor StopMining").getString(); // unable to break block without spamming console
+				config.get("block_tags", "galacticraftplanets:beam_receiver"               , "Anchor StopMining").getString(); // spamming console during jump
+				config.get("block_tags", "galacticraftplanets:boss_spawner_mars"           , "Anchor StopMining").getString(); // includes hard links to the boss room
+				config.get("block_tags", "galacticraftplanets:boss_spawner_venus"          , "Anchor StopMining").getString(); // includes hard links to the boss room
+				config.get("block_tags", "galacticraftplanets:miner_base"                  , "Anchor StopMining").getString(); // too complex, no reason to support
+				config.get("block_tags", "galacticraftplanets:miner_base_full"             , "Anchor StopMining").getString(); // too complex, no reason to support
+				config.get("block_tags", "galacticraftplanets:telepad_fake"                , "PlaceLater").getString(); // glitch after movement (no more collision?)
+				config.get("block_tags", "galacticraftplanets:telepad_short"               , "PlaceNormal").getString(); // glitch after movement (no more collision?)
 				// @TODO MC1.12 config.get("block_tags", "malisisdoors:null"                               , "Anchor").getString(); // improper registration of block causing NPE
 				config.get("block_tags", "malisisdoors:rustyhatch"                         , "Anchor").getString();
 				config.get("block_tags", "rangedpumps:pump"                                , "Anchor").getString(); // need to reset its search area after each jump
@@ -140,6 +167,11 @@ public class Dictionary {
 				config.get("block_tags", "warpdrive:force_field.advanced"                  , "PlaceLatest StopMining NoMass").getString();
 				config.get("block_tags", "warpdrive:force_field.superior"                  , "PlaceLatest StopMining NoMass").getString();
 				config.get("block_tags", "embers:caminite_lever"                           , "PlaceLatest").getString();
+				config.get("block_tags", "galacticraftcore:glowstone_torch"                , "PlaceLatest").getString();
+				config.get("block_tags", "galacticraftcore:unlit_torch"                    , "PlaceLatest").getString();
+				config.get("block_tags", "galacticraftcore:unlit_torch_lit"                , "PlaceLatest").getString();
+				config.get("block_tags", "galacticraftplanets:telepad_fake"                , "PlaceLatest").getString();
+				config.get("block_tags", "galacticraftplanets:web_torch"                   , "PlaceLatest").getString();
 				config.get("block_tags", "ic2:foam"                                        , "PlaceEarliest StopMining").getString();
 				// @TODO MC1.12 config.get("block_tags", "ic2:blockAlloy"                                  , "PlaceEarliest StopMining").getString();
 				config.get("block_tags", "ic2:glass"                                       , "PlaceEarliest StopMining").getString();
@@ -183,6 +215,9 @@ public class Dictionary {
 				config.get("block_tags", "warpdrive:air_source"                            , "NoMass Expandable PlaceLatest").getString();
 				config.get("block_tags", "buildcraftcore:marker_path"                      , "NoMass LeftBehind Expandable").getString(); // depends on an unsupported separate cache
 				config.get("block_tags", "buildcraftcore:marker_volume"                    , "NoMass LeftBehind Expandable").getString(); // depends on an unsupported separate cache
+				config.get("block_tags", "galacticraftcore:bright_air"                     , "NoMass Expandable").getString();
+				config.get("block_tags", "galacticraftcore:breatheable_air"                , "NoMass Expandable").getString();
+				config.get("block_tags", "galacticraftcore:bright_breathable_air"          , "NoMass Expandable").getString();
 				
 				// mining a mineshaft...
 				config.get("block_tags", "minecraft:web"                                   , "Mining").getString();
@@ -223,8 +258,8 @@ public class Dictionary {
 					+ "Most entities are already supported automatically. Only modify this section when something doesn't work!\n" + "\n"
 					+ "Tags shall be separated by at least one space, comma or tabulation.\n" + "Invalid tags will be ignored silently. Tags and block names are case sensitive.\n"
 					+ "In case of conflicts, the latest tag overwrite the previous ones.\n" + "- Anchor: ship can't move with this entity aboard (default: none).\n"
-					+ "- NoMass: this entity doesn't count when calculating ship volume/mass (default: Galacticraft air bubble).\n"
-					+ "- LeftBehind: this entity won't move with your ship nor transporter (default: Galacticraft air bubble).\n"
+					+ "- NoMass: this entity doesn't count when calculating ship volume/mass (default: boats, frames, carts).\n"
+					+ "- LeftBehind: this entity won't move with your ship nor transporter (default: particle effects).\n"
 //					+ "- NoTransport: this entity is ignored by the transporter (default: -none-).\n"
 					+ "- NonLivingTarget: this non-living entity can be targeted/removed by weapons (default: ItemFrame, Painting).\n"
 					+ "- LivingWithoutAir: this living entity doesn't need air to live (default: vanilla zombies and skeletons).");
@@ -232,7 +267,6 @@ public class Dictionary {
 			final ConfigCategory categoryEntityTags = config.getCategory("entity_tags");
 			String[] taggedEntitiesName = categoryEntityTags.getValues().keySet().toArray(new String[0]);
 			if (taggedEntitiesName.length == 0) {
-				config.get("entity_tags", "GalacticraftCore.OxygenBubble"          , "NoMass LeftBehind").getString(); // Still needs fixing
 				config.get("entity_tags", "minecraft:item_frame"                   , "NoMass NonLivingTarget").getString();
 				config.get("entity_tags", "minecraft:painting"                     , "NoMass NonLivingTarget").getString();
 				config.get("entity_tags", "minecraft:leash_knot"                   , "NoMass NonLivingTarget").getString();
