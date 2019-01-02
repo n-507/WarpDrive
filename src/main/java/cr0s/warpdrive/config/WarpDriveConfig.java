@@ -3,6 +3,7 @@ package cr0s.warpdrive.config;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBlockTransformer;
+import cr0s.warpdrive.compat.CompatActuallyAdditions;
 import cr0s.warpdrive.compat.CompatAdvancedRepulsionSystems;
 import cr0s.warpdrive.compat.CompatAppliedEnergistics2;
 import cr0s.warpdrive.compat.CompatArsMagica2;
@@ -1227,6 +1228,11 @@ public class WarpDriveConfig {
 		final boolean isAppliedEnergistics2Loaded = Loader.isModLoaded("appliedenergistics2");
 		if (isAppliedEnergistics2Loaded) {
 			CompatAppliedEnergistics2.register();
+		}
+		
+		final boolean isActuallyAdditionsLoaded = Loader.isModLoaded("actuallyadditions");
+		if (isActuallyAdditionsLoaded) {
+			CompatActuallyAdditions.register();
 		}
 		
 		final boolean isArsMagica2Loaded = Loader.isModLoaded("arsmagica2");

@@ -150,6 +150,12 @@ public class Dictionary {
 			config.get("block_tags", "rustic:stake_tied"                                    , "Anchor").getString();
 			config.get("block_tags", "storagedrawers:framingtable"                          , "Anchor").getString(); // invalid metadata conversion, see https://github.com/jaquadro/StorageDrawers/issues/683
 			config.get("block_tags", "warpdrive:bedrock_glass"                              , "Anchor StopMining NoBlink").getString();
+			config.get("block_tags", "actuallyadditions:block_laser_relay"                  , "Anchor").getString(); // network is saved outside the map, not supported
+			config.get("block_tags", "actuallyadditions:block_laser_relay_advanced"         , "Anchor").getString(); // network is saved outside the map, not supported
+			config.get("block_tags", "actuallyadditions:block_laser_relay_extreme"          , "Anchor").getString(); // network is saved outside the map, not supported
+			config.get("block_tags", "actuallyadditions:block_laser_relay_fluids"           , "Anchor").getString(); // network is saved outside the map, not supported
+			config.get("block_tags", "actuallyadditions:block_laser_relay_item"             , "Anchor").getString(); // network is saved outside the map, not supported
+			config.get("block_tags", "actuallyadditions:block_laser_relay_item_whitelist"   , "Anchor").getString(); // network is saved outside the map, not supported
 			
 			// placement priorities
 			config.get("block_tags", "minecraft:lever"                                 , "PlaceLatest").getString();
