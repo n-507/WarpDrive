@@ -259,6 +259,9 @@ public class JumpBlock {
 			default:
 				break;
 			}
+		} else {
+			// apply default transformer
+			return IBlockTransformer.rotateFirstEnumFacingProperty(block, blockMeta, rotationSteps);
 		}
 		
 		switch (rotationSteps) {

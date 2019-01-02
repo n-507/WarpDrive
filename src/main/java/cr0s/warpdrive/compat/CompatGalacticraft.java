@@ -326,45 +326,8 @@ D-	micdoodle8.mods.galacticraft.planets.mars.BlockTelemetry                     
 			}
 		}
 		
-		// generic rotation based on EnumFacing properties
-		final IBlockState blockState = block.getStateFromMeta(metadata);
-		PropertyEnum<EnumFacing> propertyFacing = null;
-		for (final IProperty<?> propertyKey : blockState.getPropertyKeys()) {
-			if ( propertyKey instanceof PropertyEnum<?>
-			     && propertyKey.getValueClass() == EnumFacing.class ) {
-				propertyFacing = (PropertyEnum<EnumFacing>) propertyKey;
-				break;
-			}
-		}
-		if (propertyFacing != null) {
-			final EnumFacing facingOld = blockState.getValue(propertyFacing);
-			// skip vertical facings
-			if ( facingOld == EnumFacing.DOWN
-			  || facingOld == EnumFacing.UP ) {
-				return metadata;
-			}
-			
-			// turn horizontal facings
-			final EnumFacing facingNew;
-			switch (rotationSteps) {
-			case 1:
-				facingNew = facingOld.rotateY();
-				break;
-			case 2:
-				facingNew = facingOld.rotateY().rotateY();
-				break;
-			case 3:
-				facingNew = facingOld.rotateY().rotateY().rotateY();
-				break;
-			default:
-				facingNew = facingOld;
-				break;
-			}
-			final IBlockState blockStateNew = blockState.withProperty(propertyFacing, facingNew);
-			return block.getMetaFromState(blockStateNew);
-		}
-		
-		return metadata;
+		// apply default transformer
+		return IBlockTransformer.rotateFirstEnumFacingProperty(block, metadata, rotationSteps);
 	}
 	
 	@Override
