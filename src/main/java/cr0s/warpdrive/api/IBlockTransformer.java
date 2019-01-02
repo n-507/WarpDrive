@@ -36,7 +36,7 @@ public interface IBlockTransformer {
 	// Use this to apply metadata & NBT rotation, right before block & tile entity placement.
 	// Use priority placement to ensure dependent blocks are placed first.
 	// Warning: do NOT place the block or tile entity!
-	int rotate(final Block block, int metadata, final NBTTagCompound nbtTileEntity, final ITransformation transformation);
+	int rotate(final Block block, final int metadata, final NBTTagCompound nbtTileEntity, final ITransformation transformation);
 	
 	// Called when placing back a ship in the world, if saveExternals() returned non-null for that block.
 	// Use this to restore external data from the ship schematic, right after block & tile entity placement.

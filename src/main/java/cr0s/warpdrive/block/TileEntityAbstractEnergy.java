@@ -53,7 +53,7 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 	private static final int SCAN_INTERVAL_TICKS = 20;
 	private int scanTickCount = SCAN_INTERVAL_TICKS;
 	
-	private Object[] cofhEnergyReceivers;
+	private Object[] RF_energyReceivers;
 	
 	public TileEntityAbstractEnergy() {
 		super();
@@ -450,15 +450,15 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 	@Optional.Method(modid = "redstoneflux")
 	private void RF_outputEnergy() {
 		for (final EnumFacing from : EnumFacing.VALUES) {
-			if (cofhEnergyReceivers[from.ordinal()] != null) {
-				RF_outputEnergy(from, (IEnergyReceiver) cofhEnergyReceivers[from.ordinal()]);
+			if (RF_energyReceivers[from.ordinal()] != null) {
+				RF_outputEnergy(from, (IEnergyReceiver) RF_energyReceivers[from.ordinal()]);
 			}
 		}
 	}
 	
 	@Optional.Method(modid = "redstoneflux")
 	private void RF_initialiseAPI() {
-		cofhEnergyReceivers = new IEnergyReceiver[EnumFacing.VALUES.length];
+		RF_energyReceivers = new IEnergyReceiver[EnumFacing.VALUES.length];
 	}
 	
 	
@@ -519,12 +519,12 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 					final IEnergyReceiver energyReceiver = (IEnergyReceiver) tileEntity;
 					if (energyReceiver.canConnectEnergy(from.getOpposite())) {
 						energyReceiverFound = true;
-						cofhEnergyReceivers[from.ordinal()] = energyReceiver;
+						RF_energyReceivers[from.ordinal()] = energyReceiver;
 					}
 				}
 			}
 			if (!energyReceiverFound) {
-				cofhEnergyReceivers[from.ordinal()] = null;
+				RF_energyReceivers[from.ordinal()] = null;
 			}
 		}
 	}

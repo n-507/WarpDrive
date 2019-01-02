@@ -23,12 +23,12 @@ public class RecipeTuningDriver implements IRecipe {
 	
 	private ResourceLocation resourceLocation;
 	
-	private ItemStack itemStackTool;
-	private ItemStack itemStackConsumable;
-	private int countDyesExpected;
+	private final ItemStack itemStackTool;
+	private final ItemStack itemStackConsumable;
+	private final int countDyesExpected;
 	private ItemStack itemStackResult = new ItemStack(Blocks.FIRE);
 	private final int size;
-	private ResourceLocation group;
+	private final ResourceLocation group;
 	
 	public RecipeTuningDriver(@Nonnull final ResourceLocation group, final ItemStack itemStackTool, final ItemStack itemStackConsumable, final int countDyes, final String suffix) {
 		this.group = group;
