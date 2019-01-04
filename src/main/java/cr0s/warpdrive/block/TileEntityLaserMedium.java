@@ -21,7 +21,7 @@ public class TileEntityLaserMedium extends TileEntityAbstractEnergy {
 		super();
 		
 		peripheralName = "warpdriveLaserMedium";
-		OC_enable = false;
+		doRequireUpgradeToInterface();
 	}
 	
 	@Override

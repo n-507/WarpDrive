@@ -5,6 +5,7 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.FunctionGet;
 import cr0s.warpdrive.api.FunctionSetVector;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
 import dan200.computercraft.api.ComputerCraftAPI;
@@ -48,6 +49,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	// Common computer properties
 	protected String peripheralName = null;
 	private String[] methodsArray = {};
+	private boolean isAlwaysInterfaced = true;
 	
 	// String returned to LUA script in case of error
 	public static final String COMPUTER_ERROR_TAG = "!ERROR!";
@@ -59,12 +61,11 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	protected volatile List<String> CC_scripts = null;
 	
 	// OpenComputer specific properties
-	protected boolean 	OC_enable = true;
 	protected Node		OC_node = null;
 	protected boolean	OC_addedToNetwork = false;
 	
 	// ComputerCraft specific properties
-	protected final HashMap<Integer, IComputerAccess> connectedComputers = new HashMap<>();
+	protected final HashMap<Integer, IComputerAccess> CC_connectedComputers = new HashMap<>();
 	
 	public TileEntityAbstractInterfaced() {
 		super();
@@ -79,6 +80,46 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	}
 	
 	// WarpDrive abstraction layer
+	protected void doRequireUpgradeToInterface() {
+		assert isAlwaysInterfaced;
+		
+		isAlwaysInterfaced = false;
+		setUpgradeMaxCount(EnumComponentType.COMPUTER_INTERFACE, 1);
+	}
+	
+	@Override
+	public boolean mountUpgrade(final Object upgrade) {
+		final boolean isSuccess = super.mountUpgrade(upgrade);
+		if (isSuccess) {
+			if (WarpDriveConfig.isComputerCraftLoaded) {
+				CC_mount();
+			}
+			if (WarpDriveConfig.isOpenComputersLoaded) {
+				OC_constructor();
+			}
+		}
+		return isSuccess;
+	}
+	
+	@Override
+	public boolean dismountUpgrade(final Object upgrade) {
+		final boolean isSuccess = super.dismountUpgrade(upgrade);
+		if (isSuccess) {
+			if (WarpDriveConfig.isComputerCraftLoaded) {
+				CC_unmount();
+			}
+			if (WarpDriveConfig.isOpenComputersLoaded) {
+				OC_destructor();
+			}
+		}
+		return isSuccess;
+	}
+	
+	@Override
+	public boolean isInterfaceEnabled() {
+		return isAlwaysInterfaced || getUpgradeCount(EnumComponentType.COMPUTER_INTERFACE) > 0;
+	}
+	
 	protected void addMethods(final String[] methodsToAdd) {
 		if (methodsArray == null) {
 			methodsArray = methodsToAdd;
@@ -97,12 +138,13 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		return (url != null);
 	}
 	
+	// TileEntity overrides
 	@Override
  	public void update() {
 		super.update();
 		
 		if (WarpDriveConfig.isOpenComputersLoaded) {
-			if (!OC_addedToNetwork && OC_enable) {
+			if (!OC_addedToNetwork && isInterfaceEnabled()) {
 				OC_addedToNetwork = true;
 				Network.joinOrCreateNetwork(this);
 			}
@@ -117,7 +159,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		}
 		
 		// deferred constructor so the derived class can finish it's initialization first
-		if (WarpDriveConfig.isOpenComputersLoaded && OC_node == null) {
+		if (WarpDriveConfig.isOpenComputersLoaded && OC_node == null && isInterfaceEnabled()) {
 			OC_constructor();
 		}
 		super.validate();
@@ -126,10 +168,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	@Override
 	public void invalidate() {
 		if (WarpDriveConfig.isOpenComputersLoaded) {
-			if (OC_node != null) {
-				OC_node.remove();
-				OC_node = null;
-			}
+			OC_destructor();
 		}
 		super.invalidate();
 	}
@@ -137,10 +176,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	@Override
 	public void onChunkUnload() {
 		if (WarpDriveConfig.isOpenComputersLoaded) {
-			if (OC_node != null) {
-				OC_node.remove();
-				OC_node = null;
-			}
+			OC_destructor();
 		}
 		super.onChunkUnload();
 	}
@@ -149,7 +185,8 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		if ( WarpDriveConfig.isOpenComputersLoaded
-		  && FMLCommonHandler.instance().getEffectiveSide().isServer() ) {
+		  && FMLCommonHandler.instance().getEffectiveSide().isServer()
+		  && isInterfaceEnabled() ) {
 			if (OC_node == null) {
 				OC_constructor();
 			}
@@ -200,7 +237,11 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		return (((((super.hashCode() + (world == null ? 0 : world.provider.getDimension()) << 4) + pos.getX()) << 4) + pos.getY()) << 4) + pos.getZ();
 	}
 	
-	// Dirty cheap conversion methods
+	// Interface proxies are used to
+	// - convert arguments,
+	// - log LUA calls,
+	// - block connection when missing the Computer interface upgrade
+	// note: direct API calls remains possible without upgrade, as it's lore dependant
 	@Optional.Method(modid = "opencomputers")
 	protected Object[] OC_convertArgumentsAndLogCall(final Context context, final Arguments args) {
 		final Object[] arguments = new Object[args.count()];
@@ -219,6 +260,9 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 			                                    Commons.format(world, pos),
 			                                    peripheralName, context, methodName, Commons.format(arguments)));
 		}
+		if (!isInterfaceEnabled()) {
+			throw new RuntimeException("Missing Computer interface upgrade.");
+		}
 		return arguments;
 	}
 	
@@ -230,13 +274,20 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 			                                    Commons.format(world, pos),
 			                                    peripheralName, methodName, Commons.format(arguments)));
 		}
+		if (!isInterfaceEnabled() && !methodName.equals("isInterfaced")) {
+			throw new RuntimeException("Missing Computer interface upgrade.");
+		}
 		return methodName;
 	}
 	
 	// Common OC/CC methods
 	@Override
 	public Object[] isInterfaced() {
-		return new Object[] { true, "I'm a WarpDrive computer interfaced tile entity." };
+		if (isInterfaceEnabled()) {
+			return new Object[] { true, "I'm a WarpDrive computer interfaced tile entity." };
+		} else {
+			return new Object[] { false, "Missing Computer interface upgrade." };
+		}
 	}
 	
 	@Override
@@ -377,9 +428,23 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	
 	@Override
 	@Optional.Method(modid = "computercraft")
-	public void attach(@Nonnull final IComputerAccess computer) {
-		final int id = computer.getID();
-		connectedComputers.put(id, computer);
+	public void attach(@Nonnull final IComputerAccess computerAccess) {
+		final int id = computerAccess.getID();
+		CC_connectedComputers.put(id, computerAccess);
+		if (isInterfaceEnabled()) {
+			CC_mount(computerAccess);
+		}
+	}
+	
+	@Optional.Method(modid = "computercraft")
+	private void CC_mount() {
+		for (final IComputerAccess computerAccess : CC_connectedComputers.values()) {
+			CC_mount(computerAccess);
+		}
+	}
+	
+	@Optional.Method(modid = "computercraft")
+	private void CC_mount(@Nonnull final IComputerAccess computer) {
 		if (CC_hasResource && WarpDriveConfig.G_LUA_SCRIPTS != WarpDriveConfig.LUA_SCRIPTS_NONE) {
 			try {
 				final String modid = WarpDrive.MODID.toLowerCase();
@@ -402,11 +467,45 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		}
 	}
 	
+	@Optional.Method(modid = "computercraft")
+	private void CC_unmount() {
+		for (final IComputerAccess computerAccess : CC_connectedComputers.values()) {
+			CC_unmount(computerAccess);
+		}
+	}
+	
+	@Optional.Method(modid = "computercraft")
+	private void CC_unmount(@Nonnull final IComputerAccess computer) {
+		if (CC_hasResource && WarpDriveConfig.G_LUA_SCRIPTS != WarpDriveConfig.LUA_SCRIPTS_NONE) {
+			try {
+				final String modid = WarpDrive.MODID.toLowerCase();
+				final String folderPeripheral = peripheralName.replace(modid, modid + "/");
+				computer.unmount("/" + modid           );
+				computer.unmount("/" + folderPeripheral);
+				computer.unmount("/warpupdater"        );
+				if (WarpDriveConfig.G_LUA_SCRIPTS == WarpDriveConfig.LUA_SCRIPTS_ALL) {
+					for (final String script : CC_scripts) {
+						computer.unmount("/" + script);
+					}
+				}
+			} catch (final Exception exception) {
+				exception.printStackTrace();
+				WarpDrive.logger.error(String.format("Failed to unmount ComputerCraft scripts for %s %s, isFirstTick %s",
+				                                     peripheralName,
+				                                     Commons.format(world, pos),
+				                                     isFirstTick()));
+			}
+		}
+	}
+	
 	@Override
 	@Optional.Method(modid = "computercraft")
 	public void detach(@Nonnull final IComputerAccess computer) {
+		if (isInterfaceEnabled()) {
+			CC_unmount(computer);
+		}
 		final int id = computer.getID();
-		connectedComputers.remove(id);
+		CC_connectedComputers.remove(id);
 	}
 	
 	@Override
@@ -417,13 +516,16 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	
 	// Computer abstraction methods
 	protected void sendEvent(final String eventName, final Object... arguments) {
+		if (!isInterfaceEnabled()) {
+			return;
+		}
 		if (WarpDriveConfig.LOGGING_LUA) {
 			WarpDrive.logger.info(this + " Sending event '" + eventName + "'");
 		}
 		if (WarpDriveConfig.isComputerCraftLoaded) {
-			for (final Map.Entry<Integer, IComputerAccess> integerIComputerAccessEntry : connectedComputers.entrySet()) {
-				final IComputerAccess comp = integerIComputerAccessEntry.getValue();
-				comp.queueEvent(eventName, arguments);
+			for (final Map.Entry<Integer, IComputerAccess> integerIComputerAccessEntry : CC_connectedComputers.entrySet()) {
+				final IComputerAccess computerAccess = integerIComputerAccessEntry.getValue();
+				computerAccess.queueEvent(eventName, arguments);
 			}
 		}
 		if (WarpDriveConfig.isOpenComputersLoaded) {
@@ -484,6 +586,20 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		if (OC_node != null && OC_hasResource && WarpDriveConfig.G_LUA_SCRIPTS != WarpDriveConfig.LUA_SCRIPTS_NONE) {
 			OC_fileSystem = FileSystem.asManagedEnvironment(FileSystem.fromClass(getClass(), WarpDrive.MODID.toLowerCase(), "lua.OpenComputers/" + peripheralName), peripheralName);
 			((Component) OC_fileSystem.node()).setVisibility(Visibility.Network);
+		}
+		// note: we can't join the network right away, it's postponed to next tick
+	}
+	
+	@Optional.Method(modid = "opencomputers")
+	private void OC_destructor() {
+		if (OC_node != null) {
+			if (OC_fileSystem != null) {
+				OC_fileSystem.node().remove();
+				OC_fileSystem = null;
+			}
+			OC_node.remove();
+			OC_node = null;
+			OC_addedToNetwork = false;
 		}
 	}
 	

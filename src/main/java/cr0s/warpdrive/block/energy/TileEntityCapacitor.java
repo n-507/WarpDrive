@@ -33,6 +33,7 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 		super();
 		
 		peripheralName = "warpdriveCapacitor";
+		doRequireUpgradeToInterface();
 		
 		setUpgradeMaxCount(EnumComponentType.SUPERCONDUCTOR, WarpDriveConfig.CAPACITOR_EFFICIENCY_PER_UPGRADE.length - 1);
 	}

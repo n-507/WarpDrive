@@ -133,6 +133,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			"translation"
 		});
 		CC_scripts = Arrays.asList("enable", "disable");
+		doRequireUpgradeToInterface();
 		
 		for (final EnumForceFieldUpgrade enumForceFieldUpgrade : EnumForceFieldUpgrade.values()) {
 			if (enumForceFieldUpgrade.maxCountOnProjector > 0) {

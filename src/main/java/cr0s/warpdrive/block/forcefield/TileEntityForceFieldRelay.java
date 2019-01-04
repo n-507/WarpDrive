@@ -24,6 +24,7 @@ public class TileEntityForceFieldRelay extends TileEntityAbstractForceField impl
 		super();
 		
 		peripheralName = "warpdriveForceFieldRelay";
+		doRequireUpgradeToInterface();
 	}
 	
 	// onFirstUpdateTick

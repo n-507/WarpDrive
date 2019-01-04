@@ -102,8 +102,10 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 				"silktouch",
 				"tapTrees"
 		});
-		laserMedium_maxCount = WarpDriveConfig.TREE_FARM_MAX_MEDIUMS_COUNT;
 		CC_scripts = Arrays.asList("farm", "stop");
+		doRequireUpgradeToInterface();
+		
+		laserMedium_maxCount = WarpDriveConfig.TREE_FARM_MAX_MEDIUMS_COUNT;
 	}
 	
 	@Override
@@ -125,14 +127,14 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 			return;
 		}
 		
-		IBlockState blockState = world.getBlockState(pos);
+		final IBlockState blockState = world.getBlockState(pos);
 		if (currentState == STATE_IDLE) {
 			delayTicks = 0;
 			delayTargetTicks = TREE_FARM_WARMUP_DELAY_TICKS;
 			updateBlockState(blockState, BlockLaserTreeFarm.MODE, EnumLaserTreeFarmMode.INACTIVE);
 			
 			// force start if no computer control is available
-			if (!WarpDriveConfig.isComputerCraftLoaded && !WarpDriveConfig.isOpenComputersLoaded) {
+			if (!isInterfaceEnabled()) {
 				breakLeaves = true;
 				enableSilktouch = false;
 				tapTrees = true;

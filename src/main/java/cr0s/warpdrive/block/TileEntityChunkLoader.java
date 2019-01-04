@@ -43,6 +43,7 @@ public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
 				"bounds",
 				"radius",
 		});
+		doRequireUpgradeToInterface();
 		
 		setUpgradeMaxCount(EnumComponentType.SUPERCONDUCTOR, 5);
 		setUpgradeMaxCount(EnumComponentType.EMERALD_CRYSTAL, WarpDriveConfig.CHUNK_LOADER_MAX_RADIUS);

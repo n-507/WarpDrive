@@ -40,6 +40,7 @@ public class TileEntityIC2reactorLaserMonitor extends TileEntityAbstractLaser {
 		
 		laserMedium_maxCount = 1;
 		peripheralName = "warpdriveIC2reactorLaserCooler";
+		doRequireUpgradeToInterface();
 	}
 	
 	// returns IReactor tile entities

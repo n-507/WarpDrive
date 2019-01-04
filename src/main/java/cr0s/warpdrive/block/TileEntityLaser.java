@@ -83,6 +83,8 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 			"beamFrequency",
 			"getScanResult"
 		});
+		doRequireUpgradeToInterface();
+		
 		laserMedium_maxCount = WarpDriveConfig.LASER_CANNON_MAX_MEDIUMS_COUNT;
 	}
 	

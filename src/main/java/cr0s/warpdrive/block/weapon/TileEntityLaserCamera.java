@@ -38,6 +38,7 @@ public class TileEntityLaserCamera extends TileEntityLaser implements IVideoChan
 		addMethods(new String[] {
 			"videoChannel"
 		});
+		// done by ancestor: doRequireUpgradeToInterface();
 	}
 	
 	@Override

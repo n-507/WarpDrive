@@ -271,8 +271,8 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	// ComputerCraft IPeripheral methods
 	@Override
 	@Optional.Method(modid = "computercraft")
-	public void attach(@Nonnull final IComputerAccess computer) {
-		super.attach(computer);
+	public void attach(@Nonnull final IComputerAccess computerAccess) {
+		super.attach(computerAccess);
 		if (getBlockMetadata() == 0) {
 			updateBlockState(null, BlockRadar.MODE, EnumRadarMode.ACTIVE);
 		}
@@ -282,7 +282,7 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	@Optional.Method(modid = "computercraft")
 	public void detach(@Nonnull final IComputerAccess computer) {
 		super.detach(computer);
-		if (connectedComputers.isEmpty()) {
+		if (CC_connectedComputers.isEmpty()) {
 			updateBlockState(null, BlockRadar.MODE, EnumRadarMode.INACTIVE);
 		}
 	}

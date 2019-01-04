@@ -34,6 +34,7 @@ public class TileEntityMonitor extends TileEntityAbstractMachine implements IVid
 		addMethods(new String[] {
 			"videoChannel"
 		});
+		doRequireUpgradeToInterface();
 	}
 	
 	@Override

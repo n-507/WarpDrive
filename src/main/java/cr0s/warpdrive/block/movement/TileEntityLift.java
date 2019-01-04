@@ -53,6 +53,7 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 				"mode",
 				"state"
 		});
+		doRequireUpgradeToInterface();
 	}
 	
 	@Override

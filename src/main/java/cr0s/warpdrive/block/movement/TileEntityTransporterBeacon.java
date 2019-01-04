@@ -49,6 +49,7 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 		addMethods(new String[] {
 				"isActive"
 		});
+		doRequireUpgradeToInterface();
 	}
 	
 	@Override

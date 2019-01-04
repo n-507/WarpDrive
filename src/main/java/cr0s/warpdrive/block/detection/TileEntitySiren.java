@@ -31,6 +31,8 @@ public class TileEntitySiren extends TileEntityAbstractMachine {
 	
 	public TileEntitySiren() {
 		super();
+		
+		doRequireUpgradeToInterface();
 	}
 	
 	@Override

@@ -73,6 +73,8 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 				"silktouch"
 		});
 		CC_scripts = Arrays.asList("mine", "stop");
+		doRequireUpgradeToInterface();
+		
 		laserMedium_maxCount = WarpDriveConfig.MINING_LASER_MAX_MEDIUMS_COUNT;
 	}
 	
@@ -97,7 +99,7 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 			updateBlockState(blockState, BlockMiningLaser.MODE, EnumMiningLaserMode.INACTIVE);
 			
 			// force start if no computer control is available
-			if (!WarpDriveConfig.isComputerCraftLoaded && !WarpDriveConfig.isOpenComputersLoaded) {
+			if (!isInterfaceEnabled()) {
 				enableSilktouch = false;
 				layerOffset = 1;
 				mineAllBlocks = true;

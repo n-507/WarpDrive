@@ -38,6 +38,7 @@ public class TileEntityCamera extends TileEntityAbstractMachine implements IVide
 		addMethods(new String[] {
 			"videoChannel"
 		});
+		doRequireUpgradeToInterface();
 	}
 	
 	@Override
