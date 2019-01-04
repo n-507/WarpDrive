@@ -58,6 +58,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -84,6 +85,18 @@ public class Commons {
 		EnumBlockRenderType.ENTITYBLOCK_ANIMATED,
 		EnumBlockRenderType.MODEL
 	);
+	
+	private static Method methodThrowable_getStackTraceElement;
+	
+	static {
+		try {
+			methodThrowable_getStackTraceElement = Throwable.class.getDeclaredMethod("getStackTraceElement",
+			                                                                         int.class);
+			methodThrowable_getStackTraceElement.setAccessible(true);
+		} catch (final Exception exception) {
+			exception.printStackTrace();
+		}
+	}
 	
 	@SuppressWarnings("ConstantConditions") // IDE says "§" == CHAR_FORMATTING, execution says otherwise
 	public static String updateEscapeCodes(final String message) {
@@ -623,6 +636,17 @@ public class Commons {
 			stringBuilder.append("\n\n");
 		}
 		WarpDrive.logger.error(stringBuilder.toString());
+	}
+	
+	public static String getMethodName(final int depth) {
+		try {
+			final StackTraceElement stackTraceElement = (StackTraceElement) methodThrowable_getStackTraceElement.invoke(
+					new Throwable(), depth + 1);
+			return stackTraceElement.getMethodName();
+		} catch (final Exception exception) {
+			exception.printStackTrace();
+			return "-?-";
+		}
 	}
 	
 	public static void writeNBTToFile(final String fileName, final NBTTagCompound tagCompound) {

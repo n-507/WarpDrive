@@ -146,10 +146,11 @@ public class TileEntitySecurityStation extends TileEntityAbstractMachine impleme
 		return new Object[] { list.toString(), players.toArray() };
 	}
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getAttachedPlayers(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return getAttachedPlayers();
 	}
 	

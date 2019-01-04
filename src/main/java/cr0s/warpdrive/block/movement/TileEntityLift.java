@@ -249,10 +249,11 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 		return new Object[] { status, isActive, energy, isValid, isEnabled, computerMode.getName() };
 	}
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] mode(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return mode(
 			new Object[] {
 				arguments.checkString(0)
@@ -263,6 +264,7 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] state(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return state();
 	}
 	

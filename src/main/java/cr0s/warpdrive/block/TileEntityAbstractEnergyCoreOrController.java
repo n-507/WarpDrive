@@ -30,7 +30,7 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 	// Common OC/CC methods
 	// (none)
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	// (none)
 	
 	// ComputerCraft IPeripheral methods

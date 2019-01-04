@@ -33,10 +33,11 @@ public abstract class TileEntityAbstractEnergyConsumer extends TileEntityAbstrac
 	@Override
 	public abstract Object[] getEnergyRequired();
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getEnergyRequired(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return getEnergyRequired();
 	}
 	

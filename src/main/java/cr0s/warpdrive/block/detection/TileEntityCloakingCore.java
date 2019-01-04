@@ -469,7 +469,7 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyConsumer {
 		return super.isAssemblyValid();
 	}
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	// (none)
 	
 	// ComputerCraft IPeripheral methods

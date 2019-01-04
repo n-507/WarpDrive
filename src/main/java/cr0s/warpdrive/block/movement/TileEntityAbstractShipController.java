@@ -370,22 +370,25 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 		return new Object[] { nameTarget };
 	}
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getOrientation(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return getOrientation();
 	}
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] isInSpace(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return isInSpace();
 	}
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] isInHyperspace(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return isInHyperspace();
 	}
 	
@@ -410,12 +413,14 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getShipSize(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return getShipSize();
 	}
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getMaxJumpDistance(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return getMaxJumpDistance();
 	}
 	

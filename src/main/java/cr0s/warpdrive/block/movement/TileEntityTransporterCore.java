@@ -1551,6 +1551,14 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 		return tagCompound;
 	}
 	
+	@Override
+	public void setIsEnabled(final boolean isEnabled) {
+		super.setIsEnabled(isEnabled);
+		if (isEnabled) {
+			markDirty();
+		}
+	}
+	
 	// Common OC/CC methods
 	@Override
 	public String[] name(final Object[] arguments) {
@@ -1562,12 +1570,11 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 		return new String[] { name, uuid == null ? null : uuid.toString() };
 	}
 	
-	@Override
-	public void setIsEnabled(final boolean isEnabled) {
-		super.setIsEnabled(isEnabled);
-		if (isEnabled) {
-			markDirty();
+	public Object[] beamFrequency(final Object[] arguments) {
+		if (arguments.length == 1) {
+			setBeamFrequency(Commons.toInt(arguments[0]));
 		}
+		return new Integer[] { getBeamFrequency() };
 	}
 	
 	@Override
@@ -1671,15 +1678,13 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] beamFrequency(final Context context, final Arguments arguments) {
-		if (arguments.count() == 1) {
-			setBeamFrequency(arguments.checkInteger(0));
-		}
-		return new Integer[] { beamFrequency };
+		return beamFrequency(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] state(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return state();
 	}
 	
@@ -1704,6 +1709,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getLockStrength(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return getLockStrength();
 	}
 	
@@ -1721,10 +1727,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 		
 		switch (methodName) {
 		case "beamFrequency":
-			if (arguments.length == 1 && arguments[0] != null) {
-				setBeamFrequency(Commons.toInt(arguments[0]));
-			}
-			return new Integer[] { beamFrequency };
+			return beamFrequency(arguments);
 			
 		case "state":
 			return state();

@@ -264,6 +264,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] side(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return side();
 	}
 	

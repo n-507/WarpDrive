@@ -160,7 +160,7 @@ public class TileEntityAcceleratorControlPoint extends TileEntityAbstractMachine
 		return new Object[] { status, isEnabled, controlChannel };
 	}
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] controlChannel(final Context context, final Arguments arguments) {
@@ -170,6 +170,7 @@ public class TileEntityAcceleratorControlPoint extends TileEntityAbstractMachine
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] state(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return state();
 	}
 	

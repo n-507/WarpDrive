@@ -1239,10 +1239,11 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		return computer_getOrSetVector3(this::getTranslation, this::setTranslation, arguments);
 	}
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] state(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return state();
 	}
 	

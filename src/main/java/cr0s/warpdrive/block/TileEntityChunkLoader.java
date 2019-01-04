@@ -198,7 +198,7 @@ public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
 		return new Object[] { calculateEnergyRequired() };
 	}
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] bounds(final Context context, final Arguments arguments) {

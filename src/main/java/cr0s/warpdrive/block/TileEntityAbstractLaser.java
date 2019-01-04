@@ -214,18 +214,21 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] energy(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return energy();
 	}
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] laserMediumDirection(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return laserMediumDirection();
 	}
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] laserMediumCount(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return laserMediumCount();
 	}
 	

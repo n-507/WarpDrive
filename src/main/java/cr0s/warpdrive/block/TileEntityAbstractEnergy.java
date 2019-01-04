@@ -184,10 +184,11 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractMachine
 		return new Object[] { energy_getEnergyStored(), energy_getMaxStorage() };
 	}
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] energy(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return energy();
 	}
 	

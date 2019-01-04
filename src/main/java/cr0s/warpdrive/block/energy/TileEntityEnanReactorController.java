@@ -156,10 +156,11 @@ public class TileEntityEnanReactorController extends TileEntityAbstractEnergyCor
 		return tileEntityEnanReactorCore.energy();
 	}
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getInstabilities(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return getInstabilities();
 	}
 	
@@ -184,6 +185,7 @@ public class TileEntityEnanReactorController extends TileEntityAbstractEnergyCor
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] state(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return state();
 	}
 	

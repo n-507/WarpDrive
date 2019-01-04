@@ -632,16 +632,18 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		readFromNBT(tagCompound);
 	}
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] scan(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return scan();
 	}
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] filename(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return filename();
 	}
 	
@@ -654,6 +656,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] state(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return state();
 	}
 	

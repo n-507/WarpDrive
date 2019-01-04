@@ -9,6 +9,7 @@ import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
 import dan200.computercraft.api.ComputerCraftAPI;
+import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -254,8 +255,8 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 			}
 			index++;
 		}
-		final String methodName = "-?-";
 		if (WarpDriveConfig.LOGGING_LUA) {
+			final String methodName = Commons.getMethodName(1);
 			WarpDrive.logger.info(String.format("LUA call %s to %s(%s).%s(%s)",
 			                                    Commons.format(world, pos),
 			                                    peripheralName, context, methodName, Commons.format(arguments)));
@@ -555,30 +556,35 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] isInterfaced(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return isInterfaced();
 	}
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getLocalPosition(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return getLocalPosition();
 	}
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getUpgrades(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return getUpgrades();
 	}
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getTier(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return getTier();
 	}
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getVersion(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return getVersion();
 	}
 	

@@ -125,14 +125,19 @@ public class TileEntityLaserCamera extends TileEntityLaser implements IVideoChan
 		super.onChunkUnload();
 	}
 	
-	// OpenComputer callback methods
+	// Common OC/CC methods
+	public Object[] videoChannel(final Object[] arguments) {
+		if (arguments.length == 1) {
+			setVideoChannel(Commons.toInt(arguments[0]));
+		}
+		return new Integer[] { getVideoChannel() };
+	}
+	
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] videoChannel(final Context context, final Arguments arguments) {
-		if (arguments.count() == 1) {
-			setVideoChannel(arguments.checkInteger(0));
-		}
-		return new Integer[] { videoChannel };
+		return videoChannel(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
 	// ComputerCraft IPeripheral methods
@@ -143,10 +148,7 @@ public class TileEntityLaserCamera extends TileEntityLaser implements IVideoChan
 		
 		switch (methodName) {
 		case "videoChannel":
-			if (arguments.length == 1 && arguments[0] != null) {
-				setVideoChannel(Commons.toInt(arguments[0]));
-			}
-			return new Integer[] { videoChannel };
+			return videoChannel(arguments);
 		}
 		
 		return super.callMethod(computer, context, method, arguments);

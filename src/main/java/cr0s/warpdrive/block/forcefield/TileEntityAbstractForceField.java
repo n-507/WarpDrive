@@ -153,7 +153,7 @@ public abstract class TileEntityAbstractForceField extends TileEntityAbstractEne
 		return new Object[] { beamFrequency };
 	}
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] beamFrequency(final Context context, final Arguments arguments) {

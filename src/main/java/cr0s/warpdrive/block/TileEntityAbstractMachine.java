@@ -141,7 +141,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 		return new Object[] { true, "ok" };
 	}
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] name(final Context context, final Arguments arguments) {
@@ -157,6 +157,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] isAssemblyValid(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return isAssemblyValid();
 	}
 	

@@ -740,7 +740,15 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 		super.onChunkUnload();
 	}
 	
-	// OpenComputer callback methods
+	// Common OC/CC methods
+	public Object[] beamFrequency(final Object[] arguments) {
+		if (arguments.length == 1) {
+			setBeamFrequency(Commons.toInt(arguments[0]));
+		}
+		return new Integer[] { getBeamFrequency() };
+	}
+	
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] emitBeam(final Context context, final Arguments arguments) {
@@ -750,15 +758,13 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] beamFrequency(final Context context, final Arguments arguments) {
-		if (arguments.count() == 1) {
-			setBeamFrequency(arguments.checkInteger(0));
-		}
-		return new Integer[] { beamFrequency };
+		return beamFrequency(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getScanResult(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return getScanResult();
 	}
 	
@@ -813,14 +819,11 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 		final String methodName = CC_getMethodNameAndLogCall(method, arguments);
 		
 		switch (methodName) {
+		case "beamFrequency":
+			return beamFrequency(arguments);
+			
 		case "emitBeam":  // emitBeam(yaw, pitch) or emitBeam(deltaX, deltaY, deltaZ)
 			return emitBeam(arguments);
-			
-		case "beamFrequency":
-			if (arguments.length == 1 && arguments[0] != null) {
-				setBeamFrequency(Commons.toInt(arguments[0]));
-			}
-			return new Integer[] { beamFrequency };
 			
 		case "getScanResult":
 			return getScanResult();

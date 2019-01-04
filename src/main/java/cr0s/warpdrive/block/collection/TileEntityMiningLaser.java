@@ -417,10 +417,11 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 		return tagCompound;
 	}
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] start(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return start();
 	}
 	
@@ -428,6 +429,7 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] stop(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		stop();
 		return null;
 	}
@@ -435,6 +437,7 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] state(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return state();
 	}
 	

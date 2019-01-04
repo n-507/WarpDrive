@@ -225,10 +225,11 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 		return new Object[] { false, COMPUTER_ERROR_TAG, null, 0, 0, 0 };
 	}
 	
-	// OpenComputer callback methods
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getGlobalPosition(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return getGlobalPosition();
 	}
 	
@@ -247,18 +248,21 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] start(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return start();
 	}
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getResults(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return getResults();
 	}
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getResultsCount(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
 		return getResultsCount();
 	}
 	
