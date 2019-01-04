@@ -279,7 +279,6 @@ end
 
 function ship_page_setRotation()
   local inputAbort = false
-  local drun = true
   w.page_begin("<==== Set ship rotation ====>")
   w.setCursorPos(1, 8)
   w.setColorHelp()

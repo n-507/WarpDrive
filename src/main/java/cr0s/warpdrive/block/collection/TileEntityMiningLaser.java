@@ -480,10 +480,11 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 		if (isActive()) {
 			retValuablesInLayer = valuablesInLayer.size();
 			retValuablesMined = valuableIndex;
-			
-			return new Object[] { status, isActive(), energy, currentLayer, retValuablesMined, retValuablesInLayer };
+		} else {
+			retValuablesInLayer = 0;
+			retValuablesMined = 0;
 		}
-		return new Object[] { status, isActive(), energy, currentLayer, 0, 0 };
+		return new Object[] { status, isActive(), energy, currentLayer, retValuablesMined, retValuablesInLayer };
 	}
 	
 	private Object[] onlyOres(final Object[] arguments) {

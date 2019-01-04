@@ -18,6 +18,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class CommandDump extends AbstractCommand {
 	
@@ -95,7 +96,8 @@ public class CommandDump extends AbstractCommand {
 		return "/wdump: write loot table in console for item container below or next to player";
 	}
 	
-	private IInventory getInventory(final World world, final int x, final int y, final int z) {
+	@Nullable
+	private IInventory getInventory(@Nonnull final World world, final int x, final int y, final int z) {
 		final BlockPos blockPos = new BlockPos(x, y, z);
 		final IBlockState blockState = world.getBlockState(blockPos);
 		if (blockState.getBlock() instanceof ITileEntityProvider) {

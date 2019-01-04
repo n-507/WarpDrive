@@ -73,10 +73,10 @@ public class TileEntityLaserCamera extends TileEntityLaser implements IVideoChan
 	public void setVideoChannel(final int parVideoChannel) {
 		if (videoChannel != parVideoChannel && (parVideoChannel <= VIDEO_CHANNEL_MAX) && (parVideoChannel > VIDEO_CHANNEL_MIN)) {
 			videoChannel = parVideoChannel;
-			markDirty();
 			if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 				WarpDrive.logger.info(this + " Video channel updated from " + videoChannel + " to " + parVideoChannel);
 			}
+			markDirty();
 			// force update through main thread since CC runs on server as 'client'
 			packetSendTicks = 0;
 			registryUpdateTicks = 0;

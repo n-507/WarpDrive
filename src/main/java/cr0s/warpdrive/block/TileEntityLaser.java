@@ -774,7 +774,6 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 				final float deltaY = -Commons.toFloat(arguments[1]);
 				final float deltaZ = Commons.toFloat(arguments[2]);
 				final double horizontalDistance = MathHelper.sqrt(deltaX * deltaX + deltaZ * deltaZ);
-				//noinspection SuspiciousNameCombination
 				newYaw = (float) (Math.atan2(deltaX, deltaZ) * 180.0D / Math.PI);
 				newPitch = (float) (Math.atan2(deltaY, horizontalDistance) * 180.0D / Math.PI);
 				initiateBeamEmission(newYaw, newPitch);

@@ -447,13 +447,14 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	private void CC_mount(@Nonnull final IComputerAccess computer) {
 		if (CC_hasResource && WarpDriveConfig.G_LUA_SCRIPTS != WarpDriveConfig.LUA_SCRIPTS_NONE) {
 			try {
-				final String modid = WarpDrive.MODID.toLowerCase();
-				final String folderPeripheral = peripheralName.replace(modid, modid + "/");
-				computer.mount("/" + modid           , ComputerCraftAPI.createResourceMount(WarpDrive.class, modid, "lua.ComputerCraft/common"));
-				computer.mount("/" + folderPeripheral, ComputerCraftAPI.createResourceMount(WarpDrive.class, modid, "lua.ComputerCraft/" + peripheralName));
+				CC_mount(computer, "lua.ComputerCraft/common", "/" + WarpDrive.MODID);
+				
+				final String folderPeripheral = peripheralName.replace(WarpDrive.MODID, WarpDrive.MODID + "/");
+				CC_mount(computer, "lua.ComputerCraft/" + peripheralName, "/" + folderPeripheral);
+				
 				if (WarpDriveConfig.G_LUA_SCRIPTS == WarpDriveConfig.LUA_SCRIPTS_ALL) {
 					for (final String script : CC_scripts) {
-						computer.mount("/" + script, ComputerCraftAPI.createResourceMount(WarpDrive.class, modid, "lua.ComputerCraft/" + peripheralName + "/" + script));
+						CC_mount(computer, "lua.ComputerCraft/" + peripheralName + "/" + script, "/" + script);
 					}
 				}
 			} catch (final Exception exception) {
@@ -467,6 +468,13 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	}
 	
 	@Optional.Method(modid = "computercraft")
+	private void CC_mount(@Nonnull final IComputerAccess computer, final String pathAsset, final String pathLUA) {
+		final IMount mountCommon = ComputerCraftAPI.createResourceMount(WarpDrive.class, WarpDrive.MODID, pathAsset);
+		assert mountCommon != null;
+		computer.mount(pathLUA, mountCommon);
+	}
+	
+	@Optional.Method(modid = "computercraft")
 	private void CC_unmount() {
 		for (final IComputerAccess computerAccess : CC_connectedComputers.values()) {
 			CC_unmount(computerAccess);
@@ -477,9 +485,8 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	private void CC_unmount(@Nonnull final IComputerAccess computer) {
 		if (CC_hasResource && WarpDriveConfig.G_LUA_SCRIPTS != WarpDriveConfig.LUA_SCRIPTS_NONE) {
 			try {
-				final String modid = WarpDrive.MODID.toLowerCase();
-				final String folderPeripheral = peripheralName.replace(modid, modid + "/");
-				computer.unmount("/" + modid           );
+				final String folderPeripheral = peripheralName.replace(WarpDrive.MODID, WarpDrive.MODID + "/");
+				computer.unmount("/" + WarpDrive.MODID);
 				computer.unmount("/" + folderPeripheral);
 				if (WarpDriveConfig.G_LUA_SCRIPTS == WarpDriveConfig.LUA_SCRIPTS_ALL) {
 					for (final String script : CC_scripts) {

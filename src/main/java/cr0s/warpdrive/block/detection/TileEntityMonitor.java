@@ -62,9 +62,9 @@ public class TileEntityMonitor extends TileEntityAbstractMachine implements IVid
 			if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 				WarpDrive.logger.info(this + " Monitor video channel set to " + videoChannel);
 			}
+			markDirty();
 			// force update through main thread since CC runs on server as 'client'
 			packetSendTicks = 0;
-			markDirty();
 		}
 	}
 	
