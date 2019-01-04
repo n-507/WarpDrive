@@ -451,7 +451,6 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 				final String folderPeripheral = peripheralName.replace(modid, modid + "/");
 				computer.mount("/" + modid           , ComputerCraftAPI.createResourceMount(WarpDrive.class, modid, "lua.ComputerCraft/common"));
 				computer.mount("/" + folderPeripheral, ComputerCraftAPI.createResourceMount(WarpDrive.class, modid, "lua.ComputerCraft/" + peripheralName));
-				computer.mount("/warpupdater"        , ComputerCraftAPI.createResourceMount(WarpDrive.class, modid, "lua.ComputerCraft/common/updater"));
 				if (WarpDriveConfig.G_LUA_SCRIPTS == WarpDriveConfig.LUA_SCRIPTS_ALL) {
 					for (final String script : CC_scripts) {
 						computer.mount("/" + script, ComputerCraftAPI.createResourceMount(WarpDrive.class, modid, "lua.ComputerCraft/" + peripheralName + "/" + script));
@@ -482,7 +481,6 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 				final String folderPeripheral = peripheralName.replace(modid, modid + "/");
 				computer.unmount("/" + modid           );
 				computer.unmount("/" + folderPeripheral);
-				computer.unmount("/warpupdater"        );
 				if (WarpDriveConfig.G_LUA_SCRIPTS == WarpDriveConfig.LUA_SCRIPTS_ALL) {
 					for (final String script : CC_scripts) {
 						computer.unmount("/" + script);
