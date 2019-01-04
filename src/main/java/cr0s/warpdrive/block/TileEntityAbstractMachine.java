@@ -24,7 +24,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	
 	// persistent properties
 	public String name = "default";
-	protected boolean isEnabled = false;
+	protected boolean isEnabled = true;
 	
 	public TileEntityAbstractMachine() {
 		super();
