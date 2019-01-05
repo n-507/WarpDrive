@@ -4,6 +4,7 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.api.computer.ILift;
 import cr0s.warpdrive.block.TileEntityAbstractEnergyConsumer;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumLiftMode;
 import cr0s.warpdrive.data.SoundEvents;
 import cr0s.warpdrive.data.Vector3;
@@ -46,14 +47,21 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 	public TileEntityLift() {
 		super();
 		
-		IC2_sinkTier = 2;
-		IC2_sourceTier = 2;
 		peripheralName = "warpdriveLift";
 		addMethods(new String[] {
 				"mode",
 				"state"
 		});
 		doRequireUpgradeToInterface();
+	}
+	
+	@Override
+	protected void onConstructed() {
+		super.onConstructed();
+		
+		energy_setParameters(WarpDriveConfig.LIFT_MAX_ENERGY_STORED,
+		                     1024, 1024,
+		                     "MV", 2, "MV", 0);
 	}
 	
 	@Override
@@ -210,11 +218,6 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 	}
 	
 	@Override
-	public int energy_getMaxStorage() {
-		return WarpDriveConfig.LIFT_MAX_ENERGY_STORED;
-	}
-	
-	@Override
 	public boolean energy_canInput(final EnumFacing from) {
 		return true;
 	}
@@ -222,7 +225,9 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 	// Common OC/CC methods
 	@Override
 	public Object[] getEnergyRequired() {
-		return new Object[] { WarpDriveConfig.LIFT_ENERGY_PER_ENTITY };
+		return new Object[] {
+				true,
+				EnergyWrapper.convert(WarpDriveConfig.LIFT_ENERGY_PER_ENTITY, null) };
 	}
 	
 	@Override
@@ -244,7 +249,7 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 	
 	@Override
 	public Object[] state() {
-		final int energy = energy_getEnergyStored();
+		final long energy = energy_getEnergyStored();
 		final String status = getStatusHeaderInPureText();
 		return new Object[] { status, isActive, energy, isValid, isEnabled, computerMode.getName() };
 	}

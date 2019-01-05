@@ -420,10 +420,10 @@ function ship_page_controls()
       -- w.writeLn("")
       w.writeLn("Ship:")
       w.writeLn(" Current position = " .. w.format_integer(ship_x) .. ", " .. w.format_integer(ship_y) .. ", " .. w.format_integer(ship_z))
-      local energy, energyMax = ship.energy()
-      if energy == nil then energy = 0 end
+      local energyStored, energyMax, energyUnits = ship.getEnergyStatus()
+      if energyStored == nil then energyStored = 0 end
       if energyMax == nil or energyMax == 0 then energyMax = 1 end
-      w.writeLn(" Energy           = " .. math.floor(energy / energyMax * 100) .. " % (" .. w.format_integer(energy) .. " EU)")
+      w.writeLn(" Energy           = " .. math.floor(energyStored / energyMax * 100) .. " % (" .. w.format_integer(energyStored) .. " " .. energyUnits .. ")")
       
       w.writeLn("")
       -- w.writeLn("")
@@ -452,7 +452,7 @@ function ship_page_controls()
       w.writeLn("")
       w.writeLn("Warp data:")
       ship_writeMovement(" Movement         = ")
-      w.writeLn(" Distance         = " .. w.format_integer(ship_actualDistance) .. " m (" .. w.format_integer(ship_energyRequired) .. " EU, " .. math.floor(energy / ship_energyRequired) .. " jumps)")
+      w.writeLn(" Distance         = " .. w.format_integer(ship_actualDistance) .. " m (" .. w.format_integer(ship_energyRequired) .. " " .. energyUnits .. ", " .. math.floor(energyStored / ship_energyRequired) .. " jumps)")
       w.writeLn(" Target position  = " .. w.format_integer(ship_xTarget) .. ", " .. w.format_integer(ship_yTarget) .. ", " .. w.format_integer(ship_zTarget))
     end
   end

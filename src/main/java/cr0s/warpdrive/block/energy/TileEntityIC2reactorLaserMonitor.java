@@ -101,7 +101,7 @@ public class TileEntityIC2reactorLaserMonitor extends TileEntityAbstractLaser {
 				if ( itemStack != null
 				  && itemStack.getItem() instanceof ItemIC2reactorLaserFocus ) {
 					final int heatInLaserFocus = itemStack.getItemDamage();
-					final int heatEnergyCap = (int) Math.floor(Math.min(laserMedium_getEnergyStored() / WarpDriveConfig.IC2_REACTOR_ENERGY_PER_HEAT, heatInLaserFocus));
+					final int heatEnergyCap = (int) Math.floor(Math.min(laserMedium_getEnergyStored(false) / WarpDriveConfig.IC2_REACTOR_ENERGY_PER_HEAT, heatInLaserFocus));
 					final int heatToTransfer = Math.min(heatEnergyCap, WarpDriveConfig.IC2_REACTOR_COOLING_PER_INTERVAL); 
 					if (heatToTransfer > 0) {
 						if (laserMedium_consumeExactly((int) Math.ceil(heatToTransfer * WarpDriveConfig.IC2_REACTOR_ENERGY_PER_HEAT), false)) {

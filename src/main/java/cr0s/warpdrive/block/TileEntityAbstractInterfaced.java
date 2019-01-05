@@ -88,31 +88,25 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	}
 	
 	@Override
-	public boolean mountUpgrade(final Object upgrade) {
-		final boolean isSuccess = super.mountUpgrade(upgrade);
-		if (isSuccess) {
-			if (WarpDriveConfig.isComputerCraftLoaded) {
-				CC_mount();
-			}
-			if (WarpDriveConfig.isOpenComputersLoaded) {
-				OC_constructor();
-			}
-		}
-		return isSuccess;
-	}
-	
-	@Override
-	public boolean dismountUpgrade(final Object upgrade) {
-		final boolean isSuccess = super.dismountUpgrade(upgrade);
-		if (isSuccess) {
-			if (WarpDriveConfig.isComputerCraftLoaded) {
-				CC_unmount();
-			}
-			if (WarpDriveConfig.isOpenComputersLoaded) {
-				OC_destructor();
+	protected void onUpgradeChanged(final Object upgrade, final int countNew, final boolean isAdded) {
+		if (upgrade == EnumComponentType.COMPUTER_INTERFACE) {
+			if (isAdded) {
+				if (WarpDriveConfig.isComputerCraftLoaded) {
+					CC_mount();
+				}
+				if (WarpDriveConfig.isOpenComputersLoaded) {
+					OC_constructor();
+				}
+			} else {
+				if (WarpDriveConfig.isComputerCraftLoaded) {
+					CC_unmount();
+				}
+				if (WarpDriveConfig.isOpenComputersLoaded) {
+					OC_destructor();
+				}
 			}
 		}
-		return isSuccess;
+		super.onUpgradeChanged(upgrade, countNew, isAdded);
 	}
 	
 	@Override

@@ -11,7 +11,7 @@ if component.gpu.getDepth() < 4 then
   os.exit()
 end
 
-function showError(message)
+local function showError(message)
   component.gpu.setBackground(0x000000)
   component.gpu.setForeground(0xFF0000)
   local xt, yt = term.getCursor()
@@ -21,7 +21,7 @@ function showError(message)
   print("")
 end
 
-function showErrorAndExit(message)
+local function showErrorAndExit(message)
   showError(message)
   os.exit()
 end
@@ -45,7 +45,7 @@ local _, _, radarX, radarY, radarZ = radar.getGlobalPosition()
 
 term.clear()
 
-function textOut(x, y, text, fg, bg)
+local function textOut(x, y, text, fg, bg)
   if term.isAvailable() then
     local w, _ = component.gpu.getResolution()
     if w then
@@ -57,7 +57,7 @@ function textOut(x, y, text, fg, bg)
   end
 end
 
-function drawBox(x, y, width, height, color)
+local function drawBox(x, y, width, height, color)
   if term.isAvailable() then
     local w, _ = component.gpu.getResolution()
     if w then
@@ -68,7 +68,7 @@ function drawBox(x, y, width, height, color)
   end
 end
 
-function translateXZ(oldX, oldZ)
+local function translateXZ(oldX, oldZ)
   local x = radarX - oldX
   local z = radarZ - oldZ
   
@@ -84,22 +84,25 @@ function translateXZ(oldX, oldZ)
   return x, z
 end
 
-function drawContact(x, _, z, name, color)
+local function drawContact(x, _, z, name, color)
   local newX, newZ = translateXZ(x, z)
   
   textOut(newX, newZ, " ", 0x000000, color)
   textOut(newX - 3, newZ + 1, "[" .. name .. "]", 0xFFFFFF, 0x000000)
 end
 
-function scanAndDraw()
-  local energy, energyMax = radar.energy()
-  if energy == nil then energy = 0 end
+local function scanAndDraw()
+  local energyStored, energyMax, _ = radar.getEnergyStatus()
+  if energyStored == nil then energyStored = 0 end
   if energyMax == nil or energyMax == 0 then energyMax = 1 end
   
-  local energyRequired = radar.getEnergyRequired(radius)
-  if energyRequired == nil then energyRequired = 0 end
+  local success, result = radar.getEnergyRequired(radius)
+  if not success then
+    showErrorAndExit(result)
+  end
+  local energyRequired = result
   
-  if (energyRequired <= 0 or energy < energyRequired) then
+  if energyRequired <= 0 or energyStored < energyRequired then
     textOut((w / 2) - 8, 1, " /!\\  LOW POWER ", 0xFFFFFF, 0xFF0000)
     os.sleep(1)
     
@@ -146,9 +149,9 @@ function redraw()
   
   textOut((w / 2) - 8, 1, "= Q-Radar v0.4 =", 0xFFFFFF, 0x000000)
   
-  local energy, _ = radar.energy()
-  if energy == nil then energy = 0 end
-  textOut(4, h, "Energy: " .. energy .. " EU | Scan radius: " .. radius, 0xFFFFFF, 0x000000)
+  local energyStored, _, energyUnits = radar.getEnergyStatus()
+  if energyStored == nil then energyStored = 0 end
+  textOut(4, h, "Energy: " .. energyStored .. " " .. energyUnits .. " | Scan radius: " .. radius, 0xFFFFFF, 0x000000)
 end
 
 local continue = true

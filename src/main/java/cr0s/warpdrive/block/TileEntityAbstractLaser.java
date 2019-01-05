@@ -1,7 +1,9 @@
 package cr0s.warpdrive.block;
 
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.api.computer.IAbstractLaser;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumTier;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -19,7 +21,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Optional;
 
 // Abstract class to manage laser mediums
-public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine implements IAbstractLaser {
+public abstract class TileEntityAbstractLaser extends TileEntityAbstractEnergyBase implements IAbstractLaser {
 	
 	// configuration overridden by derived classes
 	protected EnumFacing[] laserMedium_directionsValid = EnumFacing.values();
@@ -29,8 +31,8 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 	protected EnumFacing laserMedium_direction = null;
 	protected int cache_laserMedium_count = 0;
 	protected double cache_laserMedium_factor = 1.0D;
-	protected int cache_laserMedium_energyStored = 0;
-	protected int cache_laserMedium_maxStorage = 0;
+	protected long cache_laserMedium_energyStored = 0L;
+	protected long cache_laserMedium_maxStorage = 0L;
 	
 	private final int updateInterval_slow_ticks = 20 * WarpDriveConfig.SHIP_CONTROLLER_UPDATE_INTERVAL_SECONDS;
 	protected int updateInterval_ticks = updateInterval_slow_ticks;
@@ -41,7 +43,6 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 		super();
 		
 		addMethods(new String[] {
-				"energy",
 				"laserMediumDirection",
 				"laserMediumCount"
 		});
@@ -84,11 +85,17 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 			
 			if (tileEntity instanceof TileEntityLaserMedium) {
 				// at least one found
-				int energyStored = 0;
-				int maxStorage = 0;
+				final EnumTier enumTier = ((TileEntityLaserMedium) tileEntity).enumTier;
+				long energyStored = 0;
+				long maxStorage = 0;
 				int count = 0;
 				while ( (tileEntity instanceof TileEntityLaserMedium)
 				     && count <= laserMedium_maxCount) {
+					// check tier
+					if (enumTier != ((TileEntityLaserMedium) tileEntity).enumTier) {
+						break;
+					}
+					
 					// add current one
 					energyStored += ((TileEntityLaserMedium) tileEntity).energy_getEnergyStored();
 					maxStorage += ((TileEntityLaserMedium) tileEntity).energy_getMaxStorage();
@@ -116,8 +123,15 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 		cache_laserMedium_maxStorage = 0;
 	}
 	
-	protected int laserMedium_getEnergyStored() {
+	public int laserMedium_getEnergyStored(final boolean isCached) {
+		if (isCached) {
+			return (int) cache_laserMedium_energyStored;
+		}
 		return laserMedium_consumeUpTo(Integer.MAX_VALUE, true);
+	}
+	
+	public int laserMedium_getCount() {
+		return cache_laserMedium_count;
 	}
 	
 	protected boolean laserMedium_consumeExactly(final int amountRequested, final boolean simulate) {
@@ -137,7 +151,7 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 		}
 		
 		// Primary scan of all laser mediums
-		int totalEnergy = 0;
+		long totalEnergy = 0L;
 		int count = 1;
 		final List<TileEntityLaserMedium> laserMediums = new LinkedList<>();
 		for (; count <= laserMedium_maxCount; count++) {
@@ -149,11 +163,16 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 			totalEnergy += ((TileEntityLaserMedium) tileEntity).energy_getEnergyStored();
 		}
 		count--;
+		cache_laserMedium_energyStored = totalEnergy;
 		if (count == 0) {
+			laserMedium_direction = null;
+			cache_laserMedium_factor = 1.0D;
+			cache_laserMedium_count = 0;
+			cache_laserMedium_maxStorage = 0L;
 			return 0;
 		}
 		if (simulate) {
-			return totalEnergy;
+			return (int) Math.min(amount, totalEnergy);
 		}
 		
 		// Compute average energy to get per laser medium, capped at its capacity
@@ -167,7 +186,7 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 		
 		// Secondary scan for laser medium below the required average
 		for (final TileEntityLaserMedium laserMedium : laserMediums) {
-			final int energyStored = laserMedium.energy_getEnergyStored();
+			final long energyStored = laserMedium.energy_getEnergyStored();
 			if (energyStored < energyAverage) {
 				energyLeftOver += energyAverage - energyStored;
 			}
@@ -176,21 +195,27 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 		// Third and final pass for energy consumption
 		int energyTotalConsumed = 0;
 		for (final TileEntityLaserMedium laserMedium : laserMediums) {
-			final int energyStored = laserMedium.energy_getEnergyStored();
-			final int energyToConsume = Math.min(energyStored, energyAverage + energyLeftOver);
+			final long energyStored = laserMedium.energy_getEnergyStored();
+			final long energyToConsume = Math.min(energyStored, energyAverage + energyLeftOver);
 			energyLeftOver -= Math.max(0, energyToConsume - energyAverage);
 			laserMedium.energy_consume(energyToConsume, false); // simulate is always false here
 			energyTotalConsumed += energyToConsume;
 		}
+		cache_laserMedium_energyStored -= energyTotalConsumed;
 		return energyTotalConsumed;
 	}
 	
-	// IAbstractLaser overrides
+	// EnergyBase override
 	@Override
-	public Object[] energy() {
-		return new Object[] { cache_laserMedium_energyStored, cache_laserMedium_maxStorage };
+	public Object[] getEnergyStatus() {
+		final String units = energy_getDisplayUnits();
+		return new Object[] {
+				EnergyWrapper.convert(cache_laserMedium_energyStored, units),
+				EnergyWrapper.convert(cache_laserMedium_maxStorage, units),
+				units };
 	}
 	
+	// IAbstractLaser overrides
 	@Override
 	public Object[] laserMediumDirection() {
 		return new Object[] {
@@ -213,14 +238,17 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 		return super.isAssemblyValid();
 	}
 	
-	// OpenComputers callback methods
-	@Callback
-	@Optional.Method(modid = "opencomputers")
-	public Object[] energy(final Context context, final Arguments arguments) {
-		OC_convertArgumentsAndLogCall(context, arguments);
-		return energy();
+	@Override
+	protected WarpDriveText getEnergyStatusText() {
+		final WarpDriveText text = new WarpDriveText();
+		final long energy_maxStorage = cache_laserMedium_maxStorage;
+		if (energy_maxStorage != 0L) {
+			EnergyWrapper.formatAndAppendCharge(text, cache_laserMedium_energyStored, energy_maxStorage, null);
+		}
+		return text;
 	}
 	
+	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] laserMediumDirection(final Context context, final Arguments arguments) {
@@ -242,9 +270,6 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 		final String methodName = CC_getMethodNameAndLogCall(method, arguments);
 		
 		switch (methodName) {
-		case "energy":
-			return energy();
-			
 		case "laserMediumDirection":
 			return laserMediumDirection();
 			

@@ -3,6 +3,7 @@ package cr0s.warpdrive.block;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumComponentType;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -35,9 +36,6 @@ public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
 	public TileEntityChunkLoader() {
 		super();
 		
-		IC2_sinkTier = 2;
-		IC2_sourceTier = 2;
-		
 		peripheralName = "warpdriveChunkLoader";
 		addMethods(new String[] {
 				"bounds",
@@ -47,11 +45,6 @@ public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
 		
 		setUpgradeMaxCount(EnumComponentType.SUPERCONDUCTOR, 5);
 		setUpgradeMaxCount(EnumComponentType.EMERALD_CRYSTAL, WarpDriveConfig.CHUNK_LOADER_MAX_RADIUS);
-	}
-	
-	@Override
-	public int energy_getMaxStorage() {
-		return WarpDriveConfig.CHUNK_LOADER_MAX_ENERGY_STORED;
 	}
 	
 	@Override
@@ -88,13 +81,22 @@ public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
 		return 1.0D - 0.1D * upgradeCount;
 	}
 	
-	public long calculateEnergyRequired() {
-		return (long) Math.ceil(getEnergyFactor() * chunkloading_getArea() * WarpDriveConfig.CHUNK_LOADER_ENERGY_PER_CHUNK);
+	public int calculateEnergyRequired() {
+		return (int) Math.ceil(getEnergyFactor() * chunkloading_getArea() * WarpDriveConfig.CHUNK_LOADER_ENERGY_PER_CHUNK);
 	}
 	
 	@Override
 	public boolean shouldChunkLoad() {
 		return isEnabled && isPowered;
+	}
+	
+	@Override
+	protected void onConstructed() {
+		super.onConstructed();
+		
+		energy_setParameters(WarpDriveConfig.CHUNK_LOADER_MAX_ENERGY_STORED,
+		                     1024, 1024,
+		                     "MV", 2, "MV", 2);
 	}
 	
 	@Override
@@ -195,7 +197,9 @@ public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
 	
 	@Override
 	public Object[] getEnergyRequired() {
-		return new Object[] { calculateEnergyRequired() };
+		return new Object[] {
+				true,
+				EnergyWrapper.convert(calculateEnergyRequired(), null) };
 	}
 	
 	// OpenComputers callback methods

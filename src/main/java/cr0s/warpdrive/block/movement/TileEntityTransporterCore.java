@@ -16,6 +16,7 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.CelestialObject;
 import cr0s.warpdrive.data.CelestialObjectManager;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumTransporterState;
 import cr0s.warpdrive.data.ForceFieldRegistry;
@@ -114,9 +115,6 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 	public TileEntityTransporterCore() {
 		super();
 		
-		IC2_sinkTier = 2;
-		IC2_sourceTier = 2;
-		
 		peripheralName = "warpdriveTransporterCore";
 		addMethods(new String[] {
 			"beamFrequency",
@@ -135,8 +133,16 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 	}
 	
 	@Override
+	protected void onConstructed() {
+		super.onConstructed();
+		
+		refreshEnergyParameters();
+	}
+	
+	@Override
 	protected void onFirstUpdateTick() {
 		super.onFirstUpdateTick();
+		
 		tickUpdateParameters = 0;
 		globalPositionLocal = new GlobalPosition(this);
 	}
@@ -1406,9 +1412,18 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 	}
 	
 	@Override
-	public int energy_getMaxStorage() {
+	protected void onUpgradeChanged(final Object upgrade, final int countNew, final boolean isAdded) {
+		if (upgrade == EnumComponentType.CAPACITIVE_CRYSTAL) {
+			refreshEnergyParameters();
+		}
+		super.onUpgradeChanged(upgrade, countNew, isAdded);
+	}
+	
+	private void refreshEnergyParameters() {
 		final int energyUpgrades = getUpgradeCount(EnumComponentType.CAPACITIVE_CRYSTAL);
-		return WarpDriveConfig.TRANSPORTER_MAX_ENERGY_STORED + energyUpgrades * WarpDriveConfig.TRANSPORTER_ENERGY_STORED_UPGRADE_BONUS;
+		energy_setParameters(WarpDriveConfig.TRANSPORTER_MAX_ENERGY_STORED + energyUpgrades * WarpDriveConfig.TRANSPORTER_ENERGY_STORED_UPGRADE_BONUS,
+		                     4000, 4000,
+		                     "HV", 2, "HV", 2);
 	}
 	
 	@Override
@@ -1579,7 +1594,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 	
 	@Override
 	public Object[] state() {
-		final int energy = energy_getEnergyStored();
+		final long energy = energy_getEnergyStored();
 		final String status = getStatusHeaderInPureText();
 		final String state = isJammed ? reasonJammed : tickCooldown > 0 ? String.format("Cooling down %d s", Math.round(tickCooldown / 20)) : transporterState.getName();
 		return new Object[] { status, state, isConnected, isEnabled, isJammed, energy, lockStrengthActual };
@@ -1661,8 +1676,11 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 	}
 	
 	@Override
-	public Integer[] getEnergyRequired() {
-		return new Integer[] { getEnergyRequired(EnumTransporterState.ACQUIRING), getEnergyRequired(EnumTransporterState.ENERGIZING) };
+	public Object[] getEnergyRequired() {
+		return new Object[] {
+				true,
+				EnergyWrapper.convert(getEnergyRequired(EnumTransporterState.ACQUIRING), null),
+				EnergyWrapper.convert(getEnergyRequired(EnumTransporterState.ENERGIZING), null) };
 	}
 	
 	@Override

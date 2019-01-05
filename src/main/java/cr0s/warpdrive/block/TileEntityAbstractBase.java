@@ -69,6 +69,10 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		// warning: we can't use setPos(), setWorld() or validate() as getBlockType() will cause a stack overflow
 		// warning: we can't use onLoad() to trigger this method as onLoad() isn't always called, see https://github.com/MinecraftForge/MinecraftForge/issues/5061
 		
+		if (world == null) {// we're client side, tier is already set
+			return;
+		}
+		
 		// immediately retrieve tier, we need it to connect energy conduits and save the world before the first tick
 		final Block block = getBlockType();
 		if (block instanceof IBlockBase) {
@@ -425,6 +429,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		final Block block = blockState.getBlock();
 		if (block instanceof IBlockBase) {
 			enumTier = ((IBlockBase) block).getTier(itemStack);
+			onConstructed();
 		}
 		
 		// get persistent properties
@@ -540,7 +545,9 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	
 	public boolean mountUpgrade(final Object upgrade) {
 		if (canUpgrade(upgrade)) {
-			installedUpgrades.put(upgrade, getUpgradeCount(upgrade) + 1);
+			final int countNew = getUpgradeCount(upgrade) + 1;
+			installedUpgrades.put(upgrade, countNew);
+			onUpgradeChanged(upgrade, countNew, true);
 			markDirty();
 			return true;
 		}
@@ -551,15 +558,21 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		final int count = getUpgradeCount(upgrade);
 		if (count > 1) {
 			installedUpgrades.put(upgrade, count - 1);
+			onUpgradeChanged(upgrade, count - 1, false);
 			markDirty();
 			return true;
 			
 		} else if (count > 0) {
 			installedUpgrades.remove(upgrade);
+			onUpgradeChanged(upgrade, 0, false);
 			markDirty();
 			return true;
 		}
 		return false;
+	}
+	
+	protected void onUpgradeChanged(final Object upgrade, final int countNew, final boolean isAdded) {
+	
 	}
 	
 	public void onEMP(final float efficiency) {

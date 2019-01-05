@@ -146,7 +146,7 @@ public class Recipes {
 		ItemStack itemStackMotorHV = ItemComponent.getItemStack(EnumComponentType.MOTOR);
 		ItemStack itemStackMotorEV = ItemComponent.getItemStack(EnumComponentType.MOTOR);
 		
-		if (WarpDriveConfig.isGregTechLoaded) {
+		if (WarpDriveConfig.isGregtechLoaded) {
 			itemStackMachineCasingLV = WarpDriveConfig.getItemStackOrFire("gregtech:machine_casing", 1); // LV machine casing (Steel)
 			itemStackMachineCasingMV = WarpDriveConfig.getItemStackOrFire("gregtech:machine_casing", 2); // MV machine casing (Aluminium)
 			itemStackMachineCasingHV = WarpDriveConfig.getItemStackOrFire("gregtech:machine_casing", 3); // HV machine casing (Stainless Steel)
@@ -226,7 +226,7 @@ public class Recipes {
 		                                                             "ore:gemEmerald", 0);
 		
 		// Iridium block is just that
-		if (WarpDriveConfig.isGregTechLoaded) {
+		if (WarpDriveConfig.isGregtechLoaded) {
 			WarpDrive.register(new ShapedOreRecipe(groupComponents,
 			                                       new ItemStack(WarpDrive.blockIridium), "iii", "iii", "iii",
 			                                       'i', "plateIridium"));
@@ -979,7 +979,7 @@ public class Recipes {
 		// Mining laser is 2 Motors, 1 Diffraction grating, 1 Lens, 1 Computer interface, 1 MV Machine casing, 1 Diamond pick, 2 Glass pane
 		{
 			Object diamondPickOrMiningLaser = new ItemStack(Items.DIAMOND_PICKAXE);
-			if (WarpDriveConfig.isGregTechLoaded) {
+			if (WarpDriveConfig.isGregtechLoaded) {
 				diamondPickOrMiningLaser = WarpDriveConfig.getItemStackOrFire("ic2:mining_laser", 0);       // IC2 Experimental Mining laser
 			}
 			WarpDrive.register(new ShapedOreRecipe(groupMachines,
@@ -1724,7 +1724,7 @@ public class Recipes {
 		
 		// Laser lift is ...
 		Object oreMagnetizer = itemStackMachineCasings[0];
-		if (WarpDriveConfig.isGregTechLoaded) {
+		if (WarpDriveConfig.isGregtechLoaded) {
 			oreMagnetizer = WarpDriveConfig.getItemStackOrFire("gregtech:machine", 420);	// Basic polarizer
 		} else if (WarpDriveConfig.isIndustrialCraft2Loaded) {
 			oreMagnetizer = WarpDriveConfig.getItemStackOrFire("ic2:te", 37); // Magnetizer

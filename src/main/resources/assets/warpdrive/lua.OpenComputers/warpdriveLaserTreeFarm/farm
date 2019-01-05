@@ -100,12 +100,13 @@ if noExit then
   repeat
     areActive = false
     for key, treefarm in pairs(treefarms) do
+      local energyUnits = treefarm.energyDisplayUnits()
       local status, isActive, energy, totalHarvested, currentValuable, totalValuables = treefarm.state()
       
       term.clear()
       textOut(1, 1, label .. " - Laser tree farm " .. key .. " of " .. #treefarms, 0x0000FF, 0x00FF00)
       textOut(1, 3, "Status: " .. status .. "   ", 0x0000FF, 0x000000)
-      textOut(1, 4, "Energy level is " .. energy .. " EU", 0x0000FF, 0x000000)
+      textOut(1, 4, "Energy level is " .. energy .. " " .. energyUnits, 0x0000FF, 0x000000)
       textOut(1, 7, "Farmed " .. currentValuable .. " out of " .. totalValuables .. " blocks   ", 0xFFFFFF, 0x000000)
       textOut(1, 9, "Harvested " .. totalHarvested .. " items and counting...   ", 0xFFFFFF, 0x000000)
       

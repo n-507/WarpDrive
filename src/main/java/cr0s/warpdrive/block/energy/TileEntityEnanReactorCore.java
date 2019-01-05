@@ -3,6 +3,7 @@ package cr0s.warpdrive.block.energy;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumReactorFace;
 import cr0s.warpdrive.data.EnumReactorOutputMode;
 import cr0s.warpdrive.data.Vector3;
@@ -48,6 +49,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	private final double[] instabilityValues = new double[EnumReactorFace.maxInstabilities]; // no instability  = 0, explosion = 100
 	
 	// computed properties
+	private boolean isFirstException = true;
 	private int energyStored_max;
 	private int generation_offset;
 	private int generation_range;
@@ -77,11 +79,10 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		energyStored_max  = WarpDriveConfig.ENAN_REACTOR_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()];
 		generation_offset = WarpDriveConfig.ENAN_REACTOR_GENERATION_MIN_RF_BY_TIER[enumTier.getIndex()];
 		generation_range  = WarpDriveConfig.ENAN_REACTOR_GENERATION_MAX_RF_BY_TIER[enumTier.getIndex()] - generation_offset;
-	}
-	
-	@Override
-	protected void onFirstUpdateTick() {
-		super.onFirstUpdateTick();
+		
+		energy_setParameters(EnergyWrapper.convertRFtoInternal_floor(energyStored_max),
+		                     262144, 262144,
+		                     "HV", 0, "LuV", 2);
 	}
 	
 	@Override
@@ -155,7 +156,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 			return;
 		}
 		
-		final int amount = convertInternalToRF_floor(energy);
+		final int amount = EnergyWrapper.convertInternalToRF_floor(energy);
 		if (amount <= 1) {
 			return;
 		}
@@ -262,34 +263,52 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	
 	private boolean shouldExplode() {
 		boolean exploding = false;
-		final StringBuilder laserStatus = new StringBuilder();
 		for (final EnumReactorFace reactorFace : EnumReactorFace.getLasers(enumTier)) {
 			exploding = exploding || (instabilityValues[reactorFace.indexStability] >= 100);
-			int laserEnergy = 0;
-			final TileEntity tileEntity = world.getTileEntity(
-					pos.add(reactorFace.x, reactorFace.y, reactorFace.z));
-			if (tileEntity instanceof TileEntityEnanReactorLaser) {
-				try {
-					laserEnergy = (int) ((TileEntityEnanReactorLaser) tileEntity).energy()[0];
-				} catch (final Exception exception) {
-					exception.printStackTrace();
-					WarpDrive.logger.error(String.format("%s tileEntity is %s", this, tileEntity));
-				}
-			}
-			laserStatus.append(String.format("\n- face %s has reached instability %.2f while laser has %d energy available",
-			                                 reactorFace.name,
-			                                 instabilityValues[reactorFace.indexStability],
-			                                 laserEnergy));
 		}
 		exploding &= (world.rand.nextInt(4) == 2);
 		
 		if (exploding) {
+			final StringBuilder statusLasers = new StringBuilder();
+			final MutableBlockPos mutableBlockPos = new MutableBlockPos();
+			for (final EnumReactorFace reactorFace : EnumReactorFace.getLasers(enumTier)) {
+				long energyStored = -1L;
+				int countLaserMediums = 0;
+				mutableBlockPos.setPos(
+						pos.getX() + reactorFace.x,
+						pos.getY() + reactorFace.y,
+						pos.getZ() + reactorFace.z );
+				final TileEntity tileEntity = world.getTileEntity(mutableBlockPos);
+				if (tileEntity instanceof TileEntityEnanReactorLaser) {
+					try {
+						energyStored = ((TileEntityEnanReactorLaser) tileEntity).laserMedium_getEnergyStored(true);
+						countLaserMediums = ((TileEntityEnanReactorLaser) tileEntity).laserMedium_getCount();
+					} catch (final Exception exception) {
+						if (isFirstException) {
+							exception.printStackTrace();
+							isFirstException = false;
+						}
+						WarpDrive.logger.error(String.format("%s tileEntity is %s",
+						                                     this, tileEntity));
+					}
+					statusLasers.append(String.format("\n- face %s has reached instability %.2f while laser has %d energy available with %d laser medium(s)",
+					                                  reactorFace.name,
+					                                  instabilityValues[reactorFace.indexStability],
+					                                  energyStored,
+					                                  countLaserMediums));
+				} else {
+					statusLasers.append(String.format("\n- face %s has reached instability %.2f while laser is missing in action",
+					                                 reactorFace.name,
+					                                 instabilityValues[reactorFace.indexStability] ));
+				}
+			}
+			
 			WarpDrive.logger.info(String.format("%s Explosion triggered\nEnergy stored is %d, Laser received is %.2f, reactor is %s%s",
 			                                    this,
 			                                    containedEnergy,
 			                                    lasersReceived,
 			                                    isEnabled ? "ENABLED" : "DISABLED",
-			                                    laserStatus.toString()));
+			                                    statusLasers.toString()));
 			isEnabled = false;
 		}
 		return exploding;
@@ -415,8 +434,14 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	
 	// Common OC/CC methods
 	@Override
-	public Object[] energy() {
-		return new Object[] { containedEnergy, energyStored_max, energyReleasedLastCycle / WarpDriveConfig.ENAN_REACTOR_UPDATE_INTERVAL_TICKS };
+	public Object[] getEnergyStatus() {
+		final String units = energy_getDisplayUnits();
+		return new Object[] {
+				EnergyWrapper.convert(containedEnergy, units),
+				EnergyWrapper.convert(energyStored_max, units),
+				energy_getDisplayUnits(),
+				0,
+				EnergyWrapper.convert(energyReleasedLastCycle, units) / WarpDriveConfig.ENAN_REACTOR_UPDATE_INTERVAL_TICKS };
 	}
 	
 	@Override
@@ -531,33 +556,35 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 			result = Math.min(Math.max(0, containedEnergy), capacity);
 			if (WarpDriveConfig.LOGGING_ENERGY) {
 				WarpDrive.logger.info(String.format("PotentialOutput Manual %d RF (%d internal) capacity %d",
-				                                    result, convertRFtoInternal_floor(result), capacity));
+				                                    result, EnergyWrapper.convertRFtoInternal_floor(result), capacity));
 			}
 		} else if (enumReactorOutputMode == EnumReactorOutputMode.ABOVE) {
 			result = Math.min(Math.max(0, lastGenerationRate - outputThreshold), capacity);
 			if (WarpDriveConfig.LOGGING_ENERGY) {
 				WarpDrive.logger.info(String.format("PotentialOutput Above %d RF (%d internal) capacity %d",
-				                                    result, convertRFtoInternal_floor(result), capacity));
+				                                    result, EnergyWrapper.convertRFtoInternal_floor(result), capacity));
 			}
 		} else if (enumReactorOutputMode == EnumReactorOutputMode.AT_RATE) {
 			final int remainingRate = Math.max(0, outputThreshold - releasedThisTick);
 			result = Math.min(Math.max(0, containedEnergy), Math.min(remainingRate, capacity));
 			if (WarpDriveConfig.LOGGING_ENERGY) {
 				WarpDrive.logger.info(String.format("PotentialOutput Rated %d RF (%d internal) remainingRate %d RF/t capacity %d",
-				                                    result, convertRFtoInternal_floor(result), remainingRate, capacity));
+				                                    result, EnergyWrapper.convertRFtoInternal_floor(result), remainingRate, capacity));
 			}
 		}
-		return (int) convertRFtoInternal_floor(result);
+		return (int) EnergyWrapper.convertRFtoInternal_floor(result);
 	}
 	
 	@Override
 	public boolean energy_canOutput(final EnumFacing from) {
-		return from.equals(EnumFacing.UP) || from.equals(EnumFacing.DOWN);
+		return from == null
+		    || from.equals(EnumFacing.UP)
+		    || from.equals(EnumFacing.DOWN);
 	}
 	
 	@Override
 	protected void energy_outputDone(final long energyOutput_internal) {
-		final long energyOutput_RF = convertInternalToRF_ceil(energyOutput_internal);
+		final long energyOutput_RF = EnergyWrapper.convertInternalToRF_ceil(energyOutput_internal);
 		containedEnergy -= energyOutput_RF;
 		if (containedEnergy < 0) {
 			containedEnergy = 0;
@@ -571,13 +598,8 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	}
 	
 	@Override
-	public int energy_getEnergyStored() {
-		return (int) Commons.clamp(0L, energy_getMaxStorage(), convertRFtoInternal_floor(containedEnergy));
-	}
-	
-	@Override
-	public int energy_getMaxStorage() {
-		return (int) convertRFtoInternal_floor(energyStored_max);
+	public long energy_getEnergyStored() {
+		return Commons.clamp(0L, energy_getMaxStorage(), EnergyWrapper.convertRFtoInternal_floor(containedEnergy));
 	}
 	
 	// Forge overrides

@@ -5,8 +5,8 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IItemTransporterBeacon;
 import cr0s.warpdrive.api.computer.ITransporterCore;
 import cr0s.warpdrive.block.ItemBlockAbstractBase;
-import cr0s.warpdrive.block.TileEntityAbstractEnergy;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.EnergyWrapper;
 
 import javax.annotation.Nonnull;
 
@@ -112,8 +112,8 @@ public class ItemBlockTransporterBeacon extends ItemBlockAbstractBase implements
 		if (tagCompound == null) {
 			return 0;
 		}
-		if (tagCompound.hasKey(TileEntityAbstractEnergy.ENERGY_TAG)) {
-			return tagCompound.getInteger(TileEntityAbstractEnergy.ENERGY_TAG);
+		if (tagCompound.hasKey(EnergyWrapper.TAG_ENERGY)) {
+			return tagCompound.getInteger(EnergyWrapper.TAG_ENERGY);
 		}
 		return 0;
 	}
@@ -126,7 +126,7 @@ public class ItemBlockTransporterBeacon extends ItemBlockAbstractBase implements
 		if (tagCompound == null) {
 			tagCompound = new NBTTagCompound();
 		}
-		tagCompound.setInteger(TileEntityAbstractEnergy.ENERGY_TAG, energy);
+		tagCompound.setInteger(EnergyWrapper.TAG_ENERGY, energy);
 		itemStack.setTagCompound(tagCompound);
 		return itemStack;
 	}

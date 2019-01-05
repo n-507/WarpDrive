@@ -1,6 +1,6 @@
 package cr0s.warpdrive.api.computer;
 
-public interface IShipController extends IInterfaced {
+public interface IShipController extends IMultiBlockCoreOrController {
 	
 	Object[] getOrientation();
 	
@@ -11,8 +11,6 @@ public interface IShipController extends IInterfaced {
 	Object[] dim_positive(Object[] arguments);
 	
 	Object[] dim_negative(Object[] arguments);
-	
-	Object[] energy();
 	
 	Object[] command(Object[] arguments);
 	

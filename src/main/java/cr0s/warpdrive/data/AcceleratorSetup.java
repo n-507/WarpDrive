@@ -511,8 +511,8 @@ public class AcceleratorSetup extends GlobalPosition {
 	}
 	
 	// Pseudo-API for energy
-	public int energy_getEnergyStored() {
-		int energyStored = 0;
+	public long energy_getEnergyStored() {
+		long energyStored = 0;
 		for (final TileEntityCapacitor tileEntityCapacitor : setCapacitors) {
 			energyStored += tileEntityCapacitor.energy_getEnergyStored();
 		}

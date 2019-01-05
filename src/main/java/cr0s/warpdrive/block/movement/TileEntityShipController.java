@@ -182,12 +182,21 @@ public class TileEntityShipController extends TileEntityAbstractShipController {
 	}
 	
 	@Override
-	public Object[] energy() {
+	public Object[] energyDisplayUnits(final Object[] arguments) {
 		final TileEntityShipCore tileEntityShipCore = tileEntityShipCoreWeakReference == null ? null : tileEntityShipCoreWeakReference.get();
 		if (tileEntityShipCore == null) {
 			return null;
 		}
-		return tileEntityShipCore.energy();
+		return tileEntityShipCore.energyDisplayUnits(arguments);
+	}
+	
+	@Override
+	public Object[] getEnergyStatus() {
+		final TileEntityShipCore tileEntityShipCore = tileEntityShipCoreWeakReference == null ? null : tileEntityShipCoreWeakReference.get();
+		if (tileEntityShipCore == null) {
+			return null;
+		}
+		return tileEntityShipCore.getEnergyStatus();
 	}
 	
 	@Override

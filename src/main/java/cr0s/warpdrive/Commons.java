@@ -145,10 +145,12 @@ public class Commons {
 		return result.toString();
 	}
 	
-	public static Style styleCommand = new Style().setColor(TextFormatting.AQUA);
-	public static Style styleHeader = new Style().setColor(TextFormatting.GOLD);
-	public static Style styleCorrect = new Style().setColor(TextFormatting.GREEN);
-	public static Style styleWarning = new Style().setColor(TextFormatting.RED);
+	public static Style styleCommand  = new Style().setColor(TextFormatting.AQUA);
+	public static Style styleHeader   = new Style().setColor(TextFormatting.GOLD);
+	public static Style styleCorrect  = new Style().setColor(TextFormatting.GREEN);
+	public static Style styleWarning  = new Style().setColor(TextFormatting.RED);
+	public static Style styleValue    = new Style().setColor(TextFormatting.YELLOW);
+	public static Style styleVoltage  = new Style().setColor(TextFormatting.DARK_GREEN);
 	
 	public static WarpDriveText getChatPrefix(final Block block) {
 		return getChatPrefix(block.getTranslationKey() + ".name");

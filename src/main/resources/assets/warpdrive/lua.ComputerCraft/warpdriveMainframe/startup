@@ -475,7 +475,7 @@ function cloaking_page()
     SetColorDefault()
     Write("Cloaking core " .. cloaking_currentKey .. " of " .. #cloakingcores)
     local isAssemblyValid = cloakingcore.isAssemblyValid()
-    local energy, energyMax = cloakingcore.energy()
+    local energyStored, energyMax, energyUnits = cloakingcore.getEnergyStatus()
     local isEnabled = cloakingcore.enable()
     
     if not isAssemblyValid then
@@ -492,13 +492,13 @@ function cloaking_page()
       SetCursorPos(1, 4)
       Write("Assembly is valid")
       
-      if energy < 50000 then
+      if energyStored < 50000 then
         SetColorWarning()
       else
         SetColorDefault()
       end
       SetCursorPos(1, 6)
-      Write("Energy level is " .. energy .. " EU")
+      Write("Energy level is " .. energyStored .. " " .. energyUnits)
 
       SetCursorPos(1, 8)
       if isEnabled then
@@ -608,11 +608,12 @@ function mining_page()
   else
     SetColorDefault()
     Write("Mining laser " .. mining_currentKey .. " of " .. #mininglasers)
+    local energyUnits = mininglaser.energyDisplayUnits()
     local status, energy, currentLayer, mined, total = mininglaser.state()
     SetCursorPos(1, 3)
     Write("Status: " .. status .. "   ")
     SetCursorPos(1, 5)
-    Write("Energy level is " .. energy .. " EU")
+    Write("Energy level is " .. energy .. " " .. energyUnits)
     SetCursorPos(1, 7)
     Write("Mined " .. mined .. " out of " .. total .. " blocks at layer " .. currentLayer .. "   ")
   end
@@ -1068,12 +1069,12 @@ function core_page()
     local X, Y, Z = ship.getLocalPosition()
     WriteLn("Core:")
     WriteLn(" x, y, z          = " .. X .. ", " .. Y .. ", " .. Z)
-    local energy, energyMax = ship.energy()
-    if energy == nil then energy = 0 end
+    local energyStored, energyMax, energyUnits = ship.getEnergyStatus()
+    if energyStored == nil then energyStored = 0 end
     if energyMax == nil or energyMax == 0 then energyMax = 1 end
-    WriteLn(" Energy           = " .. math.floor(energy / energyMax * 100) .. " % (" .. energy .. "EU)")
+    WriteLn(" Energy           = " .. math.floor(energyStored / energyMax * 100) .. " % (" .. energyStored .. energyUnits .. ")")
     local playersString, playersArray = ship.getAttachedPlayers()
-    if playersString == "" then players = "-" end
+    if playersString == "" then playersString = "-" end
     WriteLn(" Attached players = " .. playersString)
     -- WriteLn("")
     WriteLn("Dimensions:")
@@ -1084,7 +1085,7 @@ function core_page()
     WriteLn("Warp data:")
     core_writeMovement()
     local dest = core_computeNewCoordinates(X, Y, Z)
-    WriteLn(" Distance         = " .. core_actualDistance .. " (" .. core_jumpCost .. "EU, " .. math.floor(energy / core_jumpCost) .. " jumps)")
+    WriteLn(" Distance         = " .. core_actualDistance .. " (" .. core_jumpCost .. energyUnits .. ", " .. math.floor(energyStored / core_jumpCost) .. " jumps)")
     WriteLn(" Dest.coordinates = " .. FormatInteger(dest.x) .. ", " .. FormatInteger(dest.y) .. ", " .. FormatInteger(dest.z))
     if data.core_summon then
       WriteLn(" Summon after     = Yes")
@@ -1245,24 +1246,18 @@ function reactor_page()
     end
     
     SetColorDefault()
-    local energy = { reactor.energy() }
+    local energyStored, energyMax, energyUnits, _, energyOutputRate = reactor.getEnergyStatus()
     SetCursorPos(1, 7)
     Write("Energy   : ")
-    if energy[2] ~= nil then
-      Write(FormatInteger(energy[1], 10) .. " / " .. energy[2] .. " RF +" .. FormatInteger(reactor_output, 5) .. " RF/t")
-    else
-      Write("???")
-    end
+    Write(FormatInteger(energyStored, 10) .. " / " .. energyMax .. " " .. energyUnits .. " +" .. FormatInteger(reactor_output, 5) .. " " .. energyUnits .. "/t")
     SetCursorPos(1, 8)
     Write("Outputing: ")
-    if energy[3] ~= nil then
-      Write(energy[3] .. " RF/t")
-    end
+    Write(energyOutputRate .. " " .. energyUnits .. "/t")
     
     SetColorDefault()
     SetCursorPos(1, 9)
     Write("Activated: ")
-    isActive = reactor.active()
+    local isActive = reactor.active()
     if isActive then SetColorSuccess() else SetColorDefault() end
     Write(boolToYesNo(isActive))
   end
@@ -1284,15 +1279,15 @@ function reactor_page()
         SetCursorPos(4, 3 + side)
         Write("Side " .. side .. ":")
         SetCursorPos(30, 3 + side)
-        local energy = reactorlaser.wrap.energy()
+        local energyStored, _, _ = reactorlaser.wrap.getEnergyStatus()
         if not reactorlaser.wrap.isAssemblyValid() then
           SetColorDisabled()
-        elseif energy > 3 * data.reactor_laserAmount then
+        elseif energyStored > 3 * data.reactor_laserAmount then
           SetColorSuccess()
         else
           SetColorWarning()
         end
-        Write(FormatInteger(energy, 6))
+        Write(FormatInteger(energyStored, 6))
       end
     end
   end
@@ -1401,7 +1396,7 @@ function reactor_pulse(output)
   if page == reactor_page and (not reactor_configPageLoaded) then
     for key,instability in pairs(instabilities) do
       SetCursorPos(12, 2 + key)
-      stability = math.floor((100.0 - instability) * 10) / 10
+      local stability = math.floor((100.0 - instability) * 10) / 10
       if stability >= data.reactor_targetStability then
         SetColorSuccess()
       else
@@ -1411,19 +1406,13 @@ function reactor_pulse(output)
     end
     
     SetColorDefault()
-    local energy = { reactor.energy() }
+    local energyStored, energyMax, energyUnits, _, energyOutputRate = reactor.getEnergyStatus()
     SetCursorPos(12, 7)
-    if energy[2] ~= nil then
-      Write(FormatInteger(energy[1], 10))
-      SetCursorPos(39, 7)
-      Write(FormatInteger(reactor_output, 5))
-    else
-      Write("???")
-    end
-    if energy[3] ~= nil then
-      SetCursorPos(12, 8)
-      Write(energy[3] .. " RF/t    ")
-    end
+    Write(FormatInteger(energyStored, 10))
+    SetCursorPos(39, 7)
+    Write(FormatInteger(reactor_output, 5))
+    SetCursorPos(12, 8)
+    Write(energyOutputRate .. " " .. energyUnits .. "/t    ")
     
     if #reactorlasers ~= 0 then
       for key,reactorlaser in pairs(reactorlasers) do
@@ -1431,15 +1420,15 @@ function reactor_pulse(output)
         if side ~= nil then
           side = side % 4
           SetCursorPos(30, 3 + side)
-          local energy = reactorlaser.wrap.energy()
+          local energyStored, _, _ = reactorlaser.wrap.getEnergyStatus()
           if not reactorlaser.wrap.isAssemblyValid() then
             SetColorDisabled()
-          elseif energy > 3 * data.reactor_laserAmount then
+          elseif energyStored > 3 * data.reactor_laserAmount then
             SetColorSuccess()
           else
             SetColorWarning()
           end
-          Write(FormatInteger(energy, 6))
+          Write(FormatInteger(energyStored, 6))
         end
       end
     end
@@ -1617,20 +1606,20 @@ function radar_page()
     end
 
     SetColorDefault()
-    local energy = { radar.energy() }
+    local energyStored, energyMax, energyUnits = radar.getEnergyStatus()
+    local success, result = radar.getEnergyRequired(data.radar_radius)
+    local energyRequired = 0
+    if success then
+      energyRequired = result
+    end
     SetCursorPos(1, 12)
     Write("Energy: ")
-    if energy ~= nil then
-      if energy[1] > (data.radar_radius * data.radar_radius) then
-        SetColorSuccess()
-      else
-        SetColorWarning()
-      end
-      Write(FormatInteger(energy[1], 10) .. " EU")
+    if energyStored > energyRequired then
+      SetColorSuccess()
     else
-      SetColorDisabled()
-      Write("???")
+      SetColorWarning()
     end
+    Write(FormatInteger(energyStored, 10) .. " " .. energyUnits)
     SetColorDefault()
     SetCursorPos(1, 13)
     Write("Radius: " .. data.radar_radius)
@@ -1724,7 +1713,8 @@ function radar_scan()
     draw_warning(monitor, "No radar")
     return false
   end
-  if radar.energy() < (data.radar_radius * data.radar_radius) then
+  local energyStored, _, _ = radar.getEnergyStatus()
+  if energyStored < radar.getEnergyRequired(data.radar_radius) then
     draw_warning(monitor, "LOW POWER")
     return false
   end
@@ -1896,7 +1886,8 @@ function radar_drawMap()
   -- status
   local text = "Scan radius: " .. data.radar_radius
   if radar ~= nil then
-    text = text .. " | Energy: " .. radar.energy() .. " EU"
+    local energyStored, energyMax, energyUnits = radar.getEnergyStatus()
+    text = text .. " | Energy: " .. energyStored .. " " .. energyUnits
   end
   text = text .. " | Scale: " .. data.radar_scale
   draw_centeredText(monitor, screenHeight, text)

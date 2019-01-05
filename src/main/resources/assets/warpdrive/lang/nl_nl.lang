@@ -686,7 +686,7 @@ warpdrive.video_channel.status_line.undefined=§7niet gedefinieerd videokanaal.\
 
 
 warpdrive.accelerator.guide.low_power.not_enough_storage=Energie-opslagcapaciteit is te weinig; we hebben tenminste %1$d om verder te opereren maar we kunnen alleen %2$d opslaan
-warpdrive.accelerator.guide.low_power.accelerating=We verliezen stroom baas (%1$d > %2$d EU), deeltjes vliegen in het rond, bereid je voor op grote bestraling!
+warpdrive.accelerator.guide.low_power.accelerating=We verliezen stroom baas (%1$s > %2$s %3$s), deeltjes vliegen in het rond, bereid je voor op grote bestraling!
 warpdrive.accelerator.guide.low_power.no_particles=We hebben meer stroom nodig om de versneller te activeren!
 warpdrive.accelerator.guide.no_chiller=Geen koeler gevonden voor deze versneller!
 
@@ -728,7 +728,9 @@ warpdrive.compat.guide.quantum_field_interference=Quantum field interference det
 warpdrive.compat.guide.draconic_evolution_portal=Portal detected!
 warpdrive.compat.guide.stargate_is_active=Stargate is active (%1$s)!
 
-warpdrive.energy.status_line=Energielevel is op %1$s / %2$s EU.
+warpdrive.energy.status_line.charge=Charge is
+warpdrive.energy.status_line.input_rate=Input rate is
+warpdrive.energy.status_line.output_rate=Output rate is
 warpdrive.energy.side.changed_to_input=%1$s kant verandert naar energie input modus!
 warpdrive.energy.side.changed_to_output=%1$s kant verandert naar energie output modus!
 warpdrive.energy.side.changed_to_disabled=%1$s kant verandert naar inactief modus!
@@ -813,7 +815,7 @@ warpdrive.security_station.guide.player_unregistered=You've been unregistered fr
 warpdrive.ship.guide.cooling_countdown=Ship core is cooling down... %1$d s to go...
 warpdrive.ship.guide.pre_jumping=Running pre-jump checklist...
 warpdrive.ship.guide.warming_up=Ship core is warming up... %1$d s to go...
-warpdrive.ship.guide.insufficient_energy=Insufficient energy to jump! Core is currently charged with %1$d EU while jump requires %2$d EU
+warpdrive.ship.guide.insufficient_energy=Insufficient energy to jump! Core is currently charged with %1$s %3$s while jump requires %2$s %3$s
 warpdrive.ship.guide.warp_field_overlapping=Warp field intersects with other ship's field. Disable the other ship core to jump.
 warpdrive.ship.guide.cloaking_field_overlapping=Core is inside a cloaking field. Aborting. Disable cloaking field to jump!
 warpdrive.ship.guide.pre_jump_success=Ok

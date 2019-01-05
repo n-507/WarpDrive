@@ -55,6 +55,15 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	}
 	
 	@Override
+	protected void onConstructed() {
+		super.onConstructed();
+		
+		energy_setParameters(WarpDriveConfig.RADAR_MAX_ENERGY_STORED,
+		                     65536, 65536,
+		                     "EV", 2, "EV", 0);
+	}
+	
+	@Override
 	public void update() {
 		super.update();
 		
@@ -160,7 +169,9 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	
 	@Override
 	public Object[] getEnergyRequired() {
-		return new Object[] { calculateEnergyRequired(radius) };
+		return new Object[] {
+				true,
+				EnergyWrapper.convert(calculateEnergyRequired(radius), null) };
 	}
 	
 	private Object[] getScanDuration(final Object[] arguments) {
@@ -329,11 +340,6 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 		}
 		
 		return super.callMethod(computer, context, method, arguments);
-	}
-	
-	@Override
-	public int energy_getMaxStorage() {
-		return WarpDriveConfig.RADAR_MAX_ENERGY_STORED;
 	}
 	
 	@Override

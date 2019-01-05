@@ -686,7 +686,7 @@ warpdrive.video_channel.status_line.undefined=§7未定义的视频通道.\n§b�
 
 
 warpdrive.accelerator.guide.low_power.not_enough_storage=能量不足;我们需要%1$d的能量储备维持运转  目前仅剩%2$d
-warpdrive.accelerator.guide.low_power.accelerating=我们的主能量储备耗尽 (%1$d > %2$d EU), 粒子正在泄漏,准备承受巨量辐射!
+warpdrive.accelerator.guide.low_power.accelerating=我们的主能量储备耗尽 (%1$s > %2$s %3$s), 粒子正在泄漏,准备承受巨量辐射!
 warpdrive.accelerator.guide.low_power.no_particles=需要更多能量以启动加速器!
 warpdrive.accelerator.guide.no_chiller=这台加速器没有冷却设备!
 
@@ -729,7 +729,9 @@ warpdrive.compat.guide.quantum_field_interference=Quantum field interference det
 warpdrive.compat.guide.draconic_evolution_portal=Portal detected!
 warpdrive.compat.guide.stargate_is_active=Stargate is active (%1$s)!
 
-warpdrive.energy.status_line=能量水平%1$s / %2$s EU.
+warpdrive.energy.status_line.charge=能量水平
+warpdrive.energy.status_line.input_rate=Input rate is
+warpdrive.energy.status_line.output_rate=Output rate is
 warpdrive.energy.side.changed_to_input=%1$s侧面更改为能量输入模式！
 warpdrive.energy.side.changed_to_output=%1$s侧面更改为能量输出模式！
 warpdrive.energy.side.changed_to_disabled=%1$s侧面更改为禁用模式！
@@ -814,7 +816,7 @@ warpdrive.security_station.guide.player_unregistered=You've been unregistered fr
 warpdrive.ship.guide.cooling_countdown=Ship core is cooling down... %1$d s to go...
 warpdrive.ship.guide.pre_jumping=Running pre-jump checklist...
 warpdrive.ship.guide.warming_up=Ship core is warming up... %1$d s to go...
-warpdrive.ship.guide.insufficient_energy=Insufficient energy to jump! Core is currently charged with %1$d EU while jump requires %2$d EU
+warpdrive.ship.guide.insufficient_energy=Insufficient energy to jump! Core is currently charged with %1$s %3$s while jump requires %2$s %3$s
 warpdrive.ship.guide.warp_field_overlapping=Warp field intersects with other ship's field. Disable the other ship core to jump.
 warpdrive.ship.guide.cloaking_field_overlapping=Core is inside a cloaking field. Aborting. Disable cloaking field to jump!
 warpdrive.ship.guide.pre_jump_success=Ok

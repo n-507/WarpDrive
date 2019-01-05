@@ -619,10 +619,10 @@ public class JumpBlock {
 			final EnumTier enumTier = ((IBlockBase) block).getTier(null);
 			if (enumTier != EnumTier.CREATIVE) {
 				if (block instanceof BlockShipCore) {
-					blockNBT.setLong("energy", WarpDriveConfig.SHIP_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()]);
+					blockNBT.setLong(EnergyWrapper.TAG_ENERGY, WarpDriveConfig.SHIP_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()]);
 				}
 				if (block instanceof BlockCapacitor) {
-					blockNBT.setLong("energy", WarpDriveConfig.CAPACITOR_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()]);
+					blockNBT.setLong(EnergyWrapper.TAG_ENERGY, WarpDriveConfig.CAPACITOR_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()]);
 				}
 			}
 		}

@@ -80,6 +80,7 @@ if noExit then
   repeat
     areActive = false
     for key,mininglaser in pairs(mininglasers) do
+      local energyUnits = mininglaser.energyDisplayUnits()
       local status, isActive, energy, currentLayer, mined, total = mininglaser.state()
       
       term.setBackgroundColor(colors.black)
@@ -92,7 +93,7 @@ if noExit then
       term.write("Status: " .. status .. "   ")
       term.setBackgroundColor(colors.black)
       term.setCursorPos(1, 5)
-      term.write("Energy level is " .. energy .. " EU")
+      term.write("Energy level is " .. energy .. " " .. energyUnits)
       term.setCursorPos(1, 7)
       term.write("Mined " .. mined .. " out of " .. total .. " blocks at layer " .. currentLayer .. "   ")
       

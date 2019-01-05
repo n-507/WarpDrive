@@ -82,6 +82,7 @@ if noExit then
   repeat
     areActive = false
     for key, treefarm in pairs(treefarms) do
+      local energyUnits = treefarm.energyDisplayUnits()
       local status, isActive, energy, totalHarvested, currentValuable, totalValuables = treefarm.state()
       
       term.setBackgroundColor(colors.black)
@@ -94,7 +95,7 @@ if noExit then
       term.write("Status: " .. status .. "   ")
       term.setBackgroundColor(colors.black)
       term.setCursorPos(1, 5)
-      term.write("Energy level is " .. energy .. " EU")
+      term.write("Energy level is " .. energy .. " " .. energyUnits)
       term.setCursorPos(1, 7)
       term.write("Farmed " .. currentValuable .. " out of " .. totalValuables .. " blocks in current cycle    ")
       term.setCursorPos(1, 9)

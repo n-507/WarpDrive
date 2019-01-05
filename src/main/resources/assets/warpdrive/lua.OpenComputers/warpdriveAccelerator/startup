@@ -242,8 +242,8 @@ function lhc_page()
       w.writeLn("Disabled")
     end
     
-    local energy, energyMax = accelerator.energy()
-    if energy == nil then energy = 0 end
+    local energyStored, energyMax, energyUnits = accelerator.getEnergyStatus()
+    if energyStored == nil then energyStored = 0 end
     if energyMax == nil or energyMax == 0 then energyMax = 1 end
     w.setColorNormal()
     w.write(" Energy level is ")
@@ -254,7 +254,7 @@ function lhc_page()
     else
       w.setColorDisabled()
     end
-    w.writeLn(math.floor(energy / energyMax * 100) .. " % (" .. energy .. " EU)")
+    w.writeLn(math.floor(energyStored / energyMax * 100) .. " % (" .. energyStored .. " " .. energyUnits .. ")")
     -- w.writeLn("")
     
     w.setColorNormal()

@@ -97,12 +97,13 @@ if noExit then
   repeat
     areActive = false
     for key, mininglaser in pairs(mininglasers) do
+      local energyUnits = mininglaser.energyDisplayUnits()
       local status, isActive, energy, currentLayer, mined, total = mininglaser.state()
       
       term.clear()
       textOut(1, 1, label .. " - Mining laser " .. key .. " of " .. #mininglasers, 0x0000FF, 0x00FF00)
       textOut(1, 3, "Status: " .. status .. "   ", 0x0000FF, 0x000000)
-      textOut(1, 4, "Energy level is " .. energy .. " EU", 0x0000FF, 0x000000)
+      textOut(1, 4, "Energy level is " .. energy .. " " .. energyUnits, 0x0000FF, 0x000000)
       textOut(1, 7, "Mined " .. mined .. " out of " .. total .. " blocks at layer " .. currentLayer .. "   ", 0xFFFFFF, 0x000000)
       
       if isActive then

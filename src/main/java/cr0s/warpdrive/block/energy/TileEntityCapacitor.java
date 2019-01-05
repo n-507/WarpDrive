@@ -39,10 +39,14 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 	}
 	
 	@Override
-	protected void onFirstUpdateTick() {
-		super.onFirstUpdateTick();
-		IC2_sinkTier = WarpDriveConfig.CAPACITOR_IC2_SINK_TIER_BY_TIER[enumTier.getIndex()];
-		IC2_sourceTier = WarpDriveConfig.CAPACITOR_IC2_SOURCE_TIER_BY_TIER[enumTier.getIndex()];
+	protected void onConstructed() {
+		super.onConstructed();
+		
+		energy_setParameters(WarpDriveConfig.CAPACITOR_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()],
+		                     WarpDriveConfig.CAPACITOR_FLUX_RATE_INPUT_BY_TIER[enumTier.getIndex()],
+		                     WarpDriveConfig.CAPACITOR_FLUX_RATE_OUTPUT_BY_TIER[enumTier.getIndex()],
+		                     WarpDriveConfig.CAPACITOR_IC2_SINK_TIER_NAME_BY_TIER[enumTier.getIndex()], 2,
+		                     WarpDriveConfig.CAPACITOR_IC2_SOURCE_TIER_NAME_BY_TIER[enumTier.getIndex()], 2);
 	}
 	
 	private double getEfficiency() {
@@ -51,9 +55,9 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 	}
 	
 	@Override
-	public int energy_getEnergyStored() {
+	public long energy_getEnergyStored() {
 		if (enumTier == EnumTier.CREATIVE) {
-			return WarpDriveConfig.CAPACITOR_MAX_ENERGY_STORED_BY_TIER[0] / 2;
+			return WarpDriveConfig.CAPACITOR_MAX_ENERGY_STORED_BY_TIER[0] / 2L;
 		} else {
 			return super.energy_getEnergyStored();
 		}
@@ -61,12 +65,7 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 	
 	@Override
 	public int energy_getPotentialOutput() {
-		return (int) Math.round(Math.min(energy_getEnergyStored() * getEfficiency(), WarpDriveConfig.CAPACITOR_TRANSFER_PER_TICK_BY_TIER[enumTier.getIndex()]));
-	}
-	
-	@Override
-	public int energy_getMaxStorage() {
-		return WarpDriveConfig.CAPACITOR_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()];
+		return (int) Math.round(Math.min(energy_getEnergyStored() * getEfficiency(), WarpDriveConfig.CAPACITOR_FLUX_RATE_OUTPUT_BY_TIER[enumTier.getIndex()]));
 	}
 	
 	@Override
@@ -74,7 +73,7 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 		if (enumTier == EnumTier.CREATIVE) {
 			return true;
 		}
-		final int amountWithLoss = (int) Math.round(amount_internal / getEfficiency());
+		final long amountWithLoss = Math.round(amount_internal / getEfficiency());
 		if (energy_getEnergyStored() >= amountWithLoss) {
 			if (!simulate) {
 				super.energy_consume(amountWithLoss);
@@ -88,18 +87,36 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 		if (enumTier == EnumTier.CREATIVE) {
 			return;
 		}
-		final int amountWithLoss = (int) Math.round(amount_internal > 0 ? amount_internal / getEfficiency() : amount_internal * getEfficiency());
+		final long amountWithLoss = Math.round(amount_internal > 0 ? amount_internal / getEfficiency() : amount_internal * getEfficiency());
 		super.energy_consume(amountWithLoss);
 	}
 	
 	@Override
 	public boolean energy_canInput(final EnumFacing from) {
-		return modeSide[from.ordinal()] == EnumDisabledInputOutput.INPUT;
+		if (from != null) {
+			return modeSide[from.ordinal()] == EnumDisabledInputOutput.INPUT;
+		} else {
+			for (final EnumFacing enumFacing : EnumFacing.VALUES) {
+				if (modeSide[enumFacing.ordinal()] == EnumDisabledInputOutput.INPUT) {
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 	
 	@Override
 	public boolean energy_canOutput(final EnumFacing to) {
-		return modeSide[to.ordinal()] == EnumDisabledInputOutput.OUTPUT;
+		if (to != null) {
+			return modeSide[to.ordinal()] == EnumDisabledInputOutput.OUTPUT;
+		} else {
+			for (final EnumFacing enumFacing : EnumFacing.VALUES) {
+				if (modeSide[enumFacing.ordinal()] == EnumDisabledInputOutput.OUTPUT) {
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 	
 	EnumDisabledInputOutput getMode(final EnumFacing facing) {
@@ -109,7 +126,7 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 	void setMode(final EnumFacing facing, final EnumDisabledInputOutput enumDisabledInputOutput) {
 		modeSide[facing.ordinal()] = enumDisabledInputOutput;
 		markDirty();
-		energy_resetConnections(facing);
+		energy_refreshConnections(facing);
 	}
 	
 	// Forge overrides

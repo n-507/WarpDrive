@@ -120,19 +120,13 @@ function reactor_page()
     end
     
     w.setColorNormal()
-    local energy = { reactor.energy() }
+    local energyStored, energyMax, energyUnits, _, energyOutputRate = reactor.getEnergyStatus()
     w.setCursorPos(1, 7)
     w.write("Energy   : ")
-    if energy[2] ~= nil then
-      w.write(w.format_integer(energy[1], 10) .. " / " .. w.format_integer(energy[2], 10) .. " RF +" .. w.format_integer(reactor_output, 6) .. " RF/t")
-    else
-      w.write("???")
-    end
+    w.write(w.format_integer(energyStored, 10) .. " / " .. w.format_integer(energyMax, 10) .. " " .. energyUnits .. " +" .. w.format_integer(reactor_output, 6) .. " " .. energyUnits .. "/t")
     w.setCursorPos(1, 8)
     w.write("Outputing: ")
-    if energy[3] ~= nil then
-      w.write(w.format_integer(energy[3], 6) .. " RF/t")
-    end
+    w.write(w.format_integer(energyOutputRate, 6) .. " " .. energyUnits .. "/t")
     
     w.setCursorPos(1, 9)
     w.setColorNormal()
@@ -155,14 +149,14 @@ function reactor_page()
         local y = (key - 1) % 4
         local x = (key - y - 1) / 4
         w.setCursorPos(26 + 7 * x, 3 + y)
-        local energy = reactorlaser.wrap.energy()
-        if energy == nil then
-          energy = -1
+        local energyStored, _, _ = reactorlaser.wrap.getEnergyStatus()
+        if energyStored == nil then
+          energyStored = -1
         end
-        local energy_k = math.floor(energy / 100) / 10.0
+        local energy_k = math.floor(energyStored / 100) / 10.0
         if not reactorlaser.wrap.isAssemblyValid() then
           w.setColorDisabled()
-        elseif energy > 3 * reactor_laserAmount then
+        elseif energyStored > 3 * reactor_laserAmount then
           w.setColorSuccess()
         else
           w.setColorWarning()
@@ -275,36 +269,30 @@ function reactor_pulse(output)
       end
       w.write(w.format_float(stability, 5))
     end
-    
-    local energy = { reactor.energy() }
+  
+    local energyStored, energyMax, energyUnits, _, energyOutputRate = reactor.getEnergyStatus()
     w.setCursorPos(12, 7)
     w.setColorNormal()
-    if energy[1] ~= nil then
-      w.write(w.format_integer(energy[1], 10))
-      w.setCursorPos(40, 7)
-      w.write(w.format_integer(reactor_output, 6))
-    else
-      w.write("???")
-    end
-    if energy[3] ~= nil then
-      w.setCursorPos(12, 8)
-      w.write(w.format_integer(energy[3], 6))
-    end
+    w.write(w.format_integer(energyStored, 10))
+    w.setCursorPos(40, 7)
+    w.write(w.format_integer(reactor_output, 6))
+    w.setCursorPos(12, 8)
+    w.write(w.format_integer(energyOutputRate, 6))
     
     if #reactorlasers ~= 0 then
       for key, reactorlaser in pairs(reactorlasers) do
-        if key ~= nill and reactorlaser.wrap ~= nil then
+        if key ~= nil and reactorlaser.wrap ~= nil then
           local y = (key - 1) % 4
           local x = (key - y - 1) / 4
           w.setCursorPos(26 + 7 * x, 3 + y)
-          local energy = reactorlaser.wrap.energy()
-          if energy == nil then
-            energy = -1
+          local energyStored, _, _ = reactorlaser.wrap.getEnergyStatus()
+          if energyStored == nil then
+            energyStored = -1
           end
-          local energy_k = math.floor(energy / 100) / 10.0
+          local energy_k = math.floor(energyStored / 100) / 10.0
           if not reactorlaser.wrap.isAssemblyValid() then
             w.setColorDisabled()
-          elseif energy > 3 * reactor_laserAmount then
+          elseif energyStored > 3 * reactor_laserAmount then
             w.setColorSuccess()
           else
             w.setColorWarning()

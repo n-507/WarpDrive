@@ -71,7 +71,7 @@ public class TileEntityEnanReactorController extends TileEntityAbstractEnergyCor
 	// Common OC/CC methods
 	@Override
 	public Object[] getEnergyRequired() {
-		return new Object[0];
+		return new Object[] { false, "No energy consumption" };
 	}
 	
 	@Override
@@ -148,12 +148,21 @@ public class TileEntityEnanReactorController extends TileEntityAbstractEnergyCor
 	}
 	
 	@Override
-	public Object[] energy() {
+	public Object[] energyDisplayUnits(final Object[] arguments) {
 		final TileEntityEnanReactorCore tileEntityEnanReactorCore = tileEntityEnanReactorCoreWeakReference == null ? null : tileEntityEnanReactorCoreWeakReference.get();
 		if (tileEntityEnanReactorCore == null) {
 			return null;
 		}
-		return tileEntityEnanReactorCore.energy();
+		return tileEntityEnanReactorCore.energyDisplayUnits(arguments);
+	}
+	
+	@Override
+	public Object[] getEnergyStatus() {
+		final TileEntityEnanReactorCore tileEntityEnanReactorCore = tileEntityEnanReactorCoreWeakReference == null ? null : tileEntityEnanReactorCoreWeakReference.get();
+		if (tileEntityEnanReactorCore == null) {
+			return null;
+		}
+		return tileEntityEnanReactorCore.getEnergyStatus();
 	}
 	
 	// OpenComputers callback methods

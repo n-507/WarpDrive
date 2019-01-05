@@ -1,5 +1,6 @@
 package cr0s.warpdrive.block;
 
+import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
 import javax.annotation.Nonnull;
@@ -25,6 +26,15 @@ public class TileEntityLaserMedium extends TileEntityAbstractEnergy {
 	}
 	
 	@Override
+	protected void onConstructed() {
+		super.onConstructed();
+		
+		energy_setParameters(WarpDriveConfig.LASER_MEDIUM_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()],
+		                     4096, 4096,
+		                     "HV", 2, "HV", 0);
+	}
+	
+	@Override
 	public void update() {
 		super.update();
 		
@@ -36,7 +46,7 @@ public class TileEntityLaserMedium extends TileEntityAbstractEnergy {
 		if (ticks < 0) {
 			ticks = BLOCKSTATE_REFRESH_PERIOD_TICKS;
 			
-			final int level = Math.max(0, Math.min(7, Math.round((energy_getEnergyStored() * 8) / energy_getMaxStorage())));
+			final int level = Commons.clamp(0, 7, (int) Math.round(8.0D * (energy_getEnergyStored() / (double) energy_getMaxStorage())));
 			updateBlockState(null, BlockLaserMedium.LEVEL, level);
 		}
 	}
@@ -53,11 +63,6 @@ public class TileEntityLaserMedium extends TileEntityAbstractEnergy {
 	}
 	
 	// IEnergySink methods
-	@Override
-	public int energy_getMaxStorage() {
-		return WarpDriveConfig.LASER_MEDIUM_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()];
-	}
-	
 	@Override
 	public boolean energy_canInput(final EnumFacing from) {
 		return true;

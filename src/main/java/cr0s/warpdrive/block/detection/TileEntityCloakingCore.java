@@ -7,6 +7,7 @@ import cr0s.warpdrive.block.TileEntityAbstractEnergyConsumer;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.CloakedArea;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.SoundEvents;
 import cr0s.warpdrive.data.Vector3;
@@ -67,6 +68,15 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyConsumer {
 		CC_scripts = Arrays.asList("enable", "disable");
 		
 		setUpgradeMaxCount(EnumComponentType.DIAMOND_CRYSTAL, 1);
+	}
+	
+	@Override
+	protected void onConstructed() {
+		super.onConstructed();
+		
+		energy_setParameters(WarpDriveConfig.CLOAKING_MAX_ENERGY_STORED,
+		                     16384, 0,
+		                     "EV", 2, "HV", 0);
 	}
 	
 	@Override
@@ -457,8 +467,11 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyConsumer {
 	// Common OC/CC methods
 	@Override
 	public Object[] getEnergyRequired() {
-		final int updateRate = ((!isFullyTransparent) ? 20 : 10) * WarpDriveConfig.CLOAKING_FIELD_REFRESH_INTERVAL_SECONDS;
-		return new Object[] { energyRequired / updateRate };
+		final double updateRate = ((!isFullyTransparent) ? 20 : 10) * WarpDriveConfig.CLOAKING_FIELD_REFRESH_INTERVAL_SECONDS;
+		final double energyRate = energyRequired / updateRate;
+		return new Object[] {
+				true,
+				EnergyWrapper.convert((long) Math.ceil(energyRate), null) };
 	}
 	
 	@Override
@@ -476,11 +489,6 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyConsumer {
 	// (none)
 	
 	// TileEntityAbstractEnergy methods
-	@Override
-	public int energy_getMaxStorage() {
-		return WarpDriveConfig.CLOAKING_MAX_ENERGY_STORED;
-	}
-	
 	@Override
 	public boolean energy_canInput(final EnumFacing from) {
 		return true;

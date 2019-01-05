@@ -1,15 +1,13 @@
 package cr0s.warpdrive.block.breathing;
 
-import cr0s.warpdrive.Commons;
-import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.TileEntityAbstractEnergyConsumer;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.CelestialObjectManager;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.StateAir;
 import cr0s.warpdrive.event.ChunkHandler;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -20,7 +18,6 @@ public class TileEntityAirGeneratorTiered extends TileEntityAbstractEnergyConsum
 	// (none)
 	
 	// computed properties
-	private int maxEnergyStored = 0;
 	private int cooldownTicks = 0;
 	
 	public TileEntityAirGeneratorTiered() {
@@ -33,16 +30,12 @@ public class TileEntityAirGeneratorTiered extends TileEntityAbstractEnergyConsum
 	}
 	
 	@Override
-	protected void onFirstUpdateTick() {
-		super.onFirstUpdateTick();
-		final Block block = getBlockType();
-		if (block instanceof BlockAirGeneratorTiered) {
-			enumTier = ((BlockAirGeneratorTiered) block).getTier(null);
-			maxEnergyStored = WarpDriveConfig.BREATHING_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()];
-		} else {
-			WarpDrive.logger.error(String.format("Missing block for %s %s",
-			                                     this, Commons.format(world, pos)));
-		}
+	protected void onConstructed() {
+		super.onConstructed();
+		
+		energy_setParameters(WarpDriveConfig.BREATHING_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()],
+		                     4000, 4000,
+		                     "HV", 2, "HV", 0);
 	}
 	
 	@Override
@@ -126,18 +119,17 @@ public class TileEntityAirGeneratorTiered extends TileEntityAbstractEnergyConsum
 	}
 	
 	@Override
-	public int energy_getMaxStorage() {
-		return maxEnergyStored;
-	}
-	
-	@Override
 	public boolean energy_canInput(final EnumFacing from) {
 		return true;
 	}
 	
 	@Override
 	public Object[] getEnergyRequired() {
-		return new Object[] { WarpDriveConfig.BREATHING_ENERGY_PER_NEW_AIR_BLOCK_BY_TIER[enumTier.getIndex()] / (double) WarpDriveConfig.BREATHING_AIR_GENERATION_TICKS,
-		                      WarpDriveConfig.BREATHING_ENERGY_PER_EXISTING_AIR_BLOCK_BY_TIER[enumTier.getIndex()] / (double) WarpDriveConfig.BREATHING_AIR_GENERATION_TICKS };
+		final double energyRequired_newAir  = WarpDriveConfig.BREATHING_ENERGY_PER_NEW_AIR_BLOCK_BY_TIER     [enumTier.getIndex()] / (double) WarpDriveConfig.BREATHING_AIR_GENERATION_TICKS;
+		final double energyRequired_refresh = WarpDriveConfig.BREATHING_ENERGY_PER_EXISTING_AIR_BLOCK_BY_TIER[enumTier.getIndex()] / (double) WarpDriveConfig.BREATHING_AIR_GENERATION_TICKS;
+		return new Object[] {
+				true,
+				EnergyWrapper.convert((long) Math.ceil(energyRequired_newAir  * 100.0D), null) / 100.0F,
+				EnergyWrapper.convert((long) Math.ceil(energyRequired_refresh * 100.0D), null) / 100.0F };
 	}
 }

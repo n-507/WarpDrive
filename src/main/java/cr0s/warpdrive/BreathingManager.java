@@ -7,7 +7,7 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.StateAir;
 import cr0s.warpdrive.data.VectorI;
 import cr0s.warpdrive.event.ChunkHandler;
-import cr0s.warpdrive.item.ItemEnergyWrapper;
+import cr0s.warpdrive.data.EnergyWrapper;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -91,8 +91,8 @@ public class BreathingManager {
 		// find an air block
 		final UUID uuidEntity = entityLivingBase.getUniqueID();
 		VectorI vAirBlock = null;
-		IBlockState blockState = null;
-		Block block = null;
+		IBlockState blockState;
+		Block block;
 		for (final VectorI vOffset : vAirOffsets) {
 			final VectorI vPosition = new VectorI(x + vOffset.x, y + vOffset.y, z + vOffset.z);
 			blockState = vPosition.getBlockState(entityLivingBase.world);
@@ -345,10 +345,10 @@ public class BreathingManager {
 				} else if (canElectrolyse) {
 					if (itemStack.getItem() == itemIce) {
 						countIce += itemStack.getCount();
-					} else if ( ItemEnergyWrapper.isEnergyContainer(itemStack)
-					         && ItemEnergyWrapper.canOutput(itemStack)
-					         && ItemEnergyWrapper.getEnergyStored(itemStack) >= AIR_ENERGY_FOR_ELECTROLYSE ) {
-						countEnergy += Math.floor(ItemEnergyWrapper.getEnergyStored(itemStack) / AIR_ENERGY_FOR_ELECTROLYSE);
+					} else if ( EnergyWrapper.isEnergyContainer(itemStack)
+					         && EnergyWrapper.canOutput(itemStack)
+					         && EnergyWrapper.getEnergyStored(itemStack) >= AIR_ENERGY_FOR_ELECTROLYSE ) {
+						countEnergy += EnergyWrapper.getEnergyStored(itemStack) / AIR_ENERGY_FOR_ELECTROLYSE;
 					}
 				}
 			}
@@ -379,76 +379,84 @@ public class BreathingManager {
 		final EntityPlayerMP entityPlayer = (EntityPlayerMP) entity;
 		final NonNullList<ItemStack> playerInventory = entityPlayer.inventory.mainInventory;
 		int slotIceFound = -1;
-		int slotFirstEmptyAirCanisterFound = -1;
-		int slotSecondEmptyAirCanisterFound = -1;
+		int slotFirstEmptyAirContainerFound = -1;
+		int slotSecondEmptyAirContainerFound = -1;
 		int slotEnergyContainer = -1;
 		
-		// find 1 ice, 1 energy and 2 empty air containers
+		// find 1 ice, 1 energy and up to 2 empty air containers
 		final Item itemIce = Item.getItemFromBlock(Blocks.ICE);
 		for (int slotIndex = 0; slotIndex < playerInventory.size(); slotIndex++) {
 			final ItemStack itemStack = playerInventory.get(slotIndex);
 			if (itemStack.isEmpty()) {
-				// skip
-			} else if (itemStack.getItem() == itemIce) {
+				continue;
+			}
+			
+			if (itemStack.getItem() == itemIce) {
 				slotIceFound = slotIndex;
-			} else if (itemStack.getCount() == 1 && itemStack.getItem() instanceof IAirContainerItem) {
+				if ( slotSecondEmptyAirContainerFound >= 0
+				  && slotEnergyContainer >= 0 ) {
+					break;
+				}
+				
+			} else if ( itemStack.getCount() == 1
+			         && itemStack.getItem() instanceof IAirContainerItem ) {
 				final IAirContainerItem airCanister = (IAirContainerItem) itemStack.getItem();
-				if (airCanister.canContainAir(itemStack) && airCanister.getCurrentAirStorage(itemStack) >= 0) {
-					if (slotFirstEmptyAirCanisterFound < 0) {
-						slotFirstEmptyAirCanisterFound = slotIndex;
-					} else if (slotSecondEmptyAirCanisterFound < 0) {
-						slotSecondEmptyAirCanisterFound = slotIndex;
-						if (slotIceFound >= 0 && slotEnergyContainer >= 0) {
+				if ( airCanister.canContainAir(itemStack)
+				  && airCanister.getCurrentAirStorage(itemStack) >= 0 ) {
+					if (slotFirstEmptyAirContainerFound < 0) {
+						slotFirstEmptyAirContainerFound = slotIndex;
+					} else if (slotSecondEmptyAirContainerFound < 0) {
+						slotSecondEmptyAirContainerFound = slotIndex;
+						if ( slotIceFound >= 0
+						  && slotEnergyContainer >= 0 ) {
 							break;
 						}
 					}
 				}
 			} else if ( slotEnergyContainer < 0
-				&& ItemEnergyWrapper.isEnergyContainer(itemStack)
-				&& ItemEnergyWrapper.canOutput(itemStack)
-				&& ItemEnergyWrapper.getEnergyStored(itemStack) >= AIR_ENERGY_FOR_ELECTROLYSE ) {
+			         && EnergyWrapper.isEnergyContainer(itemStack)
+			         && EnergyWrapper.canOutput(itemStack)
+			         && EnergyWrapper.getEnergyStored(itemStack) >= AIR_ENERGY_FOR_ELECTROLYSE ) {
 				slotEnergyContainer = slotIndex;
+				if ( slotIceFound >= 0
+				  && slotSecondEmptyAirContainerFound >= 0 ) {
+					break;
+				}
 			}
 		}
 		
-		if (slotEnergyContainer >= 0 && slotIceFound >= 0 && slotFirstEmptyAirCanisterFound >= 0) {
-			// consume energy
-			ItemStack itemStackEnergyContainer = playerInventory.get(slotEnergyContainer);
-			itemStackEnergyContainer = ItemEnergyWrapper.consume(itemStackEnergyContainer, AIR_ENERGY_FOR_ELECTROLYSE, false);
-			if (itemStackEnergyContainer != null) {
-				if (playerInventory.get(slotEnergyContainer).getCount() <= 1) {
-					playerInventory.set(slotEnergyContainer, itemStackEnergyContainer);
-				} else {
-					playerInventory.get(slotEnergyContainer).shrink(1);
-					if (!entityPlayer.inventory.addItemStackToInventory(itemStackEnergyContainer)) {
-						final World world = entityPlayer.world;
-						final EntityItem entityItem = new EntityItem(world, entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, itemStackEnergyContainer);
-						entityPlayer.world.spawnEntity(entityItem);
-					}
-				}
-				
-				// consume ice
-				final ItemStack itemStackIce = playerInventory.get(slotIceFound);
-				itemStackIce.shrink(1);
-				playerInventory.set(slotIceFound, itemStackIce);
-				
-				// fill air canister(s)
-				ItemStack itemStackAirCanister = playerInventory.get(slotFirstEmptyAirCanisterFound);
-				IAirContainerItem airCanister = (IAirContainerItem) itemStackAirCanister.getItem();
-				playerInventory.set(slotFirstEmptyAirCanisterFound, airCanister.getFullAirContainer(itemStackAirCanister));
-				
-				if (slotSecondEmptyAirCanisterFound >= 0) {
-					itemStackAirCanister = playerInventory.get(slotSecondEmptyAirCanisterFound);
-					airCanister = (IAirContainerItem) itemStackAirCanister.getItem();
-					playerInventory.set(slotSecondEmptyAirCanisterFound, airCanister.getFullAirContainer(itemStackAirCanister));
-				}
-				entityPlayer.sendContainerToPlayer(entityPlayer.inventoryContainer);
-				
-				// first air breath is free
-				return airCanister.getAirTicksPerConsumption(itemStackAirCanister);
-			}
+		// skip if we're missing energy, ice or air container
+		if ( slotEnergyContainer < 0
+		  || slotIceFound < 0
+		  || slotFirstEmptyAirContainerFound < 0 ) {
+			return 0;
 		}
 		
-		return 0;
+		// consume energy
+		final ItemStack itemStackEnergyContainer = playerInventory.get(slotEnergyContainer);
+		final int energyProvided = EnergyWrapper.consume(itemStackEnergyContainer, AIR_ENERGY_FOR_ELECTROLYSE, false);
+		if (energyProvided <= 0) {
+			return 0;
+		}
+		
+		// consume ice
+		final ItemStack itemStackIce = playerInventory.get(slotIceFound);
+		itemStackIce.shrink(1);
+		playerInventory.set(slotIceFound, itemStackIce);
+		
+		// fill air canister(s)
+		ItemStack itemStackAirCanister = playerInventory.get(slotFirstEmptyAirContainerFound);
+		IAirContainerItem airCanister = (IAirContainerItem) itemStackAirCanister.getItem();
+		playerInventory.set(slotFirstEmptyAirContainerFound, airCanister.getFullAirContainer(itemStackAirCanister));
+		
+		if (slotSecondEmptyAirContainerFound >= 0) {
+			itemStackAirCanister = playerInventory.get(slotSecondEmptyAirContainerFound);
+			airCanister = (IAirContainerItem) itemStackAirCanister.getItem();
+			playerInventory.set(slotSecondEmptyAirContainerFound, airCanister.getFullAirContainer(itemStackAirCanister));
+		}
+		entityPlayer.sendContainerToPlayer(entityPlayer.inventoryContainer);
+		
+		// first air breath is free
+		return airCanister.getAirTicksPerConsumption(itemStackAirCanister);
 	}
 }

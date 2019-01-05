@@ -5,6 +5,7 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IWarpTool;
 import cr0s.warpdrive.block.BlockAbstractContainer;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumDisabledInputOutput;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.event.ModelBakeEventHandler;
@@ -145,7 +146,7 @@ public class BlockCapacitor extends BlockAbstractContainer implements IExplosion
 		if (enumTier != EnumTier.CREATIVE) {
 			itemStack = new ItemStack(this, 1, 0);
 			final NBTTagCompound tagCompound = new NBTTagCompound();
-			tagCompound.setInteger("energy", WarpDriveConfig.CAPACITOR_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()]);
+			tagCompound.setInteger(EnergyWrapper.TAG_ENERGY, WarpDriveConfig.CAPACITOR_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()]);
 			itemStack.setTagCompound(tagCompound);
 			list.add(itemStack);
 		}

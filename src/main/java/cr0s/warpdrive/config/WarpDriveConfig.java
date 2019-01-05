@@ -57,6 +57,7 @@ import cr0s.warpdrive.compat.CompatYABBA;
 import cr0s.warpdrive.config.structures.StructureManager;
 import cr0s.warpdrive.data.CelestialObject;
 import cr0s.warpdrive.data.CelestialObjectManager;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumShipMovementType;
 import cr0s.warpdrive.data.EnumDisplayAlignment;
 import cr0s.warpdrive.data.EnumTier;
@@ -138,7 +139,7 @@ public class WarpDriveConfig {
 	public static boolean              isComputerCraftLoaded = false;
 	public static boolean              isEnderIOLoaded = false;
 	public static boolean              isForgeMultipartLoaded = false;
-	public static boolean              isGregTechLoaded = false;
+	public static boolean              isGregtechLoaded = false;
 	public static boolean              isICBMClassicLoaded = false;
 	public static boolean              isIndustrialCraft2Loaded = false;
 	public static boolean              isNotEnoughItemsLoaded = false;
@@ -234,6 +235,16 @@ public class WarpDriveConfig {
 	public static boolean LOGGING_CHUNK_LOADING = true;
 	public static boolean LOGGING_ENTITY_FX = false;
 	public static boolean LOGGING_CLIENT_SYNCHRONIZATION = false;
+	
+	// Energy
+	public static String           ENERGY_DISPLAY_UNITS = "RF";
+	public static boolean          ENERGY_ENABLE_IC2_EU = true;
+	public static boolean          ENERGY_ENABLE_FE = true;
+	public static boolean          ENERGY_ENABLE_GTCE_EU = true;
+	public static boolean          ENERGY_ENABLE_RF = true;
+	public static float            ENERGY_OVERVOLTAGE_SHOCK_FACTOR = 1.0F;
+	public static float            ENERGY_OVERVOLTAGE_EXPLOSION_FACTOR = 1.0F;
+	public static int              ENERGY_SCAN_INTERVAL_TICKS = 20;
 	
 	// Starmap
 	public static int              STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS = 10;
@@ -454,9 +465,10 @@ public class WarpDriveConfig {
 	
 	// Subspace capacitor
 	public static int[]            CAPACITOR_MAX_ENERGY_STORED_BY_TIER = { 20000000, 800000, 4000000, 20000000 };
-	public static int[]            CAPACITOR_IC2_SINK_TIER_BY_TIER = { Integer.MAX_VALUE, 2, 3, 4 };
-	public static int[]            CAPACITOR_IC2_SOURCE_TIER_BY_TIER = { 20, 2, 3, 4 };
-	public static int[]            CAPACITOR_TRANSFER_PER_TICK_BY_TIER = { Integer.MAX_VALUE / 2, 200, 1000, 5000 };
+	public static String[]         CAPACITOR_IC2_SINK_TIER_NAME_BY_TIER = { "MaxV", "MV", "HV", "EV" };
+	public static String[]         CAPACITOR_IC2_SOURCE_TIER_NAME_BY_TIER = { "MaxV", "MV", "HV", "EV" };
+	public static int[]            CAPACITOR_FLUX_RATE_INPUT_BY_TIER = { Integer.MAX_VALUE / 2, 800, 4000, 20000 };
+	public static int[]            CAPACITOR_FLUX_RATE_OUTPUT_BY_TIER = { Integer.MAX_VALUE / 2, 800, 4000, 20000 };
 	public static double[]         CAPACITOR_EFFICIENCY_PER_UPGRADE = { 0.95D, 0.98D, 1.0D };
 	
 	// Laser lift
@@ -673,7 +685,7 @@ public class WarpDriveConfig {
 		isRedstoneFluxLoaded = Loader.isModLoaded("redstoneflux");
 		isComputerCraftLoaded = Loader.isModLoaded("computercraft");
 		isEnderIOLoaded = Loader.isModLoaded("enderio");
-		isGregTechLoaded = Loader.isModLoaded("gregtech");
+		isGregtechLoaded = Loader.isModLoaded("gregtech");
 		isIndustrialCraft2Loaded = Loader.isModLoaded("ic2");
 		isOpenComputersLoaded = Loader.isModLoaded("opencomputers");
 		
@@ -824,6 +836,19 @@ public class WarpDriveConfig {
 		LOGGING_CHUNK_HANDLER = config.get("logging", "enable_chunk_handler_logs", LOGGING_CHUNK_HANDLER, "Detailed chunk data logs to help debug the mod.").getBoolean(false);
 		LOGGING_CHUNK_LOADING = config.get("logging", "enable_chunk_loading_logs", LOGGING_CHUNK_LOADING, "Chunk loading logs, enable it to report chunk loaders updates").getBoolean(false);
 		LOGGING_ENTITY_FX = config.get("logging", "enable_entity_fx_logs", LOGGING_ENTITY_FX, "EntityFX logs, enable it to dump entityFX registry updates").getBoolean(false);
+		
+		// Energy handling
+		ENERGY_DISPLAY_UNITS = config.get("energy", "display_units", ENERGY_DISPLAY_UNITS, "display units for energy (EU, RF, FE, \u0230I)").getString();
+		ENERGY_ENABLE_FE = config.get("energy", "enable_FE", ENERGY_ENABLE_FE, "Enable Forge energy support, disable it for a pure EU or RF energy support").getBoolean(true);
+		ENERGY_ENABLE_GTCE_EU = config.get("energy", "enable_GTCE_EU", ENERGY_ENABLE_GTCE_EU, "Enable Gregtech EU energy support when the GregtechCE mod is present, disable otherwise").getBoolean(true);
+		ENERGY_ENABLE_IC2_EU = config.get("energy", "enable_IC2_EU", ENERGY_ENABLE_IC2_EU, "Enable IC2 EU energy support when the IndustrialCraft2 mod is present, disable otherwise").getBoolean(true);
+		ENERGY_ENABLE_RF = config.get("energy", "enable_RF", ENERGY_ENABLE_RF, "Enable RF energy support when the RedstoneFlux mod is present, disable otherwise").getBoolean(true);
+		ENERGY_OVERVOLTAGE_SHOCK_FACTOR = Commons.clamp(0.0F, 10.0F,
+			(float) config.get("energy", "overvoltage_shock_factor", ENERGY_OVERVOLTAGE_SHOCK_FACTOR, "Shock damage factor to entities in case of EU voltage overload, set to 0 to disable completely").getDouble());
+		ENERGY_OVERVOLTAGE_EXPLOSION_FACTOR = Commons.clamp(0.0F, 10.0F,
+			(float) config.get("energy", "overvoltage_explosion_factor", ENERGY_OVERVOLTAGE_EXPLOSION_FACTOR, "Explosion strength factor in case of EU voltage overload, set to 0 to disable completely").getDouble());
+		ENERGY_SCAN_INTERVAL_TICKS = Commons.clamp(1, 300,
+		                                           config.get("energy", "scan_interval_ticks", ENERGY_SCAN_INTERVAL_TICKS, "delay between scan for energy receivers (measured in ticks)").getInt());
 		
 		// Starmap registry
 		STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS = Commons.clamp(0, 300,
@@ -1152,14 +1177,17 @@ public class WarpDriveConfig {
 		CAPACITOR_MAX_ENERGY_STORED_BY_TIER = config.get("capacitor", "max_energy_stored_by_tier", CAPACITOR_MAX_ENERGY_STORED_BY_TIER, "Maximum energy stored for each subspace capacitor tier").getIntList();
 		clampByTier(0, Integer.MAX_VALUE, CAPACITOR_MAX_ENERGY_STORED_BY_TIER);
 		
-		CAPACITOR_IC2_SINK_TIER_BY_TIER = config.get("capacitor", "ic2_sink_tier_by_tier", CAPACITOR_IC2_SINK_TIER_BY_TIER, "IC2 energy sink tier (0 is BatBox, etc.) for each subspace capacitor tier").getIntList();
-		clampByTier(0, Integer.MAX_VALUE, CAPACITOR_IC2_SINK_TIER_BY_TIER);
+		CAPACITOR_IC2_SINK_TIER_NAME_BY_TIER = config.get("capacitor", "ic2_sink_tier_name_by_tier", CAPACITOR_IC2_SINK_TIER_NAME_BY_TIER, "IC2 energy sink tier (ULV, LV, MV, HV, EV, IV, LuV, ZPMV, UV, MaxV) for each subspace capacitor tier").getStringList();
+		clampByEnergyTierName("ULV", "MaxV", CAPACITOR_IC2_SINK_TIER_NAME_BY_TIER);
 		
-		CAPACITOR_IC2_SOURCE_TIER_BY_TIER = config.get("capacitor", "ic2_source_tier_by_tier", CAPACITOR_IC2_SOURCE_TIER_BY_TIER, "IC2 energy source tier (0 is BatBox, etc.) for each subspace capacitor tier").getIntList();
-		clampByTier(0, Integer.MAX_VALUE, CAPACITOR_IC2_SOURCE_TIER_BY_TIER);
+		CAPACITOR_IC2_SOURCE_TIER_NAME_BY_TIER = config.get("capacitor", "ic2_source_tier_name_by_tier", CAPACITOR_IC2_SOURCE_TIER_NAME_BY_TIER, "IC2 energy source tier (ULV, LV, MV, HV, EV, IV, LuV, ZPMV, UV, MaxV) for each subspace capacitor tier").getStringList();
+		clampByEnergyTierName("ULV", "MaxV", CAPACITOR_IC2_SOURCE_TIER_NAME_BY_TIER);
 		
-		CAPACITOR_TRANSFER_PER_TICK_BY_TIER = config.get("capacitor", "transfer_per_tick_by_tier", CAPACITOR_TRANSFER_PER_TICK_BY_TIER, "Internal energy transferred per tick for each subspace capacitor tier").getIntList();
-		clampByTier(0, Integer.MAX_VALUE, CAPACITOR_TRANSFER_PER_TICK_BY_TIER);
+		CAPACITOR_FLUX_RATE_INPUT_BY_TIER = config.get("capacitor", "flux_rate_input_per_tick_by_tier", CAPACITOR_FLUX_RATE_INPUT_BY_TIER, "Flux energy transferred per tick for each subspace capacitor tier").getIntList();
+		clampByTier(0, Integer.MAX_VALUE / 5, CAPACITOR_FLUX_RATE_INPUT_BY_TIER);
+		
+		CAPACITOR_FLUX_RATE_OUTPUT_BY_TIER = config.get("capacitor", "flux_rate_output_per_tick_by_tier", CAPACITOR_FLUX_RATE_OUTPUT_BY_TIER, "Flux energy transferred per tick for each subspace capacitor tier").getIntList();
+		clampByTier(0, Integer.MAX_VALUE / 5, CAPACITOR_FLUX_RATE_OUTPUT_BY_TIER);
 		
 		CAPACITOR_EFFICIENCY_PER_UPGRADE = config.get("capacitor", "efficiency_per_upgrade", CAPACITOR_EFFICIENCY_PER_UPGRADE, "Energy transfer efficiency for each upgrade apply, first value is without upgrades (0.8 means 20% loss)").getDoubleList();
 		assert CAPACITOR_EFFICIENCY_PER_UPGRADE.length >= 1;
@@ -1221,6 +1249,26 @@ public class WarpDriveConfig {
 		values[1] = Commons.clamp(min      , values[2], values[1]);
 		values[2] = Commons.clamp(values[1], values[3], values[2]);
 		values[3] = Commons.clamp(values[2], max      , values[3]);
+	}
+	
+	public static void clampByEnergyTierName(final String nameMin, final String nameMax, final String[] names) {
+		if (names.length != EnumTier.length) {
+			WarpDrive.logger.error(String.format("Invalid configuration value, expected %d string, got %d %s. Update your configuration and restart your game!",
+			                                     EnumTier.length, names.length, Arrays.toString(names)));
+			assert false;
+			return;
+		}
+		// convert to integer values
+		final int min = EnergyWrapper.EU_getTierByName(nameMin);
+		final int max = EnergyWrapper.EU_getTierByName(nameMax);
+		final int[] values = new int[EnumTier.length];
+		for (int index = 0; index < EnumTier.length; index++) {
+			values[index] = EnergyWrapper.EU_getTierByName(names[index]);
+		}
+		clampByTier(min, max, values);
+		for (int index = 0; index < EnumTier.length; index++) {
+			names[index] = EnergyWrapper.EU_nameTier[values[index]];
+		}
 	}
 	
 	public static void loadDictionary(final File file) {
@@ -1357,7 +1405,7 @@ public class WarpDriveConfig {
 		}
 		
 		// final boolean isGregTechLoaded = Loader.isModLoaded("gregtech");
-		if (isGregTechLoaded) {
+		if (isGregtechLoaded) {
 			CompatGregTech.register();
 		}
 		

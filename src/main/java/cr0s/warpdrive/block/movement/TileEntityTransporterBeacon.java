@@ -7,6 +7,7 @@ import cr0s.warpdrive.api.computer.ITransporterBeacon;
 import cr0s.warpdrive.block.TileEntityAbstractEnergyConsumer;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.StarMapRegistryItem;
 import cr0s.warpdrive.data.EnumStarMapEntryType;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -42,7 +43,6 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 	public TileEntityTransporterBeacon() {
 		super();
 		
-		IC2_sinkTier = 2;
 		isEnergyLostWhenBroken = false;
 		
 		peripheralName = "warpdriveTransporterBeacon";
@@ -53,8 +53,12 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 	}
 	
 	@Override
-	protected void onFirstUpdateTick() {
-		super.onFirstUpdateTick();
+	protected void onConstructed() {
+		super.onConstructed();
+		
+		energy_setParameters(WarpDriveConfig.TRANSPORTER_BEACON_MAX_ENERGY_STORED,
+		                     1024, 1024,
+		                     "MV", 2, "MV", 2);
 	}
 	
 	@Override
@@ -155,7 +159,9 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 	
 	@Override
 	public Object[] getEnergyRequired() {
-		return new Object[] { WarpDriveConfig.TRANSPORTER_BEACON_ENERGY_PER_TICK };
+		return new Object[] {
+				true,
+				EnergyWrapper.convert(WarpDriveConfig.TRANSPORTER_BEACON_ENERGY_PER_TICK, null) };
 	}
 	
 	// OpenComputers callback methods
@@ -200,11 +206,6 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 	}
 	
 	// TileEntityAbstractEnergy overrides
-	@Override
-	public int energy_getMaxStorage() {
-		return WarpDriveConfig.TRANSPORTER_BEACON_MAX_ENERGY_STORED;
-	}
-	
 	@Override
 	public boolean energy_canInput(final EnumFacing from) {
 		// only from bottom

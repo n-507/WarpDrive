@@ -3,7 +3,7 @@ if not term.isColor() then
   error()
 end
 
-function showError(message)
+local function showError(message)
   term.setBackgroundColor(colors.black)
   term.setTextColor(colors.red)
   term.write(message)
@@ -12,7 +12,7 @@ function showError(message)
   print()
 end
 
-function showErrorAndExit(message)
+local function showErrorAndExit(message)
   showError(message)
   error()
 end
@@ -36,16 +36,22 @@ end
 
 local radius = tonumber(argv[1])
 
-if radius < 1 or radius > 9999 then
-  showErrorAndExit("Radius must be between 1 and 9999")
+if radius < 1 or radius > 10000 then
+  showErrorAndExit("Radius must be between 1 and 10000")
 end
 
-local energy, energyMax = radar.energy()
-local energyRequired = radar.getEnergyRequired(radius)
-local scanDuration = radar.getScanDuration(radius)
-if energy < energyRequired then
-  showErrorAndExit("Low energy level... (" .. energy .. "/" .. energyRequired .. ")")
+local success, result = radar.getEnergyRequired(radius)
+if not success then
+  showErrorAndExit(result)
 end
+local energyRequired = result
+
+local energyStored, _, energyUnits = radar.getEnergyStatus()
+if energyStored < energyRequired then
+  showErrorAndExit("Low energy level... (" .. energyStored .. "/" .. energyRequired .. " " .. energyUnits .. ")")
+end
+
+local scanDuration = radar.getScanDuration(radius)
 radar.radius(radius)
 radar.start()
 os.sleep(0.5)

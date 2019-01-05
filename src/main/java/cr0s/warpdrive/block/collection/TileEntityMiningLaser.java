@@ -479,7 +479,7 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	}
 	
 	private Object[] state() {
-		final int energy = laserMedium_getEnergyStored();
+		final int energy = laserMedium_getEnergyStored(true);
 		final String status = getStatusHeaderInPureText();
 		final Integer retValuablesInLayer, retValuablesMined;
 		if (isActive()) {
@@ -560,7 +560,7 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	
 	@Override
 	public WarpDriveText getStatusHeader() {
-		final int energy = laserMedium_getEnergyStored();
+		final int energy = laserMedium_getEnergyStored(true);
 		WarpDriveText textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.error.internal_check_console");
 		if (currentState == STATE_IDLE) {
 			textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.mining_laser.status_line.idle");

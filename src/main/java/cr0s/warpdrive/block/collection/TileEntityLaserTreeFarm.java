@@ -673,7 +673,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 	}
 	
 	private Object[] state() {
-		final int energy = laserMedium_getEnergyStored();
+		final int energy = laserMedium_getEnergyStored(true);
 		final String status = getStatusHeaderInPureText();
 		final Integer retValuables, retValuablesIndex;
 		if (isFarming() && valuables != null) {
@@ -774,7 +774,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 	
 	@Override
 	public WarpDriveText getStatusHeader() {
-		final int energy = laserMedium_getEnergyStored();
+		final int energy = laserMedium_getEnergyStored(true);
 		WarpDriveText textState = new WarpDriveText(Commons.styleWarning, "warpdrive.error.internal_check_console");
 		if (currentState == STATE_IDLE) {
 			textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.laser_tree_farm.status_line.idle");

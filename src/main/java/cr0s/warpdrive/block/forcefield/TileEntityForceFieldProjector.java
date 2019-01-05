@@ -81,7 +81,6 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	private boolean legacy_isOn = false;
 	
 	// computed properties
-	private int maxEnergyStored;
 	private int cooldownTicks;
 	private int setupTicks;
 	private int updateTicks;
@@ -121,9 +120,6 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	public TileEntityForceFieldProjector() {
 		super();
 		
-		IC2_sinkTier = 4;
-		IC2_sourceTier = 4;
-		
 		peripheralName = "warpdriveForceFieldProjector";
 		addMethods(new String[] {
 			"min",
@@ -143,9 +139,17 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	}
 	
 	@Override
+	protected void onConstructed() {
+		super.onConstructed();
+		
+		energy_setParameters(PROJECTOR_MAX_ENERGY_STORED * (1 + 2 * enumTier.getIndex()), 4000, 4000,
+		                     "EV", 2, "EV", 0);
+	}
+	
+	@Override
 	protected void onFirstUpdateTick() {
 		super.onFirstUpdateTick();
-		maxEnergyStored = PROJECTOR_MAX_ENERGY_STORED * (1 + 2 * enumTier.getIndex());
+		
 		cooldownTicks = 0;
 		setupTicks = world.rand.nextInt(PROJECTOR_SETUP_TICKS);
 		updateTicks = world.rand.nextInt(PROJECTOR_PROJECTION_UPDATE_TICKS);
@@ -1166,11 +1170,6 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	}
 	
 	@Override
-	public int energy_getMaxStorage() {
-		return maxEnergyStored;
-	}
-	
-	@Override
 	public boolean energy_canInput(final EnumFacing from) {
 		return true;
 	}
@@ -1191,7 +1190,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	}
 	
 	private Object[] state() {    // isConnected, isPowered, shape
-		final int energy = energy_getEnergyStored();
+		final long energy = energy_getEnergyStored();
 		final String status = getStatusHeaderInPureText();
 		return new Object[] { status, isEnabled, isConnected, isPowered, getShape().name(), energy };
 	}

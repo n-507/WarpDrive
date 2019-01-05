@@ -686,7 +686,7 @@ warpdrive.video_channel.status_line.undefined=§7Le canal vidéo est non défini
 
 
 warpdrive.accelerator.guide.low_power.not_enough_storage=La capacité de stockage d'énergie est insuffisante; Nous avons besoin d'au moins %1$d pour continuer mais ne pouvons stocker que %2$d
-warpdrive.accelerator.guide.low_power.accelerating=Nous sommes à court d'énergie chef (%1$d > %2$d EU), les bunches de particules s'échappent, préparez-vous à une irradiation de masse!
+warpdrive.accelerator.guide.low_power.accelerating=Nous sommes à court d'énergie chef (%1$s > %2$s %3$s), les bunches de particules s'échappent, préparez-vous à une irradiation de masse!
 warpdrive.accelerator.guide.low_power.no_particles=Il nous faut plus d'énergie pour démarrer l'accélérateur!
 warpdrive.accelerator.guide.no_chiller=Cet accélérateur n'a aucun refroidisseur!
 
@@ -729,7 +729,9 @@ warpdrive.compat.guide.quantum_field_interference=Quantum field interference det
 warpdrive.compat.guide.draconic_evolution_portal=Portal detected!
 warpdrive.compat.guide.stargate_is_active=Stargate is active (%1$s)!
 
-warpdrive.energy.status_line=Le niveau d'énergie est de %1$s / %2$s EU.
+warpdrive.energy.status_line.charge=Chargé à
+warpdrive.energy.status_line.input_rate=Entrée à
+warpdrive.energy.status_line.output_rate=Sortie à
 warpdrive.energy.side.changed_to_input=Le coté %1$s est en mode Réception d'énergie!
 warpdrive.energy.side.changed_to_output=Le coté %1$s est en mode Emission d'énergie!
 warpdrive.energy.side.changed_to_disabled=Le coté %1$s side est en mode Inactif!
@@ -814,7 +816,7 @@ warpdrive.security_station.guide.player_unregistered=Tu es désormais détaché 
 warpdrive.ship.guide.cooling_countdown=Ship core is cooling down... %1$d s to go...
 warpdrive.ship.guide.pre_jumping=Running pre-jump checklist...
 warpdrive.ship.guide.warming_up=Ship core is warming up... %1$d s to go...
-warpdrive.ship.guide.insufficient_energy=Insufficient energy to jump! Core is currently charged with %1$d EU while jump requires %2$d EU
+warpdrive.ship.guide.insufficient_energy=Insufficient energy to jump! Core is currently charged with %1$s %3$s while jump requires %2$s %3$s
 warpdrive.ship.guide.warp_field_overlapping=Warp field intersects with other ship's field. Disable the other ship core to jump.
 warpdrive.ship.guide.cloaking_field_overlapping=Core is inside a cloaking field. Aborting. Disable cloaking field to jump!
 warpdrive.ship.guide.pre_jump_success=Ok

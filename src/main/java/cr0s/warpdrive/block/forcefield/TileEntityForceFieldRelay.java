@@ -85,7 +85,7 @@ public class TileEntityForceFieldRelay extends TileEntityAbstractForceField impl
 	
 	@Override
 	public Object[] getEnergyRequired() {
-		return new Object[0];
+		return new Object[] { false, "No energy consumption" };
 	}
 	
 	@Override

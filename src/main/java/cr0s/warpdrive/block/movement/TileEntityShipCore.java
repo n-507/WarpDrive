@@ -13,6 +13,7 @@ import cr0s.warpdrive.config.ShipMovementCosts;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.CelestialObjectManager;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumShipCommand;
 import cr0s.warpdrive.data.EnumShipCoreState;
 import cr0s.warpdrive.data.EnumShipMovementType;
@@ -134,9 +135,16 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	}
 	
 	@Override
-	protected void onFirstUpdateTick() {
-		super.onFirstUpdateTick();
-		facing = world.getBlockState(pos).getValue(BlockProperties.FACING);
+	protected void onConstructed() {
+		super.onConstructed();
+		
+		if (world != null) {// skip if we're in item form
+			facing = world.getBlockState(pos).getValue(BlockProperties.FACING);
+		}
+		
+		energy_setParameters(WarpDriveConfig.SHIP_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()],
+		                     65536, 65536,
+		                     "EV", 2, "EV", 0);
 	}
 	
 	@Override
@@ -979,8 +987,11 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			final JumpSequencer jump = new JumpSequencer(this, EnumShipMovementType.GATE_ACTIVATING, targetName, 0, 0, 0, (byte) 0, destX, destY, destZ);
 			jump.enable();
 		} else {
+			final String units = WarpDriveConfig.ENERGY_DISPLAY_UNITS;
 			Commons.messageToAllPlayersInArea(this, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.insufficient_energy",
-			                                                          energy_getEnergyStored(), shipMovementCosts.energyRequired));
+			                                                          EnergyWrapper.format(energy_getEnergyStored(), units),
+			                                                          EnergyWrapper.format(shipMovementCosts.energyRequired, units),
+			                                                          units));
 		}
 	}
 	
@@ -989,8 +1000,11 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		final int requiredEnergy = shipMovementCosts.energyRequired;
 		
 		if (!energy_consume(requiredEnergy, true)) {
+			final String units = WarpDriveConfig.ENERGY_DISPLAY_UNITS;
 			commandDone(false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.insufficient_energy",
-			                                     energy_getEnergyStored(), requiredEnergy));
+			                                     EnergyWrapper.format(energy_getEnergyStored(), units),
+			                                     EnergyWrapper.format(requiredEnergy, units),
+			                                     units));
 			return;
 		}
 		
@@ -1033,8 +1047,11 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		}
 		
 		if (!energy_consume(requiredEnergy, false)) {
+			final String units = WarpDriveConfig.ENERGY_DISPLAY_UNITS;
 			commandDone(false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.insufficient_energy",
-			                                     energy_getEnergyStored(), requiredEnergy));
+			                                     EnergyWrapper.format(energy_getEnergyStored(), units),
+			                                     EnergyWrapper.format(requiredEnergy, units),
+			                                     units));
 			return;
 		}
 		
@@ -1095,11 +1112,6 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	public ITextComponent getBoundingBoxStatus() {
 		return super.getStatusPrefix()
 			.appendSibling(new TextComponentTranslation(showBoundingBox ? "tile.warpdrive.movement.ship_core.bounding_box.enabled" : "tile.warpdrive.movement.ship_core.bounding_box.disabled"));
-	}
-	
-	@Override
-	public int energy_getMaxStorage() {
-		return WarpDriveConfig.SHIP_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()];
 	}
 	
 	@Override
@@ -1250,7 +1262,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		if (energyRequired < 0) {
 			return new Object[] { false, reason.getUnformattedComponentText() };
 		}
-		return new Object[] { true, energyRequired };
+		return new Object[] { true, EnergyWrapper.convert(energyRequired, null) };
 	}
 	
 	@Override
