@@ -156,6 +156,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			
 			// report cooldown time when a command is requested
 			if ( isEnabled
+			  && isCommandConfirmed
 			  && enumShipCommand != EnumShipCommand.IDLE
 			  && enumShipCommand != EnumShipCommand.MAINTENANCE ) {
 				if (ticksCooldown % 20 == 0) {
@@ -306,7 +307,8 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		
 		switch (stateCurrent) {
 		case IDLE:
-			if ( enumShipCommand != EnumShipCommand.IDLE
+			if ( isCommandConfirmed
+			  && enumShipCommand != EnumShipCommand.IDLE
 			  && enumShipCommand != EnumShipCommand.MAINTENANCE ) {
 				commandCurrent = enumShipCommand;
 				stateCurrent = EnumShipCoreState.ONLINE;
