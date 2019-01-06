@@ -533,7 +533,7 @@ function ship_page_crew()
       w.status_showWarning(message)
     else
       w.writeLn("Attached players:")
-      local stringPlayers, _ = ship.getAttachedPlayers()
+      -- local stringPlayers, _ = ship.getAttachedPlayers()
       if stringPlayers == nil or stringPlayers == "" then
         stringPlayers = "~ no registered player ~"
       end
