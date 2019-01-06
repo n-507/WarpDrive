@@ -85,11 +85,15 @@ public class TooltipHandler {
 		
 		// add burn time details
 		if (WarpDriveConfig.TOOLTIP_ADD_BURN_TIME.isEnabled(isSneaking, isCreativeMode)) {
-			final int fuelEvent = ForgeEventFactory.getItemBurnTime(event.getItemStack());
-			final int fuelFurnace = Math.round(TileEntityFurnace.getItemBurnTime(event.getItemStack()));
-			final int fuelValue = fuelEvent >= 0 ? 0 : fuelFurnace;
-			if (fuelValue > 0) {
-				Commons.addTooltip(event.getToolTip(), String.format("§8Fuel to burn %.1f ores", fuelValue / 200.0F));
+			try {
+				final int fuelEvent = ForgeEventFactory.getItemBurnTime(event.getItemStack());
+				final int fuelFurnace = Math.round(TileEntityFurnace.getItemBurnTime(event.getItemStack()));
+				final int fuelValue = fuelEvent >= 0 ? 0 : fuelFurnace;
+				if (fuelValue > 0) {
+					Commons.addTooltip(event.getToolTip(), String.format("§8Fuel to burn %.1f ores", fuelValue / 200.0F));
+				}
+			} catch (final Exception exception) {
+				// no operation
 			}
 		}
 		
