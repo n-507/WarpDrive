@@ -22,6 +22,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -137,25 +138,44 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	
 	@Override
 	public boolean removedByPlayer(@Nonnull final IBlockState blockState, final World world, @Nonnull final BlockPos blockPos,
-	                               @Nonnull final EntityPlayer player, final boolean willHarvest) {
-		return willHarvest || super.removedByPlayer(blockState, world, blockPos, player, false);
+	                               @Nonnull final EntityPlayer entityPlayer, final boolean willHarvest) {
+		final boolean bResult;
+		if (willHarvest) {// harvestBlock will be called later on, we'll need the TileEntity at that time, so we don't call ancestor here so we don't set block to air
+			this.onBlockHarvested(world, blockPos, blockState, entityPlayer);
+			bResult = true;
+		} else {
+			bResult = super.removedByPlayer(blockState, world, blockPos, entityPlayer, false);
+		}
+		return bResult;
 	}
 	
 	@Override
-	public void dropBlockAsItemWithChance(final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState, final float chance, final int fortune) {
+	public void dropBlockAsItemWithChance(final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState,
+	                                      final float chance, final int fortune) {
+		super.dropBlockAsItemWithChance(world, blockPos, blockState, chance, fortune); // calls getDrops() here below
+		if ( !world.isRemote
+		  && !world.restoringBlockSnapshots) {
+			world.setBlockToAir(blockPos);
+		}
+	}
+	
+	// willHarvest was true during the call to removedPlayer so TileEntity is still there when drops will be computed hereafter
+	@Override
+	public void getDrops(@Nonnull final NonNullList<ItemStack> drops,
+	                     final IBlockAccess blockAccess, final BlockPos blockPos, @Nonnull final IBlockState blockState,
+	                     final int fortune) {
 		final ItemStack itemStack = new ItemStack(this);
 		itemStack.setItemDamage(damageDropped(blockState));
-		final TileEntity tileEntity = world.getTileEntity(blockPos);
+		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
 		if (tileEntity == null) {
 			WarpDrive.logger.error(String.format("Missing tile entity for %s %s",
-			                                     this, Commons.format(world, blockPos)));
+			                                     this, Commons.format(blockAccess, blockPos)));
 		} else if (tileEntity instanceof TileEntityAbstractBase) {
 			final NBTTagCompound tagCompound = new NBTTagCompound();
 			((TileEntityAbstractBase) tileEntity).writeItemDropNBT(tagCompound);
 			itemStack.setTagCompound(tagCompound);
 		}
-		world.setBlockToAir(blockPos);
-		super.dropBlockAsItemWithChance(world, blockPos, blockState, chance, fortune);
+		drops.add(itemStack);
 	}
 	
 	@Nonnull
