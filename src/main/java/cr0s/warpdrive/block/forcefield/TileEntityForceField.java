@@ -118,7 +118,7 @@ public class TileEntityForceField extends TileEntityAbstractBase {
 				cache_lightCamouflage = forceFieldSetup.getCamouflageLight();
 			}
 		}
-		IBlockState blockState = world.getBlockState(pos);
+		final IBlockState blockState = world.getBlockState(pos);
 		world.notifyBlockUpdate(pos, blockState, blockState, 3);
 	}
 	

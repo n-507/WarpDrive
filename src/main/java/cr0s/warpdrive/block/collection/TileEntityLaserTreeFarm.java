@@ -272,8 +272,8 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 				final BlockPos valuable = valuables.get(valuableIndex);
 				final IBlockState blockStateValuable = world.getBlockState(valuable);
 				valuableIndex++;
-				boolean isLog = isLog(blockStateValuable.getBlock());
-				boolean isLeaf = isLeaf(blockStateValuable.getBlock());
+				final boolean isLog = isLog(blockStateValuable.getBlock());
+				final boolean isLeaf = isLeaf(blockStateValuable.getBlock());
 				
 				// check area protection
 				if (isBlockBreakCanceled(null, world, valuable)) {
