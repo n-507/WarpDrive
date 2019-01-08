@@ -290,6 +290,7 @@ public class WarpDriveConfig {
 	
 	// Laser medium
 	public static int[]            LASER_MEDIUM_MAX_ENERGY_STORED_BY_TIER = { 1000000, 10000, 30000, 100000 };
+	public static double[]         LASER_MEDIUM_FACTOR_BY_TIER = { 1.25D, 0.5D, 1.0D, 1.5D };
 	
 	// Laser Emitter
 	// 1 main laser + 4 boosting lasers = 10 * 100k + 0.6 * 40 * 100k = 3.4M
@@ -356,12 +357,16 @@ public class WarpDriveConfig {
 	public static double           MINING_LASER_FORTUNE_ENERGY_FACTOR = 1.5;
 	
 	// Tree farm
+	// oak      tree height is 8 to 11 logs + 2 leaves
+	// dark oak tree height is up to 25 logs + 2 leaves
+	// jungle   tree height is up to 30 logs + 1 leaf
+	// => basic setup is 8, then 18, then up to 32
 	public static int              TREE_FARM_MAX_MEDIUMS_COUNT = 5;
 	public static int              TREE_FARM_MAX_SCAN_RADIUS_NO_LASER_MEDIUM = 3;
 	public static int              TREE_FARM_MAX_SCAN_RADIUS_PER_LASER_MEDIUM = 2;
 	public static int              TREE_FARM_totalMaxRadius = 0;
-	public static int              TREE_FARM_MAX_LOG_DISTANCE = 8;
-	public static int              TREE_FARM_MAX_LOG_DISTANCE_PER_MEDIUM = 4;
+	public static int              TREE_FARM_MAX_LOG_DISTANCE_NO_LASER_MEDIUM = 8;
+	public static int              TREE_FARM_MAX_LOG_DISTANCE_PER_MEDIUM = 6;
 	
 	// Cloaking
 	public static int              CLOAKING_MAX_ENERGY_STORED = 500000000;
@@ -936,6 +941,9 @@ public class WarpDriveConfig {
 		LASER_MEDIUM_MAX_ENERGY_STORED_BY_TIER =
 				config.get("laser_medium", "max_energy_stored_by_tier", LASER_MEDIUM_MAX_ENERGY_STORED_BY_TIER, "Maximum energy stored for a given tier").getIntList();
 		clampByTier(1, Integer.MAX_VALUE, LASER_MEDIUM_MAX_ENERGY_STORED_BY_TIER);
+		LASER_MEDIUM_FACTOR_BY_TIER =
+				config.get("laser_medium", "bonus_factor_by_tier", LASER_MEDIUM_FACTOR_BY_TIER, "Bonus multiplier of a laser medium line for a given tier").getDoubleList();
+		clampByTier(0.0D, 4.0D, LASER_MEDIUM_FACTOR_BY_TIER);
 		
 		// Laser cannon
 		LASER_CANNON_MAX_MEDIUMS_COUNT = Commons.clamp(1, 64,
@@ -1048,8 +1056,8 @@ public class WarpDriveConfig {
 				config.get("tree_farm", "max_scan_radius_per_laser_medium", TREE_FARM_MAX_SCAN_RADIUS_PER_LASER_MEDIUM, "Bonus to maximum scan radius per laser medium, on X and Z axis, measured in blocks").getInt());
 		TREE_FARM_totalMaxRadius = TREE_FARM_MAX_SCAN_RADIUS_NO_LASER_MEDIUM + TREE_FARM_MAX_MEDIUMS_COUNT * TREE_FARM_MAX_SCAN_RADIUS_PER_LASER_MEDIUM;
 		
-		TREE_FARM_MAX_LOG_DISTANCE = Commons.clamp(1, 64,
-				config.get("tree_farm", "max_reach_distance", TREE_FARM_MAX_LOG_DISTANCE, "Maximum reach distance of the laser without any laser medium, measured in blocks").getInt());
+		TREE_FARM_MAX_LOG_DISTANCE_NO_LASER_MEDIUM = Commons.clamp(1, 64,
+				config.get("tree_farm", "max_reach_distance_no_laser_medium", TREE_FARM_MAX_LOG_DISTANCE_NO_LASER_MEDIUM, "Maximum reach distance of the laser without any laser medium, measured in blocks").getInt());
 		TREE_FARM_MAX_LOG_DISTANCE_PER_MEDIUM = Commons.clamp(0, 16,
 				config.get("tree_farm", "max_reach_distance_per_laser_medium", TREE_FARM_MAX_LOG_DISTANCE_PER_MEDIUM, "Bonus to maximum reach distance per laser medium, measured in blocks").getInt());
 		
@@ -1191,7 +1199,20 @@ public class WarpDriveConfig {
 	
 	public static void clampByTier(final int min, final int max, final int[] values) {
 		if (values.length != EnumTier.length) {
-			WarpDrive.logger.error(String.format("Invalid configuration value, expected %d integers, got %d %s. Update your configuration and restart your game!",
+			WarpDrive.logger.error(String.format("Invalid configuration value, expected %d values, got %d %s. Update your configuration and restart your game!",
+			                                     EnumTier.length, values.length, Arrays.toString(values)));
+			assert false;
+			return;
+		}
+		values[0] = Commons.clamp(min      , max      , values[0]);
+		values[1] = Commons.clamp(min      , values[2], values[1]);
+		values[2] = Commons.clamp(values[1], values[3], values[2]);
+		values[3] = Commons.clamp(values[2], max      , values[3]);
+	}
+	
+	public static void clampByTier(final double min, final double max, final double[] values) {
+		if (values.length != EnumTier.length) {
+			WarpDrive.logger.error(String.format("Invalid configuration value, expected %d values, got %d %s. Update your configuration and restart your game!",
 			                                     EnumTier.length, values.length, Arrays.toString(values)));
 			assert false;
 			return;

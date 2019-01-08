@@ -99,10 +99,10 @@ public class CompatRustic implements IBlockTransformer {
 		if (classBlockStakeTied.isInstance(block)) {// @TODO Rustic mod is forcing drops here, not sure how to work around it without ASM => anchor block
 			final BlockPos blockPos = new BlockPos(x, y, z);
 			// get all horizontal ropes
-			final Set<BlockPos> setBlockPosHorizontalRopes = Commons.getConnectedBlocks(world, blockPos, Commons.HORIZONTAL_DIRECTIONS, setBlockRope, 16);
+			final Set<BlockPos> setBlockPosHorizontalRopes = Commons.getConnectedBlocks(world, blockPos, Commons.DIRECTIONS_HORIZONTAL, setBlockRope, 16);
 			for (final BlockPos blockPosHorizontalRope : setBlockPosHorizontalRopes) {
 				// get all vertical/hanging ropes
-				final Set<BlockPos> setBlockPosVerticalRopes = Commons.getConnectedBlocks(world, blockPosHorizontalRope, Commons.VERTICAL_DIRECTIONS, setBlockRope, 16);
+				final Set<BlockPos> setBlockPosVerticalRopes = Commons.getConnectedBlocks(world, blockPosHorizontalRope, Commons.DIRECTIONS_VERTICAL, setBlockRope, 16);
 				for (final BlockPos blockPosVerticalRope : setBlockPosVerticalRopes) {
 					final boolean isDone = world.setBlockToAir(blockPosVerticalRope);
 					if (!isDone) {

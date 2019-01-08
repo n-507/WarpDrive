@@ -494,7 +494,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 	
 	private void updateParameters() {
 		final int maxScanRadius = WarpDriveConfig.TREE_FARM_MAX_SCAN_RADIUS_NO_LASER_MEDIUM
-		                        + cache_laserMedium_count * WarpDriveConfig.TREE_FARM_MAX_SCAN_RADIUS_PER_LASER_MEDIUM;
+		                        + (int) Math.floor(cache_laserMedium_factor * WarpDriveConfig.TREE_FARM_MAX_SCAN_RADIUS_PER_LASER_MEDIUM);
 		radiusX_actual = Math.min(radiusX_requested, maxScanRadius);
 		radiusZ_actual = Math.min(radiusZ_requested, maxScanRadius);
 	}
@@ -575,9 +575,9 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 			if (breakLeaves) {
 				whitelist.addAll(Dictionary.BLOCKS_LEAVES);
 			}
-			final int maxLogDistance = WarpDriveConfig.TREE_FARM_MAX_LOG_DISTANCE
-			                         + cache_laserMedium_count * WarpDriveConfig.TREE_FARM_MAX_LOG_DISTANCE_PER_MEDIUM;
-			logPositions = Commons.getConnectedBlocks(world, logPositions, Commons.UP_DIRECTIONS, whitelist, maxLogDistance);
+			final int maxLogDistance = WarpDriveConfig.TREE_FARM_MAX_LOG_DISTANCE_NO_LASER_MEDIUM
+			                         + (int) Math.floor(cache_laserMedium_factor * WarpDriveConfig.TREE_FARM_MAX_LOG_DISTANCE_PER_MEDIUM);
+			logPositions = Commons.getConnectedBlocks(world, logPositions, Commons.DIRECTIONS_UP_CONE, whitelist, maxLogDistance);
 		}
 		if (WarpDriveConfig.LOGGING_COLLECTION) {
 			WarpDrive.logger.info(String.format("Found %d valuables", logPositions.size()));

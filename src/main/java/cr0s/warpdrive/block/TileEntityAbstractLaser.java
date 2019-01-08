@@ -28,6 +28,7 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 	// computed properties
 	protected EnumFacing laserMedium_direction = null;
 	protected int cache_laserMedium_count = 0;
+	protected double cache_laserMedium_factor = 1.0D;
 	protected int cache_laserMedium_energyStored = 0;
 	protected int cache_laserMedium_maxStorage = 0;
 	
@@ -100,6 +101,7 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 				// save results
 				laserMedium_direction = facing;
 				cache_laserMedium_count = count;
+				cache_laserMedium_factor = Math.max(1.0D, count * WarpDriveConfig.LASER_MEDIUM_FACTOR_BY_TIER[enumTier.getIndex()]);
 				cache_laserMedium_energyStored = energyStored;
 				cache_laserMedium_maxStorage = maxStorage;
 				return;
@@ -109,6 +111,7 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractMachine 
 		// nothing found
 		laserMedium_direction = null;
 		cache_laserMedium_count = 0;
+		cache_laserMedium_factor = 0.0D;
 		cache_laserMedium_energyStored = 0;
 		cache_laserMedium_maxStorage = 0;
 	}

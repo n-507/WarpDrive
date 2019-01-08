@@ -110,7 +110,7 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 		
 		final boolean isOnPlanet = CelestialObjectManager.hasAtmosphere(world, pos.getX(), pos.getZ());
 		radiusCapacity = WarpDriveConfig.MINING_LASER_RADIUS_NO_LASER_MEDIUM
-		               + cache_laserMedium_count * WarpDriveConfig.MINING_LASER_RADIUS_PER_LASER_MEDIUM;
+		               + (int) Math.floor(cache_laserMedium_factor * WarpDriveConfig.MINING_LASER_RADIUS_PER_LASER_MEDIUM);
 		
 		delayTicks--;
 		if (currentState == STATE_WARMUP) {

@@ -37,11 +37,13 @@ public class AirSpreader {
 		}
 		
 		// identify leaking directions
-		EnumFacing[] directions = EnumFacing.VALUES;
+		final EnumFacing[] directions;
 		if (stateCenter.isLeakingHorizontally()) {
-			directions = Commons.HORIZONTAL_DIRECTIONS;
+			directions = EnumFacing.HORIZONTALS;
 		} else if (stateCenter.isLeakingVertically()) {
-			directions = Commons.VERTICAL_DIRECTIONS;
+			directions = Commons.FACINGS_VERTICAL;
+		} else {
+			directions = EnumFacing.VALUES;
 		}
 		
 		// collect air state in adjacent blocks

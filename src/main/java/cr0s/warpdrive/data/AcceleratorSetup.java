@@ -179,7 +179,7 @@ public class AcceleratorSetup extends GlobalPosition {
 			WarpDrive.blockElectromagnets_glass[2],
 			WarpDrive.blockVoidShellPlain,
 			WarpDrive.blockVoidShellGlass);
-		final Set<BlockPos> connections = Commons.getConnectedBlocks(world, new BlockPos(x, y, z), EnumFacing.VALUES, whitelist, 3);
+		final Set<BlockPos> connections = Commons.getConnectedBlocks(world, new BlockPos(x, y, z), Commons.DIRECTIONS_ANY, whitelist, 3);
 		VectorI firstVoidShell = null;
 		for (final BlockPos connection : connections) {
 			final Block block = world.getBlockState(connection).getBlock();
@@ -201,7 +201,7 @@ public class AcceleratorSetup extends GlobalPosition {
 			WarpDrive.blockVoidShellPlain,
 			WarpDrive.blockVoidShellGlass);
 		TrajectoryPoint trajectoryPoint = null;
-		for (final EnumFacing direction : Commons.HORIZONTAL_DIRECTIONS) {
+		for (final EnumFacing direction : EnumFacing.HORIZONTALS) {
 			final VectorI next = firstVoidShell.clone(direction);
 			if (whitelist.contains(next.getBlockState_noChunkLoading(world).getBlock())) {
 				trajectoryPoint = new TrajectoryPoint(world, firstVoidShell.translate(direction), direction);

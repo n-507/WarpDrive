@@ -416,15 +416,38 @@ public class Commons {
 	
 	// searching methods
 	
-	public static final EnumFacing[] UP_DIRECTIONS = { EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST };
-	public static final EnumFacing[] HORIZONTAL_DIRECTIONS = { EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST };
-	public static final EnumFacing[] VERTICAL_DIRECTIONS = { EnumFacing.UP, EnumFacing.DOWN };
+	public static final EnumFacing[] FACINGS_VERTICAL = { EnumFacing.DOWN, EnumFacing.UP };
+	public static final VectorI[] DIRECTIONS_UP_CONE = {
+			new VectorI( 0,  1,  0),
+			new VectorI( 1,  0,  0),
+			new VectorI( 0,  0,  1),
+			new VectorI(-1,  0,  0),
+			new VectorI( 0,  0, -1),
+			new VectorI( 1,  1,  0),
+			new VectorI( 0,  1,  1),
+			new VectorI(-1,  1,  0),
+			new VectorI( 0,  1, -1) };
+	public static final VectorI[] DIRECTIONS_HORIZONTAL = {
+			new VectorI( 1,  0,  0),
+			new VectorI( 0,  0,  1),
+			new VectorI(-1,  0,  0),
+			new VectorI( 0,  0, -1) };
+	public static final VectorI[] DIRECTIONS_VERTICAL = {
+			new VectorI( 0, -1,  0),
+			new VectorI( 0,  1,  0) };
+	public static final VectorI[] DIRECTIONS_ANY = {
+			new VectorI( 0, -1,  0),
+			new VectorI( 0,  1,  0),
+			new VectorI( 1,  0,  0),
+			new VectorI( 0,  0,  1),
+			new VectorI(-1,  0,  0),
+			new VectorI( 0,  0, -1) };
 	
-	public static Set<BlockPos> getConnectedBlocks(final World world, final BlockPos start, final EnumFacing[] directions, final Set<Block> whitelist, final int maxRange, final BlockPos... ignore) {
+	public static Set<BlockPos> getConnectedBlocks(final World world, final BlockPos start, final VectorI[] directions, final Set<Block> whitelist, final int maxRange, final BlockPos... ignore) {
 		return getConnectedBlocks(world, Collections.singletonList(start), directions, whitelist, maxRange, ignore);
 	}
 	
-	public static Set<BlockPos> getConnectedBlocks(final World world, final Collection<BlockPos> start, final EnumFacing[] directions, final Set<Block> whitelist, final int maxRange, final BlockPos... ignore) {
+	public static Set<BlockPos> getConnectedBlocks(final World world, final Collection<BlockPos> start, final VectorI[] directions, final Set<Block> whitelist, final int maxRange, final BlockPos... ignore) {
 		final Set<BlockPos> toIgnore = new HashSet<>();
 		if (ignore != null) {
 			toIgnore.addAll(Arrays.asList(ignore));
@@ -444,8 +467,10 @@ public class Commons {
 					iterated.add(current);
 				}
 				
-				for(final EnumFacing direction : directions) {
-					final BlockPos next = current.offset(direction);
+				for(final VectorI direction : directions) {
+					final BlockPos next = new BlockPos(current.getX() + direction.x,
+					                                   current.getY() + direction.y,
+					                                   current.getZ() + direction.z );
 					if (!iterated.contains(next) && !toIgnore.contains(next) && !toIterate.contains(next) && !toIterateNext.contains(next)) {
 						if (whitelist.contains(new VectorI(next).getBlockState_noChunkLoading(world).getBlock())) {
 							toIterateNext.add(next);
