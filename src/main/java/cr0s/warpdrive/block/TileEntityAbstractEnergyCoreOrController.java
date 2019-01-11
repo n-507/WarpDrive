@@ -42,6 +42,6 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 		                     getClass().getSimpleName(),
 		                     name,
 		                     Commons.format(world, pos),
-		                     CC_connectedComputers == null ? "~NULL~" : CC_connectedComputers);
+		                     computer_isConnected() ? "Connected" : "Disconnected" );
 	}
 }

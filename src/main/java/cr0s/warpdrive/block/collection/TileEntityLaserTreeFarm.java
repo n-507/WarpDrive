@@ -489,7 +489,9 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 	protected void stop() {
 		super.stop();
 		currentState = STATE_IDLE;
-		updateBlockState(null, BlockLaserTreeFarm.MODE, EnumLaserTreeFarmMode.INACTIVE);
+		if (Commons.isSafeThread()) {
+			updateBlockState(null, BlockLaserTreeFarm.MODE, EnumLaserTreeFarmMode.INACTIVE);
+		}
 	}
 	
 	private void updateParameters() {

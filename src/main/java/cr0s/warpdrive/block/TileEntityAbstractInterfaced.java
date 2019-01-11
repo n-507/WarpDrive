@@ -29,10 +29,9 @@ import javax.annotation.Nonnull;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -62,11 +61,11 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	protected volatile List<String> CC_scripts = null;
 	
 	// OpenComputer specific properties
-	protected Node		OC_node = null;
-	protected boolean	OC_addedToNetwork = false;
+	private Node     OC_node = null;
+	private boolean  OC_addedToNetwork = false;
 	
 	// ComputerCraft specific properties
-	protected final HashMap<Integer, IComputerAccess> CC_connectedComputers = new HashMap<>();
+	private final CopyOnWriteArraySet<IComputerAccess> CC_connectedComputers = new CopyOnWriteArraySet<>();
 	
 	public TileEntityAbstractInterfaced() {
 		super();
@@ -324,19 +323,20 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		return integers.toArray(new Integer[0]);
 	}
 	
-	// ComputerCraft IPeripheral methods
-	@Nonnull
-	@Override
-	@Optional.Method(modid = "computercraft")
-	public String getType() {
-		return peripheralName;
-	}
-	
-	@Nonnull
-	@Override
-	@Optional.Method(modid = "computercraft")
-	public String[] getMethodNames() {
-		return methodsArray;
+	// Common WarpDrive API
+	public boolean computer_isConnected() {
+		if (WarpDriveConfig.isComputerCraftLoaded) {
+			if (!CC_connectedComputers.isEmpty()) {
+				return true;
+			}
+		}
+		if (WarpDriveConfig.isOpenComputersLoaded) {
+			if (OC_node != null) {
+				final Iterable<Node> iterableNodes = OC_node.reachableNodes();
+				return iterableNodes.iterator().hasNext();
+			}
+		}
+		return false;
 	}
 	
 	protected VectorI computer_getVectorI(final VectorI vDefault, final Object[] arguments) {
@@ -402,6 +402,21 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		return uuidDefault;
 	}
 	
+	// ComputerCraft IPeripheral methods
+	@Nonnull
+	@Override
+	@Optional.Method(modid = "computercraft")
+	public String getType() {
+		return peripheralName;
+	}
+	
+	@Nonnull
+	@Override
+	@Optional.Method(modid = "computercraft")
+	public String[] getMethodNames() {
+		return methodsArray;
+	}
+	
 	@Override
 	@Optional.Method(modid = "computercraft")
 	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {
@@ -430,8 +445,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	@Override
 	@Optional.Method(modid = "computercraft")
 	public void attach(@Nonnull final IComputerAccess computerAccess) {
-		final int id = computerAccess.getID();
-		CC_connectedComputers.put(id, computerAccess);
+		CC_connectedComputers.add(computerAccess);
 		if (isInterfaceEnabled()) {
 			CC_mount(computerAccess);
 		}
@@ -439,7 +453,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	
 	@Optional.Method(modid = "computercraft")
 	private void CC_mount() {
-		for (final IComputerAccess computerAccess : CC_connectedComputers.values()) {
+		for (final IComputerAccess computerAccess : CC_connectedComputers) {
 			CC_mount(computerAccess);
 		}
 	}
@@ -477,7 +491,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	
 	@Optional.Method(modid = "computercraft")
 	private void CC_unmount() {
-		for (final IComputerAccess computerAccess : CC_connectedComputers.values()) {
+		for (final IComputerAccess computerAccess : CC_connectedComputers) {
 			CC_unmount(computerAccess);
 		}
 	}
@@ -506,12 +520,11 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	
 	@Override
 	@Optional.Method(modid = "computercraft")
-	public void detach(@Nonnull final IComputerAccess computer) {
+	public void detach(@Nonnull final IComputerAccess computerAccess) {
 		if (isInterfaceEnabled()) {
-			CC_unmount(computer);
+			CC_unmount(computerAccess);
 		}
-		final int id = computer.getID();
-		CC_connectedComputers.remove(id);
+		CC_connectedComputers.remove(computerAccess);
 	}
 	
 	@Override
@@ -529,8 +542,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 			WarpDrive.logger.info(this + " Sending event '" + eventName + "'");
 		}
 		if (WarpDriveConfig.isComputerCraftLoaded) {
-			for (final Map.Entry<Integer, IComputerAccess> integerIComputerAccessEntry : CC_connectedComputers.entrySet()) {
-				final IComputerAccess computerAccess = integerIComputerAccessEntry.getValue();
+			for (final IComputerAccess computerAccess : CC_connectedComputers) {
 				computerAccess.queueEvent(eventName, arguments);
 			}
 		}

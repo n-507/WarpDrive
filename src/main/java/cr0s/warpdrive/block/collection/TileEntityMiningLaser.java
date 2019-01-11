@@ -248,7 +248,9 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	protected void stop() {
 		super.stop();
 		currentState = STATE_IDLE;
-		updateBlockState(null, BlockMiningLaser.MODE, EnumMiningLaserMode.INACTIVE);
+		if (Commons.isSafeThread()) {
+			updateBlockState(null, BlockMiningLaser.MODE, EnumMiningLaserMode.INACTIVE);
+		}
 	}
 	
 	private boolean canDig(final IBlockState blockState, final BlockPos blockPos) {

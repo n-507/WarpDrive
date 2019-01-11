@@ -6,6 +6,7 @@ import cr0s.warpdrive.block.TileEntityAbstractEnergyConsumer;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObject;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.RadarEcho;
 import cr0s.warpdrive.data.StarMapRegistry;
 import cr0s.warpdrive.data.Vector3;
@@ -20,6 +21,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
@@ -29,13 +31,12 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	
 	private ArrayList<RadarEcho> results;
 	
-	// radius defined for next scan
+	// persistent properties
 	private int radius = 0;
 	
-	// radius for ongoing scan
-	private int scanningRadius = 0;
-	private int scanningDuration_ticks = 0;
-	private int scanning_ticks = 0;
+	private boolean isScanning = false;
+	private int scanning_radius = 0;
+	private int scanning_countdown_ticks = 0;
 	
 	public TileEntityRadar() {
 		super();
@@ -61,33 +62,52 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 			return;
 		}
 		
-		try {
-			if (getBlockMetadata() == 2) {
-				scanning_ticks++;
-				if (scanning_ticks > scanningDuration_ticks) {
-					results = WarpDrive.starMap.getRadarEchos(this, scanningRadius);
-					if (WarpDriveConfig.LOGGING_RADAR) {
-						WarpDrive.logger.info(this + " Scan found " + results.size() + " results in " + scanningRadius + " radius...");
-					}
-					
-					updateBlockState(null, BlockRadar.MODE, EnumRadarMode.ACTIVE);
-					scanning_ticks = 0;
-				}
+		final IBlockState blockState = world.getBlockState(pos);
+		if (!isScanning) {
+			if (computer_isConnected()) {
+				updateBlockState(blockState, BlockRadar.MODE, EnumRadarMode.ACTIVE);
+			} else {
+				updateBlockState(blockState, BlockRadar.MODE, EnumRadarMode.INACTIVE);
 			}
-		} catch (final Exception exception) {
-			exception.printStackTrace();
+		} else {
+			updateBlockState(blockState, BlockRadar.MODE, EnumRadarMode.SCANNING);
+			try {
+				scanning_countdown_ticks--;
+				if (scanning_countdown_ticks <= 0) {
+					results = WarpDrive.starMap.getRadarEchos(this, scanning_radius);
+					isScanning = false;
+					if (WarpDriveConfig.LOGGING_RADAR) {
+						WarpDrive.logger.info(String.format("%s Scan found %d results in %d radius...",
+						                                    this, results.size(), scanning_radius));
+					}
+				}
+			} catch (final Exception exception) {
+				exception.printStackTrace();
+			}
 		}
 	}
 	
 	@Override
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
+		
+		radius = tagCompound.getInteger("radius");
+		isScanning = tagCompound.getBoolean("isScanning");
+		scanning_radius = tagCompound.getInteger("scanning_radius");
+		scanning_countdown_ticks = tagCompound.getInteger("scanning_countdown");
 	}
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
-		return super.writeToNBT(tagCompound);
+	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+		tagCompound = super.writeToNBT(tagCompound);
+		
+		tagCompound.setInteger("radius", radius);
+		tagCompound.setBoolean("isScanning", isScanning);
+		tagCompound.setInteger("scanning_radius", scanning_radius);
+		tagCompound.setInteger("scanning_countdown", scanning_countdown_ticks);
+		
+		return tagCompound;
 	}
 	
 	private int calculateEnergyRequired(final int parRadius) {
@@ -126,7 +146,7 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	}
 	
 	private Object[] radius(final Object[] arguments) {
-		if (arguments.length == 1 && getBlockMetadata() != 2) {
+		if (arguments.length == 1 && !isScanning) {
 			final int newRadius;
 			try {
 				newRadius = Commons.toInt(arguments[0]);
@@ -155,6 +175,10 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	}
 	
 	private Object[] start() {
+		if (isScanning) {
+			return new Object[] { false, String.format("Already scanning, %.3f seconds to go", scanning_countdown_ticks / 20.0F) };
+		}
+		
 		// always clear results
 		results = null;
 		
@@ -169,14 +193,17 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 		}
 		
 		// Begin searching
-		scanningRadius = radius;
-		scanningDuration_ticks = calculateScanDuration(radius);
-		scanning_ticks = 0;
+		scanning_radius = radius;
+		scanning_countdown_ticks = calculateScanDuration(radius);
+		isScanning = true;
 		updateBlockState(null, BlockRadar.MODE, EnumRadarMode.SCANNING);
 		if (WarpDriveConfig.LOGGING_RADAR) {
-			WarpDrive.logger.info(this + "Starting scan over radius " + scanningRadius + " for " + energyRequired + " EU, results expected in " + scanningDuration_ticks + " ticks");
+			WarpDrive.logger.info(String.format("%s Starting scan over radius %d for %s %s, results expected in %s ticks",
+			                                    this, scanning_radius,
+			                                    EnergyWrapper.format(energyRequired, null), WarpDriveConfig.ENERGY_DISPLAY_UNITS,
+			                                    scanning_countdown_ticks));
 		}
-		return new Object[] { true };
+		return new Object[] { true, String.format("Scanning started, %.3f seconds to go", scanning_countdown_ticks / 20.0F) };
 	}
 	
 	private Object[] getResults() {
@@ -273,24 +300,6 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	}
 	
 	// ComputerCraft IPeripheral methods
-	@Override
-	@Optional.Method(modid = "computercraft")
-	public void attach(@Nonnull final IComputerAccess computerAccess) {
-		super.attach(computerAccess);
-		if (getBlockMetadata() == 0) {
-			updateBlockState(null, BlockRadar.MODE, EnumRadarMode.ACTIVE);
-		}
-	}
-	
-	@Override
-	@Optional.Method(modid = "computercraft")
-	public void detach(@Nonnull final IComputerAccess computer) {
-		super.detach(computer);
-		if (CC_connectedComputers.isEmpty()) {
-			updateBlockState(null, BlockRadar.MODE, EnumRadarMode.INACTIVE);
-		}
-	}
-	
 	@Override
 	@Optional.Method(modid = "computercraft")
 	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {
