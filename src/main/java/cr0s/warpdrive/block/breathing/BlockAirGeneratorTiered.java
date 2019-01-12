@@ -1,6 +1,5 @@
 package cr0s.warpdrive.block.breathing;
 
-import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.api.IAirContainerItem;
 import cr0s.warpdrive.block.BlockAbstractRotatingContainer;
 import cr0s.warpdrive.config.WarpDriveConfig;
@@ -39,12 +38,9 @@ public class BlockAirGeneratorTiered extends BlockAbstractRotatingContainer {
 	public boolean onBlockActivated(final World world, final BlockPos blockPos, final IBlockState blockState,
 	                                final EntityPlayer entityPlayer, final EnumHand enumHand,
 	                                final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
-		if (world.isRemote) {
-			return false;
-		}
-		
-		if (enumHand != EnumHand.MAIN_HAND) {
-			return true;
+		if ( world.isRemote
+		  || enumHand != EnumHand.MAIN_HAND ) {
+			return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 		}
 		
 		// get context
@@ -52,10 +48,7 @@ public class BlockAirGeneratorTiered extends BlockAbstractRotatingContainer {
 		final TileEntity tileEntity = world.getTileEntity(blockPos);
 		if (tileEntity instanceof TileEntityAirGeneratorTiered) {
 			final TileEntityAirGeneratorTiered airGenerator = (TileEntityAirGeneratorTiered) tileEntity;
-			if (itemStackHeld.isEmpty()) {
-				Commons.addChatMessage(entityPlayer, airGenerator.getStatus());
-				return true;
-			} else {
+			if (!itemStackHeld.isEmpty()) {
 				final Item itemHeld = itemStackHeld.getItem();
 				if (itemHeld instanceof IAirContainerItem) {
 					final IAirContainerItem airContainerItem = (IAirContainerItem) itemHeld;
@@ -70,14 +63,15 @@ public class BlockAirGeneratorTiered extends BlockAbstractRotatingContainer {
 								final EntityItem entityItem = new EntityItem(entityPlayer.world, entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, toAdd);
 								entityPlayer.world.spawnEntity(entityItem);
 							}
-							((EntityPlayerMP)entityPlayer).sendContainerToPlayer(entityPlayer.inventoryContainer);
+							((EntityPlayerMP) entityPlayer).sendContainerToPlayer(entityPlayer.inventoryContainer);
 							airGenerator.energy_consume(WarpDriveConfig.BREATHING_ENERGY_PER_CANISTER, false);
 						}
+						return false;
 					}
 				}
 			}
 		}
 		
-		return false;
+		return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 	}
 }

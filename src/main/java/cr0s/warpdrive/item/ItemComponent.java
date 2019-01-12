@@ -2,6 +2,7 @@ package cr0s.warpdrive.item;
 
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IAirContainerItem;
+import cr0s.warpdrive.block.BlockAbstractContainer;
 import cr0s.warpdrive.block.energy.BlockCapacitor;
 import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumTier;
@@ -137,7 +138,7 @@ public class ItemComponent extends ItemAbstractBase implements IAirContainerItem
 	public boolean doesSneakBypassUse(final ItemStack itemStack, final IBlockAccess blockAccess, final BlockPos blockPos, final EntityPlayer player) {
 		final Block block = blockAccess.getBlockState(blockPos).getBlock();
 		
-		return block instanceof BlockCapacitor
+		return block instanceof BlockAbstractContainer
 		    || super.doesSneakBypassUse(itemStack, blockAccess, blockPos, player);
 	}
 }
