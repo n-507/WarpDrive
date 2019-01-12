@@ -155,10 +155,11 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 				this.enumShipCommand = enumShipCommand;
 				this.isCommandConfirmed = isConfirmed;
 				markDirty();
-				if (WarpDriveConfig.LOGGING_LUA && hasWorld()) {
+				if (WarpDriveConfig.LOGGING_LUA && hasWorld() && !world.isRemote) {
 					WarpDrive.logger.info(String.format("%s Command set to %s (%s)",
 					                                    this, this.enumShipCommand, this.isCommandConfirmed));
 				}
+				break;
 			}
 		}
 	}

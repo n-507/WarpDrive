@@ -197,10 +197,10 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		if (logTicks <= 0) {
 			logTicks = LOG_INTERVAL_TICKS;
 			if (WarpDriveConfig.LOGGING_JUMP) {
-				WarpDrive.logger.info(String.format("%s %s, isEnabled %s, %d controllers, warmup %d, cooldown %d",
+				WarpDrive.logger.info(String.format("%s, %s, %s, %d controllers, warmup %d, cooldown %d",
 				                                    this,
 				                                    stateCurrent,
-				                                    isEnabled,
+				                                    isEnabled ? "Enabled" : "Disabled",
 				                                    0, // @TODO countControllers,
 				                                    warmupTime_ticks,
 				                                    ticksCooldown));
