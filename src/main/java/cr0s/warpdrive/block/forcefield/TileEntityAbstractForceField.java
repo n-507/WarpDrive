@@ -7,8 +7,7 @@ import cr0s.warpdrive.block.TileEntityAbstractEnergyConsumer;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.ForceFieldRegistry;
 import cr0s.warpdrive.data.Vector3;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.peripheral.IComputerAccess;
+
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -163,15 +162,13 @@ public abstract class TileEntityAbstractForceField extends TileEntityAbstractEne
 	// ComputerCraft IPeripheral methods
 	@Override
 	@Optional.Method(modid = "computercraft")
-	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {
-		final String methodName = CC_getMethodNameAndLogCall(method, arguments);
-		
+	protected Object[] CC_callMethod(@Nonnull final String methodName, @Nonnull final Object[] arguments) {
 		switch (methodName) {
 		case "beamFrequency":
 			return beamFrequency(arguments);
 		}
 		
-		return super.callMethod(computer, context, method, arguments);
+		return super.CC_callMethod(methodName, arguments);
 	}
 	
 	@Override

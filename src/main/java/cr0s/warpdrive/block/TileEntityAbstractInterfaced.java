@@ -8,6 +8,7 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
+
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -250,9 +251,9 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		}
 		if (WarpDriveConfig.LOGGING_LUA) {
 			final String methodName = Commons.getMethodName(1);
-			WarpDrive.logger.info(String.format("LUA call %s to %s(%s).%s(%s)",
-			                                    Commons.format(world, pos),
-			                                    peripheralName, context, methodName, Commons.format(arguments)));
+			WarpDrive.logger.info(String.format("[OC] LUA call from %s %s to %s.%s(%s)",
+			                                    context.node().address(), Commons.format(world, pos),
+			                                    peripheralName, methodName, Commons.format(arguments)));
 		}
 		if (!isInterfaceEnabled()) {
 			throw new RuntimeException("Missing Computer interface upgrade.");
@@ -261,11 +262,11 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	}
 	
 	@Optional.Method(modid = "computercraft")
-	protected String CC_getMethodNameAndLogCall(final int methodIndex, @Nonnull final Object[] arguments) {
+	private String CC_getMethodNameAndLogCall(@Nonnull final IComputerAccess computerAccess, final int methodIndex, @Nonnull final Object[] arguments) {
 		final String methodName = methodsArray[methodIndex];
 		if (WarpDriveConfig.LOGGING_LUA) {
-			WarpDrive.logger.info(String.format("LUA call %s to %s.%s(%s)",
-			                                    Commons.format(world, pos),
+			WarpDrive.logger.info(String.format("[CC] LUA call from %d:%s %s to %s.%s(%s)",
+			                                    computerAccess.getID(), computerAccess.getAttachmentName(), Commons.format(world, pos),
 			                                    peripheralName, methodName, Commons.format(arguments)));
 		}
 		if (!isInterfaceEnabled() && !methodName.equals("isInterfaced")) {
@@ -413,9 +414,17 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	
 	@Override
 	@Optional.Method(modid = "computercraft")
-	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {
-		final String methodName = CC_getMethodNameAndLogCall(method, arguments);
+	final public Object[] callMethod(@Nonnull final IComputerAccess computerAccess, @Nonnull final ILuaContext context,
+	                                 final int method, @Nonnull final Object[] arguments) {
+		final String methodName = CC_getMethodNameAndLogCall(computerAccess, method, arguments);
 		
+		// we separate the proxy from the logs so childs can override the proxy without having to handle the logs themselves
+		return CC_callMethod(methodName, arguments);
+		
+	}
+	
+	@Optional.Method(modid = "computercraft")
+	protected Object[] CC_callMethod(@Nonnull final String methodName, @Nonnull final Object[] arguments) {
 		switch (methodName) {
 		case "isInterfaced":
 			return isInterfaced();

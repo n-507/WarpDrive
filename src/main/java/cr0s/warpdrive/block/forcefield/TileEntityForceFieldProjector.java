@@ -16,8 +16,7 @@ import cr0s.warpdrive.data.SoundEvents;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
 import cr0s.warpdrive.network.PacketHandler;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.peripheral.IComputerAccess;
+
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -1273,9 +1272,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	// ComputerCraft IPeripheral methods
 	@Override
 	@Optional.Method(modid = "computercraft")
-	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {
-		final String methodName = CC_getMethodNameAndLogCall(method, arguments);
-		
+	protected Object[] CC_callMethod(@Nonnull final String methodName, @Nonnull final Object[] arguments) {
 		switch (methodName) {
 		case "min":
 			return min(arguments);
@@ -1293,7 +1290,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			return translation(arguments);
 		}
 		
-		return super.callMethod(computer, context, method, arguments);
+		return super.CC_callMethod(methodName, arguments);
 	}
 	
 	private class ThreadCalculation extends Thread {

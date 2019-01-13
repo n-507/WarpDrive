@@ -4,8 +4,7 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.computer.IMachine;
 import cr0s.warpdrive.config.WarpDriveConfig;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.peripheral.IComputerAccess;
+
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -164,9 +163,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	// ComputerCraft IPeripheral methods
 	@Override
 	@Optional.Method(modid = "computercraft")
-	public Object[] callMethod(@Nonnull final IComputerAccess computer, @Nonnull final ILuaContext context, final int method, @Nonnull final Object[] arguments) {
-		final String methodName = CC_getMethodNameAndLogCall(method, arguments);
-		
+	protected Object[] CC_callMethod(@Nonnull final String methodName, @Nonnull final Object[] arguments) {
 		switch (methodName) {
 		case "name":
 			return name(arguments);
@@ -178,7 +175,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 			return isAssemblyValid();
 		}
 		
-		return super.callMethod(computer, context, method, arguments);
+		return super.CC_callMethod(methodName, arguments);
 	}
 	
 	@Override
