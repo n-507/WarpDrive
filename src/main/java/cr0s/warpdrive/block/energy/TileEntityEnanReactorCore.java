@@ -70,6 +70,9 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		super();
 		
 		peripheralName = "warpdriveEnanReactorCore";
+		
+		// disable reactor by default
+		isEnabled = false;
 	}
 	
 	@Override
