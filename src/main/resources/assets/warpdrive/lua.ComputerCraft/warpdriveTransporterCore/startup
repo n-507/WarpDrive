@@ -17,7 +17,7 @@ function transporter_name(parName)
   if transporter == nil or transporter.isInterfaced() == nil then
     return ''
   end
-  return transporter.transporterName(parName)
+  return transporter.name(parName)
 end
 
 function transporter_boot()
@@ -65,7 +65,7 @@ function transporter_page()
   else
     w.setCursorPos(1, 2)
     w.setColorDisabled()
-    local _, signature = transporter.transporterName()
+    local _, signature = transporter.name()
     if (signature ~= nil) then
       w.writeCentered(2, "Signature is " .. signature)
     end
