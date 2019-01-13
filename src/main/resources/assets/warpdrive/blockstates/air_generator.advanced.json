@@ -17,12 +17,12 @@
 		"normal": [{}],
 		"inventory": [{}],
 		"active": {
-			"false": {},
-			"true": {
+			"false": {
 				"textures": {
-					"north"   : "warpdrive:blocks/breathing/air_generator-side_active"
+					"north"   : "warpdrive:blocks/breathing/air_generator-side_inactive"
 				}
-			}
+			},
+			"true": { }
 		},
 		"facing": {
 			"north": {},
