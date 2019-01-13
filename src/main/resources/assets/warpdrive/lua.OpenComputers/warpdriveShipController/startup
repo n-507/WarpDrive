@@ -20,7 +20,6 @@ local ship_x, ship_y, ship_z = 0, 0, 0
 local ship_xTarget, ship_yTarget, ship_zTarget = 0, 0, 0
 local ship_actualDistance = 0
 local ship_energyRequired = 0
-local ship_shipSize = 0
 local ship_movement = { 0, 0, 0 }
 local ship_rotationSteps = 0
 local ship_indexPlayer = 0
@@ -66,13 +65,11 @@ function ship_boot()
   until isValid == true or timeout < 0
   if timeout < 0 then
     w.setColorWarning()
-    w.writeLn("failed (" .. message .. ")")
-    w.writeLn("")
-    w.writeLn("Ship Core shall be attached horizontally")
-    w.writeLn("with Ship Controller!")
+    w.writeLn("failed")
+    w.writeLn(message)
     w.setColorNormal()
     w.sleep(6)
-    w.reboot()
+    -- don't reboot as the player might need to set new dimensions to fix it
   else
     w.setColorSuccess()
     w.writeLn("linked")
@@ -106,18 +103,17 @@ function ship_boot()
   w.setColorNormal()
   w.write("- integrity check    : ")
   timeout = 10
+  local shipSize
   repeat
-    ship_shipSize = ship.getShipSize()
+    shipSize = ship.getShipSize()
     w.sleep(0.05)
     timeout = timeout - 1
-  until (ship_shipSize ~= nil and ship_shipSize ~= 0) or timeout < 0
+  until (shipSize ~= nil and shipSize ~= 0) or timeout < 0
   if timeout < 0 then
     w.setColorWarning()
-    w.writeLn("failed")
-    w.writeLn("")
-    w.writeLn("Ship is too big? ignoring for now...")
+    w.writeLn("ongoing...")
     w.setColorNormal()
-    w.sleep(1)
+    w.sleep(2)
   else
     w.setColorSuccess()
     w.writeLn("passed")
@@ -352,8 +348,6 @@ function ship_page_setDimensions()
   w.write("Setting dimensions...")
   ship_front, ship_right, ship_up = ship.dim_positive(ship_front, ship_right, ship_up)
   ship_back, ship_left, ship_down = ship.dim_negative(ship_back, ship_left, ship_down)
-  ship_shipSize = ship.getShipSize()
-  if ship_shipSize == nil then ship_shipSize = 0 end
 end
 
 function ship_page_summon() -- no longer used
@@ -440,7 +434,25 @@ function ship_page_controls()
       w.writeLn("Dimensions:")
       w.writeLn(" Front, Right, Up = " .. w.format_integer(ship_front) .. ", " .. w.format_integer(ship_right) .. ", " .. w.format_integer(ship_up) .. " blocks")
       w.writeLn(" Back, Left, Down = " .. w.format_integer(ship_back) .. ", " .. w.format_integer(ship_left) .. ", " .. w.format_integer(ship_down) .. " blocks")
-      w.writeLn(" Size             = " .. w.format_integer(ship_shipSize) .. " blocks")
+      local shipVolume, shipMass = ship.getShipSize()
+      if shipVolume == nil then
+        shipVolume = 0
+        shipMass = 0
+      end
+      w.write(" Volume, Mass     = ")
+      if shipVolume == 0 then
+        w.write("?")
+      else
+        w.write(w.format_integer(shipVolume))
+      end
+      w.write(" blocks, ")
+      if shipMass == 0 then
+        w.write("?")
+      else
+        w.write(w.format_integer(shipMass))
+      end
+      w.writeLn(" tons")
+      
       w.writeLn("")
       w.writeLn("Warp data:")
       ship_writeMovement(" Movement         = ")
