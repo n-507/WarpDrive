@@ -49,12 +49,12 @@ public class SoundEvents {
 		COLLISION_HIGH = registerSound("collision_high");
 	}
 	
-	@SuppressWarnings({"unused", "EmptyMethod"})
+	@SuppressWarnings("EmptyMethod")
 	public static void registerSounds() {
 		// Dummy method to make sure the static initializer runs
 	}
 	
-	private static SoundEvent registerSound(String soundName) {
+	private static SoundEvent registerSound(final String soundName) {
 		final ResourceLocation soundID = new ResourceLocation(WarpDrive.MODID, soundName);
 		final SoundEvent soundEvent = new SoundEvent(soundID);
 		soundEvent.setRegistryName(soundID);

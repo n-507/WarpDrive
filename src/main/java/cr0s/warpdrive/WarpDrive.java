@@ -177,6 +177,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.apache.logging.log4j.Logger;
@@ -479,7 +480,7 @@ public class WarpDrive {
 		// entities
 		// (done in the event handler)
 		
-		// biomes
+		// world generation
 		final Biome.BiomeProperties biomeProperties = new Biome.BiomeProperties("space").setRainDisabled().setWaterColor(0);
 		biomeSpace = new BiomeSpace(biomeProperties);
 		register(biomeSpace);
@@ -503,7 +504,7 @@ public class WarpDrive {
 		commonWorldGenerator = new CommonWorldGenerator();
 		GameRegistry.registerWorldGenerator(commonWorldGenerator, 0);
 		
-		dimensionTypeSpace = DimensionType.register("space", "_space", WarpDriveConfig.G_SPACE_PROVIDER_ID, HyperSpaceWorldProvider.class, true);
+		dimensionTypeSpace = DimensionType.register("space", "_space", WarpDriveConfig.G_SPACE_PROVIDER_ID, SpaceWorldProvider.class, true);
 		dimensionTypeHyperSpace = DimensionType.register("hyperspace", "_hyperspace", WarpDriveConfig.G_HYPERSPACE_PROVIDER_ID, HyperSpaceWorldProvider.class, true);
 		
 		// Registers
@@ -1021,6 +1022,7 @@ public class WarpDrive {
 	@SubscribeEvent
 	public void onRegisterSoundEvents(final RegistryEvent.Register<SoundEvent> event) {
 		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
+		cr0s.warpdrive.data.SoundEvents.registerSounds();
 		for (final SoundEvent soundEvent : soundEvents) {
 			event.getRegistry().register(soundEvent);
 		}
