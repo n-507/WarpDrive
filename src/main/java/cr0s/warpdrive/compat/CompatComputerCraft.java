@@ -26,7 +26,15 @@ public class CompatComputerCraft implements IBlockTransformer {
 		try {
 			classBlockDirectional  = Class.forName("dan200.computercraft.shared.common.BlockDirectional");
 			classBlockComputerBase = Class.forName("dan200.computercraft.shared.computer.blocks.BlockComputerBase");
-			classBlockCable        = Class.forName("dan200.computercraft.shared.peripheral.common.BlockCable");
+			
+			// BlockCable changed location between original and CC-Tweaked fork
+			try {
+				classBlockCable        = Class.forName("dan200.computercraft.shared.peripheral.common.BlockCable");
+			} catch(final ClassNotFoundException exception) {
+				classBlockCable        = Class.forName("dan200.computercraft.shared.peripheral.modem.wired.BlockCable");
+				WarpDrive.logger.info("CC-Tweaked detected...");
+			}
+			
 			classBlockPeripheral   = Class.forName("dan200.computercraft.shared.peripheral.common.BlockPeripheral");
 			classBlockTurtle       = Class.forName("dan200.computercraft.shared.turtle.blocks.BlockTurtle");
 			WarpDriveConfig.registerBlockTransformer("computercraft", new CompatComputerCraft());

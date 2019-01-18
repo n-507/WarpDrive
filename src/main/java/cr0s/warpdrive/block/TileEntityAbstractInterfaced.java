@@ -31,7 +31,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -39,13 +41,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
 
-// OpenComputer API: https://github.com/MightyPirates/OpenComputers/tree/master-MC1.7.10/src/main/java/li/cil/oc/api
+// OpenComputers API: https://github.com/MightyPirates/OpenComputers/tree/master-MC1.7.10/src/main/java/li/cil/oc/api
 
 @Optional.InterfaceList({
 	@Optional.Interface(iface = "li.cil.oc.api.network.Environment", modid = "opencomputers"),
 	@Optional.Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "computercraft")
 })
 public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBase implements IPeripheral, Environment, cr0s.warpdrive.api.computer.IInterfaced {
+	
+	// global storage
+	private static final ConcurrentHashMap<String, Object> CC_mountGlobals = new ConcurrentHashMap<>(32);
 	
 	// Common computer properties
 	protected String peripheralName = null;
@@ -66,7 +71,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	private boolean  OC_addedToNetwork = false;
 	
 	// ComputerCraft specific properties
-	private final CopyOnWriteArraySet<IComputerAccess> CC_connectedComputers = new CopyOnWriteArraySet<>();
+	private final ConcurrentHashMap<IComputerAccess, CopyOnWriteArraySet<String>> CC_connectedComputers = new ConcurrentHashMap<>();
 	
 	public TileEntityAbstractInterfaced() {
 		super();
@@ -251,8 +256,9 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		}
 		if (WarpDriveConfig.LOGGING_LUA) {
 			final String methodName = Commons.getMethodName(1);
-			WarpDrive.logger.info(String.format("[OC] LUA call from %s %s to %s.%s(%s)",
-			                                    context.node().address(), Commons.format(world, pos),
+			WarpDrive.logger.info(String.format("[OC] LUA call %s from %s to %s.%s(%s)",
+			                                    Commons.format(world, pos),
+			                                    context.node().address(),
 			                                    peripheralName, methodName, Commons.format(arguments)));
 		}
 		if (!isInterfaceEnabled()) {
@@ -265,8 +271,9 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	private String CC_getMethodNameAndLogCall(@Nonnull final IComputerAccess computerAccess, final int methodIndex, @Nonnull final Object[] arguments) {
 		final String methodName = methodsArray[methodIndex];
 		if (WarpDriveConfig.LOGGING_LUA) {
-			WarpDrive.logger.info(String.format("[CC] LUA call from %d:%s %s to %s.%s(%s)",
-			                                    computerAccess.getID(), computerAccess.getAttachmentName(), Commons.format(world, pos),
+			WarpDrive.logger.info(String.format("[CC] LUA call %s from %d:%s to %s.%s(%s)",
+			                                    Commons.format(world, pos),
+			                                    computerAccess.getID(), computerAccess.getAttachmentName(),
 			                                    peripheralName, methodName, Commons.format(arguments)));
 		}
 		if (!isInterfaceEnabled() && !methodName.equals("isInterfaced")) {
@@ -448,31 +455,43 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	@Override
 	@Optional.Method(modid = "computercraft")
 	public void attach(@Nonnull final IComputerAccess computerAccess) {
-		CC_connectedComputers.add(computerAccess);
+		if (CC_connectedComputers.containsKey(computerAccess)) {
+			WarpDrive.logger.error(String.format("[CC] Already attached %s %s with %d:%s, ignoring...",
+			                                     peripheralName, Commons.format(world, pos),
+			                                     computerAccess.getID(), computerAccess.getAttachmentName() ));
+			return;
+		}
+		if (WarpDriveConfig.LOGGING_LUA) {
+			WarpDrive.logger.info(String.format("[CC] Attaching %s %s with %d:%s",
+			                                    peripheralName, Commons.format(world, pos),
+			                                    computerAccess.getID(), computerAccess.getAttachmentName() ));
+		}
+		final CopyOnWriteArraySet<String> mountedLocations = new CopyOnWriteArraySet<>();
+		CC_connectedComputers.put(computerAccess, mountedLocations);
 		if (isInterfaceEnabled()) {
-			CC_mount(computerAccess);
+			CC_mount(computerAccess, mountedLocations);
 		}
 	}
 	
 	@Optional.Method(modid = "computercraft")
 	private void CC_mount() {
-		for (final IComputerAccess computerAccess : CC_connectedComputers) {
-			CC_mount(computerAccess);
+		for (final Entry<IComputerAccess, CopyOnWriteArraySet<String>> entry : CC_connectedComputers.entrySet()) {
+			CC_mount(entry.getKey(), entry.getValue());
 		}
 	}
 	
 	@Optional.Method(modid = "computercraft")
-	private void CC_mount(@Nonnull final IComputerAccess computer) {
+	private void CC_mount(@Nonnull final IComputerAccess computerAccess, @Nonnull final CopyOnWriteArraySet<String> mountedLocations) {
 		if (CC_hasResource && WarpDriveConfig.G_LUA_SCRIPTS != WarpDriveConfig.LUA_SCRIPTS_NONE) {
 			try {
-				CC_mount(computer, "lua.ComputerCraft/common", "/" + WarpDrive.MODID);
+				CC_mount(computerAccess, mountedLocations, "lua.ComputerCraft/common", "/" + WarpDrive.MODID);
 				
 				final String folderPeripheral = peripheralName.replace(WarpDrive.MODID, WarpDrive.MODID + "/");
-				CC_mount(computer, "lua.ComputerCraft/" + peripheralName, "/" + folderPeripheral);
+				CC_mount(computerAccess, mountedLocations, "lua.ComputerCraft/" + peripheralName, "/" + folderPeripheral);
 				
 				if (WarpDriveConfig.G_LUA_SCRIPTS == WarpDriveConfig.LUA_SCRIPTS_ALL) {
 					for (final String script : CC_scripts) {
-						CC_mount(computer, "lua.ComputerCraft/" + peripheralName + "/" + script, "/" + script);
+						CC_mount(computerAccess, mountedLocations, "lua.ComputerCraft/" + peripheralName + "/" + script, "/" + script);
 					}
 				}
 			} catch (final Exception exception) {
@@ -486,30 +505,51 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	}
 	
 	@Optional.Method(modid = "computercraft")
-	private void CC_mount(@Nonnull final IComputerAccess computer, final String pathAsset, final String pathLUA) {
-		final IMount mountCommon = ComputerCraftAPI.createResourceMount(WarpDrive.class, WarpDrive.MODID, pathAsset);
-		assert mountCommon != null;
-		computer.mount(pathLUA, mountCommon);
-	}
-	
-	@Optional.Method(modid = "computercraft")
-	private void CC_unmount() {
-		for (final IComputerAccess computerAccess : CC_connectedComputers) {
-			CC_unmount(computerAccess);
+	private void CC_mount(@Nonnull final IComputerAccess computerAccess, @Nonnull final CopyOnWriteArraySet<String> mountedLocations,
+	                      @Nonnull final String pathAsset, @Nonnull final String pathLUA) {
+		IMount mountCommon = (IMount) CC_mountGlobals.get(pathAsset);
+		if (mountCommon == null) {
+			mountCommon = ComputerCraftAPI.createResourceMount(WarpDrive.class, WarpDrive.MODID, pathAsset);
+			assert mountCommon != null;
+			CC_mountGlobals.put(pathAsset, mountCommon);
+		}
+		final String pathLUA_actual = computerAccess.mount(pathLUA, mountCommon);
+		if (WarpDriveConfig.LOGGING_LUA) {
+			WarpDrive.logger.info(String.format("[CC] %s Mounted %s to %s as %s",
+			                                    Commons.format(world, pos),
+			                                    pathAsset, pathLUA, pathLUA_actual));
+		}
+		if (pathLUA_actual != null) {
+			mountedLocations.add(pathLUA_actual);
 		}
 	}
 	
 	@Optional.Method(modid = "computercraft")
-	private void CC_unmount(@Nonnull final IComputerAccess computer) {
+	private void CC_unmount() {
+		for (final Entry<IComputerAccess, CopyOnWriteArraySet<String>> entry : CC_connectedComputers.entrySet()) {
+			CC_unmount(entry.getKey(), entry.getValue());
+		}
+	}
+	
+	@Optional.Method(modid = "computercraft")
+	private void CC_unmount(@Nonnull final IComputerAccess computerAccess) {
+		final CopyOnWriteArraySet<String> mountedLocations = CC_connectedComputers.get(computerAccess);
+		if (mountedLocations != null) {
+			CC_unmount(computerAccess, mountedLocations);
+		}
+	}
+	
+	@Optional.Method(modid = "computercraft")
+	private void CC_unmount(@Nonnull final IComputerAccess computerAccess, @Nonnull final CopyOnWriteArraySet<String> mountedLocation) {
 		if (CC_hasResource && WarpDriveConfig.G_LUA_SCRIPTS != WarpDriveConfig.LUA_SCRIPTS_NONE) {
 			try {
-				final String folderPeripheral = peripheralName.replace(WarpDrive.MODID, WarpDrive.MODID + "/");
-				computer.unmount("/" + WarpDrive.MODID);
-				computer.unmount("/" + folderPeripheral);
-				if (WarpDriveConfig.G_LUA_SCRIPTS == WarpDriveConfig.LUA_SCRIPTS_ALL) {
-					for (final String script : CC_scripts) {
-						computer.unmount("/" + script);
+				for (final String pathLUA : mountedLocation) {
+					if (WarpDriveConfig.LOGGING_LUA) {
+						WarpDrive.logger.info(String.format("[CC] %s Unmounting %s",
+						                                    Commons.format(world, pos),
+						                                    pathLUA ));
 					}
+					computerAccess.unmount(pathLUA);
 				}
 			} catch (final Exception exception) {
 				exception.printStackTrace();
@@ -517,6 +557,8 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 				                                     peripheralName,
 				                                     Commons.format(world, pos),
 				                                     isFirstTick()));
+			} finally {
+				mountedLocation.clear();
 			}
 		}
 	}
@@ -524,6 +566,17 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	@Override
 	@Optional.Method(modid = "computercraft")
 	public void detach(@Nonnull final IComputerAccess computerAccess) {
+		if (!CC_connectedComputers.containsKey(computerAccess)) {
+			WarpDrive.logger.error(String.format("[CC] Already detached %s %s from %d:%s, ignoring...",
+			                                     peripheralName, Commons.format(world, pos),
+			                                     computerAccess.getID(), computerAccess.getAttachmentName() ));
+			return;
+		}
+		if (WarpDriveConfig.LOGGING_LUA) {
+			WarpDrive.logger.info(String.format("[CC] Detaching %s %s from %d:%s",
+			                                    peripheralName, Commons.format(world, pos),
+			                                    computerAccess.getID(), computerAccess.getAttachmentName() ));
+		}
 		if (isInterfaceEnabled()) {
 			CC_unmount(computerAccess);
 		}
@@ -545,7 +598,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 			WarpDrive.logger.info(this + " Sending event '" + eventName + "'");
 		}
 		if (WarpDriveConfig.isComputerCraftLoaded) {
-			for (final IComputerAccess computerAccess : CC_connectedComputers) {
+			for (final IComputerAccess computerAccess : CC_connectedComputers.keySet()) {
 				computerAccess.queueEvent(eventName, arguments);
 			}
 		}
