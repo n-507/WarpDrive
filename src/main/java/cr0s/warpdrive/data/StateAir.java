@@ -229,7 +229,7 @@ public class StateAir {
 		assert blockState != null;
 		final int typeBlock;
 		final Block block = blockState.getBlock();
-		if (blockState instanceof BlockAirFlow) {
+		if (block instanceof BlockAirFlow) {
 			typeBlock = BLOCK_AIR_FLOW;
 			
 		} else if (block == Blocks.AIR) {// vanilla air
