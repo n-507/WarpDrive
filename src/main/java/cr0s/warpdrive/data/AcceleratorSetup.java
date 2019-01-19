@@ -47,8 +47,8 @@ public class AcceleratorSetup extends GlobalPosition {
 	private HashMap<VectorI, TrajectoryPoint> trajectoryTransfer;
 	
 	// computed values
-	private int[] countMagnets = new int[3];
-	private int[] countChillers = new int[3];
+	private final int[] countMagnets = new int[3];
+	private final int[] countChillers = new int[3];
 	private final HashMap<VectorI, Integer> controlPoints = new HashMap<>();
 	
 	public final HashSet<VectorI> setChillers = new HashSet<>();
@@ -360,7 +360,7 @@ public class AcceleratorSetup extends GlobalPosition {
 		}
 	}
 	
-	private void scanCorners(WorldServer world, final VectorI vCenter, final EnumFacing forgeDirection) {
+	private void scanCorners(final WorldServer world, final VectorI vCenter, final EnumFacing forgeDirection) {
 		final EnumFacing directionLeft = forgeDirection.rotateY();
 		final EnumFacing directionRight = forgeDirection.rotateYCCW();
 		for (int indexCorner = 0; indexCorner < 4; indexCorner++) {

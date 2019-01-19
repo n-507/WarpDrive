@@ -14,11 +14,10 @@ import net.minecraft.world.World;
 
 public class AirSpreader {
 	
-	private static StateAir stateCenter = new StateAir(null);
-	private static StateAir[] stateAround = {
+	private static final StateAir stateCenter = new StateAir(null);
+	private static final StateAir[] stateAround = {
 		new StateAir(null), new StateAir(null), new StateAir(null),
 		new StateAir(null), new StateAir(null), new StateAir(null) };
-	private static StateAir stateAirParent = new StateAir(null);
 	
 	protected static void execute(final World world, final int x, final int y, final int z) throws ExceptionChunkNotLoaded {
 		// note: compared to the pure block implementation, 0 really means no air, so we no longer offset by 1 on read/write
@@ -97,7 +96,7 @@ public class AirSpreader {
 		
 		// update volume detection, skipping the sources
 		if (!stateCenter.isAirSource()) {
-			// propagate if bigger pressure existing around, erase pressure otherwise
+			// propagate generator pressure if bigger pressure existing around, erase pressure otherwise
 			if ( stateCenter.pressureGenerator < max_pressureGenerator
 			  && max_pressureGenerator > 1 ) {
 				stateCenter.setGeneratorAndUpdateVoid(world, (short) (max_pressureGenerator - 1), max_directionGenerator);
@@ -116,7 +115,7 @@ public class AirSpreader {
 		}
 		
 		if (!stateCenter.isVoidSource()) {
-			// propagate if bigger pressure exists around, erase pressure otherwise
+			// propagate void pressure if bigger pressure exists around, erase pressure otherwise
 			if ( stateCenter.pressureVoid < max_pressureVoid
 			  && max_pressureVoid > 1 ) {
 				stateCenter.setVoid((short) (max_pressureVoid - 1), max_directionVoid);
@@ -291,6 +290,5 @@ public class AirSpreader {
 		for (final StateAir stateAir : stateAround) {
 			stateAir.clearCache();
 		}
-		stateAirParent.clearCache();		
 	}
 }

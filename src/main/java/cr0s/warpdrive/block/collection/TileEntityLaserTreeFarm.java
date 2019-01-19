@@ -373,7 +373,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 				final IBlockState blockStateSoil = world.getBlockState(soil);
 				soilIndex++;
 				final Collection<IInventory> inventories = Commons.getConnectedInventories(this);
-				if (inventories == null || inventories.isEmpty()) {
+				if (inventories.isEmpty()) {
 					currentState = STATE_WARMUP;
 					delayTargetTicks = TREE_FARM_WARMUP_DELAY_TICKS;
 					updateBlockState(blockState, BlockLaserTreeFarm.MODE, EnumLaserTreeFarmMode.SCANNING_LOW_POWER);

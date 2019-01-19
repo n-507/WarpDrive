@@ -63,7 +63,7 @@ public class StateAir {
 	
 	private ChunkData chunkData;
 	private Chunk chunk;
-	private MutableBlockPos blockPos;
+	private final MutableBlockPos blockPos;
 	protected int dataAir;               // original air data provided
 	protected IBlockState blockState;    // original block
 	public byte concentration;
@@ -522,7 +522,7 @@ public class StateAir {
 	
 	public static void dumpAroundEntity(final EntityPlayer entityPlayer) {
 		try {
-			final StateAir stateAirs[][][] = new StateAir[3][3][3];
+			final StateAir[][][] stateAirs = new StateAir[3][3][3];
 			for (int dy = -1; dy <= 1; dy++) {
 				for (int dz = -1; dz <= 1; dz++) {
 					for (int dx = -1; dx <= 1; dx++) {
