@@ -18,7 +18,7 @@ public class TileEntityAirGeneratorTiered extends TileEntityAbstractEnergyConsum
 	// (none)
 	
 	// computed properties
-	private int cooldownTicks = 0;
+	private int tickUpdate;
 	
 	public TileEntityAirGeneratorTiered() {
 		super();
@@ -39,6 +39,13 @@ public class TileEntityAirGeneratorTiered extends TileEntityAbstractEnergyConsum
 	}
 	
 	@Override
+	protected void onFirstUpdateTick() {
+		super.onFirstUpdateTick();
+		
+		tickUpdate = world.rand.nextInt(WarpDriveConfig.BREATHING_AIR_GENERATION_TICKS);
+	}
+	
+	@Override
 	public void update() {
 		super.update();
 		
@@ -50,31 +57,21 @@ public class TileEntityAirGeneratorTiered extends TileEntityAbstractEnergyConsum
 			return;
 		}
 		
+		tickUpdate--;
+		if (tickUpdate >= 0) {
+			return;
+		}
+		tickUpdate = WarpDriveConfig.BREATHING_AIR_GENERATION_TICKS;
+		
 		// Air generator works only in space & hyperspace
 		final IBlockState blockState = world.getBlockState(pos);
 		if (CelestialObjectManager.hasAtmosphere(world, pos.getX(), pos.getZ())) {
-			if (blockState.getValue(BlockProperties.ACTIVE)) {
-				world.setBlockState(pos, blockState.withProperty(BlockProperties.ACTIVE, false)); // set disabled texture
-			}
+			updateBlockState(blockState, BlockProperties.ACTIVE, false);
 			return;
 		}
 		
-		cooldownTicks++;
-		if (cooldownTicks > WarpDriveConfig.BREATHING_AIR_GENERATION_TICKS) {
-			final boolean isActive = releaseAir(blockState.getValue(BlockProperties.FACING));
-			if (isActive) {
-				if (!blockState.getValue(BlockProperties.ACTIVE)) {
-					world.setBlockState(pos, blockState.withProperty(BlockProperties.ACTIVE, true)); // set enabled texture
-				}
-			} else {
-				if (blockState.getValue(BlockProperties.ACTIVE)) {
-					world.setBlockState(pos, blockState.withProperty(BlockProperties.ACTIVE, false)); // set disabled texture
-				}
-			}
-			releaseAir(blockState.getValue(BlockProperties.FACING));
-			
-			cooldownTicks = 0;
-		}
+		final boolean isActive = releaseAir(blockState.getValue(BlockProperties.FACING));
+		updateBlockState(blockState, BlockProperties.ACTIVE, isActive);
 	}
 	
 	private boolean releaseAir(final EnumFacing direction) {
