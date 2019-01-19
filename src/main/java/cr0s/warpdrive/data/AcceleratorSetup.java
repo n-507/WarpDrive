@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -202,8 +203,12 @@ public class AcceleratorSetup extends GlobalPosition {
 			WarpDrive.blockVoidShellGlass);
 		TrajectoryPoint trajectoryPoint = null;
 		for (final EnumFacing direction : EnumFacing.HORIZONTALS) {
-			final VectorI next = firstVoidShell.clone(direction);
-			if (whitelist.contains(next.getBlockState_noChunkLoading(world).getBlock())) {
+			final BlockPos next = new BlockPos(firstVoidShell.x + direction.getXOffset(),
+			                                   firstVoidShell.y + direction.getYOffset(),
+			                                   firstVoidShell.z + direction.getZOffset() );
+			final IBlockState blockStateNext = VectorI.getBlockState_noChunkLoading(world, next);
+			if ( blockStateNext != null
+			  && whitelist.contains(blockStateNext.getBlock()) ) {
 				trajectoryPoint = new TrajectoryPoint(world, firstVoidShell.translate(direction), direction);
 				break;
 			}

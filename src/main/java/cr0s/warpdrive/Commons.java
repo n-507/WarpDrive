@@ -465,7 +465,9 @@ public class Commons {
 		while(!toIterate.isEmpty() && range < maxRange) {
 			toIterateNext = new HashSet<>();
 			for (final BlockPos current : toIterate) {
-				if (whitelist.contains(new VectorI(current).getBlockState_noChunkLoading(world).getBlock())) {
+				final IBlockState blockStateCurrent = VectorI.getBlockState_noChunkLoading(world, current);
+				if ( blockStateCurrent != null
+				  && whitelist.contains(blockStateCurrent.getBlock()) ) {
 					iterated.add(current);
 				}
 				
@@ -474,7 +476,9 @@ public class Commons {
 					                                   current.getY() + direction.y,
 					                                   current.getZ() + direction.z );
 					if (!iterated.contains(next) && !toIgnore.contains(next) && !toIterate.contains(next) && !toIterateNext.contains(next)) {
-						if (whitelist.contains(new VectorI(next).getBlockState_noChunkLoading(world).getBlock())) {
+						final IBlockState blockStateNext = VectorI.getBlockState_noChunkLoading(world, next);
+						if ( blockStateNext != null
+						  && whitelist.contains(blockStateNext.getBlock())) {
 							toIterateNext.add(next);
 						}
 					}
