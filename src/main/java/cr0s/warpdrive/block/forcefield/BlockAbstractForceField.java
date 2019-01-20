@@ -18,7 +18,7 @@ public abstract class BlockAbstractForceField extends BlockAbstractContainer {
 		super(registryName, enumTier, material);
 		
 		setHardness(WarpDriveConfig.HULL_HARDNESS[enumTier.getIndex()]);
-		setResistance(WarpDriveConfig.HULL_BLAST_RESISTANCE[enumTier.getIndex()] * 5 / 3);
+		setResistance(WarpDriveConfig.HULL_BLAST_RESISTANCE[enumTier.getIndex()] * 5.0F / 3.0F);
 	}
 	
 	@SuppressWarnings("deprecation")

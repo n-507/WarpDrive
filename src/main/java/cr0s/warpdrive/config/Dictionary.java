@@ -28,7 +28,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class Dictionary {
-	private static final boolean adjustResistance = false;
 	
 	// Tagged blocks and entities (loaded from configuration file at PreInit, parsed at PostInit)
 	private static HashMap<String, String> taggedBlocks = null;
@@ -556,13 +555,13 @@ public class Dictionary {
 			final float blastResistance = block.getExplosionResistance(null);
 			
 			// check actual values
-			if (hardness != -2.0F) {
+			if (hardness != -2.0F) {// (we could get it)
 				if ( hardness < 0
 				  && (!BLOCKS_ANCHOR.contains(block))
 				  && !(block instanceof BlockForceField) ) {// unbreakable block
 					WarpDrive.logger.warn(String.format("Warning: non-anchor block with unbreakable hardness %s %s (%.2f)",
 					                                    resourceLocation, block, hardness));
-				} else if ( hardness > WarpDriveConfig.HULL_HARDNESS[0]
+				} else if ( hardness > WarpDriveConfig.HULL_HARDNESS[1]
 				         && !( block instanceof BlockAbstractBase
 				            || block instanceof BlockAbstractContainer
 				            || block instanceof BlockHullGlass
@@ -573,25 +572,25 @@ public class Dictionary {
 					                                    resourceLocation, block, hardness));
 				}
 			}
-			if ( blastResistance > WarpDriveConfig.HULL_BLAST_RESISTANCE[0]
+			if ( blastResistance > WarpDriveConfig.G_BLAST_RESISTANCE_CAP
 			   && !( block instanceof BlockAbstractBase
 			      || block instanceof BlockAbstractContainer
 			      || block instanceof BlockHullGlass
 			      || block instanceof BlockHullSlab
 			      || block instanceof BlockHullStairs
 			      || BLOCKS_ANCHOR.contains(block) ) ) {
-				block.setResistance(WarpDriveConfig.HULL_BLAST_RESISTANCE[0]);
 				WarpDrive.logger.warn(String.format("Warning: non-anchor block with high blast resistance %s %s (%.2f)",
-				                                    resourceLocation, block, hardness));
-				if (adjustResistance) {// TODO: not implemented
-					WarpDrive.logger.warn(String.format("Adjusting blast resistance of %s %s from %.2f to %.2f",
-					                                    resourceLocation, block, blastResistance, block.getExplosionResistance(null)));
-					if (blastResistance > WarpDriveConfig.HULL_BLAST_RESISTANCE[0]) {
-						WarpDrive.logger.error(String.format("Blacklisting block with high blast resistance %s %s (%.2f)",
-						                                     resourceLocation, block, blastResistance));
-						BLOCKS_ANCHOR.add(block);
-						BLOCKS_STOPMINING.add(block);
-					}
+				                                    resourceLocation, block, blastResistance));
+				block.setResistance(WarpDriveConfig.G_BLAST_RESISTANCE_CAP * 5.0F / 3.0F);
+				final float blastResistance_new = block.getExplosionResistance(null);
+				if (blastResistance_new <= WarpDriveConfig.G_BLAST_RESISTANCE_CAP) {
+					WarpDrive.logger.warn(String.format("Adjusted blast resistance of %s %s from %.2f to %.2f",
+					                                    resourceLocation, block, blastResistance, blastResistance_new));
+				} else {
+					WarpDrive.logger.error(String.format("Blacklisting block with high blast resistance %s %s (%.2f)",
+					                                     resourceLocation, block, blastResistance));
+					BLOCKS_ANCHOR.add(block);
+					BLOCKS_STOPMINING.add(block);
 				}
 			}
 			

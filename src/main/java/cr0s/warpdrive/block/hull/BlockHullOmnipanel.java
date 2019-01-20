@@ -36,7 +36,7 @@ public class BlockHullOmnipanel extends BlockAbstractOmnipanel implements IDamag
 		super(registryName, enumTier, Material.GLASS);
 		
 		setHardness(WarpDriveConfig.HULL_HARDNESS[enumTier.getIndex()]);
-		setResistance(WarpDriveConfig.HULL_BLAST_RESISTANCE[enumTier.getIndex()] * 5 / 3);
+		setResistance(WarpDriveConfig.HULL_BLAST_RESISTANCE[enumTier.getIndex()] * 5.0F / 3.0F);
 		setLightLevel(10.0F / 15.0F);
 		setSoundType(SoundType.GLASS);
 		setTranslationKey("warpdrive.hull." + enumTier.getName() + ".omnipanel.");

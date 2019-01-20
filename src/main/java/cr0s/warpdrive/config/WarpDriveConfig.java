@@ -169,6 +169,7 @@ public class WarpDriveConfig {
 	public static String               G_SCHEMATICS_LOCATION = "warpDrive_schematics";
 	public static int                  G_BLOCKS_PER_TICK = 3500;
 	public static boolean              G_ENABLE_PROTECTION_CHECKS = true;
+	public static float                G_BLAST_RESISTANCE_CAP = 60.0F;
 	
 	// Client
 	public static float                CLIENT_LOCATION_SCALE = 1.0F;
@@ -727,6 +728,9 @@ public class WarpDriveConfig {
 				config.get("general", "blocks_per_tick", G_BLOCKS_PER_TICK,
 						"Number of blocks to move per ticks, too high will cause lag spikes on ship jumping or deployment, too low may break the ship wirings").getInt());
 		G_ENABLE_PROTECTION_CHECKS = config.get("general", "enable_protection_checks", G_ENABLE_PROTECTION_CHECKS, "Enable area protection checks from other mods or plugins, disable if you use the event system exclusively").getBoolean(G_ENABLE_PROTECTION_CHECKS);
+		G_BLAST_RESISTANCE_CAP = Commons.clamp(10.0F, 6000.0F,
+				(float) config.get("general", "blast_resistance_cap", G_BLAST_RESISTANCE_CAP,
+				           "Maximum allowed blast resistance for non-hull, breakable blocks from other mods. Required to fix non-sense scaling in modded fluids, etc. Default is basic hull resistance (60).").getDouble(G_BLAST_RESISTANCE_CAP));
 		
 		// Client
 		CLIENT_LOCATION_SCALE = Commons.clamp(0.25F, 4.0F, (float) config.get("client", "location_scale", CLIENT_LOCATION_SCALE,

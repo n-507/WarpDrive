@@ -37,7 +37,7 @@ public class BlockAbstractLamp extends BlockAbstractBase {
 		super(registryName, enumTier, Material.ROCK);
 		
 		setHardness(WarpDriveConfig.HULL_HARDNESS[1]);
-		setResistance(WarpDriveConfig.HULL_BLAST_RESISTANCE[1] * 5 / 3);
+		setResistance(WarpDriveConfig.HULL_BLAST_RESISTANCE[1] * 5.0F / 3.0F);
 		setSoundType(SoundType.METAL);
 		setTranslationKey(unlocalizedName);
 		setDefaultState(getDefaultState()

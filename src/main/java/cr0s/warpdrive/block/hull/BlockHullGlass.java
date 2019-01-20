@@ -40,7 +40,7 @@ public class BlockHullGlass extends BlockColored implements IBlockBase, IDamageR
 		
 		this.enumTier = enumTier;
 		setHardness(WarpDriveConfig.HULL_HARDNESS[enumTier.getIndex()]);
-		setResistance(WarpDriveConfig.HULL_BLAST_RESISTANCE[enumTier.getIndex()] * 5 / 3);
+		setResistance(WarpDriveConfig.HULL_BLAST_RESISTANCE[enumTier.getIndex()] * 5.0F / 3.0F);
 		setSoundType(SoundType.GLASS);
 		setCreativeTab(WarpDrive.creativeTabHull);
 		setTranslationKey("warpdrive.hull." + enumTier.getName() + ".glass.");

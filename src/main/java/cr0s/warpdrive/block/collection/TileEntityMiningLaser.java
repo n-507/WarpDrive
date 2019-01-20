@@ -55,7 +55,7 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	private int currentLayer;
 	
 	// computed properties
-	private float explosionResistanceMax = 10000;
+	private float explosionResistanceMax = 10000.0F;
 	private float viscosityMax = 0.0F;
 	private int delayTicks = 0;
 	private boolean enoughPower = false;
