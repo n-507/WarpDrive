@@ -6,7 +6,9 @@ import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObjectManager;
+import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumMiningLaserMode;
+import cr0s.warpdrive.data.FluidWrapper;
 import cr0s.warpdrive.data.SoundEvents;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.network.PacketHandler;
@@ -19,6 +21,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,6 +30,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Optional;
 
@@ -52,6 +56,7 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	
 	// computed properties
 	private float explosionResistanceMax = 10000;
+	private float viscosityMax = 0.0F;
 	private int delayTicks = 0;
 	private boolean enoughPower = false;
 	private int radiusCapacity = WarpDriveConfig.MINING_LASER_RADIUS_NO_LASER_MEDIUM;
@@ -75,12 +80,18 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 		doRequireUpgradeToInterface();
 		
 		laserMedium_maxCount = WarpDriveConfig.MINING_LASER_MAX_MEDIUMS_COUNT;
+		setUpgradeMaxCount(EnumComponentType.PUMP, 20);
 	}
 	
 	@Override
 	protected void onFirstUpdateTick() {
 		super.onFirstUpdateTick();
 		explosionResistanceMax = Blocks.OBSIDIAN.getExplosionResistance(world, pos, null, null);
+		refreshSettings();
+	}
+	
+	private void refreshSettings() {
+		viscosityMax = getUpgradeCount(EnumComponentType.PUMP) * 2500;
 	}
 	
 	@SuppressWarnings("UnnecessaryReturnStatement")
@@ -253,26 +264,22 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	}
 	
 	private boolean canDig(final IBlockState blockState, final BlockPos blockPos) {
+		final Block block = blockState.getBlock();
 		// ignore air
 		if (world.isAirBlock(blockPos)) {
 			return false;
 		}
 		// check blacklists
-		if (Dictionary.BLOCKS_SKIPMINING.contains(blockState.getBlock())) {
+		if (Dictionary.BLOCKS_SKIPMINING.contains(block)) {
 			return false;
 		}
-		if (Dictionary.BLOCKS_STOPMINING.contains(blockState.getBlock())) {
+		if (Dictionary.BLOCKS_STOPMINING.contains(block)) {
 			stop();
 			if (WarpDriveConfig.LOGGING_COLLECTION) {
 				WarpDrive.logger.info(String.format("%s Mining stopped by %s %s",
 				                                    this, blockState, Commons.format(world, blockPos)));
 			}
 			return false;
-		}
-		// check whitelist
-		if ( Dictionary.BLOCKS_MINING.contains(blockState.getBlock())
-		  || Dictionary.BLOCKS_ORES.contains(blockState.getBlock())) {
-			return true;
 		}
 		// check area protection
 		if (isBlockBreakCanceled(null, world, blockPos)) {
@@ -283,13 +290,25 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 			}
 			return false;
 		}
-		// check default (explosion resistance is used to test for force fields and reinforced blocks, basically preventing mining a base or ship) 
-		if (blockState.getBlock().getExplosionResistance(world, blockPos, null, null) <= explosionResistanceMax) {
+		// check liquids
+		final Fluid fluid = FluidWrapper.getFluid(blockState);
+		if (fluid != null) {
+			return viscosityMax >= fluid.getViscosity();
+		}
+		// check whitelist
+		if ( Dictionary.BLOCKS_MINING.contains(block)
+		  || Dictionary.BLOCKS_ORES.contains(block) ) {
+			return true;
+		}
+		// check default (explosion resistance is used to test for force fields and reinforced blocks, basically preventing mining a base or ship)
+		final float explosionResistance = blockState.getBlock().getExplosionResistance(world, blockPos, null, null);
+		if (explosionResistance <= explosionResistanceMax) {
 			return true;
 		}
 		if (WarpDriveConfig.LOGGING_COLLECTION) {
-			WarpDrive.logger.info(String.format("%s Rejecting %s %s",
-			                                    this, blockState, Commons.format(world, blockPos)));
+			WarpDrive.logger.info(String.format("%s Rejecting %s %s %s with explosion resistance %.1f",
+			                                    this, blockState, blockState.getBlock().getRegistryName(),
+			                                    Commons.format(world, blockPos), explosionResistance));
 		}
 		return false;
 	}
@@ -393,6 +412,14 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 		if (WarpDriveConfig.LOGGING_COLLECTION) {
 			WarpDrive.logger.info(String.format("%s Found %s valueables",
 			                                    this, valuablesInLayer.size()));
+		}
+	}
+	
+	@Override
+	protected void onUpgradeChanged(final Object upgrade, final int countNew, final boolean isAdded) {
+		super.onUpgradeChanged(upgrade, countNew, isAdded);
+		if (upgrade == EnumComponentType.PUMP) {
+			refreshSettings();
 		}
 	}
 	

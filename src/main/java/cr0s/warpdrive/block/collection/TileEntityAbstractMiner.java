@@ -5,6 +5,7 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.TileEntityAbstractLaser;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.FluidWrapper;
 import cr0s.warpdrive.data.Vector3;
 
 import java.lang.reflect.InvocationTargetException;
@@ -13,7 +14,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -57,7 +57,7 @@ public abstract class TileEntityAbstractMiner extends TileEntityAbstractLaser {
 		if (blockState.getBlock().isAir(blockState, world, valuable)) {
 			return;
 		}
-		if (blockState.getBlock() instanceof BlockLiquid) {
+		if (FluidWrapper.isFluid(blockState)) {
 			// Evaporate fluid
 			world.playSound(null, valuable, net.minecraft.init.SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
 					2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
