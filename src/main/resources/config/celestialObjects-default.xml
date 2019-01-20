@@ -114,9 +114,11 @@
 				<size x="10000" z="10000" />
 				<!--
 				  render defines several layers from surface to high atmosphere representing the planet.
-				  red, green, blue: color mixing from 0.00 (black) to 1.00 (white)
-				  alpha: transparency factor from 0.00 (invisible) to 1.00 (opaque)
-				  texture: optional texture to use, can come from resource pack, vanilla or the mod itself
+				  By extension, if no render element is defined, then you won't see the planet from space.
+			      
+				  red, green, blue: together, they define a color mixing from 0.00 0.00 0.00 (black) to 1.00 1.00 1.00 (white).
+				  alpha: transparency factor from 0.00 (invisible) to 1.00 (opaque).
+				  texture: optional texture to use, can come from resource pack, vanilla or the mod itself.
 				  periodU, periodV: optional texture rotation period over the planet, measured in seconds, defaults to 0 (disabled)
 				  		Texture coordinates are defined along U and V axis (you can see them as X and Y axis in the context of the texture pixels).
 				  		A periodU of 40 means the texture will do progressively shift along U axis, doing a full rotation in 40 seconds.
