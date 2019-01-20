@@ -22,13 +22,11 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -385,34 +383,6 @@ public class Commons {
 		final ItemStack ret = itemStack.copy();
 		ret.setCount(newSize);
 		return ret;
-	}
-	
-	public static Collection<IInventory> getConnectedInventories(final TileEntity tileEntityConnection) {
-		final Collection<IInventory> result = new ArrayList<>(6);
-		
-		for(final EnumFacing side : EnumFacing.VALUES) {
-			final TileEntity tileEntity = tileEntityConnection.getWorld().getTileEntity(
-				tileEntityConnection.getPos().offset(side));
-			if (tileEntity instanceof IInventory) {
-				result.add((IInventory) tileEntity);
-				
-				if (tileEntity instanceof TileEntityChest) {
-					final TileEntityChest tileEntityChest = (TileEntityChest) tileEntity;
-					tileEntityChest.checkForAdjacentChests();
-					if (tileEntityChest.adjacentChestXNeg != null) {
-						result.add(tileEntityChest.adjacentChestXNeg);
-					} else if (tileEntityChest.adjacentChestXPos != null) {
-						result.add(tileEntityChest.adjacentChestXPos);
-					} else if (tileEntityChest.adjacentChestZNeg != null) {
-						result.add(tileEntityChest.adjacentChestZNeg);
-					} else if (tileEntityChest.adjacentChestZPos != null) {
-						result.add(tileEntityChest.adjacentChestZPos);
-					}
-				}
-			}
-		}
-		
-		return result;
 	}
 	
 	

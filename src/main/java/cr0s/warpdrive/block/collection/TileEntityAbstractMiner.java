@@ -6,6 +6,7 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.TileEntityAbstractLaser;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.FluidWrapper;
+import cr0s.warpdrive.data.InventoryWrapper;
 import cr0s.warpdrive.data.Vector3;
 
 import java.lang.reflect.InvocationTargetException;
@@ -72,7 +73,7 @@ public abstract class TileEntityAbstractMiner extends TileEntityAbstractLaser {
 			net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(itemStackDrops, getWorld(), valuable, blockState,
 			                                                               0, 1.0f, true, entityPlayer);
 			
-			if (addToConnectedInventories(itemStackDrops)) {
+			if (InventoryWrapper.addToConnectedInventories(world, pos, itemStackDrops)) {
 				stop();
 			}
 			// standard harvest block effect

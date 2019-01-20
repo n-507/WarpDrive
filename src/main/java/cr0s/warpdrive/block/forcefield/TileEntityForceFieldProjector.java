@@ -13,6 +13,7 @@ import cr0s.warpdrive.data.EnumForceFieldState;
 import cr0s.warpdrive.data.EnumForceFieldUpgrade;
 import cr0s.warpdrive.data.FluidWrapper;
 import cr0s.warpdrive.data.ForceFieldSetup;
+import cr0s.warpdrive.data.InventoryWrapper;
 import cr0s.warpdrive.data.SoundEvents;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
@@ -41,7 +42,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -631,17 +631,16 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		int slotIndex = 0;
 		boolean found = false;
 		int countItemBlocks = 0;
-		ItemStack itemStack = null;
 		Block blockToPlace = null;
 		int metadataToPlace = -1;
-		IInventory inventory = null;
+		Object inventory = null;
 		final BlockPos blockPos = vector.getBlockPos();
-		for (final IInventory inventoryLoop : forceFieldSetup.inventories) {
+		for (final Object inventoryLoop : forceFieldSetup.inventories) {
 			if (!found) {
 				slotIndex = 0;
 			}
-			while (slotIndex < inventoryLoop.getSizeInventory() && !found) {
-				itemStack = inventoryLoop.getStackInSlot(slotIndex);
+			while (slotIndex < InventoryWrapper.getSize(inventoryLoop) && !found) {
+				final ItemStack itemStack = InventoryWrapper.getStackInSlot(inventoryLoop, slotIndex);
 				if (itemStack.isEmpty()) {
 					slotIndex++;
 					continue;
@@ -699,8 +698,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			return true;
 		}
 		
-		itemStack.shrink(1);
-		inventory.setInventorySlotContents(slotIndex, itemStack);
+		InventoryWrapper.decrStackSize(inventory, slotIndex, 1);
 		
 		final int age = Math.max(10, Math.round((4 + world.rand.nextFloat()) * WarpDriveConfig.MINING_LASER_MINE_DELAY_TICKS));
 		PacketHandler.sendBeamPacket(world, new Vector3(this).translate(0.5D), new Vector3(vector.x, vector.y, vector.z).translate(0.5D),
@@ -740,7 +738,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		
 		if (itemStacks != null) {
 			if (forceFieldSetup.hasCollection) {
-				if (addToInventories(itemStacks, forceFieldSetup.inventories)) {
+				if (InventoryWrapper.addToInventories(world, pos, forceFieldSetup.inventories, itemStacks)) {
 					return true;
 				}
 			} else {

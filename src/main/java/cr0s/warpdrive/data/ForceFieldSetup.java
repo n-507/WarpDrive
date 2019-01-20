@@ -20,7 +20,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
@@ -47,7 +46,7 @@ public class ForceFieldSetup extends GlobalPosition {
 	private int colorMultiplierCamouflage;
 	private int lightCamouflage;
 	private final HashMap<IForceFieldUpgradeEffector, Float> upgrades = new HashMap<>(EnumForceFieldUpgrade.length);
-	public final Collection<IInventory> inventories = new ArrayList<>(12);
+	public final Collection<Object> inventories = new ArrayList<>(12);
 	
 	public float scanSpeed;
 	public float placeSpeed;
@@ -202,7 +201,7 @@ public class ForceFieldSetup extends GlobalPosition {
 					
 					// container identification
 					if (upgradeEffector == EnumForceFieldUpgrade.ITEM_PORT) {
-						inventories.addAll(Commons.getConnectedInventories(tileEntity));
+						inventories.addAll(InventoryWrapper.getConnectedInventories(tileEntity.getWorld(), tileEntity.getPos()));
 					}
 				}
 			}

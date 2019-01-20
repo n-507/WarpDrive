@@ -8,6 +8,7 @@ import cr0s.warpdrive.config.Filler;
 import cr0s.warpdrive.config.GenericSet;
 import cr0s.warpdrive.config.Loot;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.InventoryWrapper;
 import cr0s.warpdrive.data.JumpBlock;
 import cr0s.warpdrive.data.JumpShip;
 import cr0s.warpdrive.data.Transformation;
@@ -19,7 +20,6 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -202,8 +202,9 @@ public class WorldGenStructure {
 	                                  final int maxRetries) {
 		// validate context
 		final TileEntity tileEntity = world.getTileEntity(blockPos);
+		final Object inventory = InventoryWrapper.getInventory(tileEntity, null);
 		
-		if (!(tileEntity instanceof IInventory)) {
+		if (inventory == null) {
 			WarpDrive.logger.error(String.format("Unable to fill inventory with LootSet %s %s: %s has no inventory",
 			                                     group,
 			                                     Commons.format(world, blockPos),
@@ -220,8 +221,7 @@ public class WorldGenStructure {
 		}
 		
 		// evaluate parameters: quantity of loot, actual loot set
-		final IInventory inventory = (IInventory) tileEntity;
-		final int size = inventory.getSizeInventory();
+		final int size = InventoryWrapper.getSize(inventory);
 		final int countLoots = Math.min(quantityMin + rand.nextInt(quantityRandom1) + rand.nextInt(quantityRandom2), size);
 		
 		final GenericSet<Loot> lootSet = WarpDriveConfig.LootManager.getRandomSetFromGroup(rand, group);
@@ -236,7 +236,7 @@ public class WorldGenStructure {
 		// shuffle slot indexes to reduce random calls and loops later on
 		final ArrayList<Integer> indexSlots = new ArrayList<>(size);
 		for (int indexSlot = 0; indexSlot < size; indexSlot++) {
-			final ItemStack itemStack = inventory.getStackInSlot(indexSlot);
+			final ItemStack itemStack = InventoryWrapper.getStackInSlot(inventory, indexSlot);
 			if (itemStack.isEmpty()) {
 				indexSlots.add(indexSlot);
 			}
@@ -256,16 +256,16 @@ public class WorldGenStructure {
 				// find a valid slot for it
 				for (final Iterator<Integer> iterator = indexSlots.iterator(); iterator.hasNext(); ) {
 					final Integer indexSlot = iterator.next();
-					if (!inventory.getStackInSlot(indexSlot).isEmpty()) {
+					if (!InventoryWrapper.getStackInSlot(inventory, indexSlot).isEmpty()) {
 						assert false;   // index used were already removed, so we shouldn't reach this
 						continue;
 					}
-					if (inventory.isItemValidForSlot(indexSlot, itemStackLoot)) {
+					if (InventoryWrapper.isItemValid(inventory, indexSlot, itemStackLoot)) {
 						// remove that slot & item, even if insertion fail, to avoid a spam
 						iterator.remove();
 						isAdded = true;
 						try {
-							inventory.setInventorySlotContents(indexSlot, itemStackLoot);
+							InventoryWrapper.insertItem(inventory, indexSlot, itemStackLoot);
 							if (WarpDriveConfig.LOGGING_WORLD_GENERATION) {
 								WarpDrive.logger.debug(String.format("Filling inventory with LootSet %s %s: loot %s from %s in slot %d of inventory %s",
 								                                     group,
@@ -273,7 +273,7 @@ public class WorldGenStructure {
 								                                     Commons.format(itemStackLoot),
 								                                     lootSet.getFullName(),
 								                                     indexSlot,
-								                                     inventory.getName() == null ? "-null name-" : inventory.getName() ));
+								                                     inventory ));
 							}
 						} catch (final Exception exception) {
 							exception.printStackTrace();
@@ -283,7 +283,7 @@ public class WorldGenStructure {
 							                                     Commons.format(itemStackLoot),
 							                                     lootSet.getFullName(),
 							                                     indexSlot,
-							                                     inventory.getName() == null ? "-null name-" : inventory.getName(),
+							                                     inventory,
 							                                     exception.getMessage() ));
 						}
 						break;
@@ -296,7 +296,7 @@ public class WorldGenStructure {
 			if (!isAdded) {
 				WarpDrive.logger.debug(String.format("Unable to find a valid loot from LootSet %s for inventory %s in %s: check your configuration",
 				                                     lootSet.getFullName(),
-				                                     inventory.getName() == null ? "-null name-" : inventory.getName(),
+				                                     inventory,
 				                                     Commons.format(world, blockPos) ));
 			}
 		}

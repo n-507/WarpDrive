@@ -5,9 +5,12 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumLaserTreeFarmMode;
+import cr0s.warpdrive.data.InventoryWrapper;
 import cr0s.warpdrive.data.SoundEvents;
 import cr0s.warpdrive.data.Vector3;
+import cr0s.warpdrive.item.ItemComponent;
 import cr0s.warpdrive.network.PacketHandler;
 
 import li.cil.oc.api.machine.Arguments;
@@ -23,7 +26,7 @@ import java.util.LinkedList;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -285,6 +288,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 				
 				// save the rubber producing blocks in tapping mode
 				if (currentState == STATE_TAP) {
+					// IC2 rubber tree wet spot
 					if (blockStateValuable.getBlock().isAssociatedBlock(WarpDriveConfig.IC2_rubberWood)) {
 						final int metadata = blockStateValuable.getBlock().getMetaFromState(blockStateValuable);
 						if (metadata >= 2 && metadata <= 5) {
@@ -304,12 +308,12 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 								updateBlockState(blockState, BlockLaserTreeFarm.MODE, EnumLaserTreeFarmMode.FARMING_POWERED);
 							}
 							
-							final ItemStack resin = WarpDriveConfig.IC2_Resin.copy();
-							resin.setCount( (int) Math.round(Math.random() * 4) );
-							if (addToConnectedInventories(resin)) {
+							final ItemStack itemStackResin = WarpDriveConfig.IC2_Resin.copy();
+							itemStackResin.setCount( (int) Math.round(Math.random() * 4.0D) );
+							if (InventoryWrapper.addToConnectedInventories(world, pos, itemStackResin)) {
 								stop();
 							}
-							totalHarvested += resin.getCount();
+							totalHarvested += itemStackResin.getCount();
 							final int age = Math.max(10, Math.round((4 + world.rand.nextFloat()) * TREE_FARM_HARVEST_LOG_DELAY_TICKS));
 							PacketHandler.sendBeamPacket(world, laserOutput, new Vector3(valuable).translate(0.5D),
 									0.8F, 0.8F, 0.2F, age, 0, 50);
@@ -372,7 +376,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 				final BlockPos blockPosPlant = soil.add(0, 1, 0);
 				final IBlockState blockStateSoil = world.getBlockState(soil);
 				soilIndex++;
-				final Collection<IInventory> inventories = Commons.getConnectedInventories(this);
+				final Collection<Object> inventories = InventoryWrapper.getConnectedInventories(world, pos);
 				if (inventories.isEmpty()) {
 					currentState = STATE_WARMUP;
 					delayTargetTicks = TREE_FARM_WARMUP_DELAY_TICKS;
@@ -380,62 +384,65 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 					return;
 				}
 				
-				int slotIndex = 0;
-				int plantableCount = 0;
-				ItemStack itemStack = null;
-				IBlockState plant = null;
-				IInventory inventory = null;
-				for (final IInventory inventoryLoop : inventories) {
-					if (plant == null) {
-						slotIndex = 0;
-					}
-					while (slotIndex < inventoryLoop.getSizeInventory() && plant == null) {
-						itemStack = inventoryLoop.getStackInSlot(slotIndex);
-						if (itemStack.isEmpty()) {
-							slotIndex++;
+				int indexSlotPlant = 0;
+				int countPlantable = 0;
+				ItemStack itemStackPlant = null;
+				IBlockState blockStatePlant = null;
+				Object inventoryPlant = null;
+				for (final Object inventoryLoop : inventories) {
+					indexSlotPlant = 0;
+					while (indexSlotPlant < InventoryWrapper.getSize(inventoryLoop) && blockStatePlant == null) {
+						itemStackPlant = InventoryWrapper.getStackInSlot(inventoryLoop, indexSlotPlant);
+						if (itemStackPlant.isEmpty()) {
+							indexSlotPlant++;
 							continue;
 						}
-						final Block blockFromItem = Block.getBlockFromItem(itemStack.getItem());
-						if ( !(itemStack.getItem() instanceof IPlantable)
+						final Block blockFromItem = Block.getBlockFromItem(itemStackPlant.getItem());
+						if ( !(itemStackPlant.getItem() instanceof IPlantable)
 						  && !(blockFromItem instanceof IPlantable) ) {
-							slotIndex++;
+							indexSlotPlant++;
 							continue;
 						}
-						plantableCount++;
-						final IPlantable plantable = (IPlantable) ((itemStack.getItem() instanceof IPlantable) ? itemStack.getItem() : blockFromItem);
-						if (itemStack.getItem() instanceof ItemBlock) {
-							final ItemBlock itemBlock = (ItemBlock) itemStack.getItem();
-							final int metadata = itemBlock.getMetadata(itemStack.getMetadata());
+						countPlantable++;
+						final IPlantable plantable = (IPlantable) ((itemStackPlant.getItem() instanceof IPlantable) ? itemStackPlant.getItem() : blockFromItem);
+						if (itemStackPlant.getItem() instanceof ItemBlock) {
+							final ItemBlock itemBlock = (ItemBlock) itemStackPlant.getItem();
+							final int metadata = itemBlock.getMetadata(itemStackPlant.getMetadata());
 							final Block block = itemBlock.getBlock();
-							plant = block.getStateForPlacement(world, blockPosPlant, EnumFacing.UP,
-							                                   0.5F, 0.0F, 0.5F, metadata,
-							                                   null, EnumHand.MAIN_HAND); // @TODO use fake player to place sapling
+							blockStatePlant = block.getStateForPlacement(world, blockPosPlant, EnumFacing.UP,
+							                                             0.5F, 0.0F, 0.5F, metadata,
+							                                             null, EnumHand.MAIN_HAND); // @TODO use fake player to place sapling
 						} else {
-							plant = plantable.getPlant(world, blockPosPlant);
+							blockStatePlant = plantable.getPlant(world, blockPosPlant);
 						}
 						if (WarpDriveConfig.LOGGING_COLLECTION) {
 							WarpDrive.logger.info(String.format("Slot %d as %s which plantable %s as block %s",
-							                                    slotIndex, itemStack, plantable, plant));
+							                                    indexSlotPlant, itemStackPlant, plantable, blockStatePlant));
 						}
 						
 						if (!blockStateSoil.getBlock().canSustainPlant(blockStateSoil, world, soil, EnumFacing.UP, plantable)) {
-							plant = null;
-							slotIndex++;
+							blockStatePlant = null;
+							indexSlotPlant++;
 							continue;
 						}
 						
-						if (!plant.getBlock().canPlaceBlockAt(world, blockPosPlant)) {
-							plant = null;
-							slotIndex++;
+						if (!blockStatePlant.getBlock().canPlaceBlockAt(world, blockPosPlant)) {
+							blockStatePlant = null;
+							indexSlotPlant++;
 							continue;
 						}
 						
-						inventory = inventoryLoop;
+						inventoryPlant = inventoryLoop;
+					}
+					
+					// exit the loop if we've found a valid plant
+					if (blockStatePlant != null) {
+						break;
 					}
 				}
 				
 				// no plantable found at all, back to scanning
-				if (plantableCount <= 0) {
+				if (countPlantable <= 0) {
 					currentState = STATE_SCAN;
 					delayTargetTicks = TREE_FARM_SCAN_DELAY_TICKS;
 					updateBlockState(blockState, BlockLaserTreeFarm.MODE, EnumLaserTreeFarmMode.SCANNING_POWERED);
@@ -443,7 +450,9 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 				}
 				
 				// no sapling found for this soil, moving on...
-				if (inventory == null || plant == null || itemStack == null) {
+				if ( inventoryPlant == null
+				  || blockStatePlant == null
+				  || itemStackPlant == null ) {
 					if (WarpDriveConfig.LOGGING_COLLECTION) {
 						WarpDrive.logger.debug("No sapling found");
 					}
@@ -451,7 +460,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 				}
 				
 				// check area protection
-				if (isBlockPlaceCanceled(null, world, blockPosPlant, plant)) {
+				if (isBlockPlaceCanceled(null, world, blockPosPlant, blockStatePlant)) {
 					if (WarpDriveConfig.LOGGING_COLLECTION) {
 						WarpDrive.logger.info(String.format("%s Planting cancelled %s",
 						                                    this, Commons.format(world, blockPosPlant)));
@@ -471,15 +480,14 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 					updateBlockState(blockState, BlockLaserTreeFarm.MODE, EnumLaserTreeFarmMode.PLANTING_POWERED);
 				}
 				
-				itemStack.shrink(1);
-				inventory.setInventorySlotContents(slotIndex, itemStack);
+				InventoryWrapper.decrStackSize(inventoryPlant, indexSlotPlant, 1);
 				
 				// totalPlanted++;
 				final int age = Math.max(10, Math.round((4 + world.rand.nextFloat()) * WarpDriveConfig.MINING_LASER_MINE_DELAY_TICKS));
 				PacketHandler.sendBeamPacket(world, laserOutput, new Vector3(blockPosPlant).translate(0.5D),
 						0.2F, 0.7F, 0.4F, age, 0, 50);
 				world.playSound(null, pos, SoundEvents.LASER_LOW, SoundCategory.BLOCKS, 4F, 1F);
-				world.setBlockState(blockPosPlant, plant, 3);
+				world.setBlockState(blockPosPlant, blockStatePlant, 3);
 			}
 		}
 	}

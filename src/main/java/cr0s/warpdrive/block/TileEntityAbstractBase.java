@@ -8,14 +8,10 @@ import cr0s.warpdrive.api.IBlockBase;
 import cr0s.warpdrive.api.IBlockUpdateDetector;
 import cr0s.warpdrive.api.IVideoChannel;
 import cr0s.warpdrive.api.WarpDriveText;
-import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CameraRegistryItem;
 import cr0s.warpdrive.data.EnumTier;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -24,9 +20,7 @@ import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -175,110 +169,6 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	@Override
 	public boolean shouldRefresh(final World world, final BlockPos pos, @Nonnull final IBlockState blockStateOld, @Nonnull final IBlockState blockStateNew) {
 		return blockStateOld.getBlock() != blockStateNew.getBlock();
-	}
-	
-	// Inventory management methods
-	protected boolean addToConnectedInventories(final ItemStack itemStack) {
-		final List<ItemStack> itemStacks = new ArrayList<>(1);
-		itemStacks.add(itemStack);
-		return addToInventories(itemStacks, Commons.getConnectedInventories(this));
-	}
-	
-	protected boolean addToConnectedInventories(final List<ItemStack> itemStacks) {
-		return addToInventories(itemStacks, Commons.getConnectedInventories(this));
-	}
-	
-	protected boolean addToInventories(final List<ItemStack> itemStacks, final Collection<IInventory> inventories) {
-		boolean overflow = false;
-		if (itemStacks != null) {
-			for (final ItemStack itemStack : itemStacks) {
-				if (itemStack.isEmpty()) {
-					WarpDrive.logger.error(String.format("%s Invalid empty itemStack...",
-					                                     this));
-					continue;
-				}
-				int qtyLeft = itemStack.getCount();
-				final ItemStack itemStackLeft = itemStack.copy();
-				for (final IInventory inventory : inventories) {
-					qtyLeft = addToInventory(itemStack, inventory);
-					if (qtyLeft > 0) {
-						itemStackLeft.setCount(qtyLeft);
-					} else {
-						break;
-					}
-				}
-				if (qtyLeft > 0) {
-					if (WarpDriveConfig.LOGGING_COLLECTION) {
-						WarpDrive.logger.info(String.format("%s Overflow detected",
-						                                    this));
-					}
-					overflow = true;
-					int transfer;
-					while (qtyLeft > 0) {
-						transfer = Math.min(qtyLeft, itemStackLeft.getMaxStackSize());
-						final ItemStack itemStackDrop = Commons.copyWithSize(itemStackLeft, transfer);
-						final EntityItem entityItem = new EntityItem(world, pos.getX() + 0.5D, pos.getY() + 1.0D, pos.getZ() + 0.5D, itemStackDrop);
-						world.spawnEntity(entityItem);
-						qtyLeft -= transfer;
-					}
-				}
-			}
-		}
-		return overflow;
-	}
-	
-	private static int addToInventory(final ItemStack itemStackSource, final IInventory inventory) {
-		if (itemStackSource == null || itemStackSource.isEmpty()) {
-			return 0;
-		}
-		
-		int qtyLeft = itemStackSource.getCount();
-		int transfer;
-		
-		if (inventory != null) {
-			// fill existing stacks first
-			for (int i = 0; i < inventory.getSizeInventory(); i++) {
-				if (!inventory.isItemValidForSlot(i, itemStackSource)) {
-					continue;
-				}
-				
-				final ItemStack itemStack = inventory.getStackInSlot(i);
-				if ( itemStack.isEmpty()
-				  || !itemStack.isItemEqual(itemStackSource) ) {
-					continue;
-				}
-				
-				transfer = Math.min(qtyLeft, itemStack.getMaxStackSize() - itemStack.getCount());
-				itemStack.grow(transfer);
-				qtyLeft -= transfer;
-				if (qtyLeft <= 0) {
-					return 0;
-				}
-			}
-			
-			// put remaining in empty slot
-			for (int i = 0; i < inventory.getSizeInventory(); i++) {
-				if (!inventory.isItemValidForSlot(i, itemStackSource)) {
-					continue;
-				}
-				
-				final ItemStack itemStack = inventory.getStackInSlot(i);
-				if (!itemStack.isEmpty()) {
-					continue;
-				}
-				
-				transfer = Math.min(qtyLeft, itemStackSource.getMaxStackSize());
-				final ItemStack dest = Commons.copyWithSize(itemStackSource, transfer);
-				inventory.setInventorySlotContents(i, dest);
-				qtyLeft -= transfer;
-				
-				if (qtyLeft <= 0) {
-					return 0;
-				}
-			}
-		}
-		
-		return qtyLeft;
 	}
 	
 	
