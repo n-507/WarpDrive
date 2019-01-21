@@ -1,4 +1,4 @@
-﻿
+
 death.attack.warpdrive.asphyxia=%1$s est mort asphyxié
 death.attack.warpdrive.asphyxia.player=%1$s est mort asphyxié grace à %2$s
 death.attack.warpdrive.cold=%1$s est mort de froid
@@ -49,6 +49,10 @@ item.warpdrive.component.superconductor.name=Superconducteur
 item.warpdrive.component.laser_medium_empty.name=Milieu amplificateur (vide)
 item.warpdrive.component.electromagnetic_projector.name=Projecteur électromagnétique
 item.warpdrive.component.reactor_core.name=Noyeau de réacteur
+
+item.warpdrive.component.raw_rubber.name=Bloc de caoutchouc brut
+item.warpdrive.component.raw_rubber.tooltip=Issue du bois d'acajou avec un laser forestier
+item.warpdrive.component.rubber.name=Caoutchouc
 
 item.warpdrive.armor.helmet.name=Casque warp
 item.warpdrive.armor.chestplate.name=Plastron warp

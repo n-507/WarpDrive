@@ -72,12 +72,15 @@ public class Recipes {
 	private static ItemStack[] itemStackMotors;
 	private static Object barsIron;
 	private static Object ingotIronOrSteel;
-	private static Object rubberOrLeather;
+	private static Object rubber;
 	private static Object goldNuggetOrBasicCircuit;
 	private static Object goldIngotOrAdvancedCircuit;
 	private static Object emeraldOrSuperiorCircuit;
 	
 	public static void initOreDictionary() {
+		// components
+		registerOreDictionary("itemRubber", ItemComponent.getItemStack(EnumComponentType.RUBBER));
+		
 		// air shields
 		for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
 			registerOreDictionary("blockAirShield", new ItemStack(WarpDrive.blockAirShield, 1, enumDyeColor.getMetadata()));
@@ -213,11 +216,9 @@ public class Recipes {
 		                                                     "ore:ingotAluminum", 0,
 		                                                     "ore:ingotIron", 0);
 		
-		// integrate with rubber and sealant from all mods
-		rubberOrLeather = WarpDriveConfig.getOreOrItemStack("ore:plateRubber", 0, // comes with GregTech
-		                                                    "ore:itemRubber", 0, // comes with IndustrialCraft2
-		                                                    "buildcrafttransport:waterproof", 0,
-		                                                    "ore:leather", 0);
+		// integrate with rubber from all mods
+		rubber = WarpDriveConfig.getOreOrItemStack("ore:plateRubber", 0, // comes with GregTech
+		                                           "ore:itemRubber", 0 ); // comes with WarpDrive, IndustrialCraft2, IndustrialForegoing, TechReborn
 		
 		// integrate with circuits from all mods
 		goldNuggetOrBasicCircuit = WarpDriveConfig.getOreOrItemStack("ore:circuitBasic", 0, // comes with IndustrialCraft2, Mekanism, VoltzEngine
@@ -444,12 +445,12 @@ public class Recipes {
 		                                       'w', itemStackWaterBottle,
 		                                       'g', gunpowderOrSulfur));
 		
-		// Air canister is 4 iron bars, 2 leather/rubber, 2 yellow wool, 1 tank
+		// Air canister is 4 iron bars, 2 rubber, 2 yellow wool, 1 tank
 		final Object woolPurple = WarpDriveConfig.getOreOrItemStack("ore:blockWoolPurple", 0,
 		                                                            "minecraft:wool", 10);
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStackNoCache(EnumComponentType.AIR_CANISTER, 4), false, "iyi", "rgr", "iyi",
-		                                       'r', rubberOrLeather,
+		                                       'r', rubber,
 		                                       'g', ItemComponent.getItemStack(EnumComponentType.GLASS_TANK),
 		                                       'y', woolPurple,
 		                                       'i', barsIron));
@@ -489,13 +490,13 @@ public class Recipes {
 		                                       'i', "ingotIron",
 		                                       'n', "nuggetGold"));
 		
-		// Pump is 2 Motor, 1 Iron ingot, 2 Tanks, 4 Rubber/leather, gives 2
+		// Pump is 2 Motor, 1 Iron ingot, 2 Tanks, 4 Rubber, gives 2
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStackNoCache(EnumComponentType.PUMP, 2), false, "sst", "mim", "tss",
-		                                       's', rubberOrLeather,
+		                                       's', rubber,
 		                                       'i', ingotIronOrSteel,
 		                                       'm', itemStackMotors[0],
-		                                       't', ItemComponent.getItemStack(EnumComponentType.GLASS_TANK)));
+		                                       't', ItemComponent.getItemStack(EnumComponentType.GLASS_TANK) ));
 		
 		// *** optical components
 		// Lens is 1 Diamond, 2 Gold ingots, 2 Glass panels
@@ -545,11 +546,11 @@ public class Recipes {
 		                                       'g', Blocks.GLOWSTONE));
 		
 		// *** energy components
-		// Power interface is 4 Redstone, 2 Iron ingot, 3 Gold ingot
+		// Power interface is 4 Redstone, 2 Rubber, 3 Gold ingot
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStackNoCache(EnumComponentType.POWER_INTERFACE, 3), false, "rgr", "RgR", "rgr",
 		                                       'g', "ingotGold",
-		                                       'R', rubberOrLeather,
+		                                       'R', rubber,
 		                                       'r', Items.REDSTONE ));
 		
 		// Superconductor is 1 Ender crystal, 4 Power interface, 4 Cryotheum dust/Lapis block/10k Coolant cell
@@ -595,6 +596,16 @@ public class Recipes {
 			                                               'c', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL),
 			                                               'e', ItemComponent.getItemStack(EnumComponentType.EMERALD_CRYSTAL)));
 		}
+		
+		// Raw rubber lump is produced from Jungle wood in the laser tree farm
+		// (no direct recipe)
+		
+		// Rubber is the product of smelting (vulcanize) Raw rubber lump
+		// (in reality, vulcanization requires additives. This refining is optional, so low tiers could still use the Raw rubber lump)
+		GameRegistry.addSmelting(
+				ItemComponent.getItemStack(EnumComponentType.RAW_RUBBER),
+				ItemComponent.getItemStack(EnumComponentType.RUBBER),
+				0);
 	}
 	
 	private static void initToolsAndArmor() {
@@ -629,7 +640,7 @@ public class Recipes {
 		                                       WarpDrive.itemWarpArmor[EntityEquipmentSlot.FEET.getIndex()], false, "wiw", "r r", "   ",
 		                                       'i', Items.IRON_BOOTS,
 		                                       'w', Blocks.WOOL,
-		                                       'r', rubberOrLeather));
+		                                       'r', rubber ));
 		
 		// Tuning fork variations
 		for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
@@ -885,29 +896,29 @@ public class Recipes {
 		// Basic Air Tank is 2 Air canisters, 1 Pump, 1 Gold nugget, 1 Basic circuit, 4 Rubber
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
 		                                       WarpDrive.itemAirTanks[EnumAirTankTier.BASIC.getIndex()], false, "rnr", "tpt", "rcr",
-		                                       'r', rubberOrLeather,
+		                                       'r', rubber,
 		                                       'p', ItemComponent.getItemStack(EnumComponentType.PUMP),
 		                                       't', ItemComponent.getItemStack(EnumComponentType.AIR_CANISTER),
 		                                       'c', goldNuggetOrBasicCircuit,
-		                                       'n', "nuggetGold"));
+		                                       'n', "nuggetGold" ));
 		
 		// Advanced Air Tank is 2 Basic air tank, 1 Pump, 1 Gold nugget, 1 Advanced circuit, 4 Rubber
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
 		                                       WarpDrive.itemAirTanks[EnumAirTankTier.ADVANCED.getIndex()], false, "rnr", "tpt", "rcr",
-		                                       'r', rubberOrLeather,
+		                                       'r', rubber,
 		                                       'p', itemStackMotors[1],
 		                                       't', WarpDrive.itemAirTanks[EnumAirTankTier.BASIC.getIndex()],
 		                                       'c', goldIngotOrAdvancedCircuit,
-		                                       'n', "nuggetGold"));
+		                                       'n', "nuggetGold" ));
 		
 		// Superior Air Tank is 2 Advanced air tank, 1 Pump, 1 Gold nugget, 1 Elite circuit, 4 Rubber
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
 		                                       WarpDrive.itemAirTanks[EnumAirTankTier.SUPERIOR.getIndex()], false, "rnr", "tpt", "rcr",
-		                                       'r', rubberOrLeather,
+		                                       'r', rubber,
 		                                       'p', itemStackMotors[2],
 		                                       't', WarpDrive.itemAirTanks[EnumAirTankTier.ADVANCED.getIndex()],
 		                                       'c', emeraldOrSuperiorCircuit,
-		                                       'n', "nuggetGold"));
+		                                       'n', "nuggetGold" ));
 		
 		// Uncrafting air tanks and canister
 		WarpDrive.register(new ShapelessOreRecipe(groupComponents,
@@ -1784,19 +1795,19 @@ public class Recipes {
 		// Laser camera is just Laser + Camera
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       new ItemStack(WarpDrive.blockLaserCamera), false, "rlr", "rsr", "rcr",
-		                                       'r', rubberOrLeather,
+		                                       'r', rubber,
 		                                       's', goldNuggetOrBasicCircuit,
 		                                       'l', WarpDrive.blockLaser,
-		                                       'c', WarpDrive.blockCamera));
+		                                       'c', WarpDrive.blockCamera ));
 		
 		// Weapon controller is diamond sword with Ship controller
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       new ItemStack(WarpDrive.blockWeaponController), false, "rwr", "msm", "rcr",
-		                                       'r', rubberOrLeather,
+		                                       'r', rubber,
 		                                       's', ItemComponent.getItemStack(EnumComponentType.EMERALD_CRYSTAL),
 		                                       'm', ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL),
 		                                       'w', Items.DIAMOND_SWORD,
-		                                       'c', WarpDrive.blockShipControllers[EnumTier.ADVANCED.getIndex()]));
+		                                       'c', WarpDrive.blockShipControllers[EnumTier.ADVANCED.getIndex()] ));
 	}
 	
 	/*

@@ -50,6 +50,10 @@ item.warpdrive.component.laser_medium_empty.name=Lege Deeltjesversneller
 item.warpdrive.component.electromagnetic_projector.name=Electromagnetische Projector
 item.warpdrive.component.reactor_core.name=Reactor Kern
 
+item.warpdrive.component.raw_rubber.name=Raw rubber clump
+item.warpdrive.component.raw_rubber.tooltip=Harvested from Jungle wood with Laser tree farm
+item.warpdrive.component.rubber.name=Rubber
+
 item.warpdrive.armor.helmet.name=Warp Helm
 item.warpdrive.armor.chestplate.name=Warp Borstplaat
 item.warpdrive.armor.leggings.name=Warp Broek

@@ -25,8 +25,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockOldLog;
+import net.minecraft.block.BlockPlanks.EnumType;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -327,6 +328,40 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 							// done with this block
 							return;
 						}
+					}
+					
+					// Jungle wood to raw rubber
+					if ( blockStateValuable.getBlock() instanceof BlockOldLog
+					  && blockStateValuable.getValue(BlockOldLog.VARIANT) == EnumType.JUNGLE ) {
+						if (WarpDriveConfig.LOGGING_COLLECTION) {
+							WarpDrive.logger.info(String.format("Tap found jungle wood at %s",
+							                                    valuable));
+						}
+						
+						// consume power
+						final int energyRequested = (int) Math.ceil(TREE_FARM_ENERGY_PER_LOG + TREE_FARM_ENERGY_PER_WET_SPOT);
+						isPowered = laserMedium_consumeExactly(energyRequested, false);
+						if (!isPowered) {
+							delayTargetTicks = TREE_FARM_LOW_POWER_DELAY_TICKS;
+							updateBlockState(blockState, BlockLaserTreeFarm.MODE, EnumLaserTreeFarmMode.FARMING_LOW_POWER);
+							return;
+						} else {
+							delayTargetTicks = TREE_FARM_TAP_TREE_WET_DELAY_TICKS;
+							updateBlockState(blockState, BlockLaserTreeFarm.MODE, EnumLaserTreeFarmMode.FARMING_POWERED);
+						}
+						
+						final ItemStack itemStackRawRubber = ItemComponent.getItemStack(EnumComponentType.RAW_RUBBER);
+						if (InventoryWrapper.addToConnectedInventories(world, pos, itemStackRawRubber)) {
+							stop();
+						}
+						totalHarvested += itemStackRawRubber.getCount();
+						final int age = Math.max(10, Math.round((4 + world.rand.nextFloat()) * TREE_FARM_HARVEST_LOG_DELAY_TICKS));
+						PacketHandler.sendBeamPacket(world, laserOutput, new Vector3(valuable).translate(0.5D),
+						                             0.8F, 0.8F, 0.2F, age, 0, 50);
+						
+						world.setBlockToAir(valuable);
+						// done with this block
+						return;
 					}
 				}
 				

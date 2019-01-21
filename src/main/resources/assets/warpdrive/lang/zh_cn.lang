@@ -50,6 +50,10 @@ item.warpdrive.component.laser_medium_empty.name=激光媒质(空)
 item.warpdrive.component.electromagnetic_projector.name=电磁投影仪
 item.warpdrive.component.reactor_core.name=反应堆芯
 
+item.warpdrive.component.raw_rubber.name=Raw rubber clump
+item.warpdrive.component.raw_rubber.tooltip=Harvested from Jungle wood with Laser tree farm
+item.warpdrive.component.rubber.name=Rubber
+
 item.warpdrive.armor.helmet.name=曲率头盔
 item.warpdrive.armor.chestplate.name=曲率胸甲
 item.warpdrive.armor.leggings.name=曲率护腿

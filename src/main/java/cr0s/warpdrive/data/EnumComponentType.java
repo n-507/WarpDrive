@@ -45,6 +45,10 @@ public enum EnumComponentType implements IStringSerializable {
 	LASER_MEDIUM_EMPTY         ("laser_medium_empty"),
 	ELECTROMAGNETIC_PROJECTOR  ("electromagnetic_projector"),
 	REACTOR_CORE               ("reactor_core"),
+	
+	// materials
+	RAW_RUBBER                 ("raw_rubber"),
+	RUBBER                     ("rubber"),
 	;
 	
 	private final String name;

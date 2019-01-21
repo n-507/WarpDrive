@@ -1,4 +1,4 @@
-﻿
+
 death.attack.warpdrive.asphyxia=%1$s ging die Luft aus
 death.attack.warpdrive.asphyxia.player=%1$s wurde von %2$s erstickt
 death.attack.warpdrive.cold=%1$s erfror
@@ -49,6 +49,10 @@ item.warpdrive.component.superconductor.name=Supraleiter
 item.warpdrive.component.laser_medium_empty.name=Medium Laser (leer)
 item.warpdrive.component.electromagnetic_projector.name=Elektromagnetischer Projektor
 item.warpdrive.component.reactor_core.name=Reaktorkern
+
+item.warpdrive.component.raw_rubber.name=Raw rubber clump
+item.warpdrive.component.raw_rubber.tooltip=Harvested from Jungle wood with Laser tree farm
+item.warpdrive.component.rubber.name=Rubber
 
 item.warpdrive.armor.helmet.name=Warp Helm
 item.warpdrive.armor.chestplate.name=Warp Brustpanzer
