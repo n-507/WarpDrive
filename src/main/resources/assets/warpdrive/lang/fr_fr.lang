@@ -48,7 +48,7 @@ item.warpdrive.component.superconductor.name=Superconducteur
 
 item.warpdrive.component.laser_medium_empty.name=Milieu amplificateur (vide)
 item.warpdrive.component.electromagnetic_projector.name=Projecteur électromagnétique
-item.warpdrive.component.reactor_core.name=Noyeau de réacteur
+item.warpdrive.component.reactor_core.name=Noyau de réacteur
 
 item.warpdrive.component.raw_rubber.name=Bloc de caoutchouc brut
 item.warpdrive.component.raw_rubber.tooltip=Issue du bois d'acajou avec un laser forestier
@@ -269,7 +269,7 @@ tile.warpdrive.building.ship_scanner.advanced.name=Scanneur de vaisseau corvette
 tile.warpdrive.building.ship_scanner.superior.name=Scanneur de vaisseau frégate
 
 tile.warpdrive.collection.laser_tree_farm.name=Laser de plantation arboricole
-tile.warpdrive.collection.mining_laser.name=Laser d'exploitation minière
+tile.warpdrive.collection.mining_laser.name=Laser de minage
 
 tile.warpdrive.detection.camera.name=Caméra
 tile.warpdrive.detection.cloaking_coil.name=Bobine d'invisibilité
