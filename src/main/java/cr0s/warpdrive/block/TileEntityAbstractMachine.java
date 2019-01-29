@@ -41,7 +41,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 		super.readFromNBT(tagCompound);
 		
 		name = tagCompound.getString("name");
-		isEnabled = tagCompound.hasKey("isEnabled") && tagCompound.getBoolean("isEnabled");
+		isEnabled = !tagCompound.hasKey("isEnabled") || tagCompound.getBoolean("isEnabled");
 	}
 	
 	@Nonnull
