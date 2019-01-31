@@ -262,11 +262,11 @@ public class WarpDriveConfig {
 	
 	// Ship
 	public static int[]            SHIP_MAX_ENERGY_STORED_BY_TIER = { 0, 500000, 10000000, 100000000 };
-	public static int[]            SHIP_MASS_MAX_BY_TIER = { 2000000, 4000, 16000, 64000 };
-	public static int[]            SHIP_MASS_MIN_BY_TIER = { 0, 0, 3000, 12000 };
-	public static int              SHIP_MASS_MAX_ON_PLANET_SURFACE = 1200;
-	public static int              SHIP_MASS_MIN_FOR_HYPERSPACE = 3000;
-	public static int[]            SHIP_SIZE_MAX_PER_SIDE_BY_TIER = { 127, 32, 64, 127 };
+	public static int[]            SHIP_MASS_MAX_BY_TIER = { 2000000, 3456, 13824, 110592 };
+	public static int[]            SHIP_MASS_MIN_BY_TIER = {       0,   64,  2592,  10368 };
+	public static int              SHIP_MASS_MAX_ON_PLANET_SURFACE = 3000;
+	public static int              SHIP_MASS_MIN_FOR_HYPERSPACE = 4000;
+	public static int[]            SHIP_SIZE_MAX_PER_SIDE_BY_TIER = { 127, 24, 48, 96 };
 	public static int              SHIP_COLLISION_TOLERANCE_BLOCKS = 3;
 	public static int              SHIP_WARMUP_RANDOM_TICKS = 60;
 	public static int              SHIP_CONTROLLER_UPDATE_INTERVAL_SECONDS = 2;
