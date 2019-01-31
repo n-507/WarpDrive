@@ -131,19 +131,22 @@ public class JumpBlock {
 		return worldSource.getTileEntity(new BlockPos(x, y, z));
 	}
 	
-	private NBTTagCompound getBlockNBT() {
+	private NBTTagCompound getBlockNBT(final World worldSource) {
 		if (weakTileEntity == null) {
 			return blockNBT == null ? null : blockNBT.copy();
 		}
-		final TileEntity tileEntity = weakTileEntity.get();
-		if (tileEntity != null) {
-			final NBTTagCompound tagCompound = new NBTTagCompound();
-			tileEntity.writeToNBT(tagCompound);
-			return tagCompound;
+		TileEntity tileEntity = weakTileEntity.get();
+		if (tileEntity == null) {
+			tileEntity = worldSource.getTileEntity(new BlockPos(x, y, z));
+			if (tileEntity == null) {
+				WarpDrive.logger.error(String.format("Tile entity lost in %s",
+				                                     this));
+				return blockNBT == null ? null : blockNBT.copy();
+			}
 		}
-		WarpDrive.logger.error(String.format("Tile entity lost in %s",
-		                                     this));
-		return blockNBT == null ? null : blockNBT.copy();
+		final NBTTagCompound tagCompound = new NBTTagCompound();
+		tileEntity.writeToNBT(tagCompound);
+		return tagCompound;
 	}
 	
 	public NBTBase getExternal(final String modId) {
@@ -276,9 +279,9 @@ public class JumpBlock {
 		}
 	}
 	
-	public BlockPos deploy(final World targetWorld, final ITransformation transformation) {
+	public BlockPos deploy(final World worldSource, final World worldTarget, final ITransformation transformation) {
 		try {
-			final NBTTagCompound nbtToDeploy = getBlockNBT();
+			final NBTTagCompound nbtToDeploy = getBlockNBT(worldSource);
 			int newBlockMeta = blockMeta;
 			if (externals != null) {
 				for (final Entry<String, NBTBase> external : externals.entrySet()) {
@@ -297,7 +300,7 @@ public class JumpBlock {
 				                                    block, newBlockMeta, nbtToDeploy));
 			}
 			final IBlockState blockState = block.getStateFromMeta(newBlockMeta);
-			setBlockNoLight(targetWorld, target, blockState, 2);
+			setBlockNoLight(worldTarget, target, blockState, 2);
 			
 			if (nbtToDeploy != null) {
 				nbtToDeploy.setInteger("x", target.getX());
@@ -329,24 +332,24 @@ public class JumpBlock {
 				  && nbtToDeploy.hasKey("id")
 				  && nbtToDeploy.getString("id").equals("savedMultipart") ) {
 					isForgeMultipart = true;
-					newTileEntity = (TileEntity) CompatForgeMultipart.methodMultipartHelper_createTileFromNBT.invoke(null, targetWorld, nbtToDeploy);
+					newTileEntity = (TileEntity) CompatForgeMultipart.methodMultipartHelper_createTileFromNBT.invoke(null, worldTarget, nbtToDeploy);
 				}
 				
 				if (newTileEntity == null) {
-					newTileEntity = TileEntity.create(targetWorld, nbtToDeploy);
+					newTileEntity = TileEntity.create(worldTarget, nbtToDeploy);
 					if (newTileEntity == null) {
 						WarpDrive.logger.error(String.format("%s deploy failed to create new tile entity %s block %s:%d",
-						                                     this, Commons.format(targetWorld, x, y, z), block, blockMeta));
+						                                     this, Commons.format(worldTarget, x, y, z), block, blockMeta));
 						WarpDrive.logger.error(String.format("NBT data was %s",
 						                                     nbtToDeploy));
 					}
 				}
 				
 				if (newTileEntity != null) {
-					targetWorld.setTileEntity(target, newTileEntity);
+					worldTarget.setTileEntity(target, newTileEntity);
 					if (isForgeMultipart) {
 						CompatForgeMultipart.methodTileMultipart_onChunkLoad.invoke(newTileEntity);
-						CompatForgeMultipart.methodMultipartHelper_sendDescPacket.invoke(null, targetWorld, newTileEntity);
+						CompatForgeMultipart.methodMultipartHelper_sendDescPacket.invoke(null, worldTarget, newTileEntity);
 					}
 					
 					newTileEntity.markDirty();
@@ -480,10 +483,10 @@ public class JumpBlock {
 		}
 	}
 	
-	public void writeToNBT(final NBTTagCompound tagCompound) {
+	public void writeToNBT(final World worldSource, final NBTTagCompound tagCompound) {
 		tagCompound.setString("block", Block.REGISTRY.getNameForObject(block).toString());
 		tagCompound.setByte("blockMeta", (byte) blockMeta);
-		final NBTTagCompound nbtTileEntity = getBlockNBT();
+		final NBTTagCompound nbtTileEntity = getBlockNBT(worldSource);
 		if (nbtTileEntity != null) {
 			tagCompound.setTag("blockNBT", nbtTileEntity);
 		}

@@ -483,7 +483,7 @@ public class JumpShip {
 		final NBTTagList tagListJumpBlocks = new NBTTagList();
 		for (final JumpBlock jumpBlock : jumpBlocks) {
 			final NBTTagCompound tagCompoundBlock = new NBTTagCompound();
-			jumpBlock.writeToNBT(tagCompoundBlock);
+			jumpBlock.writeToNBT(world, tagCompoundBlock);
 			tagListJumpBlocks.appendTag(tagCompoundBlock);
 		}
 		tagCompound.setTag("jumpBlocks", tagListJumpBlocks);

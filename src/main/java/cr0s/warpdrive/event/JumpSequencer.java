@@ -1028,7 +1028,7 @@ public class JumpSequencer extends AbstractSequencer {
 					jumpBlock.fillEnergyStorage();
 				}
 				
-				final BlockPos target = jumpBlock.deploy(targetWorld, transformation);
+				final BlockPos target = jumpBlock.deploy(sourceWorld, targetWorld, transformation);
 				
 				if ( shipMovementType != EnumShipMovementType.INSTANTIATE
 				  && shipMovementType != EnumShipMovementType.RESTORE ) {

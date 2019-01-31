@@ -344,7 +344,7 @@ public class WorldGenStructure {
 				final BlockPos targetLocation = transformation.apply(jumpBlock.x, jumpBlock.y, jumpBlock.z);
 				final Block blockAtTarget = world.getBlockState(targetLocation).getBlock();
 				if (blockAtTarget == Blocks.AIR || Dictionary.BLOCKS_EXPANDABLE.contains(blockAtTarget)) {
-					jumpBlock.deploy(world, transformation);
+					jumpBlock.deploy(null, world, transformation);
 				} else {
 					if (WarpDriveConfig.LOGGING_WORLD_GENERATION && WarpDrive.isDev) {
 						WarpDrive.logger.info(String.format("Deployment collision detected %s with %s during world generation, skipping this block...",
