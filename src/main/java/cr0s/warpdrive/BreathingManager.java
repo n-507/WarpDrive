@@ -61,8 +61,7 @@ public class BreathingManager {
 	
 	public static boolean onLivingJoinEvent(final EntityLivingBase entityLivingBase, final int x, final int y, final int z) {
 		// skip living entities who don't need air
-		final String idEntity = EntityList.getEntityString(entityLivingBase);
-		if (Dictionary.ENTITIES_LIVING_WITHOUT_AIR.contains(idEntity)) {
+		if (Dictionary.isLivingWithoutAir(entityLivingBase)) {
 			return true;
 		}
 		
@@ -76,15 +75,14 @@ public class BreathingManager {
 		if (WarpDriveConfig.LOGGING_BREATHING) {
 			WarpDrive.logger.warn(String.format("Entity spawn denied %s entityId '%s'",
 			                                    Commons.format(entityLivingBase.world, x, y, z),
-			                                    idEntity));
+			                                    Dictionary.getId(entityLivingBase) ));
 		}
 		return false;
 	}
 	
 	public static void onLivingUpdateEvent(final EntityLivingBase entityLivingBase, final int x, final int y, final int z) {
 		// skip living entities who don't need air
-		final String idEntity = EntityList.getEntityString(entityLivingBase);
-		if (Dictionary.ENTITIES_LIVING_WITHOUT_AIR.contains(idEntity)) {
+		if (Dictionary.isLivingWithoutAir(entityLivingBase)) {
 			return;
 		}
 		

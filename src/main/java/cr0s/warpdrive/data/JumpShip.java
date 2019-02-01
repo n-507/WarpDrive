@@ -193,26 +193,27 @@ public class JumpShip {
 				continue;
 			}
 			
-			final String id = EntityList.getEntityString(entity);
-			if (Dictionary.ENTITIES_ANCHOR.contains(id)) {
+			if (Dictionary.isAnchor(entity)) {
 				reason.append(Commons.styleWarning, "warpdrive.ship.guide.anchor_entity_detected",
-				              id,
-				              Math.round(entity.posX), Math.round(entity.posY), Math.round(entity.posZ));
+				              Dictionary.getId(entity),
+				              Math.round(entity.posX), Math.round(entity.posY), Math.round(entity.posZ) );
 				isSuccess = false;
 				// we need to continue so players are added so they can see the message...
 				continue;
 			}
-			if (Dictionary.ENTITIES_LEFTBEHIND.contains(id)) {
+			if (Dictionary.isLeftBehind(entity)) {
 				if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
 					WarpDrive.logger.info(String.format("Leaving entity %s behind: %s",
-					                                    id, entity));
+					                                    Dictionary.getId(entity),
+					                                    entity ));
 				}
 				continue;
 			}
 			if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
 				if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
 					WarpDrive.logger.info(String.format("Adding entity %s: %s",
-					                                    id, entity));
+					                                    Dictionary.getId(entity),
+					                                    entity ));
 				}
 			}
 			final MovingEntity movingEntity = new MovingEntity(entity);

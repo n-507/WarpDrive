@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -51,11 +53,11 @@ public class Dictionary {
 	public static HashSet<Block> BLOCKS_NOBLINK = null;
 	
 	// Entities dictionary
-	public static HashSet<String> ENTITIES_ANCHOR = null;
-	public static HashSet<String> ENTITIES_NOMASS = null;
-	public static HashSet<String> ENTITIES_LEFTBEHIND = null;
-	public static HashSet<String> ENTITIES_NONLIVINGTARGET = null;
-	public static HashSet<String> ENTITIES_LIVING_WITHOUT_AIR = null;
+	private static HashSet<ResourceLocation> ENTITIES_ANCHOR = null;
+	private static HashSet<ResourceLocation> ENTITIES_NOMASS = null;
+	private static HashSet<ResourceLocation> ENTITIES_LEFTBEHIND = null;
+	private static HashSet<ResourceLocation> ENTITIES_NONLIVINGTARGET = null;
+	private static HashSet<ResourceLocation> ENTITIES_LIVING_WITHOUT_AIR = null;
 	
 	// Items dictionary
 	public static HashSet<Item> ITEMS_FLYINSPACE = null;
@@ -436,22 +438,22 @@ public class Dictionary {
 		ENTITIES_NONLIVINGTARGET = new HashSet<>(taggedEntities.size());
 		ENTITIES_LIVING_WITHOUT_AIR = new HashSet<>(taggedEntities.size());
 		for (final Entry<String, String> taggedEntity : taggedEntities.entrySet()) {
-			final String entityId = taggedEntity.getKey();
-			/* we can't detect missing entities, since some of them are 'hacked' in
-			if (!EntityList.stringToIDMapping.containsKey(entityId)) {
-				WarpDrive.logger.info(String.format("Ignoring missing entity %s", entityId));
+			final ResourceLocation resourceLocation = new ResourceLocation(taggedEntity.getKey());
+			if (EntityList.getClass(resourceLocation) == null) {
+				WarpDrive.logger.info(String.format("Ignoring missing entity %s",
+				                                    resourceLocation ));
 				continue;
 			}
-			/**/
 			for (final String tag : taggedEntity.getValue().replace("\t", " ").replace(",", " ").replace("  ", " ").split(" ")) {
 				switch (tag) {
-				case "Anchor"          : ENTITIES_ANCHOR.add(entityId); break;
-				case "NoMass"          : ENTITIES_NOMASS.add(entityId); break;
-				case "LeftBehind"      : ENTITIES_LEFTBEHIND.add(entityId); break;
-				case "NonLivingTarget" : ENTITIES_NONLIVINGTARGET.add(entityId); break;
-				case "LivingWithoutAir": ENTITIES_LIVING_WITHOUT_AIR.add(entityId); break;
+				case "Anchor"          : ENTITIES_ANCHOR.add(resourceLocation); break;
+				case "NoMass"          : ENTITIES_NOMASS.add(resourceLocation); break;
+				case "LeftBehind"      : ENTITIES_LEFTBEHIND.add(resourceLocation); break;
+				case "NonLivingTarget" : ENTITIES_NONLIVINGTARGET.add(resourceLocation); break;
+				case "LivingWithoutAir": ENTITIES_LIVING_WITHOUT_AIR.add(resourceLocation); break;
 				default:
-					WarpDrive.logger.error(String.format("Unsupported tag %s for entity %s", tag, entityId));
+					WarpDrive.logger.error(String.format("Unsupported tag %s for entity %s",
+					                                     tag, resourceLocation ));
 					break;
 				}
 			}
@@ -659,5 +661,30 @@ public class Dictionary {
 			}
 		}
 		return hashSetItem;
+	}
+	
+	public static String getId(final Entity entity) {
+		final ResourceLocation resourceLocation = EntityList.getKey(entity);
+		return resourceLocation == null ? "-null-" : resourceLocation.toString();
+	}
+	
+	public static boolean isAnchor(final Entity entity) {
+		final ResourceLocation resourceLocation = EntityList.getKey(entity);
+		return ENTITIES_ANCHOR.contains(resourceLocation);
+	}
+	
+	public static boolean isLeftBehind(final Entity entity) {
+		final ResourceLocation resourceLocation = EntityList.getKey(entity);
+		return ENTITIES_LEFTBEHIND.contains(resourceLocation);
+	}
+	
+	public static boolean isLivingWithoutAir(final Entity entity) {
+		final ResourceLocation resourceLocation = EntityList.getKey(entity);
+		return ENTITIES_LIVING_WITHOUT_AIR.contains(resourceLocation);
+	}
+	
+	public static boolean isNonLivingTarget(final Entity entity) {
+		final ResourceLocation resourceLocation = EntityList.getKey(entity);
+		return ENTITIES_NONLIVINGTARGET.contains(resourceLocation);
 	}
 }

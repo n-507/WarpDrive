@@ -1337,11 +1337,11 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 			// (particle effects are client side only, no need to filter them out)
 			
 			// skip blacklisted ids
-			final String entityId = EntityList.getEntityString(entity);
-			if (Dictionary.ENTITIES_LEFTBEHIND.contains(entityId)) {
+			if (Dictionary.isLeftBehind(entity)) {
 				if (WarpDriveConfig.LOGGING_TRANSPORTER) {
 					WarpDrive.logger.info(String.format("Entity is not valid for transportation (id %s) %s",
-					entityId, entity));
+					                                    Dictionary.getId(entity),
+					                                    entity ));
 				}
 				continue;
 			}
@@ -1394,11 +1394,11 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 			// (particle effects are client side only, no need to filter them out)
 			
 			// skip blacklisted ids
-			final String entityId = EntityList.getEntityString(entity);
-			if (Dictionary.ENTITIES_LEFTBEHIND.contains(entityId)) {
+			if (Dictionary.isLeftBehind(entity)) {
 				if (WarpDriveConfig.LOGGING_TRANSPORTER) {
 					WarpDrive.logger.info(String.format("Entity is not valid for transportation (id %s) %s", 
-					                                    entityId, entity));
+					                                    Dictionary.getId(entity),
+					                                    entity ));
 				}
 				continue;
 			}

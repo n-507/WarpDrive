@@ -418,17 +418,20 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 							WarpDrive.logger.info(String.format("Entity is a valid target (living) %s", entity));
 						}
 					} else {
-						final String entityId = EntityList.getEntityString(mopEntity.entityHit);
-						if (!Dictionary.ENTITIES_NONLIVINGTARGET.contains(entityId)) {
+						if (!Dictionary.isNonLivingTarget(mopEntity.entityHit)) {
 							if (WarpDriveConfig.LOGGING_WEAPON) {
-								WarpDrive.logger.info(String.format("Entity is an invalid target (non-living %s) %s", entityId, mopEntity.entityHit));
+								WarpDrive.logger.info(String.format("Entity is an invalid target (non-living %s) %s",
+								                                    Dictionary.getId(mopEntity.entityHit),
+								                                    mopEntity.entityHit ));
 							}
 							// remove entity from hit list
 							entityHits.put(entityHitDistance, null);
 							continue;
 						}
 						if (WarpDriveConfig.LOGGING_WEAPON) {
-							WarpDrive.logger.info(String.format("Entity is a valid target (non-living %s) %s", entityId, mopEntity.entityHit));
+							WarpDrive.logger.info(String.format("Entity is a valid target (non-living %s) %s",
+							                                    Dictionary.getId(mopEntity.entityHit),
+							                                    mopEntity.entityHit ));
 						}
 					}
 					
