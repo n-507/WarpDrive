@@ -112,7 +112,7 @@ public class ItemComponent extends ItemAbstractBase implements IAirContainerItem
 	@Override
 	public int getAirTicksPerConsumption(final ItemStack itemStack) {
 		if (canContainAir(itemStack)) {
-			return WarpDrive.itemAirTanks[0].getAirTicksPerConsumption(itemStack);
+			return WarpDrive.itemAirTanks[0].getAirTicksPerConsumption(new ItemStack(WarpDrive.itemAirTanks[0]));
 		} else {
 			return 0;
 		}
@@ -121,7 +121,7 @@ public class ItemComponent extends ItemAbstractBase implements IAirContainerItem
 	@Override
 	public ItemStack getFullAirContainer(final ItemStack itemStack) {
 		if (canContainAir(itemStack)) {
-			return WarpDrive.itemAirTanks[0].getFullAirContainer(itemStack);
+			return WarpDrive.itemAirTanks[0].getFullAirContainer(new ItemStack(WarpDrive.itemAirTanks[0]));
 		}
 		return null;
 	}
@@ -129,7 +129,7 @@ public class ItemComponent extends ItemAbstractBase implements IAirContainerItem
 	@Override
 	public ItemStack getEmptyAirContainer(final ItemStack itemStack) {
 		if (canContainAir(itemStack)) {
-			return WarpDrive.itemAirTanks[0].getEmptyAirContainer(itemStack);
+			return WarpDrive.itemAirTanks[0].getEmptyAirContainer(new ItemStack(WarpDrive.itemAirTanks[0]));
 		}
 		return null;
 	}

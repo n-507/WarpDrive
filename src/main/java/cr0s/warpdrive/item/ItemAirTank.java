@@ -80,29 +80,30 @@ public class ItemAirTank extends ItemAbstractBase implements IAirContainerItem {
 	
 	@Override
 	public int getAirTicksPerConsumption(final ItemStack itemStack) {
-		if ( itemStack == null
-		  || itemStack.getItem() != this ) {
+		if ( itemStack != null
+		  && itemStack.getItem() != this ) {
 			return 0;
 		}
 		return WarpDriveConfig.BREATHING_AIR_TANK_BREATH_DURATION_TICKS;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public ItemStack getEmptyAirContainer(final ItemStack itemStack) {
-		if ( itemStack == null
-		  || itemStack.getItem() != this ) {
+		if ( itemStack != null
+		  && itemStack.getItem() != this ) {
 			return itemStack;
 		}
-		return new ItemStack(itemStack.getItem(), 1, itemStack.getMaxDamage());
+		return new ItemStack(this, 1, getMaxDamage());
 	}
 	
 	@Override
 	public ItemStack getFullAirContainer(final ItemStack itemStack) {
-		if ( itemStack == null
-		  || itemStack.getItem() != this ) {
+		if ( itemStack != null
+		  && itemStack.getItem() != this ) {
 			return itemStack;
 		}
-		return new ItemStack(itemStack.getItem(), 1);
+		return new ItemStack(this, 1);
 	}
 	
 	@Override
