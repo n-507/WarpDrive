@@ -93,8 +93,8 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	@Nonnull
 	@Override
 	public MapColor getMapColor(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
-		IExtendedBlockState blockStateExtended = (IExtendedBlockState) getExtendedState(blockState, blockAccess, blockPos);
-		IBlockState blockStateCamouflage = blockStateExtended.getValue(BlockProperties.CAMOUFLAGE);
+		final IExtendedBlockState blockStateExtended = (IExtendedBlockState) getExtendedState(blockState, blockAccess, blockPos);
+		final IBlockState blockStateCamouflage = blockStateExtended.getValue(BlockProperties.CAMOUFLAGE);
 		if (blockStateCamouflage != Blocks.AIR) {
 			try {
 				return blockStateCamouflage.getMapColor(blockAccess, blockPos);
@@ -336,7 +336,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		if (enumTier.getIndex() > 1) {
 			final TileEntityForceFieldProjector tileEntityForceFieldProjector = getProjector(world, blockPos);
 			final IBlockState blockState = world.getBlockState(blockPos);
-			final int frequency = blockState.getValue(FREQUENCY);
+			final int frequency = blockState.getBlock() == this ? blockState.getValue(FREQUENCY) : 0;
 			world.setBlockState(blockPos, WarpDrive.blockForceFields[enumTier.getIndex() - 1].getDefaultState().withProperty(FREQUENCY, (frequency + 1) % 16), 2);
 			if (tileEntityForceFieldProjector != null) {
 				final TileEntity tileEntity = world.getTileEntity(blockPos);

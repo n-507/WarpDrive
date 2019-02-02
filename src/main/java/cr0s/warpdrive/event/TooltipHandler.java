@@ -251,9 +251,9 @@ public class TooltipHandler {
 				final Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
 				if (fluid != null) {
 					if (fluid.isGaseous()) {
-						Commons.addTooltip(event.getToolTip(), String.format("Gaz viscosity is %d",
+						Commons.addTooltip(event.getToolTip(), String.format("Gas viscosity is %d",
 						                                                     fluid.getViscosity()));
-						Commons.addTooltip(event.getToolTip(), String.format("Gaz density is %d",
+						Commons.addTooltip(event.getToolTip(), String.format("Gas density is %d",
 						                                                     fluid.getDensity()));
 					} else {
 						Commons.addTooltip(event.getToolTip(), String.format("Liquid viscosity is %d",

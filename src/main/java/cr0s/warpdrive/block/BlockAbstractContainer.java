@@ -212,11 +212,7 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 				WarpDrive.logger.error(String.format("Bad multithreading detected from mod %s %s, please report to mod author",
 				                                     registryName == null ? blockNeighbor : registryName.getNamespace(),
 				                                     Commons.format(blockAccess, blockPosNeighbor) ));
-				try {
-					throw new ConcurrentModificationException();
-				} catch (final Exception exception) {
-					exception.printStackTrace();
-				}
+				new ConcurrentModificationException().printStackTrace();
 			}
 			return;
 		}

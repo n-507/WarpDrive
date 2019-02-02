@@ -308,7 +308,7 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyConsumer {
 		final int energyRequired_new;
 		int volume_new = 0;
 		final MutableBlockPos mutableBlockPos = new MutableBlockPos(pos);
-		if (!isFullyTransparent) {// partial transparency = gaz and air blocks don't count
+		if (!isFullyTransparent) {// partial transparency = gas and air blocks don't count
 			for (y = minY; y <= maxY; y++) {
 				for (x = minX; x <= maxX; x++) {
 					for (z = minZ; z <= maxZ; z++) {

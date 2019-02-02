@@ -987,7 +987,7 @@ public class WarpDriveConfig {
 		LASER_CANNON_BOOSTER_BEAM_ENERGY_EFFICIENCY = Commons.clamp(0.01D, 10.0D,
 				config.get("laser_cannon", "booster_beam_energy_efficiency", LASER_CANNON_BOOSTER_BEAM_ENERGY_EFFICIENCY, "Energy factor applied from boosting to main laser").getDouble(0.6D));
 		LASER_CANNON_ENERGY_ATTENUATION_PER_AIR_BLOCK = Commons.clamp(0.0D, 0.1D,
-				config.get("laser_cannon", "energy_attenuation_per_air_block", LASER_CANNON_ENERGY_ATTENUATION_PER_AIR_BLOCK, "Energy attenuation when going through air blocks (on a planet or any gaz in space)").getDouble());
+				config.get("laser_cannon", "energy_attenuation_per_air_block", LASER_CANNON_ENERGY_ATTENUATION_PER_AIR_BLOCK, "Energy attenuation when going through air blocks (on a planet or any gas in space)").getDouble());
 		LASER_CANNON_ENERGY_ATTENUATION_PER_VOID_BLOCK = Commons.clamp(0.0D, 0.1D,
 				config.get("laser_cannon", "energy_attenuation_per_air_block", LASER_CANNON_ENERGY_ATTENUATION_PER_VOID_BLOCK, "Energy attenuation when going through void blocks (in space or hyperspace)").getDouble());
 		LASER_CANNON_ENERGY_ATTENUATION_PER_BROKEN_BLOCK = Commons.clamp(0.0D, 1.0D,

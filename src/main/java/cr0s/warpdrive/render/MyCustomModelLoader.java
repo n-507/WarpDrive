@@ -34,10 +34,10 @@ public enum MyCustomModelLoader implements ICustomModelLoader {
 	
 	private static boolean spriteInitialisationDone = false; 
 	private static TextureAtlasSprite spriteShape_none;
-	private static HashMap<EnumForceFieldShape, TextureAtlasSprite> spriteShapes = new HashMap<>(EnumForceFieldShape.length);
+	private static final HashMap<EnumForceFieldShape, TextureAtlasSprite> spriteShapes = new HashMap<>(EnumForceFieldShape.length);
 	private static void initSprites() {
 		if (!spriteInitialisationDone) {
-			TextureMap textureMapBlocks = Minecraft.getMinecraft().getTextureMapBlocks();
+			final TextureMap textureMapBlocks = Minecraft.getMinecraft().getTextureMapBlocks();
 			spriteShapes.put(EnumForceFieldShape.NONE      , textureMapBlocks.getAtlasSprite("warpdrive:blocks/forcefield/projector-shape_none"));
 			spriteShapes.put(EnumForceFieldShape.CUBE      , textureMapBlocks.getAtlasSprite("warpdrive:blocks/forcefield/projector-shape_cube"));
 			spriteShapes.put(EnumForceFieldShape.CYLINDER_H, textureMapBlocks.getAtlasSprite("warpdrive:blocks/forcefield/projector-shape_cylinder_h"));
@@ -51,13 +51,13 @@ public enum MyCustomModelLoader implements ICustomModelLoader {
 	}
 	
 	@Override
-	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
+	public void onResourceManagerReload(@Nonnull final IResourceManager resourceManager) {
 		OBJLoader.INSTANCE.onResourceManagerReload(resourceManager);
 		spriteInitialisationDone = false;
 	}
 	
 	@Override
-	public boolean accepts(ResourceLocation modelLocation) {
+	public boolean accepts(final ResourceLocation modelLocation) {
 		return WarpDrive.MODID.equals(modelLocation.getNamespace()) && modelLocation.getPath().endsWith(".wobj");
 	}
 	
@@ -110,15 +110,16 @@ public enum MyCustomModelLoader implements ICustomModelLoader {
 		
 		@Nonnull
 		@Override
-		public List<BakedQuad> getQuads(@Nullable IBlockState blockState, @Nullable EnumFacing side, long rand) {
+		public List<BakedQuad> getQuads(@Nullable final IBlockState blockState, @Nullable final EnumFacing side, final long rand) {
 			
-			List<BakedQuad> bakedQuadsIn = bakedModel.getQuads(blockState, side, rand);
-			IExtendedBlockState exState = (IExtendedBlockState) blockState;
-			EnumForceFieldShape enumForceFieldShape = exState != null ? exState.getValue(BlockForceFieldProjector.SHAPE) : EnumForceFieldShape.NONE;
-			List<BakedQuad> bakedQuadsOut = Lists.newArrayList();
-			for(BakedQuad bakedQuadIn : bakedQuadsIn) {
+			final List<BakedQuad> bakedQuadsIn = bakedModel.getQuads(blockState, side, rand);
+			final IExtendedBlockState exState = (IExtendedBlockState) blockState;
+			final EnumForceFieldShape enumForceFieldShape = exState != null ? exState.getValue(BlockForceFieldProjector.SHAPE) : EnumForceFieldShape.NONE;
+			final TextureAtlasSprite spriteShape = spriteShapes.get(enumForceFieldShape);
+			final List<BakedQuad> bakedQuadsOut = Lists.newArrayList();
+			for(final BakedQuad bakedQuadIn : bakedQuadsIn) {
 				if (bakedQuadIn.getSprite().equals(spriteShape_none)) {
-					BakedQuad bakedQuadOut = new BakedQuadRetextured(bakedQuadIn, spriteShapes.get(enumForceFieldShape));
+					final BakedQuad bakedQuadOut = new BakedQuadRetextured(bakedQuadIn, spriteShape);
 					bakedQuadsOut.add(bakedQuadOut);
 				} else {
 					bakedQuadsOut.add(bakedQuadIn);
