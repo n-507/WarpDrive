@@ -17,6 +17,7 @@ import cr0s.warpdrive.render.ClientCameraHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.EnumBlockRenderType;
@@ -45,6 +46,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ConcurrentModificationException;
+import java.util.Random;
 
 @Optional.InterfaceList({
 	@Optional.Interface(iface = "defense.api.IEMPBlock", modid = "DefenseTech"),
@@ -164,18 +166,26 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	public void getDrops(@Nonnull final NonNullList<ItemStack> drops,
 	                     final IBlockAccess blockAccess, final BlockPos blockPos, @Nonnull final IBlockState blockState,
 	                     final int fortune) {
-		final ItemStack itemStack = new ItemStack(this);
-		itemStack.setItemDamage(damageDropped(blockState));
 		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
-		if (tileEntity == null) {
-			WarpDrive.logger.error(String.format("Missing tile entity for %s %s",
+		if (!(tileEntity instanceof TileEntityAbstractBase)) {
+			WarpDrive.logger.error(String.format("Missing tile entity for %s %s, reverting to vanilla getDrops logic",
 			                                     this, Commons.format(blockAccess, blockPos)));
-		} else if (tileEntity instanceof TileEntityAbstractBase) {
-			final NBTTagCompound tagCompound = new NBTTagCompound();
-			((TileEntityAbstractBase) tileEntity).writeItemDropNBT(tagCompound);
-			itemStack.setTagCompound(tagCompound);
+			super.getDrops(drops, blockAccess, blockPos, blockState, fortune);
+			return;
 		}
-		drops.add(itemStack);
+		
+		final Random rand = blockAccess instanceof World ? ((World) blockAccess).rand : RANDOM;
+		final int count = quantityDropped(blockState, fortune, rand);
+		for (int i = 0; i < count; i++) {
+			final Item item = this.getItemDropped(blockState, rand, fortune);
+			if (item != Items.AIR) {
+				final ItemStack itemStack = new ItemStack(item, 1, damageDropped(blockState));
+				final NBTTagCompound tagCompound = new NBTTagCompound();
+				((TileEntityAbstractBase) tileEntity).writeItemDropNBT(tagCompound);
+				itemStack.setTagCompound(tagCompound);
+				drops.add(itemStack);
+			}
+		}
 	}
 	
 	@Nonnull
