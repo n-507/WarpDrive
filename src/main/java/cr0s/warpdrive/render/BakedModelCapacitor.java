@@ -35,6 +35,8 @@ public class BakedModelCapacitor implements IBakedModel, IMyBakedModel {
 	private IBakedModel bakedModelOriginal;
 	private IExtendedBlockState extendedBlockStateDefault;
 	
+	private long timeLastError = -1L;
+	
 	public BakedModelCapacitor() {
 	}
 	
@@ -79,8 +81,13 @@ public class BakedModelCapacitor implements IBakedModel, IMyBakedModel {
 		if (extendedBlockState != null) {
 			final EnumDisabledInputOutput enumDisabledInputOutput = getEnumDisabledInputOutput(extendedBlockState, facing);
 			if (enumDisabledInputOutput == null) {
-				WarpDrive.logger.error(String.format("%s Invalid extended property for %s\n%s",
-				                                     this, extendedBlockState, formatDetails() ));
+				final long time = System.currentTimeMillis();
+				if (time - timeLastError > 5000L) {
+					timeLastError = time;
+					new RuntimeException("Invalid extended property").printStackTrace();
+					WarpDrive.logger.error(String.format("%s Invalid extended property for %s facing %s\n%s",
+					                                     this, extendedBlockState, facing, formatDetails()));
+				}
 				return getDefaultQuads(facing, rand);
 			}
 			final IBlockState blockStateToRender = extendedBlockState.getClean().withProperty(BlockCapacitor.CONFIG, enumDisabledInputOutput);

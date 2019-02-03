@@ -114,7 +114,13 @@ public enum MyCustomModelLoader implements ICustomModelLoader {
 			
 			final List<BakedQuad> bakedQuadsIn = bakedModel.getQuads(blockState, side, rand);
 			final IExtendedBlockState exState = (IExtendedBlockState) blockState;
-			final EnumForceFieldShape enumForceFieldShape = exState != null ? exState.getValue(BlockForceFieldProjector.SHAPE) : EnumForceFieldShape.NONE;
+			EnumForceFieldShape enumForceFieldShape = exState != null ? exState.getValue(BlockForceFieldProjector.SHAPE) : EnumForceFieldShape.NONE;
+			if (enumForceFieldShape == null) {
+				new RuntimeException("Invalid shape").printStackTrace();
+				WarpDrive.logger.error(String.format("Invalid shape for %s side %s",
+				                                     blockState, side));
+				enumForceFieldShape = EnumForceFieldShape.NONE;
+			}
 			final TextureAtlasSprite spriteShape = spriteShapes.get(enumForceFieldShape);
 			final List<BakedQuad> bakedQuadsOut = Lists.newArrayList();
 			for(final BakedQuad bakedQuadIn : bakedQuadsIn) {
