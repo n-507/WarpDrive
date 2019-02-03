@@ -16,6 +16,7 @@ import cr0s.warpdrive.data.VectorI;
 import cr0s.warpdrive.event.ModelBakeEventHandler;
 import cr0s.warpdrive.render.BakedModelCamouflage;
 
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Random;
 
@@ -30,6 +31,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -47,6 +49,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -350,43 +353,71 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		}
 	}
 	
-	/* @TODO MC1.10 explosion effect redesign
-	private double log_explosionX;
-	private double log_explosionY = -1.0D;
-	private double log_explosionZ;
+	// explosion handling, preferably without ASM
+	private int previous_exploderId = -1;
+	private long previous_tickWorld = -1L;
+	private int previous_idDimension = Integer.MAX_VALUE;
+	private Vec3d previous_vExplosion = new Vec3d(0.0D, -1.0D, 0.0D);
 	
+	@SuppressWarnings("deprecation")
 	@Override
-	public float getExplosionResistance(final Entity exploder) {
+	public float getExplosionResistance(@Nullable final Entity exploder) {
+		final int exploderId = exploder == null ? -1 : exploder.getEntityId();
+		if ( exploderId != previous_exploderId
+		  && Commons.isServerThread() ) {
+			new RuntimeException(String.format("Invalid call to deprecated getExplosionResistance(%s)", exploder)).printStackTrace();
+			WarpDrive.logger.error(String.format("Invalid call to getExplosionResistance from %s",
+			                                     exploder));
+			return Float.MAX_VALUE;
+		}
 		return super.getExplosionResistance(exploder);
 	}
+	
 	@Override
-	public float getExplosionResistance(Entity entity, World world, BlockPos blockPos, double explosionX, double explosionY, double explosionZ) {
-		boolean enableFirstHit = (log_explosionX != explosionX || log_explosionY != explosionY || log_explosionZ != explosionZ); 
-		if (enableFirstHit) {
-			log_explosionX = explosionX;
-			log_explosionY = explosionY;
-			log_explosionZ = explosionZ;
+	public float getExplosionResistance(final World world, final BlockPos blockPos, @Nullable final Entity exploder, final Explosion explosion) {
+		previous_exploderId = exploder == null ? -1 : exploder.getEntityId();
+		final long tickWorld = world.getTotalWorldTime();
+		final Vec3d vExplosion = explosion.getPosition();
+		final boolean isFirstHit = Math.abs(tickWorld - previous_tickWorld) > 100L
+		                        || previous_idDimension != world.provider.getDimension()
+		                        || Math.abs(previous_vExplosion.x - vExplosion.x) > 5.0D
+		                        || Math.abs(previous_vExplosion.y - vExplosion.y) > 5.0D
+		                        || Math.abs(previous_vExplosion.z - vExplosion.z) > 5.0D;
+		if (isFirstHit) {
+			previous_tickWorld = tickWorld;
+			previous_idDimension = world.provider.getDimension();
+			previous_vExplosion = new Vec3d(vExplosion.x, vExplosion.y, vExplosion.z);
+			if (!Commons.isSafeThread())  {
+				WarpDrive.logger.error(String.format("Bad multithreading detected %s from exploder %s explosion %s",
+				                                     Commons.format(world, blockPos), exploder, explosion ));
+				new ConcurrentModificationException().printStackTrace();
+			}
+			WarpDrive.logger.error(String.format("Explosion check %s from exploder %s explosion %s",
+			                                     Commons.format(world, blockPos), exploder, explosion ));
 		}
 		
 		// find explosion strength, defaults to no effect
 		double strength = 0.0D;
-		if ( entity == null
-		  && explosionX == Math.rint(explosionX)
-		  && explosionY == Math.rint(explosionY)
-		  && explosionZ == Math.rint(explosionZ) ) {
+		if ( exploder == null
+		  && vExplosion.x == Math.rint(vExplosion.x)
+		  && vExplosion.y == Math.rint(vExplosion.y)
+		  && vExplosion.z == Math.rint(vExplosion.z) ) {
+			final BlockPos blockPosExplosion = new BlockPos((int) vExplosion.x, (int) vExplosion.y, (int) vExplosion.z);
 			// IC2 Reactor blowing up => block is already air
-			final IBlockState blockState = world.getBlockState(new BlockPos((int)explosionX, (int)explosionY, (int)explosionZ));
-			final TileEntity tileEntity = world.getTileEntity(new BlockPos((int)explosionX, (int)explosionY, (int)explosionZ));
-			if (enableFirstHit && WarpDriveConfig.LOGGING_FORCE_FIELD) {
-				WarpDrive.logger.info(String.format("Block at location is %s %s with tileEntity %s",
-				                                    blockState.getBlock(), blockState.getBlock().getTranslationKey(), tileEntity));
+			final IBlockState blockState = world.getBlockState(blockPosExplosion);
+			final TileEntity tileEntity = world.getTileEntity(blockPosExplosion);
+			if (isFirstHit && !WarpDriveConfig.LOGGING_FORCE_FIELD) {
+				WarpDrive.logger.info(String.format("Force field %s: explosion from %s %s with tileEntity %s",
+				                                    Commons.format(world, blockPos),
+				                                    blockState.getBlock(), blockState.getBlock().getRegistryName(), tileEntity ));
 			}
 			// explosion with no entity and block removed, hence we can't compute the energy impact => boosting explosion resistance
-			return 2.0F * super.getExplosionResistance(entity, world, blockPos, explosionX, explosionY, explosionZ);
+			return 2.0F * super.getExplosionResistance(world, blockPos, exploder, explosion);
 		}
 		
-		if (entity != null) {
-			switch (entity.getClass().toString()) {
+		if (exploder != null) {
+			final String nameExploder = exploder.getClass().toString();
+			switch (nameExploder) {
 			// Vanilla explosive
 			case "class net.minecraft.entity.item.EntityEnderCrystal": strength = 6.0D; break;
 			case "class net.minecraft.entity.item.EntityMinecartTNT": strength = 4.0D; break;
@@ -431,37 +462,53 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 			case "class tconstruct.mechworks.entity.item.ExplosivePrimed": strength = 5.0D; break;
 			
 			default:
-				if (enableFirstHit) {
-					WarpDrive.logger.error(String.format("Unknown explosion source %s %s", entity.getClass().toString(), entity));
+				if (isFirstHit) {
+					WarpDrive.logger.error(String.format("Unknown exploder instance %s %s %s",
+					                                     EntityList.getKey(exploder), nameExploder, exploder ));
+				}
+				break;
+			}
+		}
+		
+		if (strength == 0.0D) {// (no exploder or not a valid one, let's check the explosion itself)
+			final String nameExplosion = explosion.getClass().toString();
+			switch (nameExplosion) {
+			// Vanilla explosive
+			case "class icbm.classic.content.explosive.blast.threaded.BlastNuclear": strength = 15.0D; break;
+			
+			default:
+				if (isFirstHit) {
+					WarpDrive.logger.error(String.format("Unknown explosion instance %s %s %s",
+					                                     vExplosion, nameExplosion, explosion ));
 				}
 				break;
 			}
 		}
 		
 		// apply damages to force field by consuming energy
-		final Explosion explosion = new Explosion(world, entity, explosionX, explosionY, explosionZ, 4.0F);
-		final Vector3 vDirection = new Vector3(x + 0.5D - explosionX, y + 0.5D - explosionY, z + 0.5D - explosionZ);
+		final Vector3 vDirection = new Vector3(blockPos.getX() + 0.5D - vExplosion.x,
+		                                       blockPos.getY() + 0.5D - vExplosion.y,
+		                                       blockPos.getZ() + 0.5D - vExplosion.z );
 		final double magnitude = Math.max(1.0D, vDirection.getMagnitude());
 		if (magnitude != 0) {// normalize
 			vDirection.scale(1 / magnitude);
 		}
 		final double damageLevel = strength / (magnitude * magnitude) * 1.0D;
 		double damageLeft = 0;
-		final ForceFieldSetup forceFieldSetup = getForceFieldSetup(world, blockPos);
+		final ForceFieldSetup forceFieldSetup = Commons.isSafeThread() ? getForceFieldSetup(world, blockPos) : null;
 		if (forceFieldSetup != null) {
-			damageLeft = forceFieldSetup.applyDamage(world, DamageSource.setExplosionSource(explosion), damageLevel);
+			damageLeft = forceFieldSetup.applyDamage(world, DamageSource.causeExplosionDamage(explosion), damageLevel);
 		}
 		
 		assert damageLeft >= 0;
-		if (enableFirstHit && WarpDriveConfig.LOGGING_FORCE_FIELD) {
-			WarpDrive.logger.info(String.format("BlockForceField(%d %s) involved in explosion %s damageLevel %d damageLeft %d",
-			                                    tier, Commons.format(world, blockPos),
-			                                    ((entity != null) ? " from " + entity : " at " + explosionX + " " + explosionY + " " + explosionZ),
-			                                    damageLevel, damageLeft));
+		if (isFirstHit && !WarpDriveConfig.LOGGING_FORCE_FIELD) {
+			WarpDrive.logger.info(String.format("Force field %s %s involved in explosion %s strength %.3f magnitude %.3f damageLevel %.3f damageLeft %.3f",
+			                                    enumTier, Commons.format(world, blockPos),
+			                                    ((exploder != null) ? String.format("from %s", exploder) : String.format("from %s at %s", explosion, vExplosion)),
+			                                    strength, magnitude, damageLevel, damageLeft));
 		}
-		return super.getExplosionResistance(entity, world, blockPos, explosionX, explosionY, explosionZ);
+		return super.getExplosionResistance(world, blockPos, exploder, explosion);
 	}
-	/**/
 	
 	@Override
 	public boolean canDropFromExplosion(final Explosion explosion) {
@@ -469,7 +516,16 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	}
 	
 	@Override
+	public boolean canEntityDestroy(final IBlockState state, final IBlockAccess world, final BlockPos pos, final Entity entity) {
+		return false;
+	}
+	
+	@Override
 	public void onBlockExploded(final World world, @Nonnull final BlockPos blockPos, @Nonnull final Explosion explosion) {
+		// weapon mods should be intercepted earlier, so we'll spam the console for now...
+		WarpDrive.logger.warn(String.format("Force field %s %s has exploded in explosion %s at %s, please report to mod author",
+		                                    enumTier, Commons.format(world, blockPos),
+		                                    explosion, explosion.getPosition() ));
 		downgrade(world, blockPos);
 		super.onBlockExploded(world, blockPos, explosion);
 	}
@@ -504,5 +560,16 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		}
 		
 		return damageLevel;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public float getBlockHardness(final IBlockState blockState, final World worldIn, final BlockPos pos) {
+		final String name = Thread.currentThread().getName();
+		// hide unbreakable status from ICBM explosion handler (as of ICBM-classic-1.12.2-3.3.0b63, Nuclear skip unbreakable blocks)
+		if (name.startsWith("ICBM")) {
+			return WarpDriveConfig.HULL_HARDNESS[enumTier.getIndex()];
+		}
+		return super.getBlockHardness(blockState, worldIn, pos);
 	}
 }

@@ -619,6 +619,16 @@ public class Commons {
 		return name.equals("Server thread") || name.equals("Client thread");
 	}
 	
+	public static boolean isClientThread() {
+		final String name = Thread.currentThread().getName();
+		return name.equals("Client thread");
+	}
+	
+	public static boolean isServerThread() {
+		final String name = Thread.currentThread().getName();
+		return name.equals("Server thread");
+	}
+	
 	// loosely inspired by crunchify
 	public static void dumpAllThreads() {
 		final StringBuilder stringBuilder = new StringBuilder();
