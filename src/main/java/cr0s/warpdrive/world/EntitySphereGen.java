@@ -167,7 +167,7 @@ public final class EntitySphereGen extends Entity {
 			if (isSurfaces.get(currentIndex)) {
 				world.setBlockState(mutableBlockPos, jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta), 2);
 			} else {
-				JumpBlock.setBlockNoLight(world, mutableBlockPos, jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta), 2);
+				JumpBlock.setBlockStateNoLight(world, mutableBlockPos, jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta), 2);
 			}
 			currentIndex++;
 		}

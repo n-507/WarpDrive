@@ -13,6 +13,7 @@ import cr0s.warpdrive.config.Filler;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -56,7 +57,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldType;
+import net.minecraft.world.chunk.Chunk;
 
+import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -300,7 +304,7 @@ public class JumpBlock {
 				                                    block, newBlockMeta, nbtToDeploy));
 			}
 			final IBlockState blockState = block.getStateFromMeta(newBlockMeta);
-			setBlockNoLight(worldTarget, target, blockState, 2);
+			setBlockStateNoLight(worldTarget, target, blockState, 2);
 			
 			if (nbtToDeploy != null) {
 				nbtToDeploy.setInteger("x", target.getX());
@@ -407,7 +411,8 @@ public class JumpBlock {
 						}
 						// not needed: if ic2.core.block.machine.tileentity.TileEntityMatter then updated "state"
 					}
-				} else if ( !superClassName.startsWith("mekanism.")
+				} else if ( !superClassName.contains("$")
+				         && !superClassName.startsWith("mekanism.")
 				         && !superClassName.startsWith("micdoodle8.") ) {// IC2 extensions without network optimization (transferring all fields)
 					try {
 						final Method getNetworkedFields = teClass.getMethod("getNetworkedFields");
@@ -668,170 +673,57 @@ public class JumpBlock {
 	}
 	
 	// This code is a straight copy from Vanilla net.minecraft.world.World.setBlock to remove lighting computations
-	public static boolean setBlockNoLight(final World w, final BlockPos blockPos, final IBlockState blockState, final int flags) {
-		return w.setBlockState(blockPos, blockState, flags);
-		/*
-		// x, y, z -> blockPos
-		// par6 -> flags
-		if (x >= -30000000 && z >= -30000000 && x < 30000000 && z < 30000000) {
-			if (y < 0) {
-				return false;
-			} else if (y >= 256) {
-				return false;
-			} else {
-				final Chunk chunk = w.getChunk(x >> 4, z >> 4);
-				Block block1 = null;
-				// net.minecraftforge.common.util.BlockSnapshot blockSnapshot = null;
-				
-				if ((par6 & 1) != 0) {
-					block1 = chunk.getBlock(x & 15, y, z & 15);
-				}
-				
-				// Disable rollback on item use
-				// if (w.captureBlockSnapshots && !w.isRemote) {
-				// 	blockSnapshot = net.minecraftforge.common.util.BlockSnapshot.getBlockSnapshot(w, x, y, z, par6);
-				// 	w.capturedBlockSnapshots.add(blockSnapshot);
-				// }
-				
-				final boolean flag = myChunkSBIDWMT(chunk, x & 15, y, z & 15, block, blockMeta);
-				
-				// Disable rollback on item use
-				// if (!flag && blockSnapshot != null) {
-				//	w.capturedBlockSnapshots.remove(blockSnapshot);
-				//	blockSnapshot = null;
-				// }
-				
-				// Remove light computations
-				// w.theProfiler.startSection("checkLight");
-				// w.func_147451_t(x, y, z);
-				// w.theProfiler.endSection();
-				
-				// Disable rollback on item use
-				// if (flag && blockSnapshot == null) {// Don't notify clients or update physics while capturing blockstates
-					// Modularize client and physic updates
-					// w.markAndNotifyBlock(x, y, z, chunk, block1, block, par6);
-				// }
-				if (flag) {
-					w.markAndNotifyBlock(x, y, z, chunk, block1, block, par6);
-				}
-				return flag;
-			}
-		} else {
-			return false;
-		}
-		/**/
-	}
-	/*
-	// This code is a straight copy from Vanilla net.minecraft.world.Chunk.func_150807_a to remove lighting computations
-	private static boolean myChunkSBIDWMT(final Chunk c, final int x, final int y, final int z, final Block block, final int blockMeta) {
-		final int i1 = z << 4 | x;
-		
-		if (y >= c.precipitationHeightMap[i1] - 1) {
-			c.precipitationHeightMap[i1] = -999;
+	public static boolean setBlockStateNoLight(final World world, final BlockPos blockPosPassed, final IBlockState blockStateNew, final int flags) {
+		assert !world.captureBlockSnapshots;
+		if (!Commons.isSafeThread()) {
+			throw new ConcurrentModificationException(String.format("setBlockstate %s to %s 0x%x",
+			                                                        Commons.format(world, blockPosPassed), blockStateNew, flags));
 		}
 		
-		// Removed light recalculations
-		// int j1 = c.heightMap[i1];
-		final Block block1 = c.getBlock(x, y, z);
-		final int k1 = c.getBlockMetadata(x, y, z);
+		if (!WarpDriveConfig.G_ENABLE_FAST_SET_BLOCKSTATE) {
+			return world.setBlockState(blockPosPassed, blockStateNew, flags);
+		}
 		
-		if (block1 == block && k1 == blockMeta) {
+		if (world.isOutsideBuildHeight(blockPosPassed)) {
+			return false;
+		} else if (!world.isRemote && world.getWorldInfo().getTerrainType() == WorldType.DEBUG_ALL_BLOCK_STATES) {
 			return false;
 		} else {
-			final ExtendedBlockStorage[] storageArrays = c.getBlockStorageArray();
-			ExtendedBlockStorage extendedblockstorage = storageArrays[y >> 4];
-			// Removed light recalculations
-			// boolean flag = false;
+			final Chunk chunk = world.getChunk(blockPosPassed);
 			
-			if (extendedblockstorage == null) {
-				if (block == Blocks.air) {
-					return false;
-				}
-				
-				extendedblockstorage = storageArrays[y >> 4] = new ExtendedBlockStorage(y >> 4 << 4, !c.world.provider.hasNoSky);
-				// Removed light recalculations
-				// flag = y >= j1;
+			final BlockPos blockPos = blockPosPassed.toImmutable(); // Forge - prevent mutable BlockPos leaks
+			BlockSnapshot blockSnapshot = null;
+			if (world.captureBlockSnapshots && !world.isRemote) {
+				blockSnapshot = BlockSnapshot.getBlockSnapshot(world, blockPos, flags);
+				world.capturedBlockSnapshots.add(blockSnapshot);
 			}
+			/*
+			final IBlockState blockStateOld = world.getBlockState(blockPos);
+			final int lightOld = blockStateOld.getLightValue(world, blockPos);
+			final int opacityOld = blockStateOld.getLightOpacity(world, blockPos);
+			/**/
 			
-			final int l1 = c.xPosition * 16 + x;
-			final int i2 = c.zPosition * 16 + z;
+			final IBlockState blockStateEffective = chunk.setBlockState(blockPos, blockStateNew);
 			
-			// Removed light recalculations
-			// int k2 = block1.getLightOpacity(c.world, l1, y, i2);
-			
-			// Removed preDestroy event
-			// if (!c.world.isRemote) {
-			// 	block1.onBlockPreDestroy(c.world, l1, y, i2, k1);
-			// }
-			
-			extendedblockstorage.func_150818_a(x, y & 15, z, block);
-			extendedblockstorage.setExtBlockMetadata(x, y & 15, z, blockMeta); // This line duplicates the one below, so breakBlock fires with valid worldstate
-			
-			// Skip air at destination
-			if (block1 != Blocks.air) {
-				if (!c.world.isRemote) {
-					block1.breakBlock(c.world, l1, y, i2, block1, k1);
-					// After breakBlock a phantom TE might have been created with incorrect meta. This attempts to kill that phantom TE so the normal one can be created properly later
-					final TileEntity te = c.getTileEntityUnsafe(x & 0x0F, y, z & 0x0F);
-					if (te != null && te.shouldRefresh(block1, c.getBlock(x & 0x0F, y, z & 0x0F), k1, c.getBlockMetadata(x & 0x0F, y, z & 0x0F), c.world, l1, y, i2)) {
-						c.removeTileEntity(x & 0x0F, y, z & 0x0F);
-					}
-				} else if (block1.hasTileEntity(k1)) {
-					final TileEntity te = c.getTileEntityUnsafe(x & 0x0F, y, z & 0x0F);
-					if (te != null && te.shouldRefresh(block1, block, k1, blockMeta, c.world, l1, y, i2)) {
-						c.world.removeTileEntity(l1, y, i2);
-					}
+			if (blockStateEffective == null) {
+				if (blockSnapshot != null) {
+					world.capturedBlockSnapshots.remove(blockSnapshot);
 				}
-			}
-			
-			if (extendedblockstorage.getBlockByExtId(x, y & 15, z) != block) {
 				return false;
 			} else {
-				extendedblockstorage.setExtBlockMetadata(x, y & 15, z, blockMeta);
-				// Removed light recalculations
 				/*
-				if (flag) {
-					c.generateSkylightMap();
-				} else {
-					int j2 = block.getLightOpacity(c.world, l1, y, i2);
-	
-					if (j2 > 0) {
-						if (y >= j1) {
-							c.relightBlock(x, y + 1, z);
-						}
-					} else if (y == j1 - 1) {
-						c.relightBlock(x, y, z);
-					}
-	
-					if (j2 != k2 && (j2 < k2 || c.getSavedLightValue(EnumSkyBlock.Sky, x, y, z) > 0 || c.getSavedLightValue(EnumSkyBlock.Block, x, y, z) > 0)) {
-						c.propagateSkylightOcclusion(x, z);
-					}
+				if ( blockStateNew.getLightOpacity(world, blockPos) != opacityOld
+				  || blockStateNew.getLightValue(world, blockPos) != lightOld ) {
+					world.profiler.startSection("checkLight");
+					world.checkLight(blockPos);
+					world.profiler.endSection();
 				}
 				/**/
-				/*
-				final TileEntity tileentity;
-				
-				// Removed onBlockAdded event
-				// if (!c.world.isRemote) {
-				//	block.onBlockAdded(c.world, l1, y, i2);
-				// }
-				
-				// Skip air at destination
-				if (block1 != Blocks.air) {
-					if (block.hasTileEntity(blockMeta)) {
-						tileentity = c.func_150806_e(x, y, z);
-						
-						if (tileentity != null) {
-							tileentity.updateContainingBlockInfo();
-							tileentity.blockMetadata = blockMeta;
-						}
-					}
+				if (blockSnapshot == null) {// Don't notify clients or update physics while capturing blockstates
+					world.markAndNotifyBlock(blockPos, chunk, blockStateEffective, blockStateNew, flags);
 				}
-				
-				c.isModified = true;
 				return true;
 			}
 		}
 	}
-	/**/
 }
