@@ -11,7 +11,6 @@ import cr0s.warpdrive.data.CelestialObject;
 import cr0s.warpdrive.data.StateAir;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
-import cr0s.warpdrive.world.SpaceTeleporter;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -151,7 +150,12 @@ public class LivingHandler {
 		
 		
 		// *** world transition handling
-		// If player falling down, teleport to child celestial object
+		// skip blacklisted entities
+		if ( Dictionary.isLeftBehind(entityLivingBase)
+		  || Dictionary.isAnchor(entityLivingBase) ) {
+			return;
+		}
+		// If entity is falling down, teleport to child celestial object or wrap around, as needed
 		if (entityLivingBase.posY < -10.0D) {
 			final CelestialObject celestialObjectChild = CelestialObjectManager.getClosestChild(entityLivingBase.world, x, z);
 			// are we actually in orbit?
@@ -166,30 +170,19 @@ public class LivingHandler {
 					                                     entityLivingBase));
 				} else {
 					final VectorI vEntry = celestialObjectChild.getEntryOffset();
-					final int xTarget = x + vEntry.x;
-					final int yTarget = worldTarget.getActualHeight() + 5;
-					final int zTarget = z + vEntry.z;
+					final double xTarget = entityLivingBase.posX + vEntry.x;
+					final double yTarget = celestialObject.isSpace() ? 1500 : worldTarget.getActualHeight() + 5;
+					final double zTarget = entityLivingBase.posZ + vEntry.z;
 					
-					if (entityLivingBase instanceof EntityPlayerMP) {
-						final EntityPlayerMP player = (EntityPlayerMP) entityLivingBase;
-						
-						// add tolerance to fall distance
-						player.fallDistance = -5.0F;
-						
-						// transfer player to new dimension
-						player.server.getPlayerList().transferPlayerToDimension(
-								player,
-								celestialObjectChild.dimensionId,
-								new SpaceTeleporter(worldTarget, 0, xTarget, yTarget, zTarget) );
-						
-						// add fire if we're entering an atmosphere
-						if (!celestialObject.hasAtmosphere() && celestialObjectChild.hasAtmosphere()) {
-							player.setFire(30);
-						}
-						
-						// close player transfer 
-						player.setPositionAndUpdate(xTarget + 0.5D, yTarget, zTarget + 0.5D);
-						player.sendPlayerAbilities();
+					// add tolerance to fall distance
+					entityLivingBase.fallDistance = -5.0F;
+					
+					// actually move
+					Commons.moveEntity(entityLivingBase, worldTarget, new Vector3(xTarget, yTarget, zTarget));
+					
+					// add fire if we're entering an atmosphere
+					if (!celestialObject.hasAtmosphere() && celestialObjectChild.hasAtmosphere()) {
+						entityLivingBase.setFire(30);
 					}
 				}
 				

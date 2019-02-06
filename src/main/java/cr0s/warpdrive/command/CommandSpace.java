@@ -5,8 +5,8 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.CelestialObject;
 import cr0s.warpdrive.data.StarMapRegistry;
+import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
-import cr0s.warpdrive.world.SpaceTeleporter;
 
 import javax.annotation.Nonnull;
 
@@ -204,10 +204,7 @@ public class CommandSpace extends AbstractCommand {
 			}
 			
 			// actual teleportation
-			final SpaceTeleporter teleporter = new SpaceTeleporter(worldTarget, 0, xTarget, yTarget, zTarget);
-			server.getPlayerList().transferPlayerToDimension(entityPlayerMP, dimensionIdTarget, teleporter);
-			entityPlayerMP.setPositionAndUpdate(xTarget + 0.5D, yTarget + 0.2D, zTarget + 0.5D);
-			entityPlayerMP.sendPlayerAbilities();
+			Commons.moveEntity(entityPlayerMP, worldTarget, new Vector3(xTarget + 0.5D, yTarget + 0.2D, zTarget + 0.5D));
 		}
 	}
 	

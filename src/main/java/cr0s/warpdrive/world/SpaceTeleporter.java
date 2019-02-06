@@ -1,47 +1,32 @@
 package cr0s.warpdrive.world;
 
+import cr0s.warpdrive.data.Vector3;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.Entity;
-import net.minecraft.world.Teleporter;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-public class SpaceTeleporter extends Teleporter {
+import net.minecraftforge.common.util.ITeleporter;
+
+public class SpaceTeleporter implements ITeleporter {
 	
-	final int x;
-	final int y;
-	final int z;
-	final int orientation;
-	final World world;
+	final Vector3 v3Destination;
+	final WorldServer worldServerDestination;
 	
-	public SpaceTeleporter(final WorldServer worldServer, final int orientation, final int x, final int y, final int z) {
-		super(worldServer);
-		
-		this.orientation = orientation;
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		world = worldServer;
+	public SpaceTeleporter(@Nonnull final WorldServer worldServerDestination, @Nonnull final Vector3 v3Destination) {
+		this.v3Destination = v3Destination;
+		this.worldServerDestination = worldServerDestination;
 	}
 	
 	@Override
-	public void placeInPortal(final Entity entity, float rotationYaw) {
-		//EntityPlayer player = (EntityPlayer) entity;
-		//player.setWorld(world);
-		//player.setPositionAndUpdate(x, y, z);
-	}
-	
-	@Override
-	public boolean placeInExistingPortal(final Entity entity, float rotationYaw) {
-		return true;
-	}
-	
-	@Override
-	public boolean makePortal(final Entity entity) {
-		return true;
-	}
-	
-	@Override
-	public void removeStalePortalLocations(final long time) {
-		// do nothing
+	public void placeEntity(final World world, @Nonnull final Entity entity, final float yaw) {
+		if (entity instanceof EntityPlayerMP) {
+			((EntityPlayerMP)entity).connection.setPlayerLocation(v3Destination.x, v3Destination.y, v3Destination.z, yaw, entity.rotationPitch);
+		} else {
+			entity.setLocationAndAngles(v3Destination.x, v3Destination.y, v3Destination.z, entity.rotationYaw, entity.rotationPitch);
+		}
 	}
 }

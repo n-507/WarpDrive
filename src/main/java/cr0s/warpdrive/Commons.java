@@ -31,7 +31,6 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
@@ -57,7 +56,6 @@ import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -786,33 +784,41 @@ public class Commons {
 	}
 	
 	public static void moveEntity(final Entity entity, final World worldDestination, final Vector3 v3Destination) {
+		if (entity.world.isRemote) {
+			WarpDrive.logger.error(String.format("Skipping remote movement for entity %s destination %s",
+			                                     entity, Commons.format(worldDestination, v3Destination) ));
+			return;
+		}
+		if (!entity.isEntityAlive()) {
+			WarpDrive.logger.warn(String.format("Skipping movement for dead entity %s destination %s",
+			                                    entity, Commons.format(worldDestination, v3Destination) ));
+			return;
+		}
+		
 		// change to another dimension if needed
 		if (worldDestination != entity.world) {
 			final World worldSource = entity.world;
 			final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-			final WorldServer from = server.getWorld(worldSource.provider.getDimension());
-			final WorldServer to = server.getWorld(worldDestination.provider.getDimension());
-			final SpaceTeleporter teleporter = new SpaceTeleporter(to, 0,
-			                                                       MathHelper.floor(v3Destination.x),
-			                                                       MathHelper.floor(v3Destination.y),
-			                                                       MathHelper.floor(v3Destination.z));
+			final WorldServer worldServerFrom = server.getWorld(worldSource.provider.getDimension());
+			final WorldServer worldServerTo   = server.getWorld(worldDestination.provider.getDimension());
+			final SpaceTeleporter teleporter = new SpaceTeleporter(worldServerTo, v3Destination);
 			
 			if (entity instanceof EntityPlayerMP) {
 				final EntityPlayerMP player = (EntityPlayerMP) entity;
 				server.getPlayerList().transferPlayerToDimension(player, worldDestination.provider.getDimension(), teleporter);
-				player.sendPlayerAbilities();
+				// player.sendPlayerAbilities();
 			} else {
-				server.getPlayerList().transferEntityToWorld(entity, worldSource.provider.getDimension(), from, to, teleporter);
+				server.getPlayerList().transferEntityToWorld(entity, worldSource.provider.getDimension(), worldServerFrom, worldServerTo, teleporter);
 			}
-		}
-		
-		// update position
-		if (entity instanceof EntityPlayerMP) {
-			final EntityPlayerMP player = (EntityPlayerMP) entity;
-			player.setPositionAndUpdate(v3Destination.x, v3Destination.y, v3Destination.z);
-		} else {
-			// @TODO: force client refresh of non-player entities
-			entity.setPosition(v3Destination.x, v3Destination.y, v3Destination.z);
+			
+		} else {// just update position
+			if (entity instanceof EntityPlayerMP) {
+				final EntityPlayerMP player = (EntityPlayerMP) entity;
+				player.setPositionAndUpdate(v3Destination.x, v3Destination.y, v3Destination.z);
+			} else {
+				entity.setLocationAndAngles(v3Destination.x, v3Destination.y, v3Destination.z, entity.rotationYaw, entity.rotationPitch);
+				worldDestination.updateEntityWithOptionalForce(entity, false);
+			}
 		}
 	}
 	
