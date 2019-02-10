@@ -12,6 +12,7 @@ import li.cil.oc.api.machine.Context;
 import javax.annotation.Nonnull;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,6 +26,13 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	public String name = "default";
 	protected boolean isEnabled = true;
 	
+	// allow only one computation at a time
+	protected static final AtomicBoolean isGlobalThreadRunning = new AtomicBoolean(false);
+	// computation is ongoing for this specific tile
+	protected final AtomicBoolean isThreadRunning = new AtomicBoolean(false);
+	// parameters have changed, new computation is required
+	protected final AtomicBoolean isDirty = new AtomicBoolean(true);
+	
 	public TileEntityAbstractMachine() {
 		super();
 		
@@ -34,6 +42,28 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 				"enable",
 				"isAssemblyValid"
 				});
+	}
+	
+	public boolean isCalculated() {
+		return !isDirty.get() && !isThreadRunning.get();
+	}
+	
+	protected boolean calculation_start() {
+		if ((!world.isRemote) && (boolean) isAssemblyValid()[0]) {
+			if (!isGlobalThreadRunning.getAndSet(true)) {
+				isThreadRunning.set(true);
+				isDirty.set(false);
+				// override should create the thread
+				// once finished, thread should call calculation_done()
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	final protected void calculation_done() {
+		isThreadRunning.set(false);
+		isGlobalThreadRunning.set(false);
 	}
 	
 	@Override

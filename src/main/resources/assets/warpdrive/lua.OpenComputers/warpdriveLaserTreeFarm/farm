@@ -11,7 +11,7 @@ if component.gpu.getDepth() < 4 then
   os.exit()
 end
 
-treefarms = {}
+local treefarms = {}
 for address, _ in component.list("warpdriveLaserTreeFarm", true) do
   print("Wrapping " .. address)
   table.insert(treefarms, component.proxy(address))
@@ -31,9 +31,9 @@ end
 
 
 local noExit = true
-breakLeaves = true
-tapTrees = true
-silktouch = false
+local breakLeaves = true
+local tapTrees = true
+local silktouch = false
 local args = {...}
 if #args > 0 then
   if args[1] == "help" or args[1] == "?" then
@@ -74,13 +74,13 @@ if #treefarms == 0 then
 end
 if noExit then
   for _, treefarm in pairs(treefarms) do
-    local _, isActive = treefarm.state()
-    if not isActive then
+    local isEnabled = treefarm.enable()
+    if not isEnabled then
       treefarm.breakLeaves(breakLeaves)
       treefarm.tapTrees(tapTrees)
       treefarm.silktouch(silktouch)
       
-      treefarm.start()
+      treefarm.enable(true)
     end
   end
   os.sleep(1)

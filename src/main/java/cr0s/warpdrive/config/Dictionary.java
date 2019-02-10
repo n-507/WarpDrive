@@ -38,9 +38,9 @@ public class Dictionary {
 	
 	// Blocks dictionary
 	public static HashSet<Block> BLOCKS_ORES = null;
-	public static HashSet<Block> BLOCKS_SOILS = null;
-	public static HashSet<Block> BLOCKS_LOGS = null;
-	public static HashSet<Block> BLOCKS_LEAVES = null;
+	private static HashSet<Block> BLOCKS_SOILS = null;
+	private static HashSet<Block> BLOCKS_LOGS = null;
+	private static HashSet<Block> BLOCKS_LEAVES = null;
 	public static HashSet<Block> BLOCKS_ANCHOR = null;
 	public static HashSet<Block> BLOCKS_NOMASS = null;
 	public static HashSet<Block> BLOCKS_LEFTBEHIND = null;
@@ -51,6 +51,8 @@ public class Dictionary {
 	public static HashMap<Block, Integer> BLOCKS_PLACE = null;
 	public static HashSet<Block> BLOCKS_NOCAMOUFLAGE = null;
 	public static HashSet<Block> BLOCKS_NOBLINK = null;
+	
+	private static HashSet<Block> BLOCKS_LOGS_AND_LEAVES = null;
 	
 	// Entities dictionary
 	private static HashSet<ResourceLocation> ENTITIES_ANCHOR = null;
@@ -399,6 +401,7 @@ public class Dictionary {
 		BLOCKS_PLACE = new HashMap<>(taggedBlocks.size());
 		BLOCKS_NOCAMOUFLAGE = new HashSet<>(taggedBlocks.size());
 		BLOCKS_NOBLINK = new HashSet<>(taggedBlocks.size());
+		BLOCKS_LOGS_AND_LEAVES = null;
 		for (final Entry<String, String> taggedBlock : taggedBlocks.entrySet()) {
 			final Block block = Block.getBlockFromName(taggedBlock.getKey());
 			if (block == null) {
@@ -666,6 +669,31 @@ public class Dictionary {
 	public static String getId(final Entity entity) {
 		final ResourceLocation resourceLocation = EntityList.getKey(entity);
 		return resourceLocation == null ? "-null-" : resourceLocation.toString();
+	}
+	
+	public static boolean isSoil(final Block block) {
+		return BLOCKS_SOILS.contains(block);
+	}
+	
+	public static HashSet<Block> getLogs() {
+		return BLOCKS_LOGS;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static HashSet<Block> getLogsAndLeaves() {
+		if (BLOCKS_LOGS_AND_LEAVES == null) {
+			BLOCKS_LOGS_AND_LEAVES = (HashSet<Block>) BLOCKS_LOGS.clone();
+			BLOCKS_LOGS_AND_LEAVES.addAll(BLOCKS_LEAVES);
+		}
+		return BLOCKS_LOGS_AND_LEAVES;
+	}
+	
+	public static boolean isLog(final Block block) {
+		return BLOCKS_LOGS.contains(block);
+	}
+	
+	public static boolean isLeaf(final Block block) {
+		return BLOCKS_LEAVES.contains(block);
 	}
 	
 	public static boolean isAnchor(final Entity entity) {

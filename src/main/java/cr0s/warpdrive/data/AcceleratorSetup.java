@@ -206,7 +206,7 @@ public class AcceleratorSetup extends GlobalPosition {
 			final BlockPos next = new BlockPos(firstVoidShell.x + direction.getXOffset(),
 			                                   firstVoidShell.y + direction.getYOffset(),
 			                                   firstVoidShell.z + direction.getZOffset() );
-			final IBlockState blockStateNext = VectorI.getBlockState_noChunkLoading(world, next);
+			final IBlockState blockStateNext = Commons.getBlockState_noChunkLoading(world, next);
 			if ( blockStateNext != null
 			  && whitelist.contains(blockStateNext.getBlock()) ) {
 				trajectoryPoint = new TrajectoryPoint(world, firstVoidShell.translate(direction), direction);

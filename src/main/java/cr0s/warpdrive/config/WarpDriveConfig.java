@@ -369,17 +369,42 @@ public class WarpDriveConfig {
 	public static double           MINING_LASER_SILKTOUCH_DEUTERIUM_L = 0.0;
 	public static double           MINING_LASER_FORTUNE_ENERGY_FACTOR = 1.5;
 	
-	// Tree farm
+	// Laser tree farm
 	// oak      tree height is 8 to 11 logs + 2 leaves
 	// dark oak tree height is up to 25 logs + 2 leaves
 	// jungle   tree height is up to 30 logs + 1 leaf
 	// => basic setup is 8, then 18, then up to 32
 	public static int              TREE_FARM_MAX_MEDIUMS_COUNT = 5;
-	public static int              TREE_FARM_MAX_SCAN_RADIUS_NO_LASER_MEDIUM = 3;
-	public static int              TREE_FARM_MAX_SCAN_RADIUS_PER_LASER_MEDIUM = 2;
+	public static int              TREE_FARM_MAX_RADIUS_NO_LASER_MEDIUM = 3;
+	public static int              TREE_FARM_MAX_RADIUS_PER_LASER_MEDIUM = 2;
 	public static int              TREE_FARM_totalMaxRadius = 0;
-	public static int              TREE_FARM_MAX_LOG_DISTANCE_NO_LASER_MEDIUM = 8;
-	public static int              TREE_FARM_MAX_LOG_DISTANCE_PER_MEDIUM = 6;
+	public static int              TREE_FARM_MAX_DISTANCE_NO_LASER_MEDIUM = 8;
+	public static int              TREE_FARM_MAX_DISTANCE_PER_MEDIUM = 6;
+	
+	public static int              TREE_FARM_WARM_UP_DELAY_TICKS = 40;
+	public static int              TREE_FARM_SCAN_DELAY_TICKS = 40;
+	public static int              TREE_FARM_HARVEST_LOG_DELAY_TICKS = 4;
+	public static int              TREE_FARM_BREAK_LEAF_DELAY_TICKS = 2;
+	public static int              TREE_FARM_SILKTOUCH_LEAF_DELAY_TICKS = 4;
+	public static int              TREE_FARM_TAP_WET_SPOT_DELAY_TICKS = 4;
+	public static int              TREE_FARM_TAP_DRY_SPOT_DELAY_TICKS = 1;
+	public static int              TREE_FARM_TAP_RUBBER_LOG_DELAY_TICKS = 6;
+	public static int              TREE_FARM_PLANT_DELAY_TICKS = 2;
+	
+	public static int              TREE_FARM_SCAN_ENERGY_PER_SURFACE = 1;
+	public static int              TREE_FARM_TAP_WET_SPOT_ENERGY_PER_BLOCK = 1;
+	public static int              TREE_FARM_TAP_RUBBER_LOG_ENERGY_PER_BLOCK = 2;
+	public static int              TREE_FARM_HARVEST_LOG_ENERGY_PER_BLOCK = 1;
+	public static int              TREE_FARM_HARVEST_LEAF_ENERGY_PER_BLOCK = 1;
+	public static int              TREE_FARM_SILKTOUCH_LOG_ENERGY_PER_BLOCK = 2;
+	public static int              TREE_FARM_SILKTOUCH_LEAF_ENERGY_PER_BLOCK = 2;
+	public static int              TREE_FARM_PLANT_ENERGY_PER_BLOCK = 1;
+	
+	// Laser harvester
+	// @TODO
+	
+	// Laser pump
+	// @TODO
 	
 	// Cloaking
 	public static int              CLOAKING_MAX_ENERGY_STORED = 500000000;
@@ -1083,16 +1108,16 @@ public class WarpDriveConfig {
 		// Tree Farm
 		TREE_FARM_MAX_MEDIUMS_COUNT = Commons.clamp(1, 10,
 				config.get("tree_farm", "max_mediums_count", TREE_FARM_MAX_MEDIUMS_COUNT, "Maximum number of laser mediums").getInt());
-		TREE_FARM_MAX_SCAN_RADIUS_NO_LASER_MEDIUM = Commons.clamp(0, 15,
-				config.get("tree_farm", "max_scan_radius_no_laser_medium", TREE_FARM_MAX_SCAN_RADIUS_NO_LASER_MEDIUM, "Maximum scan radius without any laser medium, on X and Z axis, measured in blocks").getInt());
-		TREE_FARM_MAX_SCAN_RADIUS_PER_LASER_MEDIUM = Commons.clamp(1, 8,
-				config.get("tree_farm", "max_scan_radius_per_laser_medium", TREE_FARM_MAX_SCAN_RADIUS_PER_LASER_MEDIUM, "Bonus to maximum scan radius per laser medium, on X and Z axis, measured in blocks").getInt());
-		TREE_FARM_totalMaxRadius = TREE_FARM_MAX_SCAN_RADIUS_NO_LASER_MEDIUM + TREE_FARM_MAX_MEDIUMS_COUNT * TREE_FARM_MAX_SCAN_RADIUS_PER_LASER_MEDIUM;
+		TREE_FARM_MAX_RADIUS_NO_LASER_MEDIUM = Commons.clamp(0, 15,
+				config.get("tree_farm", "max_radius_no_laser_medium", TREE_FARM_MAX_RADIUS_NO_LASER_MEDIUM, "Maximum scan radius without any laser medium, on X and Z axis, measured in blocks").getInt());
+		TREE_FARM_MAX_RADIUS_PER_LASER_MEDIUM = Commons.clamp(1, 8,
+				config.get("tree_farm", "max_radius_per_laser_medium", TREE_FARM_MAX_RADIUS_PER_LASER_MEDIUM, "Bonus to maximum scan radius per laser medium, on X and Z axis, measured in blocks").getInt());
+		TREE_FARM_totalMaxRadius = TREE_FARM_MAX_RADIUS_NO_LASER_MEDIUM + TREE_FARM_MAX_MEDIUMS_COUNT * TREE_FARM_MAX_RADIUS_PER_LASER_MEDIUM;
 		
-		TREE_FARM_MAX_LOG_DISTANCE_NO_LASER_MEDIUM = Commons.clamp(1, 64,
-				config.get("tree_farm", "max_reach_distance_no_laser_medium", TREE_FARM_MAX_LOG_DISTANCE_NO_LASER_MEDIUM, "Maximum reach distance of the laser without any laser medium, measured in blocks").getInt());
-		TREE_FARM_MAX_LOG_DISTANCE_PER_MEDIUM = Commons.clamp(0, 16,
-				config.get("tree_farm", "max_reach_distance_per_laser_medium", TREE_FARM_MAX_LOG_DISTANCE_PER_MEDIUM, "Bonus to maximum reach distance per laser medium, measured in blocks").getInt());
+		TREE_FARM_MAX_DISTANCE_NO_LASER_MEDIUM = Commons.clamp(1, 64,
+				config.get("tree_farm", "max_reach_distance_no_laser_medium", TREE_FARM_MAX_DISTANCE_NO_LASER_MEDIUM, "Maximum reach distance of the laser without any laser medium, measured in blocks").getInt());
+		TREE_FARM_MAX_DISTANCE_PER_MEDIUM = Commons.clamp(0, 16,
+				config.get("tree_farm", "max_reach_distance_per_laser_medium", TREE_FARM_MAX_DISTANCE_PER_MEDIUM, "Bonus to maximum reach distance per laser medium, measured in blocks").getInt());
 		
 		// Cloaking
 		CLOAKING_MAX_ENERGY_STORED = Commons.clamp(1, Integer.MAX_VALUE,

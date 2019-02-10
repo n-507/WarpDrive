@@ -11,7 +11,7 @@ if component.gpu.getDepth() < 4 then
   os.exit()
 end
 
-mininglasers = {}
+local mininglasers = {}
 for address, _ in component.list("warpdriveMiningLaser", true) do
   print("Wrapping " .. address)
   table.insert(mininglasers, component.proxy(address))
@@ -31,9 +31,9 @@ end
 
 
 local noExit = true
-layerOffset = 1
-onlyOres = false
-silktouch = false
+local layerOffset = 1
+local onlyOres = false
+local silktouch = false
 local args = {...}
 if #args > 0 then
   if args[1] == "help" or args[1] == "?" then
@@ -71,13 +71,13 @@ if #mininglasers == 0 then
 end
 if noExit then
   for _, mininglaser in pairs(mininglasers) do
-    local _, isActive = mininglaser.state()
-    if not isActive then
+    local isEnabled = mininglaser.enable()
+    if not isEnabled then
       mininglaser.offset(layerOffset)
       mininglaser.onlyOres(onlyOres)
       mininglaser.silktouch(silktouch)
       
-      mininglaser.start()
+      mininglaser.enable(true)
     end
   end
   os.sleep(1)

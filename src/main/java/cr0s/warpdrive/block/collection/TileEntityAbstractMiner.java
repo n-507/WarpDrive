@@ -47,40 +47,33 @@ public abstract class TileEntityAbstractMiner extends TileEntityAbstractLaser {
 		laserOutput = new Vector3(this).translate(0.5D).translate(laserOutputSide, 0.5D);
 	}
 	
-	protected void stop() {
-		if (WarpDriveConfig.LOGGING_COLLECTION) {
-			WarpDrive.logger.info(this + " Stop requested");
-		}
-	}
-	
-	protected void harvestBlock(final BlockPos valuable) {
-		final IBlockState blockState = world.getBlockState(valuable);
-		if (blockState.getBlock().isAir(blockState, world, valuable)) {
+	protected void harvestBlock(final BlockPos blockPos, final IBlockState blockState) {
+		if (blockState.getBlock().isAir(blockState, world, blockPos)) {
 			return;
 		}
 		if (FluidWrapper.isFluid(blockState)) {
 			// Evaporate fluid
-			world.playSound(null, valuable, net.minecraft.init.SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
+			world.playSound(null, blockPos, net.minecraft.init.SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
 					2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 			
-			// remove without updating neighbours @TODO: add proper pump upgrade
-			world.setBlockState(valuable, Blocks.AIR.getDefaultState(), 2);
+			// remove without updating neighbours
+			world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), 2);
 			
 		} else {
-			final List<ItemStack> itemStackDrops = getItemStackFromBlock(valuable, blockState);
+			final List<ItemStack> itemStackDrops = getItemStackFromBlock(blockPos, blockState);
 			
-			final EntityPlayer entityPlayer = CommonProxy.getFakePlayer(null, (WorldServer) world, valuable);
-			net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(itemStackDrops, getWorld(), valuable, blockState,
+			final EntityPlayer entityPlayer = CommonProxy.getFakePlayer(null, (WorldServer) world, blockPos);
+			net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(itemStackDrops, getWorld(), blockPos, blockState,
 			                                                               0, 1.0f, true, entityPlayer);
 			
 			if (InventoryWrapper.addToConnectedInventories(world, pos, itemStackDrops)) {
-				stop();
+				setIsEnabled(false);
 			}
 			// standard harvest block effect
-			world.playEvent(2001, valuable, Block.getStateId(blockState));
+			world.playEvent(2001, blockPos, Block.getStateId(blockState));
 			
 			// remove while updating neighbours
-			world.setBlockState(valuable, Blocks.AIR.getDefaultState(), 3);
+			world.setBlockToAir(blockPos); // setBlockState(blockPos, Blocks.AIR.getDefaultState(), 3);
 		}
 	}
 	

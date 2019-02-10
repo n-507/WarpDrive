@@ -5,8 +5,10 @@ import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
+import cr0s.warpdrive.data.BlockStatePos;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
+import cr0s.warpdrive.event.ChunkHandler;
 import cr0s.warpdrive.world.SpaceTeleporter;
 
 import javax.annotation.Nonnull;
@@ -31,6 +33,7 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
@@ -41,6 +44,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkProviderServer;
 
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -388,15 +393,23 @@ public class Commons {
 	
 	public static final EnumFacing[] FACINGS_VERTICAL = { EnumFacing.DOWN, EnumFacing.UP };
 	public static final VectorI[] DIRECTIONS_UP_CONE = {
+			// up
 			new VectorI( 0,  1,  0),
+			// horizontal
 			new VectorI( 1,  0,  0),
 			new VectorI( 0,  0,  1),
 			new VectorI(-1,  0,  0),
 			new VectorI( 0,  0, -1),
+			// up & horizontal (see acacia wood)
 			new VectorI( 1,  1,  0),
 			new VectorI( 0,  1,  1),
 			new VectorI(-1,  1,  0),
-			new VectorI( 0,  1, -1) };
+			new VectorI( 0,  1, -1),
+			// up in diagonals (see dark oak wood)
+			new VectorI( 1,  1,  1),
+			new VectorI(-1,  1,  1),
+			new VectorI(-1,  1, -1),
+			new VectorI( 1,  1, -1) };
 	public static final VectorI[] DIRECTIONS_HORIZONTAL = {
 			new VectorI( 1,  0,  0),
 			new VectorI( 0,  0,  1),
@@ -433,7 +446,7 @@ public class Commons {
 		while(!toIterate.isEmpty() && range < maxRange) {
 			toIterateNext = new HashSet<>();
 			for (final BlockPos current : toIterate) {
-				final IBlockState blockStateCurrent = VectorI.getBlockState_noChunkLoading(world, current);
+				final IBlockState blockStateCurrent = getBlockState_noChunkLoading(world, current);
 				if ( blockStateCurrent != null
 				  && whitelist.contains(blockStateCurrent.getBlock()) ) {
 					iterated.add(current);
@@ -444,7 +457,7 @@ public class Commons {
 					                                   current.getY() + direction.y,
 					                                   current.getZ() + direction.z );
 					if (!iterated.contains(next) && !toIgnore.contains(next) && !toIterate.contains(next) && !toIterateNext.contains(next)) {
-						final IBlockState blockStateNext = VectorI.getBlockState_noChunkLoading(world, next);
+						final IBlockState blockStateNext = getBlockState_noChunkLoading(world, next);
 						if ( blockStateNext != null
 						  && whitelist.contains(blockStateNext.getBlock())) {
 							toIterateNext.add(next);
@@ -457,6 +470,61 @@ public class Commons {
 		}
 		
 		return iterated;
+	}
+	
+	public static Set<BlockStatePos> getConnectedBlockStatePos(final IBlockAccess blockAccess, final Collection<BlockPos> start, final VectorI[] directions,
+	                                                           final Set<Block> blockConnecting, final Set<Block> blockResults, final int maxRange) {
+		Set<BlockPos> toIterate = new HashSet<>(start.size() * 4);
+		final Set<BlockPos> blockPosIterated = new HashSet<>(64);
+		final Set<BlockStatePos> blockStatePosResults = new HashSet<>(64);
+		
+		// preload the starting positions
+		for (final BlockPos blockPos : start) {
+			final IBlockState blockState = getBlockState_noChunkLoading(blockAccess, blockPos);
+			if (blockState != null) {
+				// always iterate starting position, even if it's not a connecting block
+				toIterate.add(blockPos);
+				// export starting position when they are also results
+				if (blockResults.contains(blockState.getBlock())) {
+					blockStatePosResults.add(new BlockStatePos(blockPos, blockState));
+				}
+			}
+		}
+		
+		Set<BlockPos> toIterateNext;
+		final MutableBlockPos mutableBlockPos = new MutableBlockPos();
+		
+		int range = 0;
+		while(!toIterate.isEmpty() && range < maxRange) {
+			toIterateNext = new HashSet<>();
+			for (final BlockPos current : toIterate) {
+				for(final VectorI direction : directions) {
+					mutableBlockPos.setPos(current.getX() + direction.x,
+					                       current.getY() + direction.y,
+					                       current.getZ() + direction.z );
+					if (!blockPosIterated.contains(mutableBlockPos)) {
+						// add to ignore list
+						final BlockPos blockPosNext = mutableBlockPos.toImmutable();
+						blockPosIterated.add(blockPosNext);
+						
+						final IBlockState blockStateNext = getBlockState_noChunkLoading(blockAccess, mutableBlockPos);
+						if (blockStateNext != null) {
+							// only iterate connecting blocks
+							if (blockConnecting.contains(blockStateNext.getBlock())) {
+								toIterateNext.add(blockPosNext);
+							}
+							// export results, even when not connecting
+							if (blockResults.contains(blockStateNext.getBlock())) {
+								blockStatePosResults.add(new BlockStatePos(blockPosNext, blockAccess.getBlockState(blockPosNext)));
+							}
+						}
+					}
+				}
+			}
+			toIterate = toIterateNext;
+			range++;
+		}
+		return blockStatePosResults;
 	}
 	
 	// data manipulation methods
@@ -938,5 +1006,30 @@ public class Commons {
 			}
 		}
 		return true;
+	}
+	
+	public static boolean isChunkLoaded(final IBlockAccess blockAccess, final int x, final int z) {
+		if (blockAccess instanceof WorldServer) {
+			if (isSafeThread()) {
+				return ChunkHandler.isLoaded((WorldServer) blockAccess, x, 64, z);
+			} else {
+				final ChunkProviderServer chunkProviderServer = ((WorldServer) blockAccess).getChunkProvider();
+				final Chunk chunk = chunkProviderServer.getLoadedChunk(x >> 4, z >> 4);
+				return chunk != null && chunk.isLoaded();
+			}
+		}
+		return true;
+	}
+	
+	public static IBlockState getBlockState_noChunkLoading(final IBlockAccess blockAccess, final BlockPos blockPos) {
+		// skip unloaded worlds
+		if (blockAccess == null) {
+			return null;
+		}
+		// skip unloaded chunks
+		if (!isChunkLoaded(blockAccess, blockPos.getX(), blockPos.getZ())) {
+			return null;
+		}
+		return blockAccess.getBlockState(blockPos);
 	}
 }

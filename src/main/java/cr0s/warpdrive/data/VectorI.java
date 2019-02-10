@@ -1,8 +1,6 @@
 package cr0s.warpdrive.data;
 
 
-import cr0s.warpdrive.event.ChunkHandler;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -13,7 +11,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 
 /**
  * Generic 3D vector for efficient block manipulation.
@@ -95,38 +92,6 @@ public class VectorI implements Cloneable {
 	
 	public IBlockState getBlockState(final IBlockAccess blockAccess) {
 		return blockAccess.getBlockState(new BlockPos(x, y, z));
-	}
-	
-	static public boolean isChunkLoaded(final IBlockAccess blockAccess, final int x, final int z) {
-		if (blockAccess instanceof WorldServer) {
-			return ChunkHandler.isLoaded((WorldServer) blockAccess, x, 64, z);
-			/*
-			if (((WorldServer) blockAccess).getChunkProvider() instanceof ChunkProviderServer) {
-				ChunkProviderServer chunkProviderServer = ((WorldServer) blockAccess).getChunkProvider();
-				try {
-					Chunk chunk = chunkProviderServer.id2ChunkMap.get(ChunkPos.asLong(x >> 4, z >> 4));
-					return chunk != null && chunk.isLoaded();
-				} catch (NoSuchFieldError exception) {
-					return chunkProviderServer.chunkExists(x >> 4, z >> 4);
-				}
-			} else {
-				return ((WorldServer) blockAccess).getChunkProvider().chunkExists(x >> 4, z >> 4);
-			}
-			/**/
-		}
-		return true;
-	}
-	
-	static public IBlockState getBlockState_noChunkLoading(final IBlockAccess blockAccess, final BlockPos blockPos) {
-		// skip unloaded worlds
-		if (blockAccess == null) {
-			return null;
-		}
-		// skip unloaded chunks
-		if (!isChunkLoaded(blockAccess, blockPos.getX(), blockPos.getZ())) {
-			return null;
-		}
-		return blockAccess.getBlockState(blockPos);
 	}
 	
 	public TileEntity getTileEntity(final IBlockAccess blockAccess) {
@@ -305,7 +270,7 @@ public class VectorI implements Cloneable {
 		return (newX * newX + newY * newY + newZ * newZ);
 	}
 	
-	static public int distance2To(final VectorI vector1, final VectorI vector2) {
+	public static int distance2To(final VectorI vector1, final VectorI vector2) {
 		final int newX = vector1.x - vector2.x;
 		final int newY = vector1.y - vector2.y;
 		final int newZ = vector1.z - vector2.z;

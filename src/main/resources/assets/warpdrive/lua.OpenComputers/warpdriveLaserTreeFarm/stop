@@ -11,12 +11,13 @@ if component.gpu.getDepth() < 4 then
   os.exit()
 end
 
-treefarms = {}
+local treefarms = {}
 for address,type in component.list("warpdriveLaserTreeFarm", true) do
   table.insert(treefarms, component.proxy(address))
 end
 
 local file = io.open("/etc/hostname")
+local label
 if file then
   label = file:read("*l")
   file:close()
@@ -47,11 +48,11 @@ if #treefarms == 0 then
   textOut(1, 2, "No laser tree farm detected", 0xFF0000, 0x000000)
 else
   for key,treefarm in pairs(treefarms) do
-	statusString, isActive = treefarm.state()
-    if not isActive then
+	local isEnabled = treefarm.enable()
+    if not isEnabled then
       textOut(1, 2 + key, "Mining laser " .. key .. " of " .. #treefarms .. " is already stopped", 0xFFFFFF, 0xFF0000)
     else
-      treefarm.stop()
+      treefarm.enable(false)
       textOut(1, 2 + key, "Mining laser " .. key .. " of " .. #treefarms .. " has been stopped", 0x0000FF, 0x00FF00)
 	end
 	print("")

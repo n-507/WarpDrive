@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -98,13 +97,6 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	// carry over speed to next tick, useful for slow interactions
 	private float carryScanSpeed;
 	private float carryPlaceSpeed;
-	
-	// allow only one computation at a time
-	private static final AtomicBoolean isGlobalThreadRunning = new AtomicBoolean(false);
-	// computation is ongoing for this specific tile
-	private final AtomicBoolean isThreadRunning = new AtomicBoolean(false);
-	// parameters have changed, new computation is required
-	private final AtomicBoolean isDirty = new AtomicBoolean(true);
 	
 	private Set<VectorI> calculated_interiorField = null;
 	private Set<VectorI> calculated_forceField = null;
@@ -243,7 +235,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			if (updateTicks <= 0) {
 				updateTicks = PROJECTOR_PROJECTION_UPDATE_TICKS;
 				if (!isCalculated()) {
-					calculateForceField();
+					calculation_start();
 				} else {
 					projectForceField();
 				}
@@ -307,31 +299,28 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		return getShape() != EnumForceFieldShape.NONE;
 	}
 	
-	public boolean isCalculated() {
-		return !isDirty.get() && !isThreadRunning.get();
-	}
-	
-	private void calculateForceField() {
-		if ((!world.isRemote) && isValid()) {
-			if (!isGlobalThreadRunning.getAndSet(true)) {
-				if (WarpDriveConfig.LOGGING_FORCE_FIELD) {
-					WarpDrive.logger.info(String.format("Calculation initiated for %s", this));
-				}
-				isThreadRunning.set(true);
-				isDirty.set(false);
-				iteratorForceField = null;
-				calculated_interiorField = null;
-				calculated_forceField = null;
-				vForceFields.clear();
-				
-				new ThreadCalculation(this).start();
+	@Override
+	protected boolean calculation_start() {
+		final boolean isStarting = super.calculation_start();
+		if (isStarting) {
+			if (WarpDriveConfig.LOGGING_FORCE_FIELD) {
+				WarpDrive.logger.info(String.format("Calculation initiated for %s",
+				                                    this));
 			}
+			iteratorForceField = null;
+			calculated_interiorField = null;
+			calculated_forceField = null;
+			vForceFields.clear();
+			
+			new ThreadCalculation(this).start();
 		}
+		return isStarting;
 	}
 	
 	private void calculation_done(final Set<VectorI> interiorField, final Set<VectorI> forceField) {
 		if (WarpDriveConfig.LOGGING_FORCE_FIELD) {
-			WarpDrive.logger.info(String.format("Calculation done for %s", this));
+			WarpDrive.logger.info(String.format("Calculation done for %s",
+			                                    this));
 		}
 		if (interiorField == null || forceField == null) {
 			calculated_interiorField = new HashSet<>(0);
@@ -340,8 +329,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			calculated_interiorField = interiorField;
 			calculated_forceField = forceField;
 		}
-		isThreadRunning.set(false);
-		isGlobalThreadRunning.set(false);
+		calculation_done();
 	}
 	
 	boolean isOn() {

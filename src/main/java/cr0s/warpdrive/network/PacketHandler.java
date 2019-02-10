@@ -9,6 +9,7 @@ import cr0s.warpdrive.data.GlobalPosition;
 import cr0s.warpdrive.data.MovingEntity;
 import cr0s.warpdrive.data.Vector3;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
@@ -62,7 +63,7 @@ public class PacketHandler {
 	}
 	
 	// Beam effect sent to client side
-	public static void sendBeamPacket(final World world, final Vector3 v3Source, final Vector3 v3Target,
+	public static void sendBeamPacket(@Nonnull final World world, final Vector3 v3Source, final Vector3 v3Target,
 	                                  final float red, final float green, final float blue,
 	                                  final int age, final int energy, final int radius) {
 		assert !world.isRemote;
@@ -88,7 +89,7 @@ public class PacketHandler {
 		}
 	}
 	
-	public static void sendBeamPacketToPlayersInArea(final World world, final Vector3 source, final Vector3 target,
+	public static void sendBeamPacketToPlayersInArea(@Nonnull final World world, final Vector3 source, final Vector3 target,
 	                                                 final float red, final float green, final float blue,
 	                                                 final int age, final AxisAlignedBB aabb) {
 		assert !world.isRemote;
@@ -101,6 +102,25 @@ public class PacketHandler {
 				PacketHandler.simpleNetworkManager.sendTo(messageBeamEffect, (EntityPlayerMP) entity);
 			}
 		}
+	}
+	
+	// Scanning effect sent to client side
+	public static void sendScanningPacket(@Nonnull final World world,
+	                                      final int xMin, final int yMin, final int zMin,
+	                                      final int xMax, final int yMax, final int zMax,
+	                                      final float red, final float green, final float blue,
+	                                      final int age) {
+		assert !world.isRemote;
+		
+		final Vector3 vMinMin = new Vector3(xMin, yMin, zMin);
+		final Vector3 vMaxMin = new Vector3(xMax, yMin, zMin);
+		final Vector3 vMaxMax = new Vector3(xMax, yMin, zMax);
+		final Vector3 vMinMax = new Vector3(xMin, yMin, zMax);
+		
+		sendBeamPacket(world, vMinMin, vMaxMin, red, green, blue, age, 0, 50);
+		sendBeamPacket(world, vMaxMin, vMaxMax, red, green, blue, age, 0, 50);
+		sendBeamPacket(world, vMaxMax, vMinMax, red, green, blue, age, 0, 50);
+		sendBeamPacket(world, vMinMax, vMinMin, red, green, blue, age, 0, 50);
 	}
 	
 	// Forced particle effect sent to client side
