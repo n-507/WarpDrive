@@ -143,7 +143,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		}
 		
 		energy_setParameters(WarpDriveConfig.SHIP_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()],
-		                     65536, 65536,
+		                     65536, 0,
 		                     "EV", 2, "EV", 0);
 	}
 	

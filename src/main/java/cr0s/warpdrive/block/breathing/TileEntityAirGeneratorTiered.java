@@ -34,7 +34,7 @@ public class TileEntityAirGeneratorTiered extends TileEntityAbstractEnergyConsum
 		super.onConstructed();
 		
 		energy_setParameters(WarpDriveConfig.BREATHING_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()],
-		                     4000, 4000,
+		                     4096, 0,
 		                     "HV", 2, "HV", 0);
 	}
 	

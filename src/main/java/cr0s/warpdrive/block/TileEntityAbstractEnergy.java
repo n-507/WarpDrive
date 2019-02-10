@@ -486,14 +486,19 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 			scanTickCount--;
 			if (scanTickCount <= 0) {
 				scanTickCount = WarpDriveConfig.ENERGY_SCAN_INTERVAL_TICKS;
-				FERF_scanForEnergyReceivers();
+				if (FERF_fluxRateOutput > 0) {
+					FERF_scanForEnergyReceivers();
+				}
 			}
-			if ( WarpDriveConfig.ENERGY_ENABLE_RF
-			  && WarpDriveConfig.isRedstoneFluxLoaded ) {
-				RF_outputEnergy();
-			}
-			if (WarpDriveConfig.ENERGY_ENABLE_FE) {
-				FE_outputEnergy();
+			
+			if (FERF_fluxRateOutput > 0) {
+				if ( WarpDriveConfig.ENERGY_ENABLE_RF
+				  && WarpDriveConfig.isRedstoneFluxLoaded ) {
+					RF_outputEnergy();
+				}
+				if (WarpDriveConfig.ENERGY_ENABLE_FE) {
+					FE_outputEnergy();
+				}
 			}
 		}
 	}

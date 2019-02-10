@@ -59,7 +59,7 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 		super.onConstructed();
 		
 		energy_setParameters(WarpDriveConfig.LIFT_MAX_ENERGY_STORED,
-		                     1024, 1024,
+		                     1024, 0,
 		                     "MV", 2, "MV", 0);
 	}
 	

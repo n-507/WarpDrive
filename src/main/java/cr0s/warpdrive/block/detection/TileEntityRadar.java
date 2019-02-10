@@ -58,7 +58,7 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 		super.onConstructed();
 		
 		energy_setParameters(WarpDriveConfig.RADAR_MAX_ENERGY_STORED,
-		                     65536, 65536,
+		                     65536, 0,
 		                     "EV", 2, "EV", 0);
 	}
 	

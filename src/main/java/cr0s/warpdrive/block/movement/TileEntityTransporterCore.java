@@ -1421,8 +1421,8 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 	private void refreshEnergyParameters() {
 		final int energyUpgrades = getUpgradeCount(EnumComponentType.CAPACITIVE_CRYSTAL);
 		energy_setParameters(WarpDriveConfig.TRANSPORTER_MAX_ENERGY_STORED + energyUpgrades * WarpDriveConfig.TRANSPORTER_ENERGY_STORED_UPGRADE_BONUS,
-		                     4000, 4000,
-		                     "HV", 2, "HV", 2);
+		                     4096, 0,
+		                     "HV", 2, "HV", 0);
 	}
 	
 	@Override

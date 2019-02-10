@@ -94,8 +94,8 @@ public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
 		super.onConstructed();
 		
 		energy_setParameters(WarpDriveConfig.CHUNK_LOADER_MAX_ENERGY_STORED,
-		                     1024, 1024,
-		                     "MV", 2, "MV", 2);
+		                     1024, 0,
+		                     "MV", 2, "MV", 0);
 	}
 	
 	@Override

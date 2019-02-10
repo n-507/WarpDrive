@@ -56,8 +56,8 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 		super.onConstructed();
 		
 		energy_setParameters(WarpDriveConfig.TRANSPORTER_BEACON_MAX_ENERGY_STORED,
-		                     1024, 1024,
-		                     "MV", 2, "MV", 2);
+		                     1024, 0,
+		                     "MV", 2, "MV", 0);
 	}
 	
 	@Override

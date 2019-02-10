@@ -133,7 +133,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	protected void onConstructed() {
 		super.onConstructed();
 		
-		energy_setParameters(PROJECTOR_MAX_ENERGY_STORED * (1 + 2 * enumTier.getIndex()), 4000, 4000,
+		energy_setParameters(PROJECTOR_MAX_ENERGY_STORED * (1 + 2 * enumTier.getIndex()), 4096, 0,
 		                     "EV", 2, "EV", 0);
 	}
 	

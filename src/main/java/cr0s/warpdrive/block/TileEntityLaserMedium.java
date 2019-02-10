@@ -30,7 +30,7 @@ public class TileEntityLaserMedium extends TileEntityAbstractEnergy {
 		super.onConstructed();
 		
 		energy_setParameters(WarpDriveConfig.LASER_MEDIUM_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()],
-		                     4096, 4096,
+		                     4096, 0,
 		                     "HV", 2, "HV", 0);
 	}
 	
