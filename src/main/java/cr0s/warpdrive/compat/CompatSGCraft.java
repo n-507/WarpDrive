@@ -54,7 +54,7 @@ public class CompatSGCraft implements IBlockTransformer {
 					reason.append(Commons.styleWarning, "warpdrive.compat.guide.stargate_is_active", state);
 					return false;
 				}
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException exception) {
+			} catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException exception) {
 				exception.printStackTrace();
 			}
 		}
@@ -82,11 +82,34 @@ public class CompatSGCraft implements IBlockTransformer {
 		// Link between stargate controller and DHD
 		if (nbtTileEntity.hasKey("isLinkedToStargate")) {
 			if ( nbtTileEntity.getBoolean("isLinkedToStargate")
-			  && nbtTileEntity.hasKey("linkedX") && nbtTileEntity.hasKey("linkedY") && nbtTileEntity.hasKey("linkedZ")) {
-				final BlockPos targetLink = transformation.apply(nbtTileEntity.getInteger("linkedX"), nbtTileEntity.getInteger("linkedY"), nbtTileEntity.getInteger("linkedZ"));
-				nbtTileEntity.setInteger("linkedX", targetLink.getX());
-				nbtTileEntity.setInteger("linkedY", targetLink.getY());
-				nbtTileEntity.setInteger("linkedZ", targetLink.getZ());
+			  && nbtTileEntity.hasKey("linkedX") && nbtTileEntity.hasKey("linkedY") && nbtTileEntity.hasKey("linkedZ") ) {
+				if (transformation.isInside(nbtTileEntity.getInteger("linkedX"), nbtTileEntity.getInteger("linkedY"), nbtTileEntity.getInteger("linkedZ"))) {
+					final BlockPos targetLink = transformation.apply(nbtTileEntity.getInteger("linkedX"), nbtTileEntity.getInteger("linkedY"), nbtTileEntity.getInteger("linkedZ"));
+					nbtTileEntity.setInteger("linkedX", targetLink.getX());
+					nbtTileEntity.setInteger("linkedY", targetLink.getY());
+					nbtTileEntity.setInteger("linkedZ", targetLink.getZ());
+				} else {
+					nbtTileEntity.setBoolean("isLinkedToController", false);
+					nbtTileEntity.setInteger("linkedX", 0);
+					nbtTileEntity.setInteger("linkedY", 0);
+					nbtTileEntity.setInteger("linkedZ", 0);
+				}
+			}
+		}
+		if (nbtTileEntity.hasKey("isLinkedToController")) {
+			if ( nbtTileEntity.getBoolean("isLinkedToController")
+			  && nbtTileEntity.hasKey("linkedX") && nbtTileEntity.hasKey("linkedY") && nbtTileEntity.hasKey("linkedZ") ) {
+				if (transformation.isInside(nbtTileEntity.getInteger("linkedX"), nbtTileEntity.getInteger("linkedY"), nbtTileEntity.getInteger("linkedZ"))) {
+					final BlockPos targetLink = transformation.apply(nbtTileEntity.getInteger("linkedX"), nbtTileEntity.getInteger("linkedY"), nbtTileEntity.getInteger("linkedZ"));
+					nbtTileEntity.setInteger("linkedX", targetLink.getX());
+					nbtTileEntity.setInteger("linkedY", targetLink.getY());
+					nbtTileEntity.setInteger("linkedZ", targetLink.getZ());
+				} else {
+					nbtTileEntity.setBoolean("isLinkedToController", false);
+					nbtTileEntity.setInteger("linkedX", 0);
+					nbtTileEntity.setInteger("linkedY", 0);
+					nbtTileEntity.setInteger("linkedZ", 0);
+				}
 			}
 		}
 		
