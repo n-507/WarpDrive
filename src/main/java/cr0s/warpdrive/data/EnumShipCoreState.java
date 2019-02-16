@@ -11,8 +11,8 @@ public enum EnumShipCoreState implements IStringSerializable {
 	IDLE          (1, "idle"),           // Ready for next command
 	// SCANNING      (2, "scanning"),       // Ready for next command
 	ONLINE        (3, "online"),         // Computing parameters
-	WARMING_UP    (4, "warming_up");     // Warmup phase
-	// COOLING_DOWN  (5, "cooling_down");   // Pending cooldown
+	WARMING_UP    (4, "warming_up");     // Warm up phase
+	// COOLING_DOWN  (5, "cooling_down");   // Pending cool down
 	
 	private final int metadata;
 	private final String name;

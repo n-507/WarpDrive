@@ -357,9 +357,11 @@ public class WarpDriveConfig {
 	public static int              MINING_LASER_MAX_MEDIUMS_COUNT = 3;
 	public static int              MINING_LASER_RADIUS_NO_LASER_MEDIUM = 4;
 	public static int              MINING_LASER_RADIUS_PER_LASER_MEDIUM = 1;
+	
 	public static int              MINING_LASER_WARMUP_DELAY_TICKS = 20;
 	public static int              MINING_LASER_SCAN_DELAY_TICKS = 20;
 	public static int              MINING_LASER_MINE_DELAY_TICKS = 3;
+	
 	public static int              MINING_LASER_SPACE_ENERGY_PER_LAYER = 20000;
 	public static int              MINING_LASER_PLANET_ENERGY_PER_LAYER = 33000;
 	public static int              MINING_LASER_SPACE_ENERGY_PER_BLOCK = 1500;
@@ -931,7 +933,7 @@ public class WarpDriveConfig {
 				config.get("ship", "collision_tolerance_blocks", SHIP_COLLISION_TOLERANCE_BLOCKS, "Tolerance in block in case of collision before causing damages...").getInt());
 		
 		SHIP_WARMUP_RANDOM_TICKS = Commons.clamp(10, 200,
-				config.get("ship", "warmup_random_ticks", SHIP_WARMUP_RANDOM_TICKS, "Random variation added to warmup (measured in ticks)").getInt());
+				config.get("ship", "warmup_random_ticks", SHIP_WARMUP_RANDOM_TICKS, "Random variation added to warm-up (measured in ticks)").getInt());
 		
 		SHIP_CORE_ISOLATION_UPDATE_INTERVAL_SECONDS = Commons.clamp(0, 300,
 				config.get("ship", "core_isolation_update_interval", SHIP_CORE_ISOLATION_UPDATE_INTERVAL_SECONDS, "(measured in seconds)").getInt());
@@ -1183,7 +1185,7 @@ public class WarpDriveConfig {
 		IC2_REACTOR_ENERGY_PER_HEAT = Commons.clamp(2.0D, 100000.0D,
 				config.get("ic2_reactor_laser", "energy_per_heat", IC2_REACTOR_ENERGY_PER_HEAT, "Energy cost per heat absorbed").getDouble());
 		IC2_REACTOR_COOLING_INTERVAL_TICKS = Commons.clamp(0, 1200,
-				config.get("ic2_reactor_laser", "cooling_interval_ticks", IC2_REACTOR_COOLING_INTERVAL_TICKS, "Update speed of the check for reactors to cooldown. Use 10 to tick as fast as the reactor simulation").getInt());
+				config.get("ic2_reactor_laser", "cooling_interval_ticks", IC2_REACTOR_COOLING_INTERVAL_TICKS, "Update speed of the check for reactors to cool down. Use 10 to tick as fast as the reactor simulation").getInt());
 		
 		// Transporter
 		TRANSPORTER_MAX_ENERGY_STORED = Commons.clamp(1, Integer.MAX_VALUE,

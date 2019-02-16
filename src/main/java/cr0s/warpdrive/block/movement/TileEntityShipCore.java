@@ -158,11 +158,11 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			return;
 		}
 		
-		// always cooldown
+		// always cool down
 		if (ticksCooldown > 0) {
 			ticksCooldown--;
 			
-			// report cooldown time when a command is requested
+			// report coo down time when a command is requested
 			if ( isEnabled
 			  && isCommandConfirmed
 			  && enumShipCommand != EnumShipCommand.IDLE
@@ -205,7 +205,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		if (logTicks <= 0) {
 			logTicks = LOG_INTERVAL_TICKS;
 			if (WarpDriveConfig.LOGGING_JUMP) {
-				WarpDrive.logger.info(String.format("%s, %s, %s, %d controllers, warmup %d, cooldown %d",
+				WarpDrive.logger.info(String.format("%s, %s, %s, %d controllers, warm-up %d, cool down %d",
 				                                    this,
 				                                    stateCurrent,
 				                                    isEnabled ? "Enabled" : "Disabled",
@@ -364,7 +364,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 					return;
 				}
 				
-				// compute random ticks to warmup so it's harder to 'dup' items
+				// compute random ticks to warm-up so it's harder to 'dup' items
 				randomWarmupAddition_ticks = world.rand.nextInt(WarpDriveConfig.SHIP_WARMUP_RANDOM_TICKS);
 				
 				stateCurrent = EnumShipCoreState.WARMING_UP;

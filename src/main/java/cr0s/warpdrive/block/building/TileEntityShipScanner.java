@@ -758,7 +758,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 	private int shipToken_countWarmup = SHIP_TOKEN_PLAYER_WARMUP_PERIODS;
 	private String shipToken_nameSchematic = "";
 	private void checkPlayerForShipToken() {
-		// cooldown to prevent player chat spam and server lag
+		// cool down to prevent player chat spam and server lag
 		shipToken_nextUpdate_ticks--;
 		if (shipToken_nextUpdate_ticks > 0) {
 			return;
@@ -808,7 +808,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 			return;
 		}
 		
-		// short warmup so payer can cancel eventually
+		// short warm-up so payer can cancel eventually
 		if ( entityPlayer.getUniqueID() != shipToken_idPlayer
 		  || !shipToken_nameSchematic.equals(ItemShipToken.getSchematicName(itemStack)) ) {
 			shipToken_idPlayer = entityPlayer.getUniqueID();
@@ -823,7 +823,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 			                                                       shipToken_nameSchematic, shipToken_countWarmup));
 			return;
 		}
-		// warmup done
+		// warm-up done
 		shipToken_idPlayer = null;
 		playerName = entityPlayer.getName();
 		

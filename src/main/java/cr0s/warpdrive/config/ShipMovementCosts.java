@@ -42,7 +42,7 @@ public class ShipMovementCosts {
 		this.sickness_seconds = movementCosts.getSickness_seconds();
 		this.cooldown_seconds = movementCosts.getCooldown_seconds();
 		if (WarpDriveConfig.LOGGING_ENERGY) {
-			WarpDrive.logger.info(String.format("Ship movement %s with mass %d over %d blocks is capped to %d blocks, will cost %d EU, %d s warmup, %d s sickness, %d s cooldown",
+			WarpDrive.logger.info(String.format("Ship movement %s with mass %d over %d blocks is capped to %d blocks, will cost %d EU, %d s warm-up, %d s sickness, %d s cool down",
 			                                    shipMovementType, mass, distance,
 			                                    this.maximumDistance_blocks, this.energyRequired,
 			                                    this.warmup_seconds, this.sickness_seconds, this.cooldown_seconds));

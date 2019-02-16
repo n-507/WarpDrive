@@ -104,7 +104,7 @@ public class AcceleratorSetup extends GlobalPosition {
 		
 		if (WarpDriveConfig.LOGGING_ACCELERATOR) {
 			WarpDrive.logger.info(String.format("Accelerator length: %d + %d including %d + %d + %d magnets, %d chillers and %d capacitors"
-											  + " cooldown: %.3f %.3f %.3f /t %.3f EU/t"
+											  + " cool down: %.3f %.3f %.3f /t %.3f EU/t"
 											  + " sustain: %.3f %.3f %.3f EU/t"
 											  + " acceleration: %.3f /particle",
 			        trajectoryAccelerator == null ? -1 : trajectoryAccelerator.size(), trajectoryTransfer == null ? -1 : trajectoryTransfer.size(),

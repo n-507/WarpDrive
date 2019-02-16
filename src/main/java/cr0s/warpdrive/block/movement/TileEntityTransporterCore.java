@@ -157,7 +157,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 		// frequency status
 		isConnected = beamFrequency > 0 && beamFrequency <= IBeamFrequency.BEAM_FREQUENCY_MAX;
 		
-		// always cooldown
+		// always cool down
 		if (tickCooldown > 0) {
 			tickCooldown--;
 		} else {
@@ -364,7 +364,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 		
 		// cancel if no entity was found
 		if (entityValues.count == 0) {
-			// cancel transfer, cooldown, don't loose strength
+			// cancel transfer, cool down, don't loose strength
 			isEnergizeRequested = false;
 			tickCooldown += WarpDriveConfig.TRANSPORTER_ENERGIZING_COOLDOWN_TICKS;
 			transporterState = EnumTransporterState.ACQUIRING;
@@ -389,7 +389,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 			energizeEntities(lockStrengthActual, movingEntitiesRemote, world, vLocalScanners);
 		}
 		
-		// clear entities, cancel transfer, cooldown, loose a bit of strength
+		// clear entities, cancel transfer, cool down, loose a bit of strength
 		isEnergizeRequested = false;
 		tickUpdateParameters = 0;
 		tickCooldown += WarpDriveConfig.TRANSPORTER_ENERGIZING_COOLDOWN_TICKS;
