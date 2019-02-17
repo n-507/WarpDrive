@@ -96,7 +96,8 @@ public class CompatBotania implements IBlockTransformer {
 			}
 		}
 		
-		if ( nbtTileEntity.hasKey("bindX")
+		if ( nbtTileEntity != null
+		  && nbtTileEntity.hasKey("bindX")
 		  && nbtTileEntity.hasKey("bindY") 
 		  && nbtTileEntity.hasKey("bindZ") ) {
 			final BlockPos targetBind = transformation.apply(nbtTileEntity.getInteger("bindX"), nbtTileEntity.getInteger("bindY"), nbtTileEntity.getInteger("bindZ"));
@@ -105,7 +106,8 @@ public class CompatBotania implements IBlockTransformer {
 			nbtTileEntity.setInteger("bindZ", targetBind.getZ());
 		}
 		
-		if (nbtTileEntity.hasKey("subTileCmp")) {
+		if ( nbtTileEntity != null
+		  && nbtTileEntity.hasKey("subTileCmp") ) {
 			final NBTTagCompound nbtSubTileCmp = nbtTileEntity.getCompoundTag("subTileCmp");
 			if ( nbtSubTileCmp.hasKey("collectorX")
 			  && nbtSubTileCmp.hasKey("collectorY")
@@ -117,7 +119,8 @@ public class CompatBotania implements IBlockTransformer {
 			}
 		}
 		
-		if (nbtTileEntity.hasKey("rotationX")) {
+		if ( nbtTileEntity != null
+		  && nbtTileEntity.hasKey("rotationX") ) {
 			final float rotationX = nbtTileEntity.getInteger("rotationX");
 			nbtTileEntity.setFloat("rotationX", (rotationX + 270.0F * rotationSteps) % 360.0F);
 		}
