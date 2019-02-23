@@ -247,7 +247,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	
 	@Override
 	public Object[] side() {
-		if (reactorFace == null) {
+		if (reactorFace == null || reactorFace.enumTier == null) {
 			return new Object[] { null, null, null };
 		}
 		return new Object[] { reactorFace.indexStability, reactorFace.enumTier.getName(), reactorFace.getName() };
