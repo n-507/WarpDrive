@@ -222,7 +222,11 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 			if (instabilityValues[reactorFace.indexStability] > instabilityTarget) {
 				final TileEntityEnanReactorLaser tileEntityEnanReactorLaser = getLaser(reactorFace);
 				if (tileEntityEnanReactorLaser != null) {
-					tileEntityEnanReactorLaser.stabilize(stabilizerEnergy);
+					if (tileEntityEnanReactorLaser.stabilize(stabilizerEnergy) == -stabilizerEnergy) {
+						// chunk isn't updating properly => protect the reactor
+						instabilityValues[reactorFace.indexStability] = instabilityTarget;
+						hold = true;
+					}
 				}
 			}
 		}

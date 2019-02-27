@@ -154,17 +154,21 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		}
 	}
 	
-	boolean stabilize(final int energy) {
+	protected int stabilize(final int energy) {
 		if (energy <= 0) {
-			return false;
+			return 0;
 		}
 		
 		if (laserMedium_direction == null) {
-			return false;
+			return 0;
 		}
-		
+		if (energyStabilizationRequest > 0) {
+			WarpDrive.logger.warn("%s Stabilization already requested for %s",
+			                      this, energy);
+			return -energy;
+		}
 		energyStabilizationRequest = energy;
-		return true;
+		return energy;
 	}
 	
 	private void doStabilize(final int energy) {
@@ -229,20 +233,19 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	
 	@Override
 	public Object[] stabilize(final Object[] arguments) {
-		if (arguments.length != 1) {
-			return new Object[] { false, "Invalid number of arguments" };
-		}
-		final int energy;
-		try {
-			energy = Commons.toInt(arguments[0]);
-		} catch (final Exception exception) {
-			if (WarpDriveConfig.LOGGING_LUA) {
-				WarpDrive.logger.error(String.format("%s LUA error on stabilize(): Integer expected for 1st argument %s",
-				                                     this, arguments[0]));
+		if (arguments.length == 1) {
+			final int energy;
+			try {
+				energy = Commons.toInt(arguments[0]);
+				return new Object[] { stabilize(energy) };
+			} catch (final Exception exception) {
+				if (WarpDriveConfig.LOGGING_LUA) {
+					WarpDrive.logger.error(String.format("%s LUA error on stabilize(): Integer expected for 1st argument %s",
+					                                     this, arguments[0]));
+				}
 			}
-			return new Object[] { false, "Invalid integer" };
 		}
-		return new Object[] { stabilize(energy) };
+		return new Object[] { energyStabilizationRequest };
 	}
 	
 	@Override
