@@ -4,7 +4,7 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnergyWrapper;
-import cr0s.warpdrive.data.EnumReactorFace;
+import cr0s.warpdrive.data.ReactorFace;
 import cr0s.warpdrive.data.EnumReactorOutputMode;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.network.PacketHandler;
@@ -12,7 +12,6 @@ import cr0s.warpdrive.network.PacketHandler;
 import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import net.minecraft.block.state.IBlockState;
@@ -46,7 +45,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	private int stabilizerEnergy = 10000;
 	
 	private int containedEnergy = 0;
-	private final double[] instabilityValues = new double[EnumReactorFace.maxInstabilities]; // no instability  = 0, explosion = 100
+	private final double[] instabilityValues = new double[ReactorFace.maxInstabilities]; // no instability  = 0, explosion = 100
 	
 	// computed properties
 	private boolean isFirstException = true;
@@ -64,7 +63,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	private long energyReleasedLastCycle = 0;
 	
 	@SuppressWarnings("unchecked")
-	private final WeakReference<TileEntityEnanReactorLaser>[] weakTileEntityLasers = (WeakReference<TileEntityEnanReactorLaser>[]) Array.newInstance(WeakReference.class, EnumReactorFace.maxInstabilities);
+	private final WeakReference<TileEntityEnanReactorLaser>[] weakTileEntityLasers = (WeakReference<TileEntityEnanReactorLaser>[]) Array.newInstance(WeakReference.class, ReactorFace.maxInstabilities);
 	
 	public TileEntityEnanReactorCore() {
 		super();
@@ -135,7 +134,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	}
 	
 	private void increaseInstability() {
-		for (final EnumReactorFace reactorFace : EnumReactorFace.getLasers(enumTier)) {
+		for (final ReactorFace reactorFace : ReactorFace.getLasers(enumTier)) {
 			// increase instability
 			final int indexStability = reactorFace.indexStability;
 			if (containedEnergy > 2000) {
@@ -154,7 +153,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		}
 	}
 	
-	void decreaseInstability(final EnumReactorFace reactorFace, final int energy) {
+	void decreaseInstability(final ReactorFace reactorFace, final int energy) {
 		if (reactorFace.indexStability < 0) {
 			return;
 		}
@@ -164,7 +163,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 			return;
 		}
 		
-		lasersReceived = Math.min(10.0F, lasersReceived + 1.0F / WarpDriveConfig.ENAN_REACTOR_MAX_LASERS_PER_SECOND);
+		lasersReceived = Math.min(10.0F, lasersReceived + 1.0F / WarpDriveConfig.ENAN_REACTOR_MAX_LASERS_PER_SECOND[enumTier.getIndex()]);
 		double nospamFactor = 1.0D;
 		if (lasersReceived > 1.0F) {
 			nospamFactor = 0.5;
@@ -194,7 +193,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	
 	private void generateEnergy() {
 		double stabilityOffset = 0.5;
-		for (final EnumReactorFace reactorFace : EnumReactorFace.getLasers(enumTier)) {
+		for (final ReactorFace reactorFace : ReactorFace.getLasers(enumTier)) {
 			stabilityOffset *= Math.max(0.01D, instabilityValues[reactorFace.indexStability] / 100.0D);
 		}
 		
@@ -218,7 +217,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	}
 	
 	private void runControlLoop() {
-		for (final EnumReactorFace reactorFace : EnumReactorFace.getLasers(enumTier)) {
+		for (final ReactorFace reactorFace : ReactorFace.getLasers(enumTier)) {
 			if (instabilityValues[reactorFace.indexStability] > instabilityTarget) {
 				final TileEntityEnanReactorLaser tileEntityEnanReactorLaser = getLaser(reactorFace);
 				if (tileEntityEnanReactorLaser != null) {
@@ -232,7 +231,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		}
 	}
 	
-	private TileEntityEnanReactorLaser getLaser(final EnumReactorFace reactorFace) {
+	private TileEntityEnanReactorLaser getLaser(final ReactorFace reactorFace) {
 		final WeakReference<TileEntityEnanReactorLaser> weakTileEntityLaser = weakTileEntityLasers[reactorFace.indexStability];
 		TileEntityEnanReactorLaser tileEntityEnanReactorLaser;
 		if (weakTileEntityLaser != null) {
@@ -270,7 +269,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	
 	private boolean shouldExplode() {
 		boolean exploding = false;
-		for (final EnumReactorFace reactorFace : EnumReactorFace.getLasers(enumTier)) {
+		for (final ReactorFace reactorFace : ReactorFace.getLasers(enumTier)) {
 			exploding = exploding || (instabilityValues[reactorFace.indexStability] >= 100);
 		}
 		exploding &= (world.rand.nextInt(4) == 2);
@@ -278,7 +277,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		if (exploding) {
 			final StringBuilder statusLasers = new StringBuilder();
 			final MutableBlockPos mutableBlockPos = new MutableBlockPos();
-			for (final EnumReactorFace reactorFace : EnumReactorFace.getLasers(enumTier)) {
+			for (final ReactorFace reactorFace : ReactorFace.getLasers(enumTier)) {
 				long energyStored = -1L;
 				int countLaserMediums = 0;
 				mutableBlockPos.setPos(
@@ -396,7 +395,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		
 		// first check if we have the required 'air' blocks
 		boolean isValid = true;
-		for (final EnumReactorFace reactorFace : EnumReactorFace.get(enumTier)) {
+		for (final ReactorFace reactorFace : ReactorFace.get(enumTier)) {
 			assert reactorFace.enumTier == enumTier;
 			if (reactorFace.indexStability < 0) {
 				mutableBlockPos.setPos(pos.getX() + reactorFace.x,
@@ -417,7 +416,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		}
 		
 		// then update the stabilization lasers accordingly
-		for (final EnumReactorFace reactorFace : EnumReactorFace.getLasers(enumTier)) {
+		for (final ReactorFace reactorFace : ReactorFace.getLasers(enumTier)) {
 			mutableBlockPos.setPos(pos.getX() + reactorFace.x,
 			                       pos.getY() + reactorFace.y,
 			                       pos.getZ() + reactorFace.z);
@@ -426,7 +425,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 				if (isValid) {
 					((TileEntityEnanReactorLaser) tileEntity).setReactorFace(reactorFace, this);
 				} else {
-					((TileEntityEnanReactorLaser) tileEntity).setReactorFace(EnumReactorFace.UNKNOWN, null);
+					((TileEntityEnanReactorLaser) tileEntity).setReactorFace(ReactorFace.UNKNOWN, null);
 				}
 			} else {
 				final Vector3 vPosition = new Vector3(mutableBlockPos).translate(0.5D);
@@ -461,11 +460,13 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		// computer is alive => start updating reactor
 		hold = false;
 		
-		final ArrayList<Double> result = new ArrayList<>(16);
-		for (final EnumReactorFace reactorFace : EnumReactorFace.getLasers(enumTier)) {
-			result.add(reactorFace.indexStability, instabilityValues[reactorFace.indexStability]);
+		final ReactorFace[] lasers = ReactorFace.getLasers(enumTier);
+		final Double[] result = new Double[lasers.length];
+		for (final ReactorFace reactorFace : lasers) {
+			final double value = instabilityValues[reactorFace.indexStability];
+			result[reactorFace.indexStability] = value;
 		}
-		return result.toArray(new Double[0]);
+		return result;
 	}
 	
 	@Override
@@ -622,7 +623,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		
 		tagCompound.setInteger("energy", containedEnergy);
 		final NBTTagCompound tagCompoundInstability = new NBTTagCompound();
-		for (final EnumReactorFace reactorFace : EnumReactorFace.getLasers(enumTier)) {
+		for (final ReactorFace reactorFace : ReactorFace.getLasers(enumTier)) {
 			tagCompoundInstability.setDouble(reactorFace.name, instabilityValues[reactorFace.indexStability]);
 		}
 		tagCompound.setTag("instability", tagCompoundInstability);
@@ -649,7 +650,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		containedEnergy = tagCompound.getInteger("energy");
 		final NBTTagCompound tagCompoundInstability = tagCompound.getCompoundTag("instability");
 		// tier isn't defined yet, so we check all candidates
-		for (final EnumReactorFace reactorFace : EnumReactorFace.values()) {
+		for (final ReactorFace reactorFace : ReactorFace.getLasers()) {
 			if (reactorFace.indexStability < 0) {
 				continue;
 			}

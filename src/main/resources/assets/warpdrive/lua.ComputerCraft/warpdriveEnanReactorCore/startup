@@ -108,7 +108,7 @@ function reactor_page()
     local instabilities = { reactor.getInstabilities() }
     for key, instability in pairs(instabilities) do
       local y = (key - 1) % 4
-      local x = (key - y - 1) / 4
+      local x = (key - 1 - y) / 4
       w.setCursorPos(2 + 6 * x, 3 + y)
       local stability = math.floor((100.0 - instability) * 10) / 10.0
       if stability >= reactor_targetStability then
@@ -136,7 +136,7 @@ function reactor_page()
     w.write(w.format_boolean(isEnabled, "YES", "no"))
   end
   
-  w.setCursorPos(26, 2)
+  w.setCursorPos(28, 2)
   if #reactorlasers == 0 then
     w.setColorDisabled()
     w.write("Lasers not detected")
@@ -144,11 +144,11 @@ function reactor_page()
     w.setColorNormal()
     w.write("Lasers charge (k)")
     
-    for key, reactorlaser in pairs(reactorlasers) do
+    for _, reactorlaser in pairs(reactorlasers) do
       if reactorlaser.wrap ~= nil then
-        local y = (key - 1) % 4
-        local x = (key - y - 1) / 4
-        w.setCursorPos(26 + 7 * x, 3 + y)
+        local y = reactorlaser.side % 4
+        local x = (reactorlaser.side - y) / 4
+        w.setCursorPos(28 + 6 * x, 3 + y)
         local energyStored, _, _ = reactorlaser.wrap.getEnergyStatus()
         if energyStored == nil then
           energyStored = -1
@@ -259,7 +259,7 @@ function reactor_pulse(output)
   if w.page_getCallbackDisplay() == reactor_page and (not reactor_configPageLoaded) then
     for key, instability in pairs(instabilities) do
       local y = (key - 1) % 4
-      local x = (key - y - 1) / 4
+      local x = (key - 1 - y) / 4
       w.setCursorPos(2 + 6 * x, 3 + y)
       local stability = math.floor((100.0 - instability) * 10) / 10
       if stability >= reactor_targetStability then
@@ -270,7 +270,7 @@ function reactor_pulse(output)
       w.write(w.format_float(stability, 5))
     end
   
-    local energyStored, energyMax, energyUnits, _, energyOutputRate = reactor.getEnergyStatus()
+    local energyStored, _, _, _, energyOutputRate = reactor.getEnergyStatus()
     w.setCursorPos(12, 7)
     w.setColorNormal()
     w.write(w.format_integer(energyStored, 10))
@@ -280,11 +280,11 @@ function reactor_pulse(output)
     w.write(w.format_integer(energyOutputRate, 6))
     
     if #reactorlasers ~= 0 then
-      for key, reactorlaser in pairs(reactorlasers) do
-        if key ~= nil and reactorlaser.wrap ~= nil then
-          local y = (key - 1) % 4
-          local x = (key - y - 1) / 4
-          w.setCursorPos(26 + 7 * x, 3 + y)
+      for _, reactorlaser in pairs(reactorlasers) do
+        if reactorlaser.wrap ~= nil then
+          local y = reactorlaser.side % 4
+          local x = (reactorlaser.side - y) / 4
+          w.setCursorPos(28 + 6 * x, 3 + y)
           local energyStored, _, _ = reactorlaser.wrap.getEnergyStatus()
           if energyStored == nil then
             energyStored = -1

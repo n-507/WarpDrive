@@ -483,7 +483,7 @@ public class WarpDriveConfig {
 	// Enantiomorphic power reactor
 	public static int[]            ENAN_REACTOR_MAX_ENERGY_STORED_BY_TIER = { 100000000, 100000000, 500000000, 2000000000 };
 	public static final int        ENAN_REACTOR_UPDATE_INTERVAL_TICKS = 5; // hardcoded in the equations,
-	public static int              ENAN_REACTOR_MAX_LASERS_PER_SECOND = 6;
+	public static int[]            ENAN_REACTOR_MAX_LASERS_PER_SECOND = { 64, 6, 12, 24 };
 	public static int[]            ENAN_REACTOR_GENERATION_MIN_RF_BY_TIER = { 4, 4, 4, 4 };
 	public static int[]            ENAN_REACTOR_GENERATION_MAX_RF_BY_TIER = { 64000, 64000, 192000, 576000 };
 	public static int[]            ENAN_REACTOR_EXPLOSION_MAX_RADIUS_BY_TIER = { 6, 6, 8, 10 };
@@ -1199,8 +1199,9 @@ public class WarpDriveConfig {
 		ENAN_REACTOR_MAX_ENERGY_STORED_BY_TIER =
 				config.get("enantiomorphic_reactor", "max_energy_stored_by_tier", ENAN_REACTOR_MAX_ENERGY_STORED_BY_TIER, "Maximum energy stored in the core for a given tier").getIntList();
 		clampByTier(1, Integer.MAX_VALUE, ENAN_REACTOR_MAX_ENERGY_STORED_BY_TIER);
-		ENAN_REACTOR_MAX_LASERS_PER_SECOND = Commons.clamp(4, 80,
-				config.get("enantiomorphic_reactor", "max_lasers", ENAN_REACTOR_MAX_LASERS_PER_SECOND, "Maximum number of stabilisation laser shots per seconds before loosing efficiency").getInt());
+		ENAN_REACTOR_MAX_LASERS_PER_SECOND =
+				config.get("enantiomorphic_reactor", "max_lasers", ENAN_REACTOR_MAX_LASERS_PER_SECOND, "Maximum number of stabilisation laser shots per seconds before loosing efficiency").getIntList();
+		clampByTier(1, Integer.MAX_VALUE, ENAN_REACTOR_MAX_LASERS_PER_SECOND);
 		ENAN_REACTOR_GENERATION_MIN_RF_BY_TIER =
 		        config.get("enantiomorphic_reactor", "min_generation_RF_by_tier", ENAN_REACTOR_GENERATION_MIN_RF_BY_TIER, "Minimum energy added to the core when enabled, measured in RF/t, for a given tier").getIntList();
 		clampByTier(1, Integer.MAX_VALUE, ENAN_REACTOR_GENERATION_MIN_RF_BY_TIER);

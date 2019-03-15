@@ -1,7 +1,7 @@
 package cr0s.warpdrive.block.energy;
 
 import cr0s.warpdrive.block.BlockAbstractContainer;
-import cr0s.warpdrive.data.EnumReactorFace;
+import cr0s.warpdrive.data.ReactorFace;
 import cr0s.warpdrive.data.EnumTier;
 
 import net.minecraft.block.material.Material;
@@ -60,7 +60,7 @@ public class BlockEnanReactorCore extends BlockAbstractContainer {
 	public void breakBlock(final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
 		super.breakBlock(world, blockPos, blockState);
 		
-		for (final EnumReactorFace reactorFace : EnumReactorFace.getLasers(enumTier)) {
+		for (final ReactorFace reactorFace : ReactorFace.getLasers(enumTier)) {
 			if (reactorFace.indexStability < 0) {
 				continue;
 			}
@@ -68,7 +68,7 @@ public class BlockEnanReactorCore extends BlockAbstractContainer {
 			final TileEntity tileEntity = world.getTileEntity(blockPos.add(reactorFace.x, reactorFace.y, reactorFace.z));
 			if (tileEntity instanceof TileEntityEnanReactorLaser) {
 				if (((TileEntityEnanReactorLaser) tileEntity).getReactorFace() == reactorFace) {
-					((TileEntityEnanReactorLaser) tileEntity).setReactorFace(EnumReactorFace.UNKNOWN, null);
+					((TileEntityEnanReactorLaser) tileEntity).setReactorFace(ReactorFace.UNKNOWN, null);
 				}
 			}
 		}

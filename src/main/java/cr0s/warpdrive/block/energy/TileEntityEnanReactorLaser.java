@@ -6,7 +6,7 @@ import cr0s.warpdrive.api.computer.IEnanReactorLaser;
 import cr0s.warpdrive.block.TileEntityAbstractLaser;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
-import cr0s.warpdrive.data.EnumReactorFace;
+import cr0s.warpdrive.data.ReactorFace;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.network.PacketHandler;
 
@@ -30,7 +30,7 @@ import net.minecraftforge.fml.common.Optional;
 public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implements IEnanReactorLaser {
 	
 	// persistent properties
-	private EnumReactorFace reactorFace = EnumReactorFace.UNKNOWN;
+	private ReactorFace reactorFace = ReactorFace.UNKNOWN;
 	private int energyStabilizationRequest = 0;
 	
 	// computed properties
@@ -56,10 +56,10 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	protected void onFirstUpdateTick() {
 		super.onFirstUpdateTick();
 		
-		if (reactorFace == EnumReactorFace.UNKNOWN) {
+		if (reactorFace == ReactorFace.UNKNOWN) {
 			final MutableBlockPos mutableBlockPos = new MutableBlockPos(pos);
 			// laser isn't linked yet, let's try to update nearby reactors
-			for (final EnumReactorFace reactorFace : EnumReactorFace.values()) {
+			for (final ReactorFace reactorFace : ReactorFace.getLasers()) {
 				if (reactorFace.indexStability < 0) {
 					continue;
 				}
@@ -90,11 +90,11 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	}
 	
 	@Nonnull 
-	public EnumReactorFace getReactorFace() {
-		return reactorFace != null ? reactorFace : EnumReactorFace.UNKNOWN;
+	public ReactorFace getReactorFace() {
+		return reactorFace != null ? reactorFace : ReactorFace.UNKNOWN;
 	}
 	
-	public void setReactorFace(@Nonnull final EnumReactorFace reactorFace, final TileEntityEnanReactorCore reactorCore) {
+	public void setReactorFace(@Nonnull final ReactorFace reactorFace, final TileEntityEnanReactorCore reactorCore) {
 		// skip if it's already set to save resources
 		if (this.reactorFace == reactorFace) {
 			return;
@@ -102,7 +102,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		
 		// update properties
 		this.reactorFace = reactorFace;
-		this.weakReactorCore = reactorCore != null && reactorFace != EnumReactorFace.UNKNOWN ? new WeakReference<>(reactorCore) : null;
+		this.weakReactorCore = reactorCore != null && reactorFace != ReactorFace.UNKNOWN ? new WeakReference<>(reactorCore) : null;
 		
 		// refresh blockstate
 		final IBlockState blockState_old = world.getBlockState(pos);
@@ -123,7 +123,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	}
 	
 	private TileEntityEnanReactorCore getReactorCore() {
-		if (reactorFace == EnumReactorFace.UNKNOWN) {
+		if (reactorFace == ReactorFace.UNKNOWN) {
 			return null;
 		}
 		TileEntityEnanReactorCore reactorCore = weakReactorCore != null ? weakReactorCore.get() : null;
@@ -208,7 +208,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
-		tagCompound.setInteger("reactorFace", reactorFace.ordinal());
+		tagCompound.setString("reactorFace", reactorFace.getName());
 		tagCompound.setInteger("energyStabilizationRequest", energyStabilizationRequest);
 		return tagCompound;
 	}
@@ -217,7 +217,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
-		reactorFace = EnumReactorFace.get(tagCompound.getInteger("reactorFace"));
+		reactorFace = ReactorFace.get(tagCompound.getString("reactorFace"));
 		energyStabilizationRequest = tagCompound.getInteger("energyStabilizationRequest");
 	}
 	
@@ -225,7 +225,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	// Common OC/CC methods
 	@Override
 	public Object[] isAssemblyValid() {
-		if (reactorFace == EnumReactorFace.UNKNOWN) {
+		if (reactorFace == ReactorFace.UNKNOWN) {
 			return new Object[] { false, "No reactor detected" };
 		}
 		return super.isAssemblyValid();
