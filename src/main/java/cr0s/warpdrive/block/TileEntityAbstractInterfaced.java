@@ -425,9 +425,16 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	                                 final int method, @Nonnull final Object[] arguments) {
 		final String methodName = CC_getMethodNameAndLogCall(computerAccess, method, arguments);
 		
-		// we separate the proxy from the logs so childs can override the proxy without having to handle the logs themselves
-		return CC_callMethod(methodName, arguments);
-		
+		// we separate the proxy from the logs so children can override the proxy without having to handle the logs themselves
+		try {
+			return CC_callMethod(methodName, arguments);
+		} catch (final Exception exception) {
+			if (WarpDriveConfig.LOGGING_LUA) {
+				exception.printStackTrace();
+			}
+			throw new RuntimeException(String.format("LUA handling exception in %s\nEnable LUA logs for details.",
+			                                         methodName));
+		}
 	}
 	
 	@Optional.Method(modid = "computercraft")
