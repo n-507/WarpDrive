@@ -127,7 +127,7 @@ public class ClientProxy extends CommonProxy {
 			ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
 			
 		} else {
-			NonNullList<ItemStack> listItemStacks = NonNullList.create();
+			final NonNullList<ItemStack> listItemStacks = NonNullList.create();
 			assert item.getCreativeTab() != null;
 			item.getSubItems(item.getCreativeTab(), listItemStacks);
 			for (final ItemStack itemStack : listItemStacks) {
