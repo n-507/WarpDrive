@@ -303,7 +303,7 @@
 		<shell name="mantle" minThickness="10" maxThickness="25">
 			<import group="end" />
 			<filler block="minecraft:obsidian" weight="60" />
-			<filler block="undergroundbiomes:metamorphic_stone" metadata="2" ratio="0.05" /><!-- Marble -->
+			<filler block="undergroundbiomes:metamorphic_stone" metadata="2" ratio="0.05" mods="undergroundbiomes" /><!-- Marble -->
 			<filler block="minecraft:bedrock" ratio=".001" />
 		</shell>
 		<shell name="surface" minThickness="2" maxThickness="3">
@@ -313,18 +313,18 @@
 
 
 
-	<for variable="gasMetadata" in="0,1,2,3,4,5,6,7,8,9,10,11">
-		<structure group="gascloud" name="bigCloud_%gasMetadata%" weight="1">
+	<for variable="metadataGas" in="0,1,2,3,4,5,6,7,8,9,10,11">
+		<structure group="gascloud" name="bigCloud_%metadataGas%" weight="1">
 			<metashell block="minecraft:glowstoneOff" minCount="10" maxCount="16" minRadius="5" relativeRadius="0.5" />
 			<shell name="mantle" minThickness="5" maxThickness="15">
-				<filler weight="1" block="warpdrive:gas" metadata="%gasMetadata%" />
+				<filler weight="1" block="warpdrive:gas" metadata="%metadataGas%" />
 			</shell>
 		</structure>
 
-		<structure group="gascloud" name="smallCloud_%gasMetadata%" weight="1">
+		<structure group="gascloud" name="smallCloud_%metadataGas%" weight="1">
 			<metashell block="minecraft:glowstoneOff" minCount="3" maxCount="7" minRadius="3" relativeRadius="0.5" />
 			<shell name="mantle" minThickness="2" maxThickness="8">
-				<filler weight="1" block="warpdrive:gas" metadata="%gasMetadata%" />
+				<filler weight="1" block="warpdrive:gas" metadata="%metadataGas%" />
 			</shell>
 		</structure>
 	</for>

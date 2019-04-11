@@ -205,18 +205,18 @@ public class WorldGenStructure {
 		final Object inventory = InventoryWrapper.getInventory(tileEntity, null);
 		
 		if (inventory == null) {
-			WarpDrive.logger.error(String.format("Unable to fill inventory with LootSet %s %s: %s has no inventory",
-			                                     group,
-			                                     Commons.format(world, blockPos),
-			                                     tileEntity ));
+			WarpDrive.logger.warn(String.format("Unable to fill inventory with LootSet %s %s: %s has no inventory",
+			                                    group,
+			                                    Commons.format(world, blockPos),
+			                                    tileEntity ));
 			return;
 		}
 		
 		if (tileEntity.isInvalid()) {
-			WarpDrive.logger.error(String.format("Unable to fill inventory with LootSet %s %s: %s is Invalid",
-			                                     group,
-			                                     Commons.format(world, blockPos),
-			                                     tileEntity ));
+			WarpDrive.logger.warn(String.format("Unable to fill inventory with LootSet %s %s: %s is Invalid",
+			                                    group,
+			                                    Commons.format(world, blockPos),
+			                                    tileEntity ));
 			return;
 		}
 		

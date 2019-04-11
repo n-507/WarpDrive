@@ -414,14 +414,14 @@ public class Dictionary {
 			config.get("item_tags", "ic2:jetpack"                                  , "FlyInSpace NoFallDamage").getString();
 			config.get("item_tags", "ic2:jetpack_electric"                         , "FlyInSpace NoFallDamage").getString();
 			config.get("item_tags", "ic2:quantum_chestplate"                       , "FlyInSpace NoFallDamage").getString();
-			config.get("item_tags", "GraviSuite:advJetpack"                        , "FlyInSpace NoFallDamage").getString(); // not ported
-			config.get("item_tags", "GraviSuite:advNanoChestPlate"                 , "FlyInSpace NoFallDamage").getString(); // not ported
-			config.get("item_tags", "GraviSuite:graviChestPlate"                   , "FlyInSpace NoFallDamage").getString(); // not ported
+			config.get("item_tags", "gravisuite:advancedjetpack"                   , "FlyInSpace NoFallDamage").getString();
+			config.get("item_tags", "gravisuite:advancednanochestplate"            , "FlyInSpace NoFallDamage").getString();
+			config.get("item_tags", "gravisuite:gravichestplate"                   , "FlyInSpace NoFallDamage").getString();
 			
 			config.get("item_tags", "ic2:rubber_boots"                             , "NoFallDamage").getString();
 			config.get("item_tags", "ic2:quantum_boots"                            , "NoFallDamage").getString();
-			config.get("item_tags", "warpdrive:warp_armor_leggings"           , "NoFallDamage").getString();
-			config.get("item_tags", "warpdrive:warp_armor_boots"              , "NoFallDamage").getString();
+			config.get("item_tags", "warpdrive:warp_armor_leggings"                , "NoFallDamage").getString();
+			config.get("item_tags", "warpdrive:warp_armor_boots"                   , "NoFallDamage").getString();
 			
 			// *** read actual values
 			final String[] taggedItemsName = categoryItemTags.getValues().keySet().toArray(new String[0]);

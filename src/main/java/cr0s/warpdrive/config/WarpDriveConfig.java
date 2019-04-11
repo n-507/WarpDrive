@@ -206,7 +206,7 @@ public class WarpDriveConfig {
 	public static EnumTooltipCondition TOOLTIP_ADD_REPAIR_WITH = EnumTooltipCondition.ON_SNEAK;
 	
 	// Logging
-	public static boolean LOGGING_JUMP = false;
+	public static boolean LOGGING_JUMP = true;
 	public static boolean LOGGING_JUMPBLOCKS = false;
 	public static boolean LOGGING_ENERGY = false;
 	public static boolean LOGGING_EFFECTS = false;
