@@ -12,7 +12,9 @@ import cr0s.warpdrive.render.*;
 import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -43,6 +45,11 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new ClientHandler());
 		MinecraftForge.EVENT_BUS.register(new TooltipHandler());
 		
+		// color handlers
+		// final Item itemAirShield = Item.getItemFromBlock(blockAirShield);
+		// Minecraft.getMinecraft().getItemColors().registerItemColorHandler((IItemColor) itemAirShield, itemAirShield);
+		Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((IBlockColor) WarpDrive.blockAirShield, WarpDrive.blockAirShield);
+		
 		// generic rendering
 		// MinecraftForge.EVENT_BUS.register(new WarpDriveKeyBindings());
 		MinecraftForge.EVENT_BUS.register(new RenderOverlayAir());
@@ -61,9 +68,6 @@ public class ClientProxy extends CommonProxy {
 		
 		RenderBlockForceField.renderId = RenderingRegistry.getNextAvailableRenderId();
 		RenderingRegistry.registerBlockHandler(RenderBlockForceField.instance);
-		
-		RenderBlockOmnipanel.renderId = RenderingRegistry.getNextAvailableRenderId();
-		RenderingRegistry.registerBlockHandler(RenderBlockOmnipanel.instance);
 		
 		RenderBlockShipScanner.renderId = RenderingRegistry.getNextAvailableRenderId();
 		RenderingRegistry.registerBlockHandler(RenderBlockShipScanner.instance);

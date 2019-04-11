@@ -8,15 +8,20 @@ import javax.annotation.Nullable;
 
 import java.util.List;
 
+import net.minecraft.block.BlockColored;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockAirShield extends BlockAbstractOmnipanel {
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+public class BlockAirShield extends BlockAbstractOmnipanel implements IBlockColor {
 	
 	public BlockAirShield(final String registryName, final EnumTier enumTier) {
 		super(registryName, enumTier, Material.CLOTH);
@@ -24,46 +29,46 @@ public class BlockAirShield extends BlockAbstractOmnipanel {
 		setTranslationKey("warpdrive.breathing.air_shield");
 	}
 	
-	/* @TODO rendering
+	@SideOnly(Side.CLIENT)
 	@Override
-	public int getRenderColor(final int metadata) {
-		switch (metadata) {
-		case 0:
-			return 0xFFFFFF;    // white
-		case 1:
-			return 0xFF5A02;    // orange
-		case 2:
-			return 0xF269FF;    // magenta
-		case 3:
-			return 0x80AAFF;    // light blue 
-		case 4:
-			return 0xFFEE3C;    // yellow
-		case 5:
-			return 0x90E801;    // lime green
-		case 6:
-			return 0xFB0680;    // pink
-		case 7:
-			return 0x2C2C2C;    // gray
-		case 8:
-			return 0x686868;    // light gray
-		case 9:
-		default:
-			return 0x0FD7FF;    // SciFi cyan
-		case 10:
-			return 0x5D1072;    // purple
-		case 11:
-			return 0x4351CC;    // blue
-		case 12:
-			return 0x99572E;    // brown
-		case 13:
-			return 0x75993C;    // green
-		case 14:
-			return 0xCC4d41;    // red
-		case 15:
-			return 0x080808;    // black
+	public int colorMultiplier(@Nonnull final IBlockState blockState, @Nullable final IBlockAccess blockAccess, @Nullable final BlockPos blockPos, final int tintIndex) {
+		switch (blockState.getValue(BlockColored.COLOR)) {
+		case WHITE:
+			return 0xFFFFFF;
+		case ORANGE:
+			return 0xFF5A02;
+		case MAGENTA:
+			return 0xF269FF;
+		case LIGHT_BLUE:
+			return 0x80AAFF;
+		case YELLOW:
+			return 0xFFEE3C;
+		case LIME:
+			return 0x90E801;
+		case PINK:
+			return 0xFB0680;
+		case SILVER: // gray
+			return 0x2C2C2C;
+		case GRAY: // light gray
+			return 0x686868;
+		case CYAN:
+		default: // SciFi cyan
+			return 0x0FD7FF;
+		case PURPLE:
+			return 0x5D1072;
+		case BLUE:
+			return 0x4351CC;
+		case BROWN:
+			return 0x99572E;
+		case GREEN:
+			return 0x75993C;
+		case RED:
+			return 0xCC4d41;
+		case BLACK:
+			return 0x080808;
 		}
+		// return MapColor.getBlockColor(blockState.getValue(BlockColored.COLOR)).colorValue;
 	}
-	/**/
 	
 	@SuppressWarnings("deprecation")
 	@Override
@@ -77,7 +82,6 @@ public class BlockAirShield extends BlockAbstractOmnipanel {
 		return false;
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void addCollisionBoxToList(final IBlockState blockState, final @Nonnull World world, final @Nonnull BlockPos blockPos,
 	                                  final @Nonnull AxisAlignedBB entityBox, final @Nonnull List<AxisAlignedBB> collidingBoxes,

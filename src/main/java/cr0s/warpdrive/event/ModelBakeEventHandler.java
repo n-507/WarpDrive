@@ -30,24 +30,23 @@ public class ModelBakeEventHandler {
 	@SubscribeEvent
 	public void onModelBake(final ModelBakeEvent event) {
 		for (final Entry<ModelResourceLocation, Class<? extends IMyBakedModel>> entry : modelResourceLocationToBakedModel.entrySet()) {
-			final Object object = event.getModelRegistry().getObject(entry.getKey());
-			if (object == null) {
+			final IBakedModel bakedModelExisting = event.getModelRegistry().getObject(entry.getKey());
+			if (bakedModelExisting == null) {
 				WarpDrive.logger.warn(String.format("Unable to update baked model for missing %s",
 				                                    entry.getKey()));
 				continue;
 			}
 			
-			final IBakedModel bakedModelExisting = (IBakedModel) object;
 			final IMyBakedModel bakedModelNew;
 			
 			// add a custom baked model wrapping around automatically registered models (from JSON)
 			try {
 				bakedModelNew = entry.getValue().newInstance();
-				bakedModelNew.setResourceLocation(entry.getKey());
+				bakedModelNew.setModelResourceLocation(entry.getKey());
 				bakedModelNew.setOriginalBakedModel(bakedModelExisting);
 			} catch (final Exception exception) {
 				exception.printStackTrace();
-				WarpDrive.logger.error(String.format("Failed to instantiate bake model calls for %s, using class %s",
+				WarpDrive.logger.error(String.format("Failed to update baked model through %s of %s",
 				                                     entry.getKey(), entry.getValue()));
 				continue;
 			}

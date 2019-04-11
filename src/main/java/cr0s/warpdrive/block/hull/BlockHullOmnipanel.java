@@ -13,22 +13,13 @@ import cr0s.warpdrive.data.Vector3;
 import net.minecraft.block.BlockColored;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.EnumPushReaction;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockHullOmnipanel extends BlockAbstractOmnipanel implements IDamageReceiver {
 	
@@ -57,44 +48,6 @@ public class BlockHullOmnipanel extends BlockAbstractOmnipanel implements IDamag
 	@Override
 	public EnumPushReaction getPushReaction(final IBlockState blockState) {
 		return EnumPushReaction.BLOCK;
-	}
-	
-	@Override
-	public int damageDropped(final IBlockState blockState) {
-		return blockState.getValue(BlockColored.COLOR).getMetadata();
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(final CreativeTabs creativeTab, final NonNullList<ItemStack> list) {
-		for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
-			list.add(new ItemStack(this, 1, enumDyeColor.getMetadata()));
-		}
-	}
-	
-	@SuppressWarnings("deprecation")
-	@Nonnull
-	@Override
-	public MapColor getMapColor(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
-		return MapColor.getBlockColor(blockState.getValue(BlockColored.COLOR));
-	}
-	
-	@SuppressWarnings("deprecation")
-	@Nonnull
-	@Override
-	public IBlockState getStateFromMeta(final int metadata) {
-		return this.getDefaultState().withProperty(BlockColored.COLOR, EnumDyeColor.byMetadata(metadata));
-	}
-	
-	@Override
-	public int getMetaFromState(final IBlockState blockState) {
-		return blockState.getValue(BlockColored.COLOR).getMetadata();
-	}
-	
-	@Nonnull
-	@Override
-	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, BlockColored.COLOR);
 	}
 	
 	@Override
