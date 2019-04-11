@@ -27,13 +27,14 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+
+import net.minecraftforge.common.IRarity;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -278,9 +279,10 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 		return enumTier;
 	}
 	
+	@Nonnull
 	@Override
-	public EnumRarity getRarity(final ItemStack itemStack) {
-		return getTier(itemStack).getRarity();
+	public IRarity getForgeRarity(@Nonnull final ItemStack itemStack) {
+		return getTier(itemStack).getForgeRarity();
 	}
 	
 	@Override

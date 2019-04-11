@@ -13,10 +13,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
+import net.minecraftforge.common.IRarity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -50,8 +50,9 @@ public class ItemWarpArmor extends ItemArmor implements IItemBase, IBreathingHel
 	}
 	
 	@Nonnull
-	public EnumRarity getRarity(final ItemStack itemStack) {
-		return getTier(itemStack).getRarity();
+	@Override
+	public IRarity getForgeRarity(@Nonnull final ItemStack itemStack) {
+		return getTier(itemStack).getForgeRarity();
 	}
 	
 	@Override

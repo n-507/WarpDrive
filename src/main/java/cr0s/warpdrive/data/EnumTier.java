@@ -7,6 +7,8 @@ import java.util.HashMap;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.util.IStringSerializable;
 
+import net.minecraftforge.common.IRarity;
+
 public enum EnumTier implements IStringSerializable {
 	
 	CREATIVE ("creative", 0, EnumRarity.EPIC     ),
@@ -16,7 +18,7 @@ public enum EnumTier implements IStringSerializable {
 	
 	private final String name;
 	private final int index;
-	private final EnumRarity enumRarity;
+	private final IRarity rarity;
 	
 	// cached values
 	public static final int length;
@@ -36,10 +38,10 @@ public enum EnumTier implements IStringSerializable {
 		tblNonCreatives = list.toArray(new EnumTier[0]);
 	}
 	
-	EnumTier(final String name, final int index, final EnumRarity enumRarity) {
+	EnumTier(final String name, final int index, @Nonnull final IRarity rarity) {
 		this.name = name;
 		this.index = index;
-		this.enumRarity = enumRarity;
+		this.rarity = rarity;
 	}
 	
 	@Nonnull
@@ -56,8 +58,9 @@ public enum EnumTier implements IStringSerializable {
 		return index;
 	}
 	
-	public EnumRarity getRarity() {
-		return enumRarity;
+	@Nonnull
+	public IRarity getForgeRarity() {
+		return rarity;
 	}
 	
 	public static EnumTier[] nonCreative() {

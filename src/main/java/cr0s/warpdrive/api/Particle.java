@@ -4,12 +4,14 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.data.Vector3;
 
+import javax.annotation.Nonnull;
 import java.util.Locale;
 
 import net.minecraft.item.EnumRarity;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
+import net.minecraftforge.common.IRarity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -20,7 +22,7 @@ public class Particle {
 	protected int color;
 	protected int colorIndex;
 	
-	protected EnumRarity enumRarity = EnumRarity.COMMON;
+	protected IRarity rarity = EnumRarity.COMMON;
 	private int entityLifespan;
 	private float radiationLevel = 0.0F;
 	private float explosionStrength = 0.0F;
@@ -29,8 +31,8 @@ public class Particle {
 		this.registryName = registryName.toLowerCase(Locale.ENGLISH);
 	}
 	
-	public Particle setRarity(final EnumRarity enumRarity) {
-		this.enumRarity = enumRarity;
+	public Particle setRarity(@Nonnull final IRarity rarity) {
+		this.rarity = rarity;
 		return this;
 	}
 	
@@ -40,7 +42,7 @@ public class Particle {
 	}
 	
 	public Particle setColor(final int colorIndex) {
-		this.color = Commons.clamp(0x000000, 0xFFFFFF, color);
+		this.color = Commons.clamp(0x000000, 0xFFFFFF, colorIndex);
 		return this;
 	}
 	
@@ -88,18 +90,16 @@ public class Particle {
 	
 	/* Default Accessors */
 	
-	public EnumRarity getRarity()
-	{
-		return enumRarity;
+	@Nonnull
+	public IRarity getForgeRarity() {
+		return rarity;
 	}
 	
-	public int getColorIndex()
-	{
+	public int getColorIndex() {
 		return colorIndex;
 	}
 	
-	public int getColor()
-	{
+	public int getColor() {
 		return color;
 	}
 	
@@ -132,7 +132,7 @@ public class Particle {
 	public String toString() {
 		return String.format("Particle %s (%s, RGB 0x%x %d, %d ticks, %.3f Sv, strength %.3f)",
 		                     registryName,
-		                     enumRarity,
+		                     rarity,
 		                     color, colorIndex,
 		                     entityLifespan,
 		                     radiationLevel,

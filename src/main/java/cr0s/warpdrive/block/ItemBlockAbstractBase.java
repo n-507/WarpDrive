@@ -29,6 +29,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
+import net.minecraftforge.common.IRarity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -74,13 +75,17 @@ public class ItemBlockAbstractBase extends ItemBlock implements IItemBase {
 	
 	@Nonnull
 	@Override
-	public EnumRarity getRarity(@Nonnull final ItemStack itemStack) {
-		final EnumRarity enumRarityDefault = super.getRarity(itemStack);
+	public IRarity getForgeRarity(@Nonnull final ItemStack itemStack) {
+		final IRarity rarityDefault = super.getForgeRarity(itemStack);
 		if ( !(block instanceof IBlockBase) ) {
-			return enumRarityDefault;
+			return rarityDefault;
 		}
-		final EnumRarity enumRarityStack = ((IBlockBase) block).getRarity(itemStack);
-		return enumRarityStack.ordinal() > enumRarityDefault.ordinal() ? enumRarityStack : enumRarityDefault;
+		final IRarity rarityItemStack = ((IBlockBase) block).getForgeRarity(itemStack);
+		if ( rarityItemStack instanceof EnumRarity
+		  && rarityDefault instanceof EnumRarity ) {
+			return ((EnumRarity) rarityItemStack).ordinal() > ((EnumRarity) rarityDefault).ordinal() ? rarityItemStack : rarityDefault;
+		}
+		return rarityItemStack;
 	}
 	
 	public ITextComponent getStatus(final World world, @Nonnull final ItemStack itemStack) {
@@ -115,7 +120,6 @@ public class ItemBlockAbstractBase extends ItemBlock implements IItemBase {
 		return ClientProxy.getModelResourceLocation(itemStack);
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(@Nonnull final ItemStack itemStack, @Nullable final World world,

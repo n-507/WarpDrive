@@ -18,7 +18,7 @@ public interface IItemBase {
 	@Nonnull
 	EnumTier getTier(final ItemStack itemStack);
 	
-	// getRarity is defined in Item
+	// getForgeRarity is defined in Item
 	
 	@SideOnly(Side.CLIENT)
 	void modelInitialisation();

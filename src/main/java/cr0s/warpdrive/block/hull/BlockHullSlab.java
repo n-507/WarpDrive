@@ -25,7 +25,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -39,6 +38,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import net.minecraftforge.common.IRarity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -173,7 +173,7 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isFullBlock(IBlockState blockState) {
+	public boolean isFullBlock(final IBlockState blockState) {
 		return ((BlockSlab) blockState.getBlock()).isDouble();
 	}
 	
@@ -301,9 +301,10 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 		return enumTier;
 	}
 	
+	@Nonnull
 	@Override
-	public EnumRarity getRarity(final ItemStack itemStack) {
-		return enumTier.getRarity();
+	public IRarity getForgeRarity(@Nonnull final ItemStack itemStack) {
+		return enumTier.getForgeRarity();
 	}
 	
 	@Nullable

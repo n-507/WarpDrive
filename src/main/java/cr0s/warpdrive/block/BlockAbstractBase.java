@@ -15,6 +15,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 
+import net.minecraftforge.common.IRarity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -25,7 +26,6 @@ import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnumTier;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -111,8 +111,9 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 		return enumTier;
 	}
 	
+	@Nonnull
 	@Override
-	public EnumRarity getRarity(final ItemStack itemStack) {
-		return getTier(itemStack).getRarity();
+	public IRarity getForgeRarity(@Nonnull final ItemStack itemStack) {
+		return getTier(itemStack).getForgeRarity();
 	}
 }

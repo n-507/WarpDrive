@@ -16,7 +16,6 @@ import net.minecraft.block.BlockGlass;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -28,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import net.minecraftforge.common.IRarity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -69,9 +69,10 @@ public class BlockHullGlass extends BlockColored implements IBlockBase, IDamageR
 		return enumTier;
 	}
 	
+	@Nonnull
 	@Override
-	public EnumRarity getRarity(final ItemStack itemStack) {
-		return getTier(itemStack).getRarity();
+	public IRarity getForgeRarity(@Nonnull final ItemStack itemStack) {
+		return getTier(itemStack).getForgeRarity();
 	}
 	
 	@Nullable
