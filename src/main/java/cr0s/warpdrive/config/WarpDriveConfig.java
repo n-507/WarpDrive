@@ -137,6 +137,7 @@ public class WarpDriveConfig {
 	public static boolean              isAdvancedRepulsionSystemLoaded = false;
 	public static boolean              isRedstoneFluxLoaded = false;
 	public static boolean              isComputerCraftLoaded = false;
+	public static boolean              isCCTweakedLoaded = false;
 	public static boolean              isEnderIOLoaded = false;
 	public static boolean              isForgeMultipartLoaded = false;
 	public static boolean              isGregtechLoaded = false;
@@ -713,6 +714,7 @@ public class WarpDriveConfig {
 		// read mod dependencies at runtime and for recipes
 		isRedstoneFluxLoaded = Loader.isModLoaded("redstoneflux");
 		isComputerCraftLoaded = Loader.isModLoaded("computercraft");
+		isCCTweakedLoaded = Loader.isModLoaded("cctweaked");
 		isEnderIOLoaded = Loader.isModLoaded("enderio");
 		isGregtechLoaded = Loader.isModLoaded("gregtech");
 		isIndustrialCraft2Loaded = Loader.isModLoaded("ic2");
@@ -1346,7 +1348,7 @@ public class WarpDriveConfig {
 		}
 		
 		if (isComputerCraftLoaded) {
-			CompatComputerCraft.register();
+			CompatComputerCraft.register(isCCTweakedLoaded);
 		}
 		
 		if (isEnderIOLoaded) {

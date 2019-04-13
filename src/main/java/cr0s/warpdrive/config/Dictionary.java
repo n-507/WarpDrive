@@ -221,6 +221,7 @@ public class Dictionary {
 			// config.get("block_tags", "AdvancedRepulsionSystems:field"                  , "PlaceEarlier StopMining NoBlink").getString();
 			config.get("block_tags", "advancedrocketry:forcefield"                     , "PlaceLatest StopMining NoMass").getString();
 			config.get("block_tags", "embers:caminite_lever"                           , "PlaceLatest").getString();
+			config.get("block_tags", "computercraft:advanced_modem"                    , "PlaceLatest").getString();
 			config.get("block_tags", "galacticraftcore:glowstone_torch"                , "PlaceLatest").getString();
 			config.get("block_tags", "galacticraftcore:unlit_torch"                    , "PlaceLatest").getString();
 			config.get("block_tags", "galacticraftcore:unlit_torch_lit"                , "PlaceLatest").getString();
