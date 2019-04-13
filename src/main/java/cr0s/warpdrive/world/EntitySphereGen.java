@@ -203,13 +203,27 @@ public final class EntitySphereGen extends Entity {
 					final OrbShell orbShell = orbInstance.getShellForSqRadius(sqRange);
 					// WarpDrive.logger.info(String.format("sqRange %d sqRadius %d", sqRange, sqRadius));
 					addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord + y, zCoord + z));
-					addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord + y, zCoord + z));
-					addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord - y, zCoord + z));
-					addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord + y, zCoord - z));
-					addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord - y, zCoord + z));
-					addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord - y, zCoord - z));
-					addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord + y, zCoord - z));
-					addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord - y, zCoord - z));
+					if (x != 0) {
+						addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord + y, zCoord + z));
+					}
+					if (y != 0) {
+						addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord - y, zCoord + z));
+						if (x != 0) {
+							addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord - y, zCoord + z));
+						}
+					}
+					if (z != 0) {
+						addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord + y, zCoord - z));
+						if (x != 0) {
+							addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord + y, zCoord - z));
+						}
+						if (y != 0) {
+							addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord - y, zCoord - z));
+							if (x != 0) {
+								addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord - y, zCoord - z));
+							}
+						}
+					}
 				}
 			}
 		}
