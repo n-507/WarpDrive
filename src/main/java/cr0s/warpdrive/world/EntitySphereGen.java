@@ -160,7 +160,7 @@ public final class EntitySphereGen extends Entity {
 				break;
 			final JumpBlock jumpBlock = blocks.get(currentIndex);
 			mutableBlockPos.setPos(jumpBlock.x, jumpBlock.y, jumpBlock.z);
-			if (isSurfaces.get(currentIndex)) {
+			if (isSurfaces.get(currentIndex) && jumpBlock.x % 4 == 0 && jumpBlock.z % 4 == 0) {
 				world.setBlockState(mutableBlockPos, jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta), 2);
 			} else {
 				JumpBlock.setBlockStateNoLight(world, mutableBlockPos, jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta), 2);
@@ -201,25 +201,26 @@ public final class EntitySphereGen extends Entity {
 					
 					// WarpDrive.logger.info(String.format("dSqRange %.3f sqRadiusHigh %.3f %.3f",
 					//                                     dSqRange, sqRadiusHigh, sqRadiusLow));
-					addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord + y, zCoord + z));
+					// note: placing block is faster from bottom to top due to skylight computations
+					addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord - y, zCoord + z));
 					if (x != 0) {
-						addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord + y, zCoord + z));
+						addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord - y, zCoord + z));
 					}
 					if (y != 0) {
-						addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord - y, zCoord + z));
+						addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord + y, zCoord + z));
 						if (x != 0) {
-							addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord - y, zCoord + z));
+							addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord + y, zCoord + z));
 						}
 					}
 					if (z != 0) {
-						addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord + y, zCoord - z));
+						addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord - y, zCoord - z));
 						if (x != 0) {
-							addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord + y, zCoord - z));
+							addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord - y, zCoord - z));
 						}
 						if (y != 0) {
-							addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord - y, zCoord - z));
+							addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord + y, zCoord - z));
 							if (x != 0) {
-								addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord - y, zCoord - z));
+								addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord + y, zCoord - z));
 							}
 						}
 					}
