@@ -12,6 +12,7 @@ import net.minecraft.world.gen.feature.WorldGenerator;
  *
  */
 public abstract class AbstractStructureInstance extends WorldGenerator {
+	
 	protected AbstractStructure structure;
 	protected HashMap<String,Double> variables = new HashMap<>();
 	
@@ -52,28 +53,31 @@ public abstract class AbstractStructureInstance extends WorldGenerator {
 	}
 	
 	public AbstractStructureInstance(final NBTTagCompound tagCompound) {
-		// FIXME to be implemented
-		
-		// get deployable
-		// String deployableName = tagCompound.getString("wd_structureName");
+		// get structure
+		final String groupStructure = tagCompound.getString("group");
+		final String nameStructure = tagCompound.getString("name");
+		structure = StructureManager.getStructure(null, groupStructure, nameStructure);
 		
 		// get variables values
-		/*
-		final NBTTagCompound tagVariables = tagCompound.getCompoundTag("wd_variables");
-		final NBTTagList names = tagVariables.getTagList("x", 0);
-		for (final Entry<String, Double> entry : tagVariables.getTagList("x", 0)) {
-			tagVariables.setDouble(entry.getKey(), entry.getValue());
+		final NBTTagCompound tagVariables = tagCompound.getCompoundTag("variables");
+		for (final String key : tagVariables.getKeySet()) {
+			final double value = tagVariables.getDouble(key);
+			variables.put(key, value);
 		}
-		/**/
 	}
 	
-	public void WriteToNBT(final NBTTagCompound tagCompound) {
-		tagCompound.setString("wd_structureGroup", structure.group);
-		tagCompound.setString("wd_structureName", structure.name);
-		final NBTTagCompound tagVariables = new NBTTagCompound();
-		for (final Entry<String, Double> entry : variables.entrySet()) {
-			tagVariables.setDouble(entry.getKey(), entry.getValue());
+	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+		tagCompound.setString("group", structure.group);
+		tagCompound.setString("name", structure.name);
+		
+		if (!variables.isEmpty()) {
+			final NBTTagCompound tagVariables = new NBTTagCompound();
+			for (final Entry<String, Double> entry : variables.entrySet()) {
+				tagVariables.setDouble(entry.getKey(), entry.getValue());
+			}
+			tagCompound.setTag("variables", tagVariables);
 		}
-		tagCompound.setTag("wd_variables", tagVariables);
+		
+		return tagCompound;
 	}
 }

@@ -2,7 +2,8 @@ package cr0s.warpdrive.world;
 
 import cr0s.warpdrive.LocalProfiler;
 import cr0s.warpdrive.WarpDrive;
-import cr0s.warpdrive.config.structures.Orb.OrbShell;
+import cr0s.warpdrive.config.Filler;
+import cr0s.warpdrive.config.GenericSet;
 import cr0s.warpdrive.config.structures.OrbInstance;
 import cr0s.warpdrive.data.JumpBlock;
 
@@ -88,14 +89,9 @@ public final class EntitySphereGen extends Entity {
 		this.posZ = z;
 		this.orbInstance = orbInstance;
 		this.gasColor = world.rand.nextInt(12);
-		this.radius = orbInstance.getTotalThickness();
-		
-		this.state = STATE_SAVING;
-		this.pregenSize = (int) Math.ceil(Math.PI * 4.0F / 3.0F * Math.pow(radius + 1, 3));
-		blocks = new ArrayList<>(this.pregenSize);
-		isSurfaces = new ArrayList<>(this.pregenSize);
-		this.ticksDelay = world.rand.nextInt(60);
 		this.replace = replace;
+		
+		constructionFinalizer();
 	}
 	
 	public void killEntity() {
@@ -191,17 +187,20 @@ public final class EntitySphereGen extends Entity {
 			for (int y = 0; y <= ceilRadius; y++) {
 				final double x2y2 = x2 + (y + 0.5D) * (y + 0.5D);
 				for (int z = 0; z <= ceilRadius; z++) {
-					final double sqRange = x2y2 + (z + 0.5D) * (z + 0.5D); // Square distance from current position to center
+					final double dSqRange = x2y2 + (z + 0.5D) * (z + 0.5D); // Square distance from current position to center
 					
 					// Skip too far blocks
-					if (sqRange > sqRadiusHigh) {
+					if (dSqRange > sqRadiusHigh) {
 						continue;
 					}
-					final boolean isSurface = sqRange > sqRadiusLow;
+					final boolean isSurface = dSqRange > sqRadiusLow;
 					
 					// Add blocks to memory
-					final OrbShell orbShell = orbInstance.getShellForSqRadius(sqRange);
-					// WarpDrive.logger.info(String.format("sqRange %d sqRadius %d", sqRange, sqRadius));
+					final int intSqRadius = (int) Math.round(dSqRange);
+					final GenericSet<Filler> orbShell = orbInstance.getFillerSetFromSquareRange(intSqRadius);
+					
+					// WarpDrive.logger.info(String.format("dSqRange %.3f sqRadiusHigh %.3f %.3f",
+					//                                     dSqRange, sqRadiusHigh, sqRadiusLow));
 					addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord + x, yCoord + y, zCoord + z));
 					if (x != 0) {
 						addBlock(isSurface, new JumpBlock(orbShell.getRandomUnit(rand), xCoord - x, yCoord + y, zCoord + z));
@@ -257,13 +256,42 @@ public final class EntitySphereGen extends Entity {
 	}
 	
 	@Override
-	protected void readEntityFromNBT(@Nonnull final NBTTagCompound tagCompound) {
-		// FIXME not implemented
+	protected void entityInit() {
+		noClip = true;
+	}
+	
+	private void constructionFinalizer() {
+		radius = orbInstance.getTotalThickness();
+		pregenSize = (int) Math.ceil(Math.PI * 4.0F / 3.0F * Math.pow(radius + 1, 3));
+		blocks = new ArrayList<>(this.pregenSize);
+		isSurfaces = new ArrayList<>(this.pregenSize);
+		
+		state = STATE_SAVING;
+		ticksDelay = world.rand.nextInt(60);
 	}
 	
 	@Override
-	protected void entityInit() {
-		noClip = true;
+	public void readEntityFromNBT(@Nonnull final NBTTagCompound tagCompound) {
+		xCoord = tagCompound.getInteger("warpdrive:xCoord");
+		yCoord = tagCompound.getInteger("warpdrive:yCoord");
+		zCoord = tagCompound.getInteger("warpdrive:zCoord");
+		orbInstance = new OrbInstance(tagCompound.getCompoundTag("warpdrive:orbInstance"));
+		gasColor = tagCompound.getInteger("warpdrive:gasColor");
+		replace = tagCompound.getBoolean("warpdrive:replace");
+		
+		constructionFinalizer();
+		WarpDrive.logger.info(String.format("%s Reloaded from NBT",
+		                                    this));
+	}
+	
+	@Override
+	public void writeEntityToNBT(final NBTTagCompound tagCompound) {
+		tagCompound.setInteger("warpdrive:xCoord", xCoord);
+		tagCompound.setInteger("warpdrive:yCoord", yCoord);
+		tagCompound.setInteger("warpdrive:zCoord", zCoord);
+		tagCompound.setTag("warpdrive:orbInstance", orbInstance.writeToNBT(new NBTTagCompound()));
+		tagCompound.setInteger("warpdrive:gasColor", gasColor);
+		tagCompound.setBoolean("warpdrive:replace", replace);
 	}
 	
 	// override to skip the block bounding override on client side
@@ -272,11 +300,6 @@ public final class EntitySphereGen extends Entity {
 		//	super.setPositionAndRotation(x, y, z, yaw, pitch);
 		this.setPosition(x, y, z);
 		this.setRotation(yaw, pitch);
-	}
-	
-	@Override
-	protected void writeEntityToNBT(@Nonnull final NBTTagCompound tagCompound) {
-		// FIXME not implemented
 	}
 	
 	@Override

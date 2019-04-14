@@ -3,9 +3,9 @@ package cr0s.warpdrive.config.structures;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.LocalProfiler;
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.config.GenericSet;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.config.Filler;
-import cr0s.warpdrive.config.structures.Orb.OrbShell;
 import cr0s.warpdrive.data.VectorI;
 
 import javax.annotation.Nonnull;
@@ -41,8 +41,9 @@ public class MetaOrbInstance extends OrbInstance {
 		
 		final int y2 = Math.min(WarpDriveConfig.SPACE_GENERATOR_Y_MAX_BORDER - totalThickness - (int) metaShell.radius,
 		                        Math.max(blockPos.getY(), WarpDriveConfig.SPACE_GENERATOR_Y_MIN_BORDER + totalThickness + (int) metaShell.radius));
+		final BlockPos blockPosUpdated = y2 == blockPos.getY() ? blockPos : new BlockPos(blockPos.getX(), y2, blockPos.getZ());
 		if (((MetaOrb) structure).metaShell == null) {
-			return super.generate(world, random, new BlockPos(blockPos.getX(), y2, blockPos.getZ()));
+			return super.generate(world, random, blockPosUpdated);
 		}
 		
 		// generate an abstract form for the core
@@ -85,7 +86,7 @@ public class MetaOrbInstance extends OrbInstance {
 	}
 	
 	private void addShell(final World world, final VectorI location, final int radius) {
-		final double sqRadius = radius * radius;
+		final int sqRadius = radius * radius;
 		final BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(location.x, location.y, location.z);
 		// iterate all blocks within cube with side 2 * radius
 		for (int x = location.x - radius; x <= location.x + radius; x++) {
@@ -99,8 +100,8 @@ public class MetaOrbInstance extends OrbInstance {
 					mutableBlockPos.setPos(x, y, z);
 					// if inside radius
 					if (sqRange <= sqRadius && isReplaceableOreGen(world, mutableBlockPos)) {
-						final OrbShell shell = getShellForSqRadius(sqRange);
-						final Filler filler = shell.getRandomUnit(world.rand);
+						final GenericSet<Filler> fillerSet = getFillerSetFromSquareRange(sqRange);
+						final Filler filler = fillerSet.getRandomUnit(world.rand);
 						filler.setBlock(world, mutableBlockPos);
 					}
 				}

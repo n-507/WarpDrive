@@ -1,9 +1,9 @@
 package cr0s.warpdrive.event;
 
+import cr0s.warpdrive.config.GenericSet;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.config.Filler;
-import cr0s.warpdrive.config.structures.Orb.OrbShell;
 import cr0s.warpdrive.config.structures.OrbInstance;
 import cr0s.warpdrive.config.structures.StructureGroup;
 import cr0s.warpdrive.data.CelestialObject;
@@ -58,10 +58,10 @@ public class CommonWorldGenerator implements IWorldGenerator {
 	@Deprecated
 	public static void generateSphereDirect(
 			final  OrbInstance orbInstance, final World world, final int xCoord, final int yCoord, final int zCoord) {
-		final double radiusC = orbInstance.getTotalThickness() + 0.5D; // Radius from center of block
-		final double radiusSq = radiusC * radiusC; // Optimization to avoid square roots...
+		final double dRadius = orbInstance.getTotalThickness() + 0.5D; // Radius from center of block
+		final double dSqRadius = dRadius * dRadius; // Optimization to avoid square roots...
 		// sphere
-		final int ceilRadius = (int) Math.ceil(radiusC);
+		final int ceilRadius = (int) Math.ceil(dRadius);
 		
 		// Pass the cube and check points for sphere equation x^2 + y^2 + z^2 = r^2
 		final BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(xCoord, yCoord, zCoord);
@@ -71,18 +71,18 @@ public class CommonWorldGenerator implements IWorldGenerator {
 				final double dX2Y2 = dX2 + (y + 0.5D) * (y + 0.5D);
 				for (int z = 0; z <= ceilRadius; z++) {
 					final double dZ2 = (z + 0.5D) * (z + 0.5D);
-					final double dSq = dX2Y2 + dZ2; // squared distance from current position
+					final double dSqRange = dX2Y2 + dZ2; // squared distance from current position
 					
 					// Skip too far blocks
-					if (dSq > radiusSq) {
+					if (dSqRange > dSqRadius) {
 						continue;
 					}
 					
 					// Place blocks
 					// cheat by using axial symmetry so we don't create random numbers too frequently
-					
-					final OrbShell orbShell = orbInstance.getShellForSqRadius(dSq);
-					final Filler filler = orbShell.getRandomUnit(world.rand);
+					final int intSqRange = (int) Math.round(dSqRange);
+					final GenericSet<Filler> fillerSet = orbInstance.getFillerSetFromSquareRange(intSqRange);
+					final Filler filler = fillerSet.getRandomUnit(world.rand);
 					filler.setBlock(world, mutableBlockPos.setPos(xCoord + x, yCoord + y, zCoord + z));
 					filler.setBlock(world, mutableBlockPos.setPos(xCoord - x, yCoord + y, zCoord + z));
 					filler.setBlock(world, mutableBlockPos.setPos(xCoord + x, yCoord - y, zCoord + z));

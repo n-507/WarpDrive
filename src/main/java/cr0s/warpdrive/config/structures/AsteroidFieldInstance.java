@@ -27,9 +27,10 @@ public class AsteroidFieldInstance extends AbstractStructureInstance {
 	}
 	
 	@Override
-	public void WriteToNBT(final NBTTagCompound tagCompound) {
-		super.WriteToNBT(tagCompound);
+	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+		super.writeToNBT(tagCompound);
 		// TODO not implemented
+		return tagCompound;
 	}
 	
 	private static float binomialRandom(final World world) {

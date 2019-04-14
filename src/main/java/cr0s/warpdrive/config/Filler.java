@@ -7,6 +7,9 @@ import cr0s.warpdrive.data.JumpBlock;
 
 import javax.annotation.Nonnull;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import org.w3c.dom.Element;
@@ -89,7 +92,55 @@ public class Filler implements IXmlRepresentableUnit {
 			}
 		}
 		
-		name = nameBlock + "@" + metadata + "{" + tagCompound + "}";
+		name = nameBlock + "@" + metadata + (tagCompound == null ? "" : "{" + tagCompound + "}");
+		
+		return true;
+	}
+	
+	public boolean loadFromName(final String nameToLoad) {
+		final Pattern patternNameToLoadWithoutNBT = Pattern.compile("(.*)@(\\d*)");
+		final Pattern patternNameToLoadWithNBT = Pattern.compile("(.*)@(\\d*)(\\{.*)");
+		final boolean hasNBT = nameToLoad.contains("{");
+		final Matcher matcher = hasNBT ? patternNameToLoadWithNBT.matcher(nameToLoad) : patternNameToLoadWithoutNBT.matcher(nameToLoad);
+		if (!matcher.matches()) {
+			throw new RuntimeException(String.format("Failed to load filler from name %s: unrecognized format",
+			                                         nameToLoad));
+		}
+		
+		final String nameBlock = matcher.group(1);
+		block = Block.getBlockFromName(nameBlock);
+		if (block == null) {
+			WarpDrive.logger.warn(String.format("Failed to load filler from name %s: block %s is missing",
+			                                    nameToLoad, nameBlock));
+			return false;
+		}
+		
+		// Get metadata attribute, defaults to 0
+		metadata = 0;
+		final String stringMetadata = matcher.group(2);
+		if (!stringMetadata.isEmpty()) {
+			try {
+				metadata = Integer.parseInt(stringMetadata);
+			} catch (final NumberFormatException exception) {
+				throw new RuntimeException(String.format("Failed to load filler from name %s: invalid metadata %s",
+				                                         nameToLoad, stringMetadata));
+			}
+		}
+		
+		// Get nbt attribute, default to null/none
+		tagCompound = null;
+		final String stringNBT = hasNBT ? matcher.group(3) : "";
+		if (!stringNBT.isEmpty()) {
+			try {
+				tagCompound = JsonToNBT.getTagFromJson(stringNBT);
+			} catch (final NBTException exception) {
+				WarpDrive.logger.error(exception.getMessage());
+				throw new RuntimeException(String.format("Failed to load filler from name %s: invalid nbt %s",
+				                                         nameToLoad, stringNBT));
+			}
+		}
+		
+		name = nameBlock + "@" + metadata + (tagCompound == null ? "" : "{" + tagCompound + "}");
 		
 		return true;
 	}
@@ -151,7 +202,7 @@ public class Filler implements IXmlRepresentableUnit {
 	
 	@Override
 	public String toString() {
-		return "Filler(" + block.getTranslationKey() + "@" + metadata + ")";
+		return "Filler(" + block.getRegistryName() + "@" + metadata + ")";
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package cr0s.warpdrive.config;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IXmlRepresentable;
 import cr0s.warpdrive.api.IXmlRepresentableUnit;
+
 import org.w3c.dom.Element;
 
 import javax.annotation.Nonnull;
@@ -10,6 +11,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+
+import net.minecraftforge.common.util.Constants.NBT;
 
 /**
  * Represents a set of 'units' that will be chosen randomly during world generation.
@@ -42,6 +49,67 @@ public class GenericSet<E extends IXmlRepresentableUnit> implements IXmlRepresen
 		units = new XmlRandomCollection<>();
 		importGroupNames = new ArrayList<>();
 		importGroups = new ArrayList<>();
+	}
+	
+	public GenericSet(final NBTTagCompound tagCompound, final E unitDefault, final String nameElementUnit) {
+		if (tagCompound.hasKey("group")) {
+			group = tagCompound.getString("group");
+		} else {
+			group = null;
+		}
+		name = tagCompound.getString("name");
+		this.unitDefault = unitDefault;
+		this.nameElementUnit = nameElementUnit;
+		units = new XmlRandomCollection<>();
+		units.loadFromNBT(tagCompound.getCompoundTag("units"), (String name) -> {
+			if (unitDefault instanceof Filler) {
+				final Filler filler = new Filler();
+				if (filler.loadFromName(name)) {
+					return (E) filler;
+				}
+			}
+			return unitDefault; // TODO not implemented
+		});
+		
+		final NBTTagList listImportGroupNames = tagCompound.getTagList("importGroupNames", NBT.TAG_STRING);
+		importGroupNames = new ArrayList<>();
+		for (int indexImportGroupName = 0; indexImportGroupName < listImportGroupNames.tagCount(); indexImportGroupName++) {
+			final String importGroupName = listImportGroupNames.getStringTagAt(indexImportGroupName);
+			importGroupNames.add(importGroupName);
+		}
+		
+		final NBTTagList listImportGroups = tagCompound.getTagList("importGroups", NBT.TAG_STRING);
+		importGroups = new ArrayList<>();
+		for (int indexImportGroup = 0; indexImportGroup < listImportGroups.tagCount(); indexImportGroup++) {
+			final String importGroup = listImportGroups.getStringTagAt(indexImportGroup);
+			importGroups.add(importGroup);
+		}
+	}
+	
+	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+		if (group != null) {
+			tagCompound.setString("group", group);
+		}
+		tagCompound.setString("name", name);
+		tagCompound.setTag("units", units.writeToNBT(new NBTTagCompound()));
+		
+		if (!importGroupNames.isEmpty()) {
+			final NBTTagList listImportGroupNames = new NBTTagList();
+			for (final String importGroupName : importGroupNames) {
+				listImportGroupNames.appendTag(new NBTTagString(importGroupName));
+			}
+			tagCompound.setTag("importGroupNames", listImportGroupNames);
+		}
+		
+		if (!importGroups.isEmpty()) {
+			final NBTTagList listImportGroups = new NBTTagList();
+			for (final String importGroup : importGroups) {
+				listImportGroups.appendTag(new NBTTagString(importGroup));
+			}
+			tagCompound.setTag("importGroups", listImportGroups);
+		}
+		
+		return tagCompound;
 	}
 	
 	public boolean isEmpty() {
