@@ -119,6 +119,7 @@ public class WorldHandler {
 		}
 		
 		AbstractSequencer.updateTick();
+		LivingHandler.updateTick();
 	}
 	
 	@SubscribeEvent

@@ -2,6 +2,7 @@ package cr0s.warpdrive.event;
 
 import cr0s.warpdrive.BreathingManager;
 import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.LocalProfiler;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.forcefield.BlockForceField;
 import cr0s.warpdrive.data.CelestialObjectManager;
@@ -13,9 +14,11 @@ import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -28,6 +31,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
@@ -35,8 +39,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class LivingHandler {
 	
-	private final HashMap<UUID, Integer> player_cloakTicks;
-	private final HashMap<Integer, Double> entity_yMotion;
+	private static final HashMap<UUID, Integer> player_cloakTicks = new HashMap<>();
+	private static final HashMap<Long, Double> entity_yMotion = new HashMap<>();
 	
 	private static final int CLOAK_CHECK_TIMEOUT_TICKS = 100;
 	
@@ -45,9 +49,32 @@ public class LivingHandler {
 	private static final int BORDER_BYPASS_PULL_BACK_BLOCKS = 16;
 	private static final int BORDER_BYPASS_DAMAGES_PER_TICK = 9000;
 	
-	public LivingHandler() {
-		player_cloakTicks = new HashMap<>();
-		entity_yMotion = new HashMap<>();
+	private static final int PURGE_PERIOD_TICKS = 6000; // 5 mn
+	
+	private static int tickUpdate = PURGE_PERIOD_TICKS;
+	
+	public static void updateTick() {
+		tickUpdate--;
+		if (tickUpdate < 0) {
+			tickUpdate = PURGE_PERIOD_TICKS;
+			LocalProfiler.start("LivingHandler cleanup");
+			final Iterator<Long> iterator = entity_yMotion.keySet().iterator();
+			while (iterator.hasNext()) {
+				final Long key = iterator.next();
+				final int dimensionId = (int) (key >> 32);
+				final WorldServer worldServer = DimensionManager.getWorld(dimensionId);
+				if (worldServer == null) {
+					iterator.remove();
+					continue;
+				}
+				final Entity entity = worldServer.getEntityByID((int) (key & 0xFFFFFFFFL));
+				if (entity == null) {
+					iterator.remove();
+					// continue;
+				}
+			}
+			LocalProfiler.stop(1000);
+		}
 	}
 	
 	@SubscribeEvent
@@ -62,8 +89,9 @@ public class LivingHandler {
 		final int z = MathHelper.floor(entityLivingBase.posZ);
 		
 		// *** save motion for fall damage computation
+		// note: dead entities don't tick. Checking health level is too taxing. Hence, cleanup is done indirectly.
 		if (!entityLivingBase.onGround) {
-			entity_yMotion.put(entityLivingBase.getEntityId(), entityLivingBase.motionY);
+			entity_yMotion.put((long) entityLivingBase.dimension << 32 | entityLivingBase.getEntityId(), entityLivingBase.motionY);
 		}
 		
 		// *** world border handling
@@ -228,7 +256,7 @@ public class LivingHandler {
 		
 		// cancel in case of very low speed
 		final EntityLivingBase entityLivingBase = event.getEntityLiving();
-		Double motionY = entity_yMotion.get(entityLivingBase.getEntityId());
+		Double motionY = entity_yMotion.get((long) entityLivingBase.dimension << 32 | entityLivingBase.getEntityId());
 		if (motionY == null) {
 			motionY = entityLivingBase.motionY;
 		}

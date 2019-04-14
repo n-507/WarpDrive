@@ -83,6 +83,10 @@ public class LocalProfiler {
 	}
 	
 	public static void stop() {
+		stop(0L);
+	}
+	
+	public static void stop(final long tolerance_us) {
 		if (stack.isEmpty()) {
 			return;
 		}
@@ -90,7 +94,7 @@ public class LocalProfiler {
 		final StackElement stackElement = stack.pop();
 		final long end = System.nanoTime();
 		final long timeElapsed = end - stackElement.start;
-
+		
 		if (!stack.isEmpty()) {
 			final StackElement nextStackElement = stack.peek();
 			nextStackElement.internal += timeElapsed;
@@ -99,12 +103,16 @@ public class LocalProfiler {
 		// convert to microseconds
 		final long self = (timeElapsed - stackElement.internal) / 1000;
 		final long total = timeElapsed / 1000;
-		if (total == self) {
-			WarpDrive.logger.info(String.format("Profiling %s: %.3f ms",
-			                                    stackElement.name, (self / 1000.0F) ));
-		} else {
-			WarpDrive.logger.info(String.format("Profiling %s: %.3f ms, total; %.3f ms",
-			                                    stackElement.name, (self / 1000.0F), total / 1000.0F ));
+		
+		// only log if it was too slow
+		if (self > tolerance_us) {
+			if (total == self) {
+				WarpDrive.logger.info(String.format("Profiling %s: %.3f ms",
+				                                    stackElement.name, (self / 1000.0F) ));
+			} else {
+				WarpDrive.logger.info(String.format("Profiling %s: %.3f ms, total; %.3f ms",
+				                                    stackElement.name, (self / 1000.0F), total / 1000.0F ));
+			}
 		}
 	}
 }
