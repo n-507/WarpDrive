@@ -315,14 +315,14 @@
 
 	<for variable="metadataGas" in="0,1,2,3,4,5,6,7,8,9,10,11">
 		<structure group="gascloud" name="bigCloud_%metadataGas%" weight="1">
-			<metashell block="minecraft:glowstoneOff" minCount="10" maxCount="16" minRadius="5" relativeRadius="0.5" />
+			<metaShell block="minecraft:glowstoneOff" minCount="10" maxCount="16" minRadius="5" relativeRadius="0.5" />
 			<shell name="mantle" minThickness="5" maxThickness="15">
 				<filler weight="1" block="warpdrive:gas" metadata="%metadataGas%" />
 			</shell>
 		</structure>
 
 		<structure group="gascloud" name="smallCloud_%metadataGas%" weight="1">
-			<metashell block="minecraft:glowstoneOff" minCount="3" maxCount="7" minRadius="3" relativeRadius="0.5" />
+			<metaShell block="minecraft:glowstoneOff" minCount="3" maxCount="7" minRadius="3" relativeRadius="0.5" />
 			<shell name="mantle" minThickness="2" maxThickness="8">
 				<filler weight="1" block="warpdrive:gas" metadata="%metadataGas%" />
 			</shell>
@@ -332,21 +332,21 @@
 
 
 	<structure group="asteroid" name="ClusteredAsteroid" weight="3">
-		<metashell block="minecraft:iron_ore" minCount="6" maxCount="10" minRadius="2" relativeRadius="0.5" />
+		<metaShell block="minecraft:iron_ore" minCount="6" maxCount="10" minRadius="2" relativeRadius="0.5" />
 		<shell name="mantle" minThickness="3" maxThickness="7">
 			<import group="overworld_common" />
 		</shell>
 	</structure>
 
 	<structure group="asteroid" name="SphericalAsteroid" weight="10">
-		<metashell block="minecraft:iron_ore" minCount="1" maxCount="3" minRadius="2" relativeRadius="0.5" />
+		<metaShell block="minecraft:iron_ore" minCount="1" maxCount="3" minRadius="2" relativeRadius="0.5" />
 		<shell name="mantle" minThickness="2" maxThickness="6">
 			<import group="overworld_uncommon" />
 		</shell>
 	</structure>
 
 	<structure group="asteroid" name="diamondGeode" weight="2">
-		<metashell block="minecraft:diamond_ore" minCount="1" maxCount="2" minRadius="2" relativeRadius="0.5" />
+		<metaShell block="minecraft:diamond_ore" minCount="1" maxCount="2" minRadius="2" relativeRadius="0.5" />
 		<shell name="mantle" minThickness="2" maxThickness="6">
 			<import group="overworld_rare" />
 		</shell>
@@ -354,7 +354,7 @@
 
 
 	<structure group="asteroid" name="mini_overworld" weight="10">
-		<metashell block="minecraft:diamond_ore" minCount="1" maxCount="2" minRadius="2" relativeRadius="0.5" />
+		<metaShell block="minecraft:diamond_ore" minCount="1" maxCount="2" minRadius="2" relativeRadius="0.5" />
 		<shell name="mantle" minThickness="2" maxThickness="6">
 			<import group="overworld_allOres" name="stone" />
 			<filler weight="10" block="minecraft:stone" />
@@ -363,14 +363,14 @@
 	</structure>
 
 	<structure group="asteroid" name="mini_nether" ratio="0.04">
-		<metashell block="minecraft:diamond_ore" minCount="1" maxCount="2" minRadius="2" relativeRadius="0.5" />
+		<metaShell block="minecraft:diamond_ore" minCount="1" maxCount="2" minRadius="2" relativeRadius="0.5" />
 		<shell name="mantle" minThickness="2" maxThickness="6">
 			<import group="nether" />
 		</shell>
 	</structure>
 
 	<structure group="asteroid" name="mini_end" ratio="0.028">
-		<metashell block="minecraft:diamond_ore" minCount="1" maxCount="2" minRadius="2" relativeRadius="0.5" />
+		<metaShell block="minecraft:diamond_ore" minCount="1" maxCount="2" minRadius="2" relativeRadius="0.5" />
 		<shell name="mantle" minThickness="2" maxThickness="6">
 			<import group="end" />
 		</shell>

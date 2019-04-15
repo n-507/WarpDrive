@@ -1032,4 +1032,15 @@ public class Commons {
 		}
 		return blockAccess.getBlockState(blockPos);
 	}
+	
+	public static boolean isReplaceableOreGen(final World world, final BlockPos blockPos) {
+		final IBlockState blockStateActual = world.getBlockState(blockPos);
+		final Block blockActual = blockStateActual.getBlock();
+		return blockActual.isReplaceableOreGen(blockStateActual, world, blockPos,
+		                                       blockState -> blockState != null
+		                                                     && ( blockState.getBlock() == Blocks.AIR
+		                                                       || blockState.getBlock() == Blocks.STONE
+		                                                       || blockState.getBlock() == Blocks.NETHERRACK
+		                                                       || blockState.getBlock() == Blocks.END_STONE ) );
+	}
 }

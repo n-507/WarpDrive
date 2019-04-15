@@ -67,7 +67,7 @@ public class StructureManager extends XmlFileManager {
 				abstractStructure = new Schematic(group, name);
 				
 			} else if (!getChildrenElementByTagName(element, "shell").isEmpty()) {
-				if (!getChildrenElementByTagName(element, "metashell").isEmpty()) {
+				if (!getChildrenElementByTagName(element, "metaShell").isEmpty()) {
 					abstractStructure = new MetaOrb(group, name);
 				} else {
 					abstractStructure = new Orb(group, name);

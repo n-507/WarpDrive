@@ -67,13 +67,13 @@ public class MetaOrb extends Orb {
 		@Nonnull
 		@Override
 		public String getName() {
-			return "metashell";
+			return "metaShell";
 		}
 		
 		@Override
 		public boolean loadFromXmlElement(final Element element) throws InvalidXmlException {
 			if (WarpDriveConfig.LOGGING_WORLD_GENERATION) {
-				WarpDrive.logger.info("  + found metashell");
+				WarpDrive.logger.info("  + found metaShell");
 			}
 			
 			String stringValue;
@@ -84,7 +84,7 @@ public class MetaOrb extends Orb {
 				
 				block = Block.getBlockFromName(stringValue);
 				if (block == null) {
-					WarpDrive.logger.warn(String.format("Skipping missing metashell core block %s in %s",
+					WarpDrive.logger.warn(String.format("Skipping missing metaShell core block %s in %s",
 					                                    stringValue, parentFullName));
 				} else {
 					// metadata
@@ -95,13 +95,13 @@ public class MetaOrb extends Orb {
 						try {
 							metadata = Integer.parseInt(stringValue);
 						} catch (final NumberFormatException exception) {
-							throw new InvalidXmlException(String.format("Structure %s has an invalid metadata %s, expecting an integer",
+							throw new InvalidXmlException(String.format("Failed to load metaShell from structure %s due to invalid metadata %s, expecting an integer",
 							                                            parentFullName, stringValue));
 						}
 					}
 					
 					if (metadata < 0 || metadata > 15) {
-						throw new InvalidXmlException(String.format("Structure %s has an invalid metadata %d, expecting a value between 0 and 15 included",
+						throw new InvalidXmlException(String.format("Failed to load metaShell from structure %s due to invalid metadata %d, expecting a value between 0 and 15 included",
 						                                            parentFullName, metadata));
 					}
 				}
@@ -111,24 +111,24 @@ public class MetaOrb extends Orb {
 			try {
 				minCount = Integer.parseInt(element.getAttribute("minCount"));
 			} catch (final NumberFormatException exception) {
-				throw new InvalidXmlException(String.format("Structure %s has an invalid minCount %s, expecting an integer",
+				throw new InvalidXmlException(String.format("Failed to load metaShell from structure %s due to invalid minCount %s, expecting an integer",
 				                                            parentFullName, element.getAttribute("minCount")));
 			}
 			
 			if (minCount < 1) {
-				throw new InvalidXmlException(String.format("Structure %s has an invalid minCount %d, expecting greater then 0",
+				throw new InvalidXmlException(String.format("Failed to load metaShell from structure %s due to invalid minCount %d, expecting greater then 0",
 				                                            parentFullName, minCount));
 			}
 			
 			try {
 				maxCount = Integer.parseInt(element.getAttribute("maxCount"));
 			} catch (final NumberFormatException exception) {
-				throw new InvalidXmlException(String.format("Structure %s has an invalid maxCount %s, expecting an integer",
+				throw new InvalidXmlException(String.format("Failed to load metaShell from structure %s due to invalid maxCount %s, expecting an integer",
 				                                            parentFullName, element.getAttribute("maxCount")));
 			}
 			
 			if (maxCount < minCount) {
-				throw new InvalidXmlException(String.format("Structure %s has an invalid maxCount %d, expecting greater than or equal to minCount %d",
+				throw new InvalidXmlException(String.format("Failed to load metaShell from structure %s due to invalid maxCount %d, expecting greater than or equal to minCount %d",
 				                                            parentFullName, maxCount, minCount));
 			}
 			
@@ -141,12 +141,12 @@ public class MetaOrb extends Orb {
 					minRadius = Double.parseDouble(element.getAttribute("minRadius"));
 				}
 			} catch (final NumberFormatException exception) {
-				throw new InvalidXmlException(String.format("Structure %s has an invalid minRadius %s, expecting a double",
+				throw new InvalidXmlException(String.format("Failed to load metaShell from structure %s due to invalid minRadius %s, expecting a double",
 				                                            parentFullName, element.getAttribute("minRadius")));
 			}
 			
 			if (minRadius < 0.0D || minRadius > 20.0D) {
-				throw new InvalidXmlException(String.format("Structure %s has an invalid minRadius %.3f, expecting a value between 0.0 and 20.0 included",
+				throw new InvalidXmlException(String.format("Failed to load metaShell from structure %s due to invalid minRadius %.3f, expecting a value between 0.0 and 20.0 included",
 				                                            parentFullName, minRadius));
 			}
 			
@@ -158,12 +158,12 @@ public class MetaOrb extends Orb {
 					relativeRadius = Double.parseDouble(element.getAttribute("relativeRadius"));
 				}
 			} catch (final NumberFormatException exception) {
-				throw new InvalidXmlException(String.format("Structure %s has an invalid relativeRadius %s, expecting a double",
+				throw new InvalidXmlException(String.format("Failed to load metaShell from structure %s due to invalid relativeRadius %s, expecting a double",
 				                                            parentFullName, element.getAttribute("relativeRadius")));
 			}
 			
 			if (relativeRadius < 0.0D || relativeRadius > 2.0D) {
-				throw new InvalidXmlException(String.format("Structure %s has an invalid relativeRadius %.3f, expecting a value between 0.0 and 2.0 included",
+				throw new InvalidXmlException(String.format("Failed to load metaShell from structure %s due to invalid relativeRadius %.3f, expecting a value between 0.0 and 2.0 included",
 				                                            parentFullName, relativeRadius));
 			}
 			

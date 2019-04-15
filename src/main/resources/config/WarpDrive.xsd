@@ -12,7 +12,7 @@
 			<xs:element name="import" type="wd:elementImport" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="filler" type="wd:elementFiller" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="schematic" type="wd:elementSchematic" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="metashell" type="wd:elementMetashell" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="metaShell" type="wd:elementMetaShell" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="shell" type="wd:elementShell" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="replacement" type="wd:elementReplacement" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="insertion" type="wd:elementInsertion" minOccurs="0" maxOccurs="unbounded" />
@@ -76,7 +76,7 @@
 			<xs:element name="for" type="wd:elementFor" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="import" type="wd:elementImport" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="schematic" type="wd:elementSchematic" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="metashell" type="wd:elementMetashell" minOccurs="0" maxOccurs="1" />
+			<xs:element name="metaShell" type="wd:elementMetaShell" minOccurs="0" maxOccurs="1" />
 			<xs:element name="shell" type="wd:elementShell" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="replacement" type="wd:elementReplacement" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="insertion" type="wd:elementInsertion" minOccurs="0" maxOccurs="unbounded" />
@@ -133,7 +133,7 @@
 		<xs:attribute name="mods" type="xs:string" use="optional" />
 	</xs:complexType>
 	
-	<xs:complexType name="elementMetashell">
+	<xs:complexType name="elementMetaShell">
 		<xs:attribute name="block" type="xs:string" use="optional" />
 		<xs:attribute name="metadata" type="xs:string" use="optional" />
 		<xs:attribute name="minCount" type="xs:string" use="required" />
