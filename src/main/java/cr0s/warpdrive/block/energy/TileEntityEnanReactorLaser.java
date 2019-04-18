@@ -163,8 +163,8 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 			return 0;
 		}
 		if (energyStabilizationRequest > 0) {
-			WarpDrive.logger.warn("%s Stabilization already requested for %s",
-			                      this, energy);
+			WarpDrive.logger.warn(String.format("%s Stabilization already requested for %s",
+			                                    this, energy));
 			return -energy;
 		}
 		energyStabilizationRequest = energy;
@@ -208,7 +208,9 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
-		tagCompound.setString("reactorFace", reactorFace.getName());
+		if (reactorFace != null && reactorFace != ReactorFace.UNKNOWN) {
+			tagCompound.setString("reactorFace", reactorFace.getName());
+		}
 		tagCompound.setInteger("energyStabilizationRequest", energyStabilizationRequest);
 		return tagCompound;
 	}
@@ -218,6 +220,9 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		super.readFromNBT(tagCompound);
 		
 		reactorFace = ReactorFace.get(tagCompound.getString("reactorFace"));
+		if (reactorFace == null) {
+			reactorFace = ReactorFace.UNKNOWN;
+		}
 		energyStabilizationRequest = tagCompound.getInteger("energyStabilizationRequest");
 	}
 	

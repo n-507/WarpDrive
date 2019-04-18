@@ -192,7 +192,7 @@ function reactor_page()
   w.writeFullLine(" Start/stoP reactor (S/P), Use lasers (L)")
   w.writeFullLine(" Output mode (O), Configuration (C)")
   w.writeFullLine(" Target stability (+/-), Laser amount (U/J)")
-  w.writeFullLine(" Output rate/threshold (G/T)")
+  w.writeFullLine(" Output rate/threshold (T/G)")
 end
 
 function reactor_setMode()
