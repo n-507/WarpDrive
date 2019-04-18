@@ -4,6 +4,7 @@ import cr0s.warpdrive.CommonProxy;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBlockBase;
 import cr0s.warpdrive.api.IItemBase;
+import cr0s.warpdrive.block.breathing.BlockColorAirShield;
 import cr0s.warpdrive.event.ClientHandler;
 import cr0s.warpdrive.event.ModelBakeEventHandler;
 import cr0s.warpdrive.event.TooltipHandler;
@@ -14,7 +15,6 @@ import javax.annotation.Nonnull;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -48,7 +48,7 @@ public class ClientProxy extends CommonProxy {
 		// color handlers
 		// final Item itemAirShield = Item.getItemFromBlock(blockAirShield);
 		// Minecraft.getMinecraft().getItemColors().registerItemColorHandler((IItemColor) itemAirShield, itemAirShield);
-		Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((IBlockColor) WarpDrive.blockAirShield, WarpDrive.blockAirShield);
+		Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(new BlockColorAirShield(), WarpDrive.blockAirShield);
 		
 		// generic rendering
 		// MinecraftForge.EVENT_BUS.register(new WarpDriveKeyBindings());
