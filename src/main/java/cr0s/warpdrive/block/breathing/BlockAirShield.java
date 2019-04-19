@@ -30,12 +30,6 @@ public class BlockAirShield extends BlockAbstractOmnipanel {
 		return false;
 	}
 	
-	@SuppressWarnings("deprecation")
-	@Override
-	public boolean isFullBlock(final IBlockState blockState) {
-		return false;
-	}
-	
 	@Override
 	public void addCollisionBoxToList(final IBlockState blockState, final @Nonnull World world, final @Nonnull BlockPos blockPos,
 	                                  final @Nonnull AxisAlignedBB entityBox, final @Nonnull List<AxisAlignedBB> collidingBoxes,

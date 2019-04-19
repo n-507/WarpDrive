@@ -260,6 +260,12 @@ public abstract class BlockAbstractOmnipanel extends BlockAbstractBase {
 		return false;
 	}
 	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isFullBlock(final IBlockState blockState) {
+		return false;
+	}
+	
 	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -450,7 +456,7 @@ public abstract class BlockAbstractOmnipanel extends BlockAbstractBase {
 	public int getConnectionMask(final IBlockAccess blockAccess, final BlockPos blockPos, final EnumFacing facing) {
 		final IBlockState blockState = blockAccess.getBlockState(blockPos);
 		return ( blockState.isFullCube()
-		      || blockState.getBlock() == this
+		      || blockState.getBlock() instanceof BlockAbstractOmnipanel
 		      || blockState.getMaterial() == Material.GLASS
 		      || blockState.getBlock() instanceof BlockPane ? 1 : 0 )
 		     + (blockState.isSideSolid(blockAccess, blockPos, facing.getOpposite()) ? 2 : 0);

@@ -58,6 +58,12 @@ public abstract class BlockAbstractAir extends BlockAbstractBase {
 		return true;
 	}
 	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isFullCube(final IBlockState state) {
+		return false;
+	}
+	
 	@Override
 	public boolean isAir(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos pos) {
 		return true;
