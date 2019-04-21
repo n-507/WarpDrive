@@ -35,6 +35,7 @@ public class ClientProxy extends CommonProxy {
 		
 		ModelLoaderRegistry.registerLoader(MyCustomModelLoader.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(ModelBakeEventHandler.INSTANCE);
+		MinecraftForge.EVENT_BUS.register(SpriteManager.INSTANCE);
 	}
 	
 	@Override

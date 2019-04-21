@@ -8,6 +8,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -16,8 +17,13 @@ import net.minecraft.world.World;
 import cr0s.warpdrive.block.BlockAbstractContainer;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnumTier;
+import cr0s.warpdrive.render.TileEntityShipScannerRenderer;
 
 import javax.annotation.Nonnull;
+
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockShipScanner extends BlockAbstractContainer {
 	
@@ -50,6 +56,28 @@ public class BlockShipScanner extends BlockAbstractContainer {
 		return blockState.getValue(BlockProperties.ACTIVE) ? 0x8 : 0;
 	}
 	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void modelInitialisation() {
+		super.modelInitialisation();
+		
+		// Bind our TESR to our tile entity
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityShipScanner.class, new TileEntityShipScannerRenderer());
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isTranslucent(final IBlockState blockState) {
+		return true;
+	}
+	
+	@Nonnull
+	@SideOnly(Side.CLIENT)
+	@Override
+	public BlockRenderLayer getRenderLayer() {
+		return BlockRenderLayer.TRANSLUCENT;
+	}
+	
 /* @TODO camouflage	
 	@Override
 	public int colorMultiplier(IBlockAccess blockAccess, int x, int y, int z) {
@@ -76,7 +104,7 @@ public class BlockShipScanner extends BlockAbstractContainer {
 		return false;
 	}
 	/**/
-
+	
 	@Nonnull
 	@Override
 	public TileEntity createNewTileEntity(@Nonnull final World world, final int metadata) {

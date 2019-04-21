@@ -39,7 +39,7 @@ public abstract class BakedModelAbstractBase implements IMyBakedModel {
 	protected TextureAtlasSprite spriteParticle;
 	protected TextureAtlasSprite spriteBlock;
 	protected int tintIndex = -1;
-	protected VertexFormat format;
+	protected VertexFormat format = DefaultVertexFormats.ITEM;
 	
 	public BakedModelAbstractBase() {
 		super();
