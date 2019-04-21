@@ -765,15 +765,15 @@ public class WarpDrive {
 	}
 	/**/
 	
-	final static public ArrayList<Biome> biomes = new ArrayList<>(10);
-	final static public ArrayList<Block> blocks = new ArrayList<>(100);
-	final static public ArrayList<Enchantment> enchantments = new ArrayList<>(10);
-	final static public ArrayList<Item> items = new ArrayList<>(50);
-	final static public ArrayList<Potion> potions = new ArrayList<>(10);
-	final static public ArrayList<PotionType> potionTypes = new ArrayList<>(10);
-	final static public ArrayList<SoundEvent> soundEvents = new ArrayList<>(100);
-	final static public HashMap<ResourceLocation, IRecipe> recipes = new HashMap<>(100);
-	final static public ArrayList<VillagerProfession> villagerProfessions = new ArrayList<>(10);
+	final public static ArrayList<Biome> biomes = new ArrayList<>(10);
+	final public static ArrayList<Block> blocks = new ArrayList<>(100);
+	final public static ArrayList<Enchantment> enchantments = new ArrayList<>(10);
+	final public static ArrayList<Item> items = new ArrayList<>(50);
+	final public static ArrayList<Potion> potions = new ArrayList<>(10);
+	final public static ArrayList<PotionType> potionTypes = new ArrayList<>(10);
+	final public static ArrayList<SoundEvent> soundEvents = new ArrayList<>(100);
+	final public static HashMap<ResourceLocation, IRecipe> recipes = new HashMap<>(100);
+	final public static ArrayList<VillagerProfession> villagerProfessions = new ArrayList<>(10);
 	
 	// Register a Biome.
 	public static <BIOME extends Biome> BIOME register(final BIOME biome) {

@@ -1,19 +1,26 @@
 package cr0s.warpdrive.render;
 
 import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.data.EnumDisplayAlignment;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -208,5 +215,38 @@ public class RenderCommons {
 		// GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glPopMatrix();
+	}
+	
+	public static IModel getModel(final ResourceLocation resourceLocation) {
+		final IModel model;
+		try {
+			model = ModelLoaderRegistry.getModel(resourceLocation);
+		} catch (final Exception exception) {
+			WarpDrive.logger.info(String.format("getModel %s", resourceLocation));
+			throw new RuntimeException(exception);
+		}
+		return model;
+	}
+	
+	public static void renderModelTESR(@Nonnull final List<BakedQuad> quads, @Nonnull final BufferBuilder renderer, final int brightness) {
+		final int l1 = (brightness >> 0x10) & 0xFFFF;
+		final int l2 = brightness & 0xFFFF;
+		for (final BakedQuad quad : quads) {
+			final int[] vData = quad.getVertexData();
+			final VertexFormat format = quad.getFormat();
+			final int size = format.getIntegerSize();
+			final int uv = format.getUvOffsetById(0) / 4;
+			// final int color = format.getColorOffset();
+			for (int i = 0; i < 4; ++i) {
+				renderer
+						.pos(	Float.intBitsToFloat(vData[size * i    ]),
+						         Float.intBitsToFloat(vData[size * i + 1]),
+						         Float.intBitsToFloat(vData[size * i + 2]))
+						.color(255, 255, 255, 255)
+						.tex(Float.intBitsToFloat(vData[size * i + uv]), Float.intBitsToFloat(vData[size * i + uv + 1]))
+						.lightmap(l1, l2)
+						.endVertex();
+			}
+		}
 	}
 }

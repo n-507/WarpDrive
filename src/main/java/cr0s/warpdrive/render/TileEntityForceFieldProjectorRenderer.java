@@ -5,30 +5,30 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.forcefield.TileEntityForceFieldProjector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.model.TRSRTransformation;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-
 public class TileEntityForceFieldProjectorRenderer extends TileEntitySpecialRenderer<TileEntityForceFieldProjector> {
-
+	
 	private IBakedModel bakedModel;
 	
 	private enum TextureGetter implements Function<ResourceLocation, TextureAtlasSprite> {
 		INSTANCE;
 		
-		public TextureAtlasSprite apply(ResourceLocation location) {
+		@Override
+		public TextureAtlasSprite apply(final ResourceLocation location) {
 			// WarpDrive.logger.info(String.format("TileEntityForceFieldProjectorRenderer texture location %s", location));
 			return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
 		}
@@ -37,14 +37,8 @@ public class TileEntityForceFieldProjectorRenderer extends TileEntitySpecialRend
 	private IBakedModel getBakedModel() {
 		// Since we cannot bake in preInit() we do lazy baking of the model as soon as we need it for rendering
 		if (bakedModel == null) {
-			IModel model;
-			ResourceLocation resourceLocation = new ResourceLocation(WarpDrive.MODID, "block/forcefield/projector_ring.obj");
-			try {
-				model = ModelLoaderRegistry.getModel(resourceLocation);
-			} catch (Exception exception) {
-				WarpDrive.logger.info(String.format("getModel %s", resourceLocation));
-				throw new RuntimeException(exception);
-			}
+			final ResourceLocation resourceLocation = new ResourceLocation(WarpDrive.MODID, "block/forcefield/projector_ring.obj");
+			final IModel model = RenderCommons.getModel(resourceLocation);
 			bakedModel = model.bake(TRSRTransformation.identity(), DefaultVertexFormats.ITEM, TextureGetter.INSTANCE);
 		}
 		return bakedModel;
@@ -76,7 +70,7 @@ public class TileEntityForceFieldProjectorRenderer extends TileEntitySpecialRend
 			default: break;
 		}
 		
-		GlStateManager.blendFunc(770, 771);	// srcalpha, 1-srcalpha
+		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 		GlStateManager.enableBlend();
 		// GlStateManager.disableCull();
 		RenderHelper.disableStandardItemLighting();
@@ -87,11 +81,11 @@ public class TileEntityForceFieldProjectorRenderer extends TileEntitySpecialRend
 		GlStateManager.rotate(wheelRotation, 0.0F, 1.0F, 0.0F);
 		
 		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-		BufferBuilder worldRenderer = tessellator.getBuffer();
+		final BufferBuilder worldRenderer = tessellator.getBuffer();
 		worldRenderer.setTranslation(-0.5, -0.5, -0.5);
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		
-		renderModelTESR(quads, worldRenderer, tileEntityForceFieldProjector.getWorld().getCombinedLight(tileEntityForceFieldProjector.getPos(), 15));
+		RenderCommons.renderModelTESR(quads, worldRenderer, tileEntityForceFieldProjector.getWorld().getCombinedLight(tileEntityForceFieldProjector.getPos(), 15));
 		
 		tessellator.draw();
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
@@ -101,26 +95,5 @@ public class TileEntityForceFieldProjectorRenderer extends TileEntitySpecialRend
 		// GlStateManager.enableCull();
 		GlStateManager.popMatrix();
 		GlStateManager.popAttrib();
-	}
-	
-	public static void renderModelTESR(List<BakedQuad> quads, BufferBuilder renderer, int brightness) {
-		int l1 = (brightness >> 0x10) & 0xFFFF;
-		int l2 = brightness & 0xFFFF;
-		for (BakedQuad quad : quads) {
-			int[] vData = quad.getVertexData();
-			VertexFormat format = quad.getFormat();
-			int size = format.getIntegerSize();
-			int uv = format.getUvOffsetById(0) / 4;
-			for (int i = 0; i < 4; ++i) {
-				renderer
-						.pos(	Float.intBitsToFloat(vData[size * i    ]),
-								Float.intBitsToFloat(vData[size * i + 1]),
-								Float.intBitsToFloat(vData[size * i + 2]))
-						.color(255, 255, 255, 255)
-						.tex(Float.intBitsToFloat(vData[size * i + uv]), Float.intBitsToFloat(vData[size * i + uv + 1]))
-						.lightmap(l1, l2)
-						.endVertex();
-			}
-		}
 	}
 }

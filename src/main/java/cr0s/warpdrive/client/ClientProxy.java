@@ -34,7 +34,7 @@ public class ClientProxy extends CommonProxy {
 		OBJLoader.INSTANCE.addDomain(WarpDrive.MODID);
 		
 		ModelLoaderRegistry.registerLoader(MyCustomModelLoader.INSTANCE);
-		MinecraftForge.EVENT_BUS.register(ModelBakeEventHandler.instance);
+		MinecraftForge.EVENT_BUS.register(ModelBakeEventHandler.INSTANCE);
 	}
 	
 	@Override
@@ -59,19 +59,9 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new ClientCameraHandler());
 		
 		// entity rendering
-		// RenderingRegistry.registerEntityRenderingHandler(EntityXXX.class, RenderXXX::new);
 		// RenderingRegistry.registerEntityRenderingHandler(EntityParticleBunch.class, new RenderEntityParticleBunch());
 		// @TODO MC1.10 force field rendering
 		/*
-		RenderBlockStandard.renderId = RenderingRegistry.getNextAvailableRenderId();
-		RenderingRegistry.registerBlockHandler(RenderBlockStandard.instance);
-		
-		RenderBlockForceField.renderId = RenderingRegistry.getNextAvailableRenderId();
-		RenderingRegistry.registerBlockHandler(RenderBlockForceField.instance);
-		
-		RenderBlockShipScanner.renderId = RenderingRegistry.getNextAvailableRenderId();
-		RenderingRegistry.registerBlockHandler(RenderBlockShipScanner.instance);
-		
 		RenderBlockTransporterBeacon.renderId = RenderingRegistry.getNextAvailableRenderId();
 		RenderingRegistry.registerBlockHandler(RenderBlockTransporterBeacon.instance);
 		/**/

@@ -438,7 +438,11 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 			}
 			
 			// Compute target area
-			final Transformation transformation = new Transformation(jumpShip, world, targetX - jumpShip.core.getX(), targetY - jumpShip.core.getY(), targetZ - jumpShip.core.getZ(), rotationSteps);
+			final Transformation transformation = new Transformation(jumpShip, world,
+			                                                         targetX - jumpShip.core.getX(),
+			                                                         targetY - jumpShip.core.getY(),
+			                                                         targetZ - jumpShip.core.getZ(),
+			                                                         rotationSteps);
 			final BlockPos targetLocation1 = transformation.apply(jumpShip.minX, jumpShip.minY, jumpShip.minZ);
 			final BlockPos targetLocation2 = transformation.apply(jumpShip.maxX, jumpShip.maxY, jumpShip.maxZ);
 			final BlockPos targetLocationMin = new BlockPos(

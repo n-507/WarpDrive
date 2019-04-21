@@ -98,7 +98,7 @@ public class BlockGas extends BlockAbstractBase {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isFullBlock(IBlockState blockState) {
+	public boolean isFullBlock(final IBlockState blockState) {
 		return true;
 	}
 	

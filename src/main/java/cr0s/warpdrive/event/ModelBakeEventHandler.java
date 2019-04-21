@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ModelBakeEventHandler {
 	
-	public static final ModelBakeEventHandler instance = new ModelBakeEventHandler();
+	public static final ModelBakeEventHandler INSTANCE = new ModelBakeEventHandler();
 	private static final Map<ModelResourceLocation, Class<? extends IMyBakedModel>> modelResourceLocationToBakedModel = new HashMap<>(64);
 	
 	private ModelBakeEventHandler() {

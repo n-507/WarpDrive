@@ -82,8 +82,8 @@ public class OrbInstance extends AbstractStructureInstance {
 		
 		final NBTTagList listOrbShells = tagCompound.getTagList("orbShellInstances", Constants.NBT.TAG_COMPOUND);
 		if (listOrbShells.isEmpty()) {
-			throw new RuntimeException(String.format("Empty orbShellInstances list isn't supported: %s",
-			                                         tagCompound));
+			throw new RuntimeException(String.format("Empty orbShellInstances list isn't supported in %s: %s",
+			                                         this, tagCompound));
 		}
 		orbShellInstances = new ArrayList<>(listOrbShells.tagCount());
 		for (int indexOrbShell = 0; indexOrbShell < listOrbShells.tagCount(); indexOrbShell++) {

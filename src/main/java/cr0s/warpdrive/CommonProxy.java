@@ -4,7 +4,6 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.event.EMPReceiver;
 import cr0s.warpdrive.event.ItemHandler;
 import cr0s.warpdrive.event.LivingHandler;
-import cr0s.warpdrive.event.TooltipHandler;
 
 import java.lang.ref.WeakReference;
 import java.util.UUID;
