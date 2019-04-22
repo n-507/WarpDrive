@@ -11,9 +11,13 @@
 		"normal": [{}],
 		"inventory": [{}],
 		"type": {
-			"plain"    : { "textures": { "all": "warpdrive:blocks/decoration/decorative-plain"		} },
-			"energized": { "textures": { "all": "warpdrive:blocks/decoration/decorative-energized"	} },
-			"network"  : { "textures": { "all": "warpdrive:blocks/decoration/decorative-network"	} }
+			"plain"              : { "textures": { "all": "warpdrive:blocks/decoration/decorative-plain"				} },
+			"grated"             : { "textures": { "all": "warpdrive:blocks/decoration/decorative-grated"				} },
+			"glass"              : { "textures": { "all": "warpdrive:blocks/decoration/decorative-glass"				} },
+			"stripes_black_down" : { "textures": { "all": "warpdrive:blocks/decoration/decorative-stripes_black_down"	} },
+			"stripes_black_up"   : { "textures": { "all": "warpdrive:blocks/decoration/decorative-stripes_black_up"		} },
+			"stripes_yellow_down": { "textures": { "all": "warpdrive:blocks/decoration/decorative-stripes_yellow_down"	} },
+			"stripes_yellow_up"  : { "textures": { "all": "warpdrive:blocks/decoration/decorative-stripes_yellow_up"	} }
 		}
 	}
 }

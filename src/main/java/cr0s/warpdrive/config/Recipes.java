@@ -18,7 +18,6 @@ import cr0s.warpdrive.item.ItemTuningDriver;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import net.minecraft.block.Block;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 
@@ -88,8 +87,12 @@ public class Recipes {
 		
 		// decoration
 		registerOreDictionary("warpDecorative", BlockDecorative.getItemStack(EnumDecorativeType.PLAIN));
-		registerOreDictionary("warpDecorative", BlockDecorative.getItemStack(EnumDecorativeType.ENERGIZED));
-		registerOreDictionary("warpDecorative", BlockDecorative.getItemStack(EnumDecorativeType.NETWORK));
+		registerOreDictionary("warpDecorative", BlockDecorative.getItemStack(EnumDecorativeType.GLASS));
+		registerOreDictionary("warpDecorative", BlockDecorative.getItemStack(EnumDecorativeType.GRATED));
+		registerOreDictionary("warpDecorative", BlockDecorative.getItemStack(EnumDecorativeType.STRIPES_BLACK_DOWN));
+		registerOreDictionary("warpDecorative", BlockDecorative.getItemStack(EnumDecorativeType.STRIPES_BLACK_UP));
+		registerOreDictionary("warpDecorative", BlockDecorative.getItemStack(EnumDecorativeType.STRIPES_YELLOW_DOWN));
+		registerOreDictionary("warpDecorative", BlockDecorative.getItemStack(EnumDecorativeType.STRIPES_YELLOW_UP));
 		
 		// tuning fork
 		for (int dyeColor = 0; dyeColor < 16; dyeColor++) {
@@ -202,6 +205,8 @@ public class Recipes {
 			                                       'p', Items.ENDER_EYE,
 			                                       'd', Blocks.DIAMOND_BLOCK));
 		}
+		
+		// @TODO implement machine casing from hull + iron bars/etc., gives 2
 		
 		itemStackMachineCasings = new ItemStack[] { itemStackMachineCasingLV, itemStackMachineCasingMV, itemStackMachineCasingHV, itemStackMachineCasingEV };
 		itemStackMotors = new ItemStack[] { itemStackMotorLV, itemStackMotorMV, itemStackMotorHV, itemStackMotorEV };
@@ -1007,25 +1012,63 @@ public class Recipes {
 	}
 	
 	private static void initDecoration() {
-		// Decorative blocks
+		// Decorative blocks are metallic in nature
+		// base block is very cheap (iron and paper)
 		WarpDrive.register(new ShapedOreRecipe(groupDecorations,
-		                                       BlockDecorative.getItemStackNoCache(EnumDecorativeType.PLAIN, 8), false, "sss", "scs", "sss",
-		                                       's', Blocks.STONE,
-		                                       'c', Items.PAPER));
+		                                       BlockDecorative.getItemStackNoCache(EnumDecorativeType.PLAIN, 12), false, "ipi", "pbp", "ipi",
+		                                       'i', Items.IRON_INGOT,
+		                                       'b', Blocks.IRON_BARS,
+		                                       'p', Items.PAPER ));
+		
+		// variations are 'died' from each others
 		WarpDrive.register(new ShapedOreRecipe(groupDecorations,
 		                                       BlockDecorative.getItemStackNoCache(EnumDecorativeType.PLAIN, 8), false, "sss", "scs", "sss",
 		                                       's', "warpDecorative",
 		                                       'c', "dyeWhite"), "_dye");
 		WarpDrive.register(new ShapedOreRecipe(groupDecorations,
-		                                       BlockDecorative.getItemStackNoCache(EnumDecorativeType.ENERGIZED, 8), false, "sss", "scs", "sss",
+		                                       BlockDecorative.getItemStackNoCache(EnumDecorativeType.GRATED, 8), false, "sss", "sbs", "sss",
 		                                       's', "warpDecorative",
-		                                       'c', "dyeRed"), "_dye");
+		                                       'b', barsIron ), "_dye");
 		WarpDrive.register(new ShapedOreRecipe(groupDecorations,
-		                                       BlockDecorative.getItemStackNoCache(EnumDecorativeType.NETWORK, 8), false, "sss", "scs", "sss",
+		                                       BlockDecorative.getItemStackNoCache(EnumDecorativeType.GLASS, 8), false, "sss", "scs", "sss",
 		                                       's', "warpDecorative",
-		                                       'c', "dyeBlue"), "_dye");
+		                                       'c', "glass" ), "_dye");
+		WarpDrive.register(new ShapedOreRecipe(groupDecorations,
+		                                       BlockDecorative.getItemStackNoCache(EnumDecorativeType.STRIPES_BLACK_DOWN, 7), false, "bss", "sss", "ssy",
+		                                       's', "warpDecorative",
+		                                       'b', "dyeBlack",
+		                                       'y', "dyeYellow" ), "_dye");
+		WarpDrive.register(new ShapedOreRecipe(groupDecorations,
+		                                       BlockDecorative.getItemStackNoCache(EnumDecorativeType.STRIPES_BLACK_UP, 7), false, "ssy", "sss", "bss",
+		                                       's', "warpDecorative",
+		                                       'b', "dyeBlack",
+		                                       'y', "dyeYellow" ), "_dye");
+		WarpDrive.register(new ShapedOreRecipe(groupDecorations,
+		                                       BlockDecorative.getItemStackNoCache(EnumDecorativeType.STRIPES_YELLOW_DOWN, 7), false, "yss", "sss", "ssb",
+		                                       's', "warpDecorative",
+		                                       'b', "dyeBlack",
+		                                       'y', "dyeYellow" ), "_dye");
+		WarpDrive.register(new ShapedOreRecipe(groupDecorations,
+		                                       BlockDecorative.getItemStackNoCache(EnumDecorativeType.STRIPES_YELLOW_UP, 7), false, "ssb", "sss", "yss",
+		                                       's', "warpDecorative",
+		                                       'b', "dyeBlack",
+		                                       'y', "dyeYellow" ), "_dye");
 		
-		// Lamp
+		// stripes can toggled to each others (reducing dye consumption)
+		WarpDrive.register(new ShapelessOreRecipe(groupDecorations,
+		                                          BlockDecorative.getItemStackNoCache(EnumDecorativeType.STRIPES_BLACK_DOWN, 1),
+		                                          BlockDecorative.getItemStackNoCache(EnumDecorativeType.STRIPES_BLACK_UP, 1) ), "_toggle");
+		WarpDrive.register(new ShapelessOreRecipe(groupDecorations,
+		                                          BlockDecorative.getItemStackNoCache(EnumDecorativeType.STRIPES_BLACK_UP, 1),
+		                                          BlockDecorative.getItemStackNoCache(EnumDecorativeType.STRIPES_YELLOW_DOWN, 1) ), "_toggle");
+		WarpDrive.register(new ShapelessOreRecipe(groupDecorations,
+		                                          BlockDecorative.getItemStackNoCache(EnumDecorativeType.STRIPES_YELLOW_DOWN, 1),
+		                                          BlockDecorative.getItemStackNoCache(EnumDecorativeType.STRIPES_YELLOW_UP, 1) ), "_toggle");
+		WarpDrive.register(new ShapelessOreRecipe(groupDecorations,
+		                                          BlockDecorative.getItemStackNoCache(EnumDecorativeType.STRIPES_YELLOW_UP, 1),
+		                                          BlockDecorative.getItemStackNoCache(EnumDecorativeType.STRIPES_BLACK_DOWN, 1) ), "_toggle");
+		
+		// Lamps
 		WarpDrive.register(new ShapedOreRecipe(groupDecorations,
 		                                       WarpDrive.blockLamp_bubble, false, " g ", "glg", "h  ",
 		                                       'g', "blockGlass",
@@ -1204,45 +1247,6 @@ public class Recipes {
 		                                       'R', WarpDrive.blockEnanReactorCores[EnumTier.ADVANCED.getIndex()],
 		                                       'l', ItemComponent.getItemStack(EnumComponentType.LENS),
 		                                       'S', ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR) ));
-		
-		// Enantiomorphic reactor frame is 1 Hull block, 4 Iron bars, gives 4
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockEnanReactorFrames_plain[EnumTier.BASIC.getIndex()], 4, 0), false, " b ", "bhb", " b ",
-		                                       'h', "blockHull1_plain",
-		                                       'b', barsIron));
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockEnanReactorFrames_plain[EnumTier.ADVANCED.getIndex()], 4, 0), false, " b ", "bhb", " b ",
-		                                       'h', "blockHull2_plain",
-		                                       'b', barsIron));
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockEnanReactorFrames_plain[EnumTier.SUPERIOR.getIndex()], 4, 0), false, " b ", "bhb", " b ",
-		                                       'h', "blockHull3_plain",
-		                                       'b', barsIron));
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockEnanReactorFrames_glass[EnumTier.BASIC.getIndex()], 4, 0), false, " b ", "bhb", " b ",
-		                                       'h', "blockHull1_glass",
-		                                       'b', barsIron));
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockEnanReactorFrames_glass[EnumTier.ADVANCED.getIndex()], 4, 0), false, " b ", "bhb", " b ",
-		                                       'h', "blockHull2_glass",
-		                                       'b', barsIron));
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockEnanReactorFrames_glass[EnumTier.SUPERIOR.getIndex()], 4, 0), false, " b ", "bhb", " b ",
-		                                       'h', "blockHull3_glass",
-		                                       'b', barsIron));
-		
-		// Enantiomorphic reactor frame symbols are from dies
-		for (final EnumTier enumTier : EnumTier.nonCreative()) {
-			final Block blockFrame = WarpDrive.blockEnanReactorFrames_plain[enumTier.getIndex()];
-			WarpDrive.register(new ShapedOreRecipe(groupMachines,
-			                                       new ItemStack(blockFrame, 1, 1), false, " y ", " f ", "y y",
-			                                       'f', blockFrame,
-			                                       'y', "dyeYellow" ));
-			WarpDrive.register(new ShapedOreRecipe(groupMachines,
-			                                       new ItemStack(blockFrame, 1, 2), false, " y ", "yf ", " y ",
-			                                       'f', blockFrame,
-			                                       'y', "dyeYellow" ));
-		}
 		
 		// Enantiomorphic reactor stabilization laser is 1 HV Machine casing, 2 Advanced hull, 1 Computer interface, 1 Power interface, 1 Lens, 1 Redstone, 2 Glass panes
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,

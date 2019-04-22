@@ -207,9 +207,13 @@ item.warpdrive.tool.wrench.tooltip=§bRight click a block§7 to rotate it
 
 
 tile.warpdrive.decoration.bedrock_glass.name=Bedrock Glass !!!
-tile.warpdrive.decoration.decorative.energized.name=Energiegeladener Block
-tile.warpdrive.decoration.decorative.network.name=Netzwerk Block
-tile.warpdrive.decoration.decorative.plain.name=Ebenen Block
+tile.warpdrive.decoration.decorative.plain.name=Plain metal decoration
+tile.warpdrive.decoration.decorative.grated.name=Grated metal decoration
+tile.warpdrive.decoration.decorative.glass.name=Grated glass decoration
+tile.warpdrive.decoration.decorative.stripes_black_down.name=Black & yellow stripes down
+tile.warpdrive.decoration.decorative.stripes_black_up.name=Black & yellow stripes up
+tile.warpdrive.decoration.decorative.stripes_yellow_down.name=Yellow & black stripes down
+tile.warpdrive.decoration.decorative.stripes_yellow_up.name=Yellow & black stripes up
 tile.warpdrive.decoration.gas.name=Gas Block
 tile.warpdrive.decoration.lamp_bubble.name=Bubble Lamp !!!
 tile.warpdrive.decoration.lamp_flat.name=Flat Lamp !!!

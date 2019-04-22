@@ -204,9 +204,13 @@ item.warpdrive.tool.wrench.tooltip=§bCliques droit sur un block§7 pour le tour
 
 
 tile.warpdrive.decoration.bedrock_glass.name=Vitre de bedrock
-tile.warpdrive.decoration.decorative.energized.name=Block energisé
-tile.warpdrive.decoration.decorative.network.name=Bloc de réseau
-tile.warpdrive.decoration.decorative.plain.name=Bloc ordinaire
+tile.warpdrive.decoration.decorative.plain.name=Métal décoratif
+tile.warpdrive.decoration.decorative.grated.name=Métal rapé décoratif
+tile.warpdrive.decoration.decorative.glass.name=Vitre rapée décorative
+tile.warpdrive.decoration.decorative.stripes_black_down.name=Rayures noir et jaune descendante
+tile.warpdrive.decoration.decorative.stripes_black_up.name=Rayures noir et jaune montante
+tile.warpdrive.decoration.decorative.stripes_yellow_down.name=Rayures jaune et noir descendante
+tile.warpdrive.decoration.decorative.stripes_yellow_up.name=Rayures jaune et noir montante
 tile.warpdrive.decoration.gas.name=Bloc de gaz
 tile.warpdrive.decoration.lamp_bubble.name=Lampe bulle
 tile.warpdrive.decoration.lamp_flat.name=Lampe plate
