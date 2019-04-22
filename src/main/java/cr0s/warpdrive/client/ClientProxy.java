@@ -62,10 +62,6 @@ public class ClientProxy extends CommonProxy {
 		// entity rendering
 		// RenderingRegistry.registerEntityRenderingHandler(EntityParticleBunch.class, new RenderEntityParticleBunch());
 		// @TODO MC1.10 force field rendering
-		/*
-		RenderBlockTransporterBeacon.renderId = RenderingRegistry.getNextAvailableRenderId();
-		RenderingRegistry.registerBlockHandler(RenderBlockTransporterBeacon.instance);
-		/**/
 	}
 	
 	@Override

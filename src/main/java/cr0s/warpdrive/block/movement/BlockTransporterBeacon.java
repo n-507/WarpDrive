@@ -17,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -80,15 +81,45 @@ public class BlockTransporterBeacon extends BlockAbstractContainer {
 	@Override
 	public void modelInitialisation() {
 		super.modelInitialisation();
-		
-		// Bind our TESR to our tile entity
-		// @TODO ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransporterBeacon.class, new TileEntityForceFieldProjectorRenderer());
+	}
+	
+	@Override
+	public boolean isNormalCube(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
+		return false;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isBlockNormalCube(final IBlockState blockState) {
+		// not supposed to be called, upstream should use isNormalCube(IBlockState, IBlockAccess, BlockPos) instead
+		// practically, Forge still use it in WorldEntitySpawner.isValidEmptySpawnBlock(), Block.getAmbientOcclusionLightValue(), BlockRedstoneWire.getAttachPosition()
+		// calling BlockStateContainer$StateImplementation.isBlockNormalCube()
+		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isOpaqueCube(final IBlockState blockState) {
 		return false;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isFullCube(final IBlockState blockState) {
+		return false;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isFullBlock(final IBlockState blockState) {
+		return false;
+	}
+	
+	@Nonnull
+	@SideOnly(Side.CLIENT)
+	@Override
+	public BlockRenderLayer getRenderLayer() {
+		return BlockRenderLayer.TRANSLUCENT;
 	}
 	
 	@SuppressWarnings("deprecation")

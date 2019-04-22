@@ -1,0 +1,6 @@
+{
+	"parent": "warpdrive:block/movement/transporter_beacon-deployed_active",
+	"textures": {
+		"beacon": "warpdrive:blocks/movement/transporter_beacon-deployed_active"
+	}
+}

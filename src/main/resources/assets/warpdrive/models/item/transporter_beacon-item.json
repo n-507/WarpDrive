@@ -1,0 +1,16 @@
+{
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "warpdrive:blocks/movement/transporter_beacon-packed_inactive"
+	},
+    "overrides": [
+        {
+			"predicate": { "warpdrive:active": 0.00 },
+ 			"model": "warpdrive:item/movement/transporter_beacon-packed_inactive"
+		},
+        {
+			"predicate": { "warpdrive:active": 0.99 },
+			"model": "warpdrive:item/movement/transporter_beacon-deployed_active"
+		}
+    ]
+}

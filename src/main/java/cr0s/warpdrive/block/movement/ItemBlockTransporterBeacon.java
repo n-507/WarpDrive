@@ -9,23 +9,31 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnergyWrapper;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 import java.util.UUID;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemBlockTransporterBeacon extends ItemBlockAbstractBase implements IItemTransporterBeacon {
 	
@@ -34,6 +42,25 @@ public class ItemBlockTransporterBeacon extends ItemBlockAbstractBase implements
 		
 		setMaxStackSize(1);
 		setMaxDamage(100 * 8);
+		
+		addPropertyOverride(new ResourceLocation(WarpDrive.MODID, "active"), new IItemPropertyGetter() {
+			@SideOnly(Side.CLIENT)
+			@Override
+			public float apply(@Nonnull final ItemStack itemStack, @Nullable final World world, @Nullable final EntityLivingBase entity) {
+				final boolean isActive = isActive(itemStack);
+				return isActive ? 1.0F : 0.0F;
+			}
+		});
+	}
+	
+	@Nonnull
+	@SideOnly(Side.CLIENT)
+	@Override
+	public ModelResourceLocation getModelResourceLocation(@Nonnull final ItemStack itemStack) {
+		// suffix registry name to grab the item model so we can use overrides
+		final ResourceLocation resourceLocation = getRegistryName();
+		assert resourceLocation != null;
+		return new ModelResourceLocation(resourceLocation.toString() + "-item", "inventory");
 	}
 	
 	private static String getTransporterName(final ItemStack itemStack) {
