@@ -45,7 +45,7 @@ public class ItemElectromagneticCell extends ItemAbstractBase implements IPartic
 		addPropertyOverride(new ResourceLocation(WarpDrive.MODID, "fill"), new IItemPropertyGetter() {
 			@SideOnly(Side.CLIENT)
 			@Override
-			public float apply(@Nonnull ItemStack itemStack, @Nullable World world, @Nullable EntityLivingBase entity) {
+			public float apply(@Nonnull final ItemStack itemStack, @Nullable final World world, @Nullable final EntityLivingBase entity) {
 				final ParticleStack particleStack = getParticleStack(itemStack);
 				if (particleStack != null) {
 					return (float) particleStack.getAmount() / getCapacity(itemStack);
@@ -56,8 +56,9 @@ public class ItemElectromagneticCell extends ItemAbstractBase implements IPartic
 	}
 	
 	@Nonnull
+	@SideOnly(Side.CLIENT)
 	@Override
-	public ModelResourceLocation getModelResourceLocation(ItemStack itemStack) {
+	public ModelResourceLocation getModelResourceLocation(final ItemStack itemStack) {
 		String variant = "empty";
 		final ParticleStack particleStack = getParticleStack(itemStack);
 		if (particleStack != null) {

@@ -31,9 +31,9 @@ public class ItemWrench extends ItemAbstractBase implements IWarpTool {
 	
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(final EntityPlayer entityPlayer,
-	                                  final World world, final BlockPos blockPos, final EnumHand hand,
-	                                  final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
+	public EnumActionResult onItemUse(@Nonnull final EntityPlayer entityPlayer,
+	                                  @Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final EnumHand hand,
+	                                  @Nonnull final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
 		if (world.isRemote) {
 			return EnumActionResult.FAIL;
 		}

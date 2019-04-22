@@ -8,6 +8,7 @@ import cr0s.warpdrive.block.hull.BlockHullGlass;
 import cr0s.warpdrive.block.hull.BlockHullSlab;
 import cr0s.warpdrive.block.hull.BlockHullStairs;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -689,7 +690,8 @@ public class Dictionary {
 		}
 	}
 	
-	private static String getHashMessage(final HashSet hashSet) {
+	@Nonnull
+	private static String getHashMessage(@Nonnull final HashSet hashSet) {
 		final StringBuilder message = new StringBuilder();
 		for (final Object object : hashSet) {
 			if (message.length() > 0) {
@@ -706,7 +708,8 @@ public class Dictionary {
 		return message.toString();
 	}
 	
-	private static String getHashMessage(final HashMap<Block, Integer> hashMap) {
+	@Nonnull
+	private static String getHashMessage(@Nonnull final HashMap<Block, Integer> hashMap) {
 		final StringBuilder message = new StringBuilder();
 		for (final Entry<Block, Integer> entry : hashMap.entrySet()) {
 			if (message.length() > 0) {
@@ -717,9 +720,9 @@ public class Dictionary {
 		return message.toString();
 	}
 	
-	public static NBTBase writeItemsToNBT(final HashSet<Item> hashSetItem) {
+	@Nonnull
+	public static NBTBase writeItemsToNBT(@Nonnull final HashSet<Item> hashSetItem) {
 		final NBTTagList nbtTagList = new NBTTagList();
-		assert hashSetItem != null;
 		for (final Item item : hashSetItem) {
 			assert item.getRegistryName() != null;
 			final String registryName = item.getRegistryName().toString();
@@ -728,8 +731,8 @@ public class Dictionary {
 		return nbtTagList;
 	}
 	
-	public static HashSet<Item> readItemsFromNBT(final NBTTagList nbtTagList) {
-		assert nbtTagList != null;
+	@Nonnull
+	public static HashSet<Item> readItemsFromNBT(@Nonnull final NBTTagList nbtTagList) {
 		final int size = nbtTagList.tagCount();
 		final HashSet<Item> hashSetItem = new HashSet<>(Math.max(8, size));
 		
@@ -747,6 +750,7 @@ public class Dictionary {
 		return hashSetItem;
 	}
 	
+	@Nonnull
 	public static String getId(final Entity entity) {
 		final ResourceLocation resourceLocation = EntityList.getKey(entity);
 		return resourceLocation == null ? "-null-" : resourceLocation.toString();

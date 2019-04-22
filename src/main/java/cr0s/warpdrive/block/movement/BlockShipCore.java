@@ -125,6 +125,7 @@ public class BlockShipCore extends BlockAbstractRotatingContainer {
 				}
 				Commons.addChatMessage(entityPlayer, tileEntityShipCore.getBoundingBoxStatus());
 				return true;
+				
 			} else if ( !world.isRemote
 			         && !entityPlayer.isSneaking() ) {
 				Commons.addChatMessage(entityPlayer, tileEntityShipCore.getStatus());

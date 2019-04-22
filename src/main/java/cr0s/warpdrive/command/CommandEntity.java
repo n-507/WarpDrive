@@ -97,7 +97,7 @@ public class CommandEntity extends AbstractCommand {
 
 		WarpDrive.logger.info(String.format("/%s %d '*%s*' %s", getName(), radius, filter, kill));
 
-		List<Entity> entities;
+		final List<Entity> entities;
 		if (radius <= 0) {
 			final World world;
 			if (commandSender instanceof EntityPlayerMP) {

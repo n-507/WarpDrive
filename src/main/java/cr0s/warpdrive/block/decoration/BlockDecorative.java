@@ -8,6 +8,7 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
@@ -115,15 +116,16 @@ public class BlockDecorative extends BlockAbstractBase {
 		return blockState.getBlock().getMetaFromState(blockState);
 	}
 	
+	@Nonnull
 	public static ItemStack getItemStack(final EnumDecorativeType enumDecorativeType) {
 		if (enumDecorativeType != null) {
-			int damage = enumDecorativeType.ordinal();
+			final int damage = enumDecorativeType.ordinal();
 			if (itemStackCache[damage] == null) {
 				itemStackCache[damage] = new ItemStack(WarpDrive.blockDecorative, 1, damage);
 			}
 			return itemStackCache[damage];
 		}
-		return null;
+		return new ItemStack(Blocks.FIRE);
 	}
 	
 	public static ItemStack getItemStackNoCache(final EnumDecorativeType enumDecorativeType, final int amount) {

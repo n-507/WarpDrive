@@ -26,6 +26,7 @@ import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
 import cr0s.warpdrive.network.PacketHandler;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -95,7 +96,7 @@ public class JumpSequencer extends AbstractSequencer {
 	protected final JumpShip ship;
 	private boolean betweenWorlds;
 	private boolean isPluginCheckDone = false;
-	private WarpDriveText firstAdjustmentReason = new WarpDriveText();
+	private WarpDriveText firstAdjustmentReason = null;
 	
 	private long msCounter = 0;
 	private int ticks = 0;
@@ -673,13 +674,15 @@ public class JumpSequencer extends AbstractSequencer {
 		}
 		
 		{
-			final BlockPos target1 = transformation.apply(ship.minX, ship.minY, ship.minZ);
-			final BlockPos target2 = transformation.apply(ship.maxX, ship.maxY, ship.maxZ);
-			final AxisAlignedBB aabbSource = new AxisAlignedBB(ship.minX, ship.minY, ship.minZ, ship.maxX, ship.maxY, ship.maxZ);
+			final BlockPos blockPosMinAtTarget = transformation.apply(ship.minX, ship.minY, ship.minZ);
+			final BlockPos blockPosMaxAtTarget = transformation.apply(ship.maxX, ship.maxY, ship.maxZ);
+			final AxisAlignedBB aabbSource = new AxisAlignedBB(
+					ship.minX, ship.minY, ship.minZ,
+					ship.maxX, ship.maxY, ship.maxZ);
 			aabbSource.expand(1.0D, 1.0D, 1.0D);
 			final AxisAlignedBB aabbTarget = new AxisAlignedBB(
-					Math.min(target1.getX(), target2.getX()), Math.min(target1.getY(), target2.getY()), Math.min(target1.getZ(), target2.getZ()),
-					Math.max(target1.getX(), target2.getX()), Math.max(target1.getY(), target2.getY()), Math.max(target1.getZ(), target2.getZ()));
+					blockPosMinAtTarget.getX(), blockPosMinAtTarget.getY(), blockPosMinAtTarget.getZ(),
+					blockPosMaxAtTarget.getX(), blockPosMaxAtTarget.getY(), blockPosMaxAtTarget.getZ() );
 			// Validate positions aren't overlapping
 			if ( shipMovementType != EnumShipMovementType.INSTANTIATE
 			  && shipMovementType != EnumShipMovementType.RESTORE
@@ -824,7 +827,7 @@ public class JumpSequencer extends AbstractSequencer {
 		}
 	}
 	
-	protected boolean computeTargetWorld(final CelestialObject celestialObjectSource, final EnumShipMovementType shipMovementType, final WarpDriveText reason) {
+	protected boolean computeTargetWorld(final CelestialObject celestialObjectSource, @Nonnull final EnumShipMovementType shipMovementType, final WarpDriveText reason) {
 		switch (shipMovementType) {
 		case INSTANTIATE:
 		case RESTORE:
@@ -1105,7 +1108,7 @@ public class JumpSequencer extends AbstractSequencer {
 			break;
 			
 		case NONE:
-			break;
+			// break;
 		}
 	}
 	
@@ -1286,7 +1289,6 @@ public class JumpSequencer extends AbstractSequencer {
 	/**
 	 * Finishing jump: cleanup, collision effects and delete self
 	 **/
-	@SuppressWarnings("unchecked")
 	protected void state_finishing() {
 		LocalProfiler.start("Jump.finishing()");
 		
@@ -1663,6 +1665,7 @@ public class JumpSequencer extends AbstractSequencer {
 						WarpDrive.logger.warn(String.format("Second NBT is %s", nbtTagCompound2));
 					}
 					return 0;
+					
 				} else {
 					return 1;
 				}

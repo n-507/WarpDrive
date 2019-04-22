@@ -19,8 +19,8 @@ public class ItemBlockForceFieldProjector extends ItemBlockAbstractBase {
 	}
 	
 	@Nonnull
-	@Override
 	@SideOnly(Side.CLIENT)
+	@Override
 	public ModelResourceLocation getModelResourceLocation(final ItemStack itemStack) {
 		final ResourceLocation resourceLocation = getRegistryName();
 		assert resourceLocation != null;

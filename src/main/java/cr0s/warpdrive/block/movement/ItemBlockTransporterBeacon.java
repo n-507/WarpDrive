@@ -118,7 +118,7 @@ public class ItemBlockTransporterBeacon extends ItemBlockAbstractBase implements
 		return 0;
 	}
 	
-	private static ItemStack setEnergy(final ItemStack itemStack, final int energy) {
+	private static ItemStack setEnergy(@Nonnull final ItemStack itemStack, final int energy) {
 		if (!(itemStack.getItem() instanceof ItemBlockTransporterBeacon)) {
 			return itemStack;
 		}
@@ -131,7 +131,7 @@ public class ItemBlockTransporterBeacon extends ItemBlockAbstractBase implements
 		return itemStack;
 	}
 	
-	private static ItemStack updateDamage(final ItemStack itemStack, final int energy, final boolean isActive) {
+	private static ItemStack updateDamage(@Nonnull final ItemStack itemStack, final int energy, final boolean isActive) {
 		final int maxDamage = itemStack.getMaxDamage();
 		final int metadataEnergy = maxDamage - maxDamage * energy / WarpDriveConfig.TRANSPORTER_BEACON_MAX_ENERGY_STORED;
 		final int metadataNew = (metadataEnergy & ~0x3) + (isActive ? 2 : 0);
@@ -145,7 +145,7 @@ public class ItemBlockTransporterBeacon extends ItemBlockAbstractBase implements
 	
 	// ITransporterBeacon overrides
 	@Override
-	public boolean isActive(final ItemStack itemStack) {
+	public boolean isActive(@Nonnull final ItemStack itemStack) {
 		return getEnergy(itemStack) > WarpDriveConfig.TRANSPORTER_BEACON_ENERGY_PER_TICK;
 	}
 	
@@ -212,15 +212,15 @@ public class ItemBlockTransporterBeacon extends ItemBlockAbstractBase implements
 	
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(@Nonnull final EntityPlayer entityPlayer, final World world, @Nonnull final BlockPos blockPos,
-	                                  @Nonnull final EnumHand enumHand, @Nonnull final EnumFacing enumFacing,
-	                                  final float hitX, final float hitY, final float hitZ) {
+	public EnumActionResult onItemUse(@Nonnull final EntityPlayer entityPlayer,
+	                                  @Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final EnumHand hand,
+	                                  @Nonnull final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
 		if (world.isRemote) {
 			return EnumActionResult.FAIL;
 		}
 		
 		// get context
-		final ItemStack itemStackHeld = entityPlayer.getHeldItem(enumHand);
+		final ItemStack itemStackHeld = entityPlayer.getHeldItem(hand);
 		if (itemStackHeld.isEmpty()) {
 			return EnumActionResult.FAIL;
 		}
@@ -230,9 +230,9 @@ public class ItemBlockTransporterBeacon extends ItemBlockAbstractBase implements
 		final TileEntity tileEntity = world.getTileEntity(blockPos);
 		
 		if (!(tileEntity instanceof ITransporterCore)) {
-			return super.onItemUse(entityPlayer, world, blockPos, enumHand, enumFacing, hitX, hitY, hitZ);
+			return super.onItemUse(entityPlayer, world, blockPos, hand, facing, hitX, hitY, hitZ);
 		}
-		if (!entityPlayer.canPlayerEdit(blockPos, enumFacing, itemStackHeld)) {
+		if (!entityPlayer.canPlayerEdit(blockPos, facing, itemStackHeld)) {
 			return EnumActionResult.FAIL;
 		}
 		

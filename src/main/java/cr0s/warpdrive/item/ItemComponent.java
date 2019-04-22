@@ -13,6 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -34,6 +35,7 @@ public class ItemComponent extends ItemAbstractBase implements IAirContainerItem
 		itemStackCache = new ItemStack[EnumComponentType.length];
 	}
 	
+	@Nonnull
 	public static ItemStack getItemStack(final EnumComponentType enumComponentType) {
 		if (enumComponentType != null) {
 			final int damage = enumComponentType.ordinal();
@@ -42,7 +44,7 @@ public class ItemComponent extends ItemAbstractBase implements IAirContainerItem
 			}
 			return itemStackCache[damage];
 		}
-		return null;
+		return new ItemStack(Blocks.FIRE);
 	}
 	
 	public static ItemStack getItemStackNoCache(final EnumComponentType enumComponentType, final int amount) {
@@ -70,8 +72,8 @@ public class ItemComponent extends ItemAbstractBase implements IAirContainerItem
 	}
 	
 	@Nonnull
-	@Override
 	@SideOnly(Side.CLIENT)
+	@Override
 	public ModelResourceLocation getModelResourceLocation(final ItemStack itemStack) {
 		final int damage = itemStack.getItemDamage();
 		ResourceLocation resourceLocation = getRegistryName();

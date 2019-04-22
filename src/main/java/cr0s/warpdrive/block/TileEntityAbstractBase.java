@@ -242,6 +242,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		}
 	}
 	
+	@Nonnull
 	protected WarpDriveText getStatusPrefix() {
 		if (world != null) {
 			final Item item = Item.getItemFromBlock(getBlockType());
@@ -253,6 +254,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		return new WarpDriveText();
 	}
 	
+	@Nonnull
 	protected WarpDriveText getBeamFrequencyStatus(final int beamFrequency) {
 		if (beamFrequency == -1) {
 			return new WarpDriveText(Commons.styleWarning, "warpdrive.beam_frequency.status_line.undefined");
@@ -263,6 +265,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		}
 	}
 	
+	@Nonnull
 	protected WarpDriveText getVideoChannelStatus(final int videoChannel) {
 		if (videoChannel == -1) {
 			return new WarpDriveText(Commons.styleWarning, "warpdrive.video_channel.status_line.undefined");

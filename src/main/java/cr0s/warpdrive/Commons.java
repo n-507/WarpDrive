@@ -12,6 +12,7 @@ import cr0s.warpdrive.event.ChunkHandler;
 import cr0s.warpdrive.world.SpaceTeleporter;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -100,7 +101,8 @@ public class Commons {
 	}
 	
 	@SuppressWarnings("ConstantConditions") // IDE says "§" == CHAR_FORMATTING, execution says otherwise
-	public static String updateEscapeCodes(final String message) {
+	@Nonnull
+	public static String updateEscapeCodes(@Nonnull final String message) {
 		return message
 		       .replace("§", CHAR_FORMATTING)
 		       .replace("\\n", "\n")
@@ -108,7 +110,8 @@ public class Commons {
 		       .replaceAll("\u00A0", " ");  // u00A0 is 'NO-BREAK SPACE'
 	}
 	
-	public static String removeFormatting(final String message) {
+	@Nonnull
+	public static String removeFormatting(@Nonnull final String message) {
 		return updateEscapeCodes(message)
 		       .replaceAll("(" + CHAR_FORMATTING + ".)", "");
 	}
@@ -127,7 +130,8 @@ public class Commons {
 	}
 	
 	// inspired by FontRender.getFormatFromString
-	private static String getFormatFromString(final String message) {
+	@Nonnull
+	private static String getFormatFromString(@Nonnull final String message) {
 		final int indexLastChar = message.length() - 1;
 		StringBuilder result = new StringBuilder();
 		int indexEscapeCode = -1;
@@ -153,22 +157,33 @@ public class Commons {
 	public static Style styleValue    = new Style().setColor(TextFormatting.YELLOW);
 	public static Style styleVoltage  = new Style().setColor(TextFormatting.DARK_GREEN);
 	
-	public static WarpDriveText getChatPrefix(final Block block) {
+	@Nonnull
+	public static WarpDriveText getChatPrefix(@Nonnull final Block block) {
 		return getChatPrefix(block.getTranslationKey() + ".name");
 	}
 	
-	public static WarpDriveText getChatPrefix(final ItemStack itemStack) {
+	@Nonnull
+	public static WarpDriveText getChatPrefix(@Nonnull final ItemStack itemStack) {
 		return getChatPrefix(itemStack.getTranslationKey() + ".name");
 	}
 	
-	public static WarpDriveText getChatPrefix(final String translationKey) {
-		return new WarpDriveText(styleHeader, "warpdrive.guide.prefix", new TextComponentTranslation(translationKey));
+	@Nonnull
+	public static WarpDriveText getChatPrefix(@Nonnull final String translationKey) {
+		return new WarpDriveText(styleHeader, "warpdrive.guide.prefix",
+		                         new TextComponentTranslation(translationKey));
 	}
 	
-	public static void addChatMessage(final ICommandSender commandSender, final ITextComponent textComponent) {
+	@Nonnull
+	public static WarpDriveText getNamedPrefix(@Nonnull final String name) {
+		return new WarpDriveText(styleHeader, "warpdrive.guide.prefix",
+		                         new TextComponentString(name));
+	}
+	
+	public static void addChatMessage(final ICommandSender commandSender, @Nonnull final ITextComponent textComponent) {
 		final String message = textComponent.getFormattedText();
 		if (commandSender == null) {
-			WarpDrive.logger.error(String.format("Unable to send message to NULL sender: %s", message));
+			WarpDrive.logger.error(String.format("Unable to send message to NULL sender: %s",
+			                                     message));
 			return;
 		}
 		
@@ -187,17 +202,17 @@ public class Commons {
 	
 	// add tooltip information with text formatting and line splitting
 	// will ensure it fits on minimum screen width
-	public static void addTooltip(final List<String> list, final String tooltip) {
+	public static void addTooltip(final List<String> list, @Nonnull final String tooltip) {
 		// skip empty tooltip
 		if (tooltip.isEmpty()) {
 			return;
 		}
 		
 		// apply requested formatting
-		final String[] split = updateEscapeCodes(tooltip).split("\n");
+		final String[] lines = updateEscapeCodes(tooltip).split("\n");
 		
 		// add new lines
-		for (final String line : split) {
+		for (final String line : lines) {
 			// skip redundant information
 			boolean isExisting = false;
 			final String cleanToAdd = removeFormatting(line).trim().toLowerCase();
@@ -288,6 +303,7 @@ public class Commons {
 		return String.format("%,d", Math.round(value));
 	}
 	
+	@Nonnull
 	public static String format(final Object[] arguments) {
 		final StringBuilder result = new StringBuilder();
 		if (arguments != null && arguments.length > 0) {
@@ -305,6 +321,7 @@ public class Commons {
 		return result.toString();
 	}
 	
+	@Nonnull
 	public static String format(final World world) {
 		if (world == null) {
 			return "~NULL~";
@@ -360,7 +377,7 @@ public class Commons {
 		                     x, y, z);
 	}
 	
-	public static String format(final ItemStack itemStack) {
+	public static String format(@Nonnull final ItemStack itemStack) {
 		final String stringNBT;
 		if (itemStack.hasTagCompound()) {
 			stringNBT = " " + itemStack.getTagCompound();
@@ -382,7 +399,7 @@ public class Commons {
 		           .replace("\\", ".");
 	}
 	
-	public static ItemStack copyWithSize(final ItemStack itemStack, final int newSize) {
+	public static ItemStack copyWithSize(@Nonnull final ItemStack itemStack, final int newSize) {
 		final ItemStack ret = itemStack.copy();
 		ret.setCount(newSize);
 		return ret;
@@ -472,8 +489,10 @@ public class Commons {
 		return iterated;
 	}
 	
-	public static Set<BlockStatePos> getConnectedBlockStatePos(final IBlockAccess blockAccess, final Collection<BlockPos> start, final VectorI[] directions,
-	                                                           final Set<Block> blockConnecting, final Set<Block> blockResults, final int maxRange) {
+	@Nonnull
+	public static Set<BlockStatePos> getConnectedBlockStatePos(@Nonnull final IBlockAccess blockAccess, @Nonnull final Collection<BlockPos> start,
+	                                                           @Nonnull final VectorI[] directions, @Nonnull final Set<Block> blockConnecting,
+	                                                           @Nonnull final Set<Block> blockResults, final int maxRange) {
 		Set<BlockPos> toIterate = new HashSet<>(start.size() * 4);
 		final Set<BlockPos> blockPosIterated = new HashSet<>(64);
 		final Set<BlockStatePos> blockStatePosResults = new HashSet<>(64);
@@ -602,7 +621,7 @@ public class Commons {
 	
 	// configurable interpolation
 	
-	public static double interpolate(final double[] xValues, final double[] yValues, final double xInput) {
+	public static double interpolate(@Nonnull final double[] xValues, @Nonnull final double[] yValues, final double xInput) {
 		if (WarpDrive.isDev) {
 			assert xValues.length == yValues.length;
 			assert xValues.length > 1;
@@ -627,7 +646,7 @@ public class Commons {
 		return yMin + (x - xMin) * (yMax - yMin) / (xMax - xMin);
 	}
 	
-	public static EnumFacing getHorizontalDirectionFromEntity(final EntityLivingBase entityLiving) {
+	public static EnumFacing getHorizontalDirectionFromEntity(@Nullable final EntityLivingBase entityLiving) {
 		if (entityLiving != null) {
 			final int direction = Math.round(entityLiving.rotationYaw / 90.0F) & 3;
 			switch (direction) {
@@ -645,7 +664,7 @@ public class Commons {
 		return EnumFacing.NORTH;
 	}
 	
-	public static EnumFacing getFacingFromEntity(final EntityLivingBase entityLivingBase) {
+	public static EnumFacing getFacingFromEntity(@Nullable final EntityLivingBase entityLivingBase) {
 		if (entityLivingBase != null) {
 			final EnumFacing facing;
 			if (entityLivingBase.rotationPitch > 45) {
@@ -715,6 +734,7 @@ public class Commons {
 		WarpDrive.logger.error(stringBuilder.toString());
 	}
 	
+	@Nonnull
 	public static String getMethodName(final int depth) {
 		try {
 			final StackTraceElement stackTraceElement = (StackTraceElement) methodThrowable_getStackTraceElement.invoke(
@@ -726,7 +746,7 @@ public class Commons {
 		}
 	}
 	
-	public static void writeNBTToFile(final String fileName, final NBTTagCompound tagCompound) {
+	public static void writeNBTToFile(@Nonnull final String fileName, @Nonnull final NBTTagCompound tagCompound) {
 		if (WarpDrive.isDev) {
 			WarpDrive.logger.info(String.format("writeNBTToFile %s",
 			                                    fileName));
@@ -749,7 +769,7 @@ public class Commons {
 		}
 	}
 	
-	public static NBTTagCompound readNBTFromFile(final String fileName) {
+	public static NBTTagCompound readNBTFromFile(@Nonnull final String fileName) {
 		if (WarpDrive.isDev) {
 			WarpDrive.logger.info(String.format("readNBTFromFile %s", fileName));
 		}
@@ -773,21 +793,21 @@ public class Commons {
 		return null;
 	}
 	
-	public static BlockPos createBlockPosFromNBT(final NBTTagCompound tagCompound) {
+	public static BlockPos createBlockPosFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		final int x = tagCompound.getInteger("x");
 		final int y = tagCompound.getInteger("y");
 		final int z = tagCompound.getInteger("z");
 		return new BlockPos(x, y, z);
 	}
 	
-	public static NBTTagCompound writeBlockPosToNBT(final BlockPos blockPos, final NBTTagCompound tagCompound) {
+	public static NBTTagCompound writeBlockPosToNBT(@Nonnull final BlockPos blockPos, @Nonnull final NBTTagCompound tagCompound) {
 		tagCompound.setInteger("x", blockPos.getX());
 		tagCompound.setInteger("y", blockPos.getY());
 		tagCompound.setInteger("z", blockPos.getZ());
 		return tagCompound;
 	}
 	
-	public static EntityPlayerMP[] getOnlinePlayerByNameOrSelector(final ICommandSender commandSender, final String playerNameOrSelector) {
+	public static EntityPlayerMP[] getOnlinePlayerByNameOrSelector(@Nonnull final ICommandSender commandSender, final String playerNameOrSelector) {
 		final MinecraftServer server = commandSender.getServer();
 		assert server != null;
 		final List<EntityPlayerMP> onlinePlayers = server.getPlayerList().getPlayers();
@@ -834,7 +854,7 @@ public class Commons {
 		}
 	}
 	
-	public static void messageToAllPlayersInArea(final IStarMapRegistryTileEntity tileEntity, final WarpDriveText textComponent) {
+	public static void messageToAllPlayersInArea(@Nonnull final IStarMapRegistryTileEntity tileEntity, @Nonnull final WarpDriveText textComponent) {
 		assert tileEntity instanceof TileEntity;
 		final AxisAlignedBB starMapArea = tileEntity.getStarMapArea();
 		final ITextComponent messageFormatted = Commons.getChatPrefix(tileEntity.getStarMapName())
@@ -851,7 +871,7 @@ public class Commons {
 		}
 	}
 	
-	public static void moveEntity(final Entity entity, final World worldDestination, final Vector3 v3Destination) {
+	public static void moveEntity(@Nonnull final Entity entity, @Nonnull final World worldDestination, @Nonnull final Vector3 v3Destination) {
 		if (entity.world.isRemote) {
 			WarpDrive.logger.error(String.format("Skipping remote movement for entity %s destination %s",
 			                                     entity, Commons.format(worldDestination, v3Destination) ));
@@ -913,10 +933,10 @@ public class Commons {
 	
 	// server side version of EntityLivingBase.rayTrace
 	private static final double BLOCK_REACH_DISTANCE = 5.0D;    // this is a client side hardcoded value, applicable to creative players
-	public static RayTraceResult getInteractingBlock(final World world, final EntityPlayer entityPlayer) {
+	public static RayTraceResult getInteractingBlock(@Nonnull final World world, @Nonnull final EntityPlayer entityPlayer) {
 		return getInteractingBlock(world, entityPlayer, BLOCK_REACH_DISTANCE);
 	}
-	public static RayTraceResult getInteractingBlock(final World world, final EntityPlayer entityPlayer, final double distance) {
+	public static RayTraceResult getInteractingBlock(@Nonnull final World world, @Nonnull final EntityPlayer entityPlayer, final double distance) {
 		final Vec3d vec3Position = new Vec3d(entityPlayer.posX, entityPlayer.posY + entityPlayer.eyeHeight, entityPlayer.posZ);
 		final Vec3d vec3Look = entityPlayer.getLook(1.0F);
 		final Vec3d vec3Target = vec3Position.add(vec3Look.x * distance, vec3Look.y * distance, vec3Look.z * distance);
@@ -929,7 +949,7 @@ public class Commons {
 	// We're remapping it using unlocalized names, since those don't change
 	private static HashMap<String, Fluid> fluidByBlockName;
 	
-	public static Fluid fluid_getByBlock(final Block block) {
+	public static Fluid fluid_getByBlock(@Nonnull final Block block) {
 		// validate context
 		if (!(block instanceof BlockLiquid)) {
 //			if (WarpDrive.isDev) {
@@ -964,14 +984,14 @@ public class Commons {
 		return EnumFacing.byIndex(index);
 	}
 	
-	public static int getOrdinal(final EnumFacing direction) {
+	public static int getOrdinal(@Nullable final EnumFacing direction) {
 		if (direction == null) {
 			return 6;
 		}
 		return direction.ordinal();
 	}
 	
-	public static boolean isValidCamouflage(final IBlockState blockState) {
+	public static boolean isValidCamouflage(@Nullable final IBlockState blockState) {
 		// fast check
 		if ( blockState == null
 		  || blockState == Blocks.AIR
@@ -1021,7 +1041,7 @@ public class Commons {
 		return true;
 	}
 	
-	public static IBlockState getBlockState_noChunkLoading(final IBlockAccess blockAccess, final BlockPos blockPos) {
+	public static IBlockState getBlockState_noChunkLoading(@Nullable final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		// skip unloaded worlds
 		if (blockAccess == null) {
 			return null;
@@ -1033,7 +1053,7 @@ public class Commons {
 		return blockAccess.getBlockState(blockPos);
 	}
 	
-	public static boolean isReplaceableOreGen(final World world, final BlockPos blockPos) {
+	public static boolean isReplaceableOreGen(@Nonnull final World world, @Nonnull final BlockPos blockPos) {
 		final IBlockState blockStateActual = world.getBlockState(blockPos);
 		final Block blockActual = blockStateActual.getBlock();
 		return blockActual.isReplaceableOreGen(blockStateActual, world, blockPos,

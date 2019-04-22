@@ -11,11 +11,6 @@ import javax.annotation.Nonnull;
 
 public class CommandFind extends AbstractCommand {
 	
-	@Override
-	public int getRequiredPermissionLevel() {
-		return 2;
-	}
-	
 	@Nonnull
 	@Override
 	public String getName() {
@@ -23,10 +18,21 @@ public class CommandFind extends AbstractCommand {
 	}
 	
 	@Override
+	public int getRequiredPermissionLevel() {
+		return 2;
+	}
+	
+	@Nonnull
+	@Override
+	public String getUsage(@Nonnull final ICommandSender commandSender) {
+		return getName() + " (<shipName>)"
+		       + "\nshipName: name of the ship to find. Exact casing is preferred.";
+	}
+	
+	@Override
 	public void execute(@Nonnull final MinecraftServer server, @Nonnull final ICommandSender commandSender, @Nonnull final String[] args) {
 		// parse arguments
-		//noinspection StatementWithEmptyBody
-		String nameToken;
+		final String nameToken;
 		if (args.length == 0) {
 			Commons.addChatMessage(commandSender, new TextComponentString(getUsage(commandSender)));
 			return;
@@ -50,12 +56,5 @@ public class CommandFind extends AbstractCommand {
 		
 		final String result = WarpDrive.starMap.find(nameToken);
 		Commons.addChatMessage(commandSender, new TextComponentString(result));
-	}
-	
-	@Nonnull
-	@Override
-	public String getUsage(@Nonnull final ICommandSender commandSender) {
-		return getName() + " (<shipName>)"
-		       + "\nshipName: name of the ship to find. Exact casing is preferred.";
 	}
 }

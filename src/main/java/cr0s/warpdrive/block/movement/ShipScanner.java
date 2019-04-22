@@ -13,15 +13,15 @@ import net.minecraft.world.IBlockAccess;
 class ShipScanner {
 	
 	// inputs
-	private IBlockAccess blockAccess;
-	private int minX, minY, minZ;
-	private int maxX, maxY, maxZ;
+	private final IBlockAccess blockAccess;
+	private final int minX, minY, minZ;
+	private final int maxX, maxY, maxZ;
 	
 	// execution
 	private int x;
 	private int y;
 	private int z;
-	private MutableBlockPos mutableBlockPos;
+	private final MutableBlockPos mutableBlockPos;
 	
 	// output
 	public int mass = 0;

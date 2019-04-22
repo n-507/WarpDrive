@@ -3,6 +3,7 @@ package cr0s.warpdrive.data;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -87,7 +88,7 @@ public class StarMapRegistryItem extends GlobalPosition {
 		name = tileEntity.getStarMapName();
 	}
 	
-	public boolean contains(final BlockPos blockPos) {
+	public boolean contains(@Nonnull final BlockPos blockPos) {
 		return    minX <= blockPos.getX() && blockPos.getX() <= maxX
 		       && minY <= blockPos.getY() && blockPos.getY() <= maxY
 		       && minZ <= blockPos.getZ() && blockPos.getZ() <= maxZ;

@@ -27,6 +27,7 @@ import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -243,7 +244,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	// - block connection when missing the Computer interface upgrade
 	// note: direct API calls remains possible without upgrade, as it's lore dependant
 	@Optional.Method(modid = "opencomputers")
-	protected Object[] OC_convertArgumentsAndLogCall(final Context context, final Arguments args) {
+	protected Object[] OC_convertArgumentsAndLogCall(@Nonnull final Context context, @Nonnull final Arguments args) {
 		final Object[] arguments = new Object[args.count()];
 		int index = 0;
 		for (final Object arg : args) {
@@ -341,7 +342,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		return false;
 	}
 	
-	protected VectorI computer_getVectorI(final VectorI vDefault, final Object[] arguments) {
+	protected VectorI computer_getVectorI(final VectorI vDefault, @Nonnull final Object[] arguments) {
 		try {
 			if (arguments.length == 3) {
 				final int x = Commons.toInt(arguments[0]);
@@ -355,7 +356,10 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		return vDefault;
 	}
 	
-	protected Object[] computer_getOrSetVector3(final FunctionGet<Vector3> getVector, final FunctionSetVector<Float> setVector, final Object[] arguments) {
+	@Nonnull
+	protected Object[] computer_getOrSetVector3(@Nonnull final FunctionGet<Vector3> getVector,
+	                                            @Nonnull final FunctionSetVector<Float> setVector,
+	                                            final Object[] arguments) {
 		if ( arguments != null
 		  && arguments.length > 0
 		  && arguments[0] != null ) {
@@ -388,7 +392,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		return new Double[] { v3Actual.x, v3Actual.y, v3Actual.z };
 	}
 	
-	protected UUID computer_getUUID(final UUID uuidDefault, final Object[] arguments) {
+	protected UUID computer_getUUID(final UUID uuidDefault, @Nonnull final Object[] arguments) {
 		try {
 			if (arguments.length == 1 && arguments[0] != null) {
 				if (arguments[0] instanceof UUID) {
@@ -697,7 +701,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	
 	@Override
 	@Optional.Method(modid = "opencomputers")
-	public void onConnect(final Node node) {
+	public void onConnect(@Nonnull final Node node) {
 		if (node.host() instanceof Context) {
 			// Attach our file system to new computers we get connected to.
 			// Note that this is also called for all already present computers
@@ -711,7 +715,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	
 	@Override
 	@Optional.Method(modid = "opencomputers")
-	public void onDisconnect(final Node node) {
+	public void onDisconnect(@Nonnull final Node node) {
 		if (OC_fileSystem != null) {
 			if (node.host() instanceof Context) {
 				// Disconnecting from a single computer
@@ -725,7 +729,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	
 	@Override
 	@Optional.Method(modid = "opencomputers")
-	public void onMessage(final Message message) {
+	public void onMessage(@Nonnull final Message message) {
 		// nothing special
 	}
 }

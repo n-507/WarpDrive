@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -42,6 +43,7 @@ public class ItemForceFieldShape extends ItemAbstractBase {
 		itemStackCache = new ItemStack[EnumForceFieldShape.length];
 	}
 	
+	@Nonnull
 	public static ItemStack getItemStack(final EnumForceFieldShape forceFieldShape) {
 		if (forceFieldShape != null) {
 			final int damage = forceFieldShape.ordinal();
@@ -50,7 +52,7 @@ public class ItemForceFieldShape extends ItemAbstractBase {
 			}
 			return itemStackCache[damage];
 		}
-		return null;
+		return new ItemStack(Blocks.FIRE);
 	}
 	
 	public static ItemStack getItemStackNoCache(final EnumForceFieldShape forceFieldShape, final int amount) {
@@ -80,8 +82,8 @@ public class ItemForceFieldShape extends ItemAbstractBase {
 	}
 	
 	@Nonnull
-	@Override
 	@SideOnly(Side.CLIENT)
+	@Override
 	public ModelResourceLocation getModelResourceLocation(final ItemStack itemStack) {
 		final int damage = itemStack.getItemDamage();
 		ResourceLocation resourceLocation = getRegistryName();

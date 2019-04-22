@@ -212,26 +212,32 @@ public class Recipes {
 		itemStackMotors = new ItemStack[] { itemStackMotorLV, itemStackMotorMV, itemStackMotorHV, itemStackMotorEV };
 		
 		// integrate with iron bars from all mods
-		barsIron = WarpDriveConfig.getOreOrItemStack("ore:barsIron", 0,
-		                                             "minecraft:iron_bars", 0);
+		barsIron = WarpDriveConfig.getOreOrItemStack(
+				"ore:barsIron", 0,
+				"minecraft:iron_bars", 0 );
 		
 		// integrate with steel and aluminium ingots from all mods
-		ingotIronOrSteel = WarpDriveConfig.getOreOrItemStack("ore:ingotSteel", 0,
-		                                                     "ore:ingotAluminium", 0,
-		                                                     "ore:ingotAluminum", 0,
-		                                                     "ore:ingotIron", 0);
+		ingotIronOrSteel = WarpDriveConfig.getOreOrItemStack(
+				"ore:ingotSteel", 0,
+				"ore:ingotAluminium", 0,
+				"ore:ingotAluminum", 0,
+				"ore:ingotIron", 0 );
 		
 		// integrate with rubber from all mods
-		rubber = WarpDriveConfig.getOreOrItemStack("ore:plateRubber", 0, // comes with GregTech
-		                                           "ore:itemRubber", 0 ); // comes with WarpDrive, IndustrialCraft2, IndustrialForegoing, TechReborn
+		rubber = WarpDriveConfig.getOreOrItemStack(
+				"ore:plateRubber", 0,            // comes with GregTech
+				"ore:itemRubber", 0 );           // comes with WarpDrive, IndustrialCraft2, IndustrialForegoing, TechReborn
 		
 		// integrate with circuits from all mods
-		goldNuggetOrBasicCircuit = WarpDriveConfig.getOreOrItemStack("ore:circuitBasic", 0, // comes with IndustrialCraft2, Mekanism, VoltzEngine
-		                                                             "ore:nuggetGold", 0);
-		goldIngotOrAdvancedCircuit = WarpDriveConfig.getOreOrItemStack("ore:circuitAdvanced", 0, // comes with IndustrialCraft2, Mekanism, VoltzEngine
-		                                                               "ore:ingotGold", 0);
-		emeraldOrSuperiorCircuit = WarpDriveConfig.getOreOrItemStack("ore:circuitElite", 0, // comes with Mekanism, VoltzEngine
-		                                                             "ore:gemEmerald", 0);
+		goldNuggetOrBasicCircuit = WarpDriveConfig.getOreOrItemStack(
+				"ore:circuitBasic", 0,           // comes with IndustrialCraft2, Mekanism, VoltzEngine
+				"ore:nuggetGold", 0 );
+		goldIngotOrAdvancedCircuit = WarpDriveConfig.getOreOrItemStack(
+				"ore:circuitAdvanced", 0,        // comes with IndustrialCraft2, Mekanism, VoltzEngine
+				"ore:ingotGold", 0 );
+		emeraldOrSuperiorCircuit = WarpDriveConfig.getOreOrItemStack(
+				"ore:circuitElite", 0,           // comes with Mekanism, VoltzEngine
+				"ore:gemEmerald", 0 );
 		
 		// Iridium block is just that
 		if (WarpDriveConfig.isGregtechLoaded) {
@@ -343,10 +349,11 @@ public class Recipes {
 		}
 		
 		// Capacitive crystal is 2 Redstone block, 4 Paper, 1 Regeneration potion, 2 (lithium dust or electrum dust or electrical steel ingot or gold ingot)
-		final Object lithiumOrElectrum = WarpDriveConfig.getOreOrItemStack("ore:dustLithium", 0, // comes with GregTech, Industrial Craft 2 and Mekanism
-		                                                                   "ore:dustElectrum", 0, // comes with ImmersiveEngineering, ThermalFoundation, Metallurgy
-		                                                                   "ore:ingotElectricalSteel", 0, // comes with EnderIO
-		                                                                   "ore:ingotGold", 0);
+		final Object lithiumOrElectrum = WarpDriveConfig.getOreOrItemStack(
+				"ore:dustLithium", 0,            // comes with GregTech, Industrial Craft 2 and Mekanism
+				"ore:dustElectrum", 0,           // comes with ImmersiveEngineering, ThermalFoundation, Metallurgy
+				"ore:ingotElectricalSteel", 0,   // comes with EnderIO
+				"ore:ingotGold", 0 );
 		// (Lithium is processed from nether quartz)
 		// (IC2 Experimental is 1 Lithium dust from 18 nether quartz)
 		// Regeneration II (ghast tear + glowstone)
@@ -356,7 +363,7 @@ public class Recipes {
 		                                       'R', itemStackStrongRegeneration,
 		                                       'r', "blockRedstone",
 		                                       'l', lithiumOrElectrum,
-		                                       'p', Items.PAPER));
+		                                       'p', Items.PAPER ));
 		
 		// Diamond crystal
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
@@ -384,17 +391,18 @@ public class Recipes {
 		                                       'e', Items.ENDER_PEARL,
 		                                       'B', barsIron,
 		                                       'r', Items.REDSTONE,
-		                                       'g', nuggetGoldOrSilver));
+		                                       'g', nuggetGoldOrSilver ));
 		
 		// Diamond coil is 6 Iron bars, 2 Gold ingots, 1 Diamond crystal, gives 12
-		final Object ingotGoldOrSilver = WarpDriveConfig.getOreOrItemStack("ore:ingotElectrum", 0,
-		                                                                   "ore:ingotSilver", 0,
-		                                                                   "ore:ingotGold", 0);
+		final Object ingotGoldOrSilver = WarpDriveConfig.getOreOrItemStack(
+				"ore:ingotElectrum", 0,
+				"ore:ingotSilver", 0,
+				"ore:ingotGold", 0 );
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStackNoCache(EnumComponentType.DIAMOND_COIL, 12), false, "bbg", "bdb", "gbb",
 		                                       'b', barsIron,
 		                                       'g', ingotGoldOrSilver,
-		                                       'd', ItemComponent.getItemStack(EnumComponentType.DIAMOND_CRYSTAL)));
+		                                       'd', ItemComponent.getItemStack(EnumComponentType.DIAMOND_CRYSTAL) ));
 		
 		// Computer interface is 2 Gold ingot, 2 Wired modems (or redstone), 1 Lead/Tin ingot
 		Object redstoneOrModem = Items.REDSTONE;
@@ -419,46 +427,51 @@ public class Recipes {
 			                                       'G', oreCircuitOrHeavyPressurePlate,
 			                                       'g', "ingotGold",
 			                                       'r', redstoneOrModem,
-			                                       'a', "ingotSolderingAlloy"));
+			                                       'a', "ingotSolderingAlloy" ));
 		}
+		
 		// Computer interface: simple output
-		final Object slimeOrTinOrLead = WarpDriveConfig.getOreOrItemStack("ore:ingotTin", 0,
-		                                                                  "ore:ingotLead", 0,
-		                                                                  "ore:slimeball", 0);
+		final Object slimeOrTinOrLead = WarpDriveConfig.getOreOrItemStack(
+				"ore:ingotTin", 0,
+				"ore:ingotLead", 0,
+				"ore:slimeball", 0 );
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStackNoCache(EnumComponentType.COMPUTER_INTERFACE, outputFactor), false, "   ", "rar", "gGg",
 		                                       'G', oreCircuitOrHeavyPressurePlate,
 		                                       'g', "ingotGold",
 		                                       'r', redstoneOrModem,
-		                                       'a', slimeOrTinOrLead));
+		                                       'a', slimeOrTinOrLead ));
 		
 		// *** breathing components
 		// Bone charcoal is smelting 1 Bone
 		GameRegistry.addSmelting(Items.BONE, ItemComponent.getItemStackNoCache(EnumComponentType.BONE_CHARCOAL, 1), 1);
 		
 		// Activated carbon is 3 bone charcoal, 3 leaves, 2 water bottles, 1 sulfur dust or gunpowder
-		final Object leaves = WarpDriveConfig.getOreOrItemStack("ore:treeLeaves", 0,
-		                                                        "minecraft:leaves", 0);
-		final Object gunpowderOrSulfur = WarpDriveConfig.getOreOrItemStack("ore:dustSulfur", 0,
-		                                                                   "ore:gunpowder", 0,
-		                                                                   "minecraft:gunpowder", 0);
+		final Object leaves = WarpDriveConfig.getOreOrItemStack(
+				"ore:treeLeaves", 0,
+				"minecraft:leaves", 0 );
+		final Object gunpowderOrSulfur = WarpDriveConfig.getOreOrItemStack(
+				"ore:dustSulfur", 0,
+				"ore:gunpowder", 0,
+				"minecraft:gunpowder", 0 );
 		final ItemStack itemStackWaterBottle = WarpDriveConfig.getItemStackOrFire("minecraft:potion", 0, "{Potion: \"minecraft:water\"}");
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStack(EnumComponentType.ACTIVATED_CARBON), false, "lll", "aaa", "wgw",
 		                                       'l', leaves,
 		                                       'a', ItemComponent.getItemStack(EnumComponentType.BONE_CHARCOAL),
 		                                       'w', itemStackWaterBottle,
-		                                       'g', gunpowderOrSulfur));
+		                                       'g', gunpowderOrSulfur ));
 		
 		// Air canister is 4 iron bars, 2 rubber, 2 yellow wool, 1 tank
-		final Object woolPurple = WarpDriveConfig.getOreOrItemStack("ore:blockWoolPurple", 0,
-		                                                            "minecraft:wool", 10);
+		final Object woolPurple = WarpDriveConfig.getOreOrItemStack(
+				"ore:blockWoolPurple", 0,
+				"minecraft:wool", 10 );
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStackNoCache(EnumComponentType.AIR_CANISTER, 4), false, "iyi", "rgr", "iyi",
 		                                       'r', rubber,
 		                                       'g', ItemComponent.getItemStack(EnumComponentType.GLASS_TANK),
 		                                       'y', woolPurple,
-		                                       'i', barsIron));
+		                                       'i', barsIron ));
 		
 		// *** human interface components
 		// Flat screen is 3 Dyes, 1 Glowstone dust, 2 Paper, 3 Glass panes
@@ -469,7 +482,7 @@ public class Recipes {
 		                                       'B', "dyeBlue",
 		                                       'd', "dustGlowstone",
 		                                       'g', "paneGlassColorless",
-		                                       'p', Items.PAPER));
+		                                       'p', Items.PAPER ));
 		
 		// Holographic projector is 5 Flat screens, 1 Zoom, 1 Emerald crystal, 1 Memory crystal
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
@@ -486,16 +499,16 @@ public class Recipes {
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStackNoCache(EnumComponentType.GLASS_TANK, 4), false, "sgs", "g g", "sgs",
 		                                       's', "slimeball",
-		                                       'g', "blockGlass"));
+		                                       'g', "blockGlass" ));
 		
 		// Motor is 2 Gold nuggets (wires), 3 Iron ingots (steel rods), 4 Iron bars (coils)
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStack(EnumComponentType.MOTOR), false, "bbn", "iii", "bbn",
 		                                       'b', barsIron,
 		                                       'i', "ingotIron",
-		                                       'n', "nuggetGold"));
+		                                       'n', "nuggetGold" ));
 		
-		// Pump is 2 Motor, 1 Iron ingot, 2 Tanks, 4 Rubber, gives 2
+		// Pump is 2 Motor, 1 Iron ingot, 2 Tank, 4 Rubber, gives 2
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStackNoCache(EnumComponentType.PUMP, 2), false, "sst", "mim", "tss",
 		                                       's', rubber,
@@ -534,21 +547,21 @@ public class Recipes {
 			                                       'd', "gemDiamond"));
 		}
 		
-		// Zoom is 3 Lenses, 2 Iron ingot, 2 Dyes, 2 Redstone
+		// Zoom is 3 Lens, 2 Iron ingot, 2 Dyes, 1 Redstone, 1 Basic motor
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStack(EnumComponentType.ZOOM), false, "dir", "lll", "dit",
 		                                       'r', Items.REDSTONE,
 		                                       'i', ingotIronOrSteel,
 		                                       'l', ItemComponent.getItemStack(EnumComponentType.LENS),
 		                                       't', itemStackMotors[0],
-		                                       'd', "dye"));
+		                                       'd', "dye" ));
 		
-		// Diffraction grating is 1 Ghast tear, 3 Iron bars, 3 Glowstone dust
+		// Diffraction grating is 1 Ghast tear, 3 Iron bar, 3 Glowstone block
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStack(EnumComponentType.DIFFRACTION_GRATING), false, " t ", "iii", "ggg",
 		                                       't', Items.GHAST_TEAR,
 		                                       'i', barsIron,
-		                                       'g', Blocks.GLOWSTONE));
+		                                       'g', Blocks.GLOWSTONE ));
 		
 		// *** energy components
 		// Power interface is 4 Redstone, 2 Rubber, 3 Gold ingot
@@ -559,9 +572,10 @@ public class Recipes {
 		                                       'r', Items.REDSTONE ));
 		
 		// Superconductor is 1 Ender crystal, 4 Power interface, 4 Cryotheum dust/Lapis block/10k Coolant cell
-		final Object coolant = WarpDriveConfig.getOreOrItemStack("ore:dustCryotheum", 0, // comes with ThermalFoundation
-		                                                         "ic2:heat_storage", 0, // IC2 Experimental 10k Coolant Cell
-		                                                         "ore:blockLapis", 0);
+		final Object coolant = WarpDriveConfig.getOreOrItemStack(
+				"ore:dustCryotheum", 0,          // comes with ThermalFoundation
+				"ic2:heat_storage", 0,           // IC2 Experimental 10k Coolant Cell
+				"ore:blockLapis", 0 );
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR), false, "pcp", "cec", "pcp",
 		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
@@ -828,14 +842,15 @@ public class Recipes {
 		                                       'M', "blockElectromagnet3"));
 		
 		// Lower tier coil is iron, copper or coil
-		final Object ironIngotOrCopperIngotOrCoil = WarpDriveConfig.getOreOrItemStack("gregtech:wire_coil", 0,            // GregTech Cupronickel Coil block
-		                                                                              "ic2:crafting", 5,                  // IC2 Coil
-		                                                                              "thermalfoundation:material", 513,  // ThermalFoundation Redstone reception coil
-		                                                                              "immersiveengineering:wirecoil", 1, // ImmersiveEngineering MV wire coil
-		                                                                              "enderio:item_power_conduit", 1,    // EnderIO Enhanced energy conduit
-		                                                                              "ore:ingotCopper", 0,
-		                                                                              "ore:ingotSteel", 0,
-		                                                                              "minecraft:iron_ingot", 0);
+		final Object ironIngotOrCopperIngotOrCoil = WarpDriveConfig.getOreOrItemStack(
+				"gregtech:wire_coil", 0,                   // GregTech Cupronickel Coil block
+				"ic2:crafting", 5,                         // IC2 Coil
+				"thermalfoundation:material", 513,         // ThermalFoundation Redstone reception coil
+				"immersiveengineering:wirecoil", 1,        // ImmersiveEngineering MV wire coil
+				"enderio:item_power_conduit", 1,           // EnderIO Enhanced energy conduit
+				"ore:ingotCopper", 0,
+				"ore:ingotSteel", 0,
+				"minecraft:iron_ingot", 0 );
 		
 		// Normal electromagnets
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
@@ -943,11 +958,12 @@ public class Recipes {
 		                                          WarpDrive.itemAirTanks[EnumAirTankTier.SUPERIOR.getIndex()]), "_uncrafting");
 		
 		// Air generator is 1 Power interface, 4 Activated carbon, 1 Motor, 1 MV Machine casing, 2 Glass tanks
-		final Object bronzeRotorOrIronBars = WarpDriveConfig.getOreOrItemStack("ore:rotorBronze", 0,            // GregTech CE Bronze rotor
-		                                                                       "ore:plateBronze", 8,            // IC2 or ThermalExpansion Bronze plate
-		                                                                       "ore:gearIronInfinity", 0,       // EnderIO Infinity Bimetal Gear
-		                                                                       "ore:barsIron", 0,               // Ore dictionary iron bars
-		                                                                       "minecraft:iron_bars", 0);       // Vanilla iron bars
+		final Object bronzeRotorOrIronBars = WarpDriveConfig.getOreOrItemStack(
+				"ore:rotorBronze", 0,            // GregTech CE Bronze rotor
+				"ore:plateBronze", 8,            // IC2 or ThermalExpansion Bronze plate
+				"ore:gearIronInfinity", 0,       // EnderIO Infinity Bimetal Gear
+				"ore:barsIron", 0,               // Ore dictionary iron bars
+				"minecraft:iron_bars", 0 );
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       new ItemStack(WarpDrive.blockAirGeneratorTiered[EnumTier.BASIC.getIndex()]), false, "aba", "ata", "gmp",
 		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
@@ -1088,15 +1104,17 @@ public class Recipes {
 	
 	private static void initDetection() {
 		// Radar is 1 motor, 4 Titanium plate (diamond), 1 Quarztite rod (nether quartz), 1 Computer interface, 1 HV Machine casing, 1 Power interface
-		final Object oreCloakingPlate = WarpDriveConfig.getOreOrItemStack("ore:plateTitanium", 0,     // GregTech
-		                                                                  "ore:plateEnderium", 0,     // ThermalExpansion
-		                                                                  "ore:ingotVibrantAlloy", 0, // EnderIO
-		                                                                  "ore:plateAlloyIridium", 0, // IndustrialCraft2
-		                                                                  "ore:gemQuartz", 0);        // vanilla
-		final Object oreAntenna = WarpDriveConfig.getOreOrItemStack("ore:stickQuartzite", 0,      // GregTech
-		                                                            "ore:ingotSignalum", 0,       // ThermalExpansion
-		                                                            "ore:nuggetPulsatingIron", 0, // EnderIO
-		                                                            "minecraft:ghast_tear", 0);   // vanilla
+		final Object oreCloakingPlate = WarpDriveConfig.getOreOrItemStack(
+				"ore:plateTitanium", 0,          // GregTech
+				"ore:plateEnderium", 0,          // ThermalExpansion
+				"ore:ingotVibrantAlloy", 0,      // EnderIO
+				"ore:plateAlloyIridium", 0,      // IndustrialCraft2
+				"ore:gemQuartz", 0 );
+		final Object oreAntenna = WarpDriveConfig.getOreOrItemStack(
+				"ore:stickQuartzite", 0,         // GregTech
+				"ore:ingotSignalum", 0,          // ThermalExpansion
+				"ore:nuggetPulsatingIron", 0,    // EnderIO
+				"minecraft:ghast_tear", 0 );
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       new ItemStack(WarpDrive.blockRadar), false, "PAP", "PtP", "pmc",
 		                                       't', itemStackMotors[2],
@@ -1138,24 +1156,27 @@ public class Recipes {
 		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE)));
 		
 		// Cloaking coil is 1 Titanium plate, 4 Reinforced iridium plate, 1 EV Machine casing (Ti) or 1 Beacon, 4 Emerald, 4 Diamond
-		final Object oreGoldIngotOrCoil = WarpDriveConfig.getOreOrItemStack("gregtech:wire_coil", 3,             // GregTech Tungstensteel Coil block
-		                                                                    "ic2:crafting", 5,                   // IC2 Coil
-		                                                                    "thermalfoundation:material", 515,   // ThermalFoundation Redstone conductance coil
-		                                                                    "immersiveengineering:connector", 8, // ImmersiveEngineering HV Transformer (coils wires are too cheap)
-		                                                                    "enderio:item_power_conduit", 2,     // EnderIO Ender energy conduit
-		                                                                    "minecraft:gold_ingot", 0);
-		final Object oreGoldIngotOrTitaniumPlate = WarpDriveConfig.getOreOrItemStack("ore:plateTitanium", 0,
-		                                                                             "advanced_solar_panels:crafting", 0,	  // ASP Sunnarium
-		                                                                             "ore:plateDenseSteel", 0,
-		                                                                             "thermalfoundation:glass", 6,            // ThermalFoundation Hardened Platinum Glass
-		                                                                             "immersiveengineering:metal_device1", 3, // ImmersiveEngineering Thermoelectric Generator
-		                                                                             "enderio:item_alloy_ingot", 2,	          // EnderIO Vibrant alloy (ore:ingotVibrantAlloy)
-		                                                                             "minecraft:gold_ingot", 0);
-		final Object oreEmeraldOrIridiumPlate = WarpDriveConfig.getOreOrItemStack("ore:plateIridium", 0,       // GregTech
-		                                                                          "ore:plateAlloyIridium", 0,  // IndustrialCraft2
-		                                                                          "enderio:item_material", 42, // EnderIO Frank'N'Zombie
-		                                                                          "ore:ingotLumium", 0,        // ThermalFoundation lumium ingot
-		                                                                          "ore:gemEmerald", 0);
+		final Object oreGoldIngotOrCoil = WarpDriveConfig.getOreOrItemStack(
+				"gregtech:wire_coil", 3,                   // GregTech Tungstensteel Coil block
+				"ic2:crafting", 5,                         // IC2 Coil
+				"thermalfoundation:material", 515,         // ThermalFoundation Redstone conductance coil
+				"immersiveengineering:connector", 8,       // ImmersiveEngineering HV Transformer (coils wires are too cheap)
+				"enderio:item_power_conduit", 2,           // EnderIO Ender energy conduit
+				"minecraft:gold_ingot", 0 );
+		final Object oreGoldIngotOrTitaniumPlate = WarpDriveConfig.getOreOrItemStack(
+				"ore:plateTitanium", 0,
+				"advanced_solar_panels:crafting", 0,	   // ASP Sunnarium
+				"ore:plateDenseSteel", 0,
+				"thermalfoundation:glass", 6,              // ThermalFoundation Hardened Platinum Glass
+				"immersiveengineering:metal_device1", 3,   // ImmersiveEngineering Thermoelectric Generator
+				"enderio:item_alloy_ingot", 2,	           // EnderIO Vibrant alloy (ore:ingotVibrantAlloy)
+				"minecraft:gold_ingot", 0 );
+		final Object oreEmeraldOrIridiumPlate = WarpDriveConfig.getOreOrItemStack(
+				"ore:plateIridium", 0,                     // GregTech
+				"ore:plateAlloyIridium", 0,                // IndustrialCraft2
+				"enderio:item_material", 42,               // EnderIO Frank'N'Zombie
+				"ore:ingotLumium", 0,                      // ThermalFoundation lumium ingot
+				"ore:gemEmerald", 0 );
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       new ItemStack(WarpDrive.blockCloakingCoil), false, "iti", "cmc", "iti",
 		                                       't', oreGoldIngotOrTitaniumPlate,
@@ -1515,11 +1536,12 @@ public class Recipes {
 		}
 		
 		// Tier 2 = 4 Tier 1, 4 GregTech 5 TungstenSteel reinforced block, IC2 Carbon plate, DarkSteel ingots or Obsidian, gives 4
-		final Object oreObsidianTungstenSteelPlate = WarpDriveConfig.getOreOrItemStack("ore:plateTungstenSteel", 0,     // GregTech CE TungstenSteel Plate
-		                                                                               "ic2:crafting", 15,              // IC2 Carbon plate
-		                                                                               "thermalfoundation:glass", 3,    // ThermalFoundation Hardened glass
-		                                                                               "ore:ingotDarkSteel", 0,         // EnderIO DarkSteel ingot
-		                                                                               "minecraft:obsidian", 0);
+		final Object oreObsidianTungstenSteelPlate = WarpDriveConfig.getOreOrItemStack(
+				"ore:plateTungstenSteel", 0,     // GregTech CE TungstenSteel Plate
+				"ic2:crafting", 15,              // IC2 Carbon plate
+				"thermalfoundation:glass", 3,    // ThermalFoundation Hardened glass
+				"ore:ingotDarkSteel", 0,         // EnderIO DarkSteel ingot
+				"minecraft:obsidian", 0 );
 		for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
 			final int metadataColor = enumDyeColor.getMetadata();
 			WarpDrive.register(new ShapedOreRecipe(groupTaintedHulls,
@@ -1534,10 +1556,11 @@ public class Recipes {
 		}
 		
 		// Tier 3 = 4 Tier 2, 1 GregTech Naquadah plate, IC2 Iridium plate, EnderIO Pulsating crystal or Diamond, gives 4
-		final Object oreDiamondOrNaquadahPlate = WarpDriveConfig.getOreOrItemStack("ore:plateNaquadah", 0,         // GregTech CE Naquadah plate
-		                                                                           "ore:plateAlloyIridium", 0,     // IC2 Iridium alloy
-		                                                                           "ore:itemPulsatingCrystal", 0,  // EnderIO Pulsating crystal
-		                                                                           "ore:gemDiamond", 0);
+		final Object oreDiamondOrNaquadahPlate = WarpDriveConfig.getOreOrItemStack(
+				"ore:plateNaquadah", 0,          // GregTech CE Naquadah plate
+				"ore:plateAlloyIridium", 0,      // IC2 Iridium alloy
+				"ore:itemPulsatingCrystal", 0,   // EnderIO Pulsating crystal
+				"ore:gemDiamond", 0 );
 		for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
 			final int metadataColor = enumDyeColor.getMetadata();
 			WarpDrive.register(new ShapedOreRecipe(groupTaintedHulls,
@@ -1724,10 +1747,11 @@ public class Recipes {
 		                                       'b', ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL)));
 		
 		// Laser lift is ...
-		final Object enderPearlOrMagnetizer = WarpDriveConfig.getOreOrItemStack("gregtech:machine", 420,     // Gregtech Basic polarizer
-		                                                                        "ic2:te", 37,                // IC2 Magnetizer
-		                                                                        "ore:ingotPulsatingIron", 0, // EnderIO iron ingot with ender pearl
-		                                                                        "minecraft:ender_pearl", 0);
+		final Object enderPearlOrMagnetizer = WarpDriveConfig.getOreOrItemStack(
+				"gregtech:machine", 420,         // Gregtech Basic polarizer
+				"ic2:te", 37,                    // IC2 Magnetizer
+				"ore:ingotPulsatingIron", 0,     // EnderIO iron ingot with ender pearl
+				"minecraft:ender_pearl", 0 );
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       new ItemStack(WarpDrive.blockLift), false, "wlw", "per", "glg",
 		                                       'r', Items.REDSTONE,

@@ -62,6 +62,7 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 		// Force a single model through a custom state mapper
 		final StateMapperBase stateMapperBase = new StateMapperBase() {
 			@Nonnull
+			@SideOnly(Side.CLIENT)
 			@Override
 			protected ModelResourceLocation getModelResourceLocation(@Nonnull final IBlockState blockState) {
 				return modelResourceLocation;

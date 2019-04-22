@@ -19,9 +19,8 @@ public class ItemBlockCapacitor extends ItemBlockAbstractBase {
 	}
 	
 	@Nonnull
-	@Override
 	@SideOnly(Side.CLIENT)
-	@SuppressWarnings("deprecation")
+	@Override
 	public ModelResourceLocation getModelResourceLocation(final ItemStack itemStack) {
 		final int damage = itemStack.getItemDamage();
 		if (damage < 0 || damage > 15) {

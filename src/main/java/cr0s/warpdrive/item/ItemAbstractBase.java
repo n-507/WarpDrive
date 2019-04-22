@@ -46,9 +46,9 @@ public class ItemAbstractBase extends Item implements IItemBase {
 		ClientProxy.modelInitialisation(this);
 	}
 	
-	@Override
 	@Nonnull
 	@SideOnly(Side.CLIENT)
+	@Override
 	public ModelResourceLocation getModelResourceLocation(final ItemStack itemStack) {
 		return ClientProxy.getModelResourceLocation(itemStack);
 	}

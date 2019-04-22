@@ -35,7 +35,7 @@ public abstract class BlockAbstractForceField extends BlockAbstractContainer {
 	}
 	
 	@Override
-	public void onEMP(World world, final BlockPos blockPos, final float efficiency) {
+	public void onEMP(@Nonnull final World world, @Nonnull final BlockPos blockPos, final float efficiency) {
 		super.onEMP(world, blockPos, efficiency * (1.0F - 0.2F * (enumTier.getIndex() - 1)));
 	}
 }

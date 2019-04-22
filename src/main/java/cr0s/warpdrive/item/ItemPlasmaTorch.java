@@ -43,7 +43,7 @@ public class ItemPlasmaTorch extends ItemAbstractBase implements IParticleContai
 		addPropertyOverride(new ResourceLocation(WarpDrive.MODID, "fill"), new IItemPropertyGetter() {
 			@SideOnly(Side.CLIENT)
 			@Override
-			public float apply(@Nonnull ItemStack itemStack, @Nullable World world, @Nullable EntityLivingBase entity) {
+			public float apply(@Nonnull final ItemStack itemStack, @Nullable final World world, @Nullable final EntityLivingBase entity) {
 				final ParticleStack particleStack = getParticleStack(itemStack);
 				if (particleStack != null) {
 					return (float) particleStack.getAmount() / getCapacity(itemStack);
@@ -54,8 +54,9 @@ public class ItemPlasmaTorch extends ItemAbstractBase implements IParticleContai
 	}
 	
 	@Nonnull
+	@SideOnly(Side.CLIENT)
 	@Override
-	public ModelResourceLocation getModelResourceLocation(ItemStack itemStack) {
+	public ModelResourceLocation getModelResourceLocation(final ItemStack itemStack) {
 		String variant = "empty";
 		final ParticleStack particleStack = getParticleStack(itemStack);
 		if (particleStack != null) {
@@ -175,7 +176,7 @@ public class ItemPlasmaTorch extends ItemAbstractBase implements IParticleContai
 	}
 	
 	@Override
-	public int getCapacity(ItemStack container) {
+	public int getCapacity(final ItemStack container) {
 		return WarpDriveConfig.PLASMA_TORCH_CAPACITY_BY_TIER[enumTier.getIndex()];
 	}
 	

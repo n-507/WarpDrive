@@ -36,7 +36,7 @@ public class CommandGenerate extends AbstractCommand {
 	@Nonnull
 	@Override
 	public String getUsage(@Nonnull final ICommandSender commandSender) {
-		return String.format("/%s <structure group> [<structure name>]\nStructure groups are ship, station, astfield, %s",
+		return String.format("/%s <structure group> (<structure name>)\nStructure groups are ship, station, astfield, %s",
 		                     getName(),
 		                     StructureManager.getGroups().replace("\"", "") );
 	}

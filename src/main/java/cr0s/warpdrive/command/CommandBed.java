@@ -15,11 +15,6 @@ import javax.annotation.Nonnull;
 
 public class CommandBed extends AbstractCommand {
 	
-	@Override
-	public int getRequiredPermissionLevel() {
-		return 2;
-	}
-	
 	@Nonnull
 	@Override
 	public String getName() {
@@ -27,9 +22,20 @@ public class CommandBed extends AbstractCommand {
 	}
 	
 	@Override
+	public int getRequiredPermissionLevel() {
+		return 2;
+	}
+	
+	@Nonnull
+	@Override
+	public String getUsage(@Nonnull final ICommandSender commandSender) {
+		return getName() + " (<playerName>)"
+		       + "\nplayerName: name of the player home to find. Exact casing is required.";
+	}
+	
+	@Override
 	public void execute(@Nonnull final MinecraftServer server, @Nonnull final ICommandSender commandSender, @Nonnull final String[] args) {
 		// parse arguments
-		//noinspection StatementWithEmptyBody
 		EntityPlayerMP[] entityPlayerMPs = null;
 		if (args.length == 0) {
 			if (commandSender instanceof EntityPlayerMP) {
@@ -104,12 +110,5 @@ public class CommandBed extends AbstractCommand {
 				                                                        Commons.format(entityPlayerMP.world, bedLocation) ));
 			}
 		}
-	}
-	
-	@Nonnull
-	@Override
-	public String getUsage(@Nonnull final ICommandSender commandSender) {
-		return getName() + " (<playerName>)"
-		       + "\nplayerName: name of the player home to find. Exact casing is required.";
 	}
 }

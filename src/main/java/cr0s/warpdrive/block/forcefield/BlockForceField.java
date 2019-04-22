@@ -531,7 +531,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	}
 	
 	@Override
-	public void onEMP(final World world, final BlockPos blockPos, final float efficiency) {
+	public void onEMP(@Nonnull final World world, @Nonnull final BlockPos blockPos, final float efficiency) {
 		if (efficiency * (1.0F - 0.20F * (enumTier.getIndex() - 1)) > world.rand.nextFloat()) {
 			downgrade(world, blockPos);
 		}

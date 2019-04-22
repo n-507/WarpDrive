@@ -10,6 +10,7 @@ import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.network.PacketHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -153,7 +154,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		}
 	}
 	
-	void decreaseInstability(final ReactorFace reactorFace, final int energy) {
+	void decreaseInstability(@Nonnull final ReactorFace reactorFace, final int energy) {
 		if (reactorFace.indexStability < 0) {
 			return;
 		}
@@ -231,7 +232,8 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		}
 	}
 	
-	private TileEntityEnanReactorLaser getLaser(final ReactorFace reactorFace) {
+	@Nullable
+	private TileEntityEnanReactorLaser getLaser(@Nonnull final ReactorFace reactorFace) {
 		final WeakReference<TileEntityEnanReactorLaser> weakTileEntityLaser = weakTileEntityLasers[reactorFace.indexStability];
 		TileEntityEnanReactorLaser tileEntityEnanReactorLaser;
 		if (weakTileEntityLaser != null) {

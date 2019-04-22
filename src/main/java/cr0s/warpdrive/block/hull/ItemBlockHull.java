@@ -19,9 +19,8 @@ public class ItemBlockHull extends ItemBlockAbstractBase {
 	}
 	
 	@Nonnull
-	@Override
 	@SideOnly(Side.CLIENT)
-	@SuppressWarnings("deprecation")
+	@Override
 	public ModelResourceLocation getModelResourceLocation(final ItemStack itemStack) {
 		if (block instanceof BlockHullStairs) {
 			final ResourceLocation resourceLocation = getRegistryName();

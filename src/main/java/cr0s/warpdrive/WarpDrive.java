@@ -184,6 +184,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.mojang.authlib.GameProfile;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Mod(modid = WarpDrive.MODID,
@@ -288,6 +289,7 @@ public class WarpDrive {
 	public static DamageTeleportation damageTeleportation;
 	public static DamageWarm damageWarm;
 	
+	// world generation
 	public static Biome biomeSpace;
 	public static DimensionType dimensionTypeSpace;
 	public static DimensionType dimensionTypeHyperSpace;
@@ -776,19 +778,19 @@ public class WarpDrive {
 	final public static ArrayList<VillagerProfession> villagerProfessions = new ArrayList<>(10);
 	
 	// Register a Biome.
-	public static <BIOME extends Biome> BIOME register(final BIOME biome) {
+	public static <BIOME extends Biome> BIOME register(@Nonnull final BIOME biome) {
 		biomes.add(biome);
 		return biome;
 	}
 	
 	// Register a Block with the default ItemBlock class.
-	public static <BLOCK extends Block> BLOCK register(final BLOCK block) {
+	public static <BLOCK extends Block> BLOCK register(@Nonnull final BLOCK block) {
 		assert block instanceof IBlockBase;
 		return register(block, ((IBlockBase) block).createItemBlock());
 	}
 	
 	// Register a Block with a custom ItemBlock class.
-	public static <BLOCK extends Block> BLOCK register(final BLOCK block, @Nullable final ItemBlock itemBlock) {
+	public static <BLOCK extends Block> BLOCK register(@Nonnull final BLOCK block, @Nullable final ItemBlock itemBlock) {
 		final ResourceLocation resourceLocation = block.getRegistryName();
 		if (resourceLocation == null) {
 			WarpDrive.logger.error(String.format("Missing registry name for block %s, ignoring registration...",
@@ -807,34 +809,34 @@ public class WarpDrive {
 	}
 	
 	// Register an Enchantment.
-	public static <ENCHANTMENT extends Enchantment> ENCHANTMENT register(final ENCHANTMENT enchantment) {
+	public static <ENCHANTMENT extends Enchantment> ENCHANTMENT register(@Nonnull final ENCHANTMENT enchantment) {
 		enchantments.add(enchantment);
 		return enchantment;
 	}
 	
 	// Register an Item.
-	public static <ITEM extends Item> ITEM register(final ITEM item) {
+	public static <ITEM extends Item> ITEM register(@Nonnull final ITEM item) {
 		items.add(item);
 		return item;
 	}
 	
 	// Register an Potion.
-	public static <POTION extends Potion> POTION register(final POTION potion) {
+	public static <POTION extends Potion> POTION register(@Nonnull final POTION potion) {
 		potions.add(potion);
 		return potion;
 	}
 	
 	// Register an PotionType.
-	public static <POTION_TYPE extends PotionType> POTION_TYPE register(final POTION_TYPE potionType) {
+	public static <POTION_TYPE extends PotionType> POTION_TYPE register(@Nonnull final POTION_TYPE potionType) {
 		potionTypes.add(potionType);
 		return potionType;
 	}
 	
 	// Register a recipe.
-	public static <RECIPE extends IRecipe> RECIPE register(final RECIPE recipe) {
+	public static <RECIPE extends IRecipe> RECIPE register(@Nonnull final RECIPE recipe) {
 		return register(recipe, "");
 	}
-	public static <RECIPE extends IRecipe> RECIPE register(final RECIPE recipe, final String suffix) {
+	public static <RECIPE extends IRecipe> RECIPE register(@Nonnull final RECIPE recipe, final String suffix) {
 		ResourceLocation registryName = recipe.getRegistryName();
 		if (registryName == null) {
 			final String path;
@@ -874,19 +876,19 @@ public class WarpDrive {
 	}
 	
 	// Register a SoundEvent.
-	public static <SOUND_EVENT extends SoundEvent> SOUND_EVENT register(final SOUND_EVENT soundEvent) {
+	public static <SOUND_EVENT extends SoundEvent> SOUND_EVENT register(@Nonnull final SOUND_EVENT soundEvent) {
 		soundEvents.add(soundEvent);
 		return soundEvent;
 	}
 	
 	// Register a VillagerProfession.
-	public static <VILLAGER_PROFESSION extends VillagerProfession> VILLAGER_PROFESSION register(final VILLAGER_PROFESSION villagerProfession) {
+	public static <VILLAGER_PROFESSION extends VillagerProfession> VILLAGER_PROFESSION register(@Nonnull final VILLAGER_PROFESSION villagerProfession) {
 		villagerProfessions.add(villagerProfession);
 		return villagerProfession;
 	}
 	
 	@SubscribeEvent
-	public void onRegisterBiomes(final RegistryEvent.Register<Biome> event) {
+	public void onRegisterBiomes(@Nonnull final RegistryEvent.Register<Biome> event) {
 		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
 		for (final Biome biome : biomes) {
 			event.getRegistry().register(biome);
@@ -896,7 +898,7 @@ public class WarpDrive {
 	}
 	
 	@SubscribeEvent
-	public void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
+	public void onRegisterBlocks(@Nonnull final RegistryEvent.Register<Block> event) {
 		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
 		for (final Block block : blocks) {
 			event.getRegistry().register(block);
@@ -936,7 +938,7 @@ public class WarpDrive {
 	}
 	
 	@SubscribeEvent
-	public void onRegisterEnchantments(final RegistryEvent.Register<Enchantment> event) {
+	public void onRegisterEnchantments(@Nonnull final RegistryEvent.Register<Enchantment> event) {
 		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
 		for (final Enchantment enchantment : enchantments) {
 			event.getRegistry().register(enchantment);
@@ -944,7 +946,7 @@ public class WarpDrive {
 	}
 	
 	@SubscribeEvent
-	public void onRegisterEntities(final RegistryEvent.Register<EntityEntry> event) {
+	public void onRegisterEntities(@Nonnull final RegistryEvent.Register<EntityEntry> event) {
 		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
 		
 		EntityEntry entityEntry;
@@ -979,7 +981,7 @@ public class WarpDrive {
 	}
 	
 	@SubscribeEvent
-	public void onRegisterItems(final RegistryEvent.Register<Item> event) {
+	public void onRegisterItems(@Nonnull final RegistryEvent.Register<Item> event) {
 		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
 		for (final Item item : items) {
 			event.getRegistry().register(item);
@@ -991,7 +993,7 @@ public class WarpDrive {
 	}
 	
 	@SubscribeEvent
-	public void onRegisterPotions(final RegistryEvent.Register<Potion> event) {
+	public void onRegisterPotions(@Nonnull final RegistryEvent.Register<Potion> event) {
 		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
 		for (final Potion potion : potions) {
 			event.getRegistry().register(potion);
@@ -999,7 +1001,7 @@ public class WarpDrive {
 	}
 	
 	@SubscribeEvent
-	public void onRegisterPotionTypes(final RegistryEvent.Register<PotionType> event) {
+	public void onRegisterPotionTypes(@Nonnull final RegistryEvent.Register<PotionType> event) {
 		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
 		for (final PotionType potionType : potionTypes) {
 			event.getRegistry().register(potionType);
@@ -1007,7 +1009,7 @@ public class WarpDrive {
 	}
 	
 	@SubscribeEvent
-	public void onRegisterRecipes(final RegistryEvent.Register<IRecipe> event) {
+	public void onRegisterRecipes(@Nonnull final RegistryEvent.Register<IRecipe> event) {
 		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
 		
 		Recipes.initOreDictionary();
@@ -1020,7 +1022,7 @@ public class WarpDrive {
 	}
 	
 	@SubscribeEvent
-	public void onRegisterSoundEvents(final RegistryEvent.Register<SoundEvent> event) {
+	public void onRegisterSoundEvents(@Nonnull final RegistryEvent.Register<SoundEvent> event) {
 		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
 		cr0s.warpdrive.data.SoundEvents.registerSounds();
 		for (final SoundEvent soundEvent : soundEvents) {
@@ -1029,7 +1031,7 @@ public class WarpDrive {
 	}
 	
 	@SubscribeEvent
-	public void onRegisterVillagerProfessions(final RegistryEvent.Register<VillagerProfession> event) {
+	public void onRegisterVillagerProfessions(@Nonnull final RegistryEvent.Register<VillagerProfession> event) {
 		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
 		for (final VillagerProfession villagerProfession : villagerProfessions) {
 			event.getRegistry().register(villagerProfession);

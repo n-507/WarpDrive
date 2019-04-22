@@ -79,8 +79,8 @@ public class ItemForceFieldUpgrade extends ItemAbstractBase {
 	}
 	
 	@Nonnull
-	@Override
 	@SideOnly(Side.CLIENT)
+	@Override
 	public ModelResourceLocation getModelResourceLocation(final ItemStack itemStack) {
 		final int damage = itemStack.getItemDamage();
 		ResourceLocation resourceLocation = getRegistryName();

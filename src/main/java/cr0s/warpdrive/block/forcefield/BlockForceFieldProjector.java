@@ -229,7 +229,7 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 			  || (enumFacing != blockState.getValue(BlockProperties.FACING) && (!tileEntityForceFieldProjector.isDoubleSided || enumFacing.getOpposite() != blockState.getValue(BlockProperties.FACING))) ) {
 				// find a valid upgrade to dismount
 				if (!tileEntityForceFieldProjector.hasUpgrade(enumForceFieldUpgrade)) {
-					enumForceFieldUpgrade = (EnumForceFieldUpgrade)tileEntityForceFieldProjector.getFirstUpgradeOfType(EnumForceFieldUpgrade.class, EnumForceFieldUpgrade.NONE);
+					enumForceFieldUpgrade = (EnumForceFieldUpgrade) tileEntityForceFieldProjector.getFirstUpgradeOfType(EnumForceFieldUpgrade.class, EnumForceFieldUpgrade.NONE);
 				}
 				
 				if (enumForceFieldUpgrade == EnumForceFieldUpgrade.NONE) {

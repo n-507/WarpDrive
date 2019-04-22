@@ -59,8 +59,8 @@ public class ItemTuningFork extends ItemAbstractBase implements IWarpTool {
 	}
 	
 	@Nonnull
-	@Override
 	@SideOnly(Side.CLIENT)
+	@Override
 	public ModelResourceLocation getModelResourceLocation(final ItemStack itemStack) {
 		final int damage = itemStack.getItemDamage();
 		ResourceLocation resourceLocation = getRegistryName();
@@ -104,9 +104,9 @@ public class ItemTuningFork extends ItemAbstractBase implements IWarpTool {
 	
 	@Nonnull
 	@Override
-	public EnumActionResult onItemUse(final EntityPlayer entityPlayer,
-	                                  final World world, final BlockPos blockPos, final EnumHand hand,
-	                                  final EnumFacing facing, final float hitX, final float hitY, final float hitZ) {
+	public EnumActionResult onItemUse(@Nonnull final EntityPlayer entityPlayer,
+	                                  @Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final EnumHand hand,
+	                                  @Nonnull final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
 		if (world.isRemote) {
 			return EnumActionResult.FAIL;
 		}

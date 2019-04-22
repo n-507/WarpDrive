@@ -56,7 +56,7 @@ public class GlobalPosition {
 			if (chunk != null) {
 				isLoaded = !chunk.unloadQueued;
 			}
-		} catch (NoSuchFieldError exception) {
+		} catch (final NoSuchFieldError exception) {
 			isLoaded = chunkProviderServer.chunkExists(x >> 4, z >> 4);
 		}
 		// skip unloaded chunks

@@ -31,9 +31,10 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	private int moveUp = 0;
 	private int moveRight = 0;
 	private byte rotationSteps = 0;
+	protected String nameTarget = "";
+	
 	protected EnumShipCommand enumShipCommand = EnumShipCommand.IDLE;
 	protected boolean isCommandConfirmed = false;
-	protected String nameTarget = "";
 	
 	public TileEntityAbstractShipController() {
 		super();
@@ -75,9 +76,6 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
-		final boolean isConfirmed = tagCompound.hasKey("commandConfirmed") && tagCompound.getBoolean("commandConfirmed");
-		setCommand(tagCompound.getString("commandName"), isConfirmed);
-		
 		setFront(tagCompound.getInteger("front"));
 		setRight(tagCompound.getInteger("right"));
 		setUp   (tagCompound.getInteger("up"));
@@ -91,15 +89,15 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 				tagCompound.getInteger("moveRight") );
 		setRotationSteps(tagCompound.getByte("rotationSteps"));
 		nameTarget = tagCompound.getString("nameTarget");
+		
+		final boolean isConfirmed = tagCompound.hasKey("commandConfirmed") && tagCompound.getBoolean("commandConfirmed");
+		setCommand(tagCompound.getString("commandName"), isConfirmed);
 	}
 	
 	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
-		
-		tagCompound.setString("commandName", enumShipCommand.getName());
-		tagCompound.setBoolean("commandConfirmed", isCommandConfirmed);
 		
 		tagCompound.setInteger("front", getFront());
 		tagCompound.setInteger("right", getRight());
@@ -113,15 +111,16 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 		tagCompound.setInteger("moveRight", moveRight);
 		tagCompound.setByte("rotationSteps", rotationSteps);
 		tagCompound.setString("nameTarget", nameTarget);
+		
+		tagCompound.setString("commandName", enumShipCommand.getName());
+		tagCompound.setBoolean("commandConfirmed", isCommandConfirmed);
+		
 		return tagCompound;
 	}
 	
 	@Override
 	public NBTTagCompound writeItemDropNBT(NBTTagCompound tagCompound) {
 		tagCompound = super.writeItemDropNBT(tagCompound);
-		
-		tagCompound.removeTag("commandName");
-		tagCompound.removeTag("commandConfirmed");
 		
 		tagCompound.removeTag("front");
 		tagCompound.removeTag("right");
@@ -135,6 +134,10 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 		tagCompound.removeTag("moveRight");
 		tagCompound.removeTag("rotationSteps");
 		tagCompound.removeTag("nameTarget");
+		
+		tagCompound.removeTag("commandName");
+		tagCompound.removeTag("commandConfirmed");
+		
 		return tagCompound;
 	}
 	

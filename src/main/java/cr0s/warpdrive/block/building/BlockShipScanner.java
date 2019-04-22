@@ -135,6 +135,7 @@ public class BlockShipScanner extends BlockAbstractContainer {
 				  || !entityPlayer.isSneaking() ) {
 					Commons.addChatMessage(entityPlayer, ((TileEntityShipScanner) tileEntity).getStatus());
 					return true;
+					
 				} else if (blockStateAbove.getBlock() != this) {
 					((TileEntityShipScanner) tileEntity).blockCamouflage = blockStateAbove.getBlock();
 					((TileEntityShipScanner) tileEntity).metadataCamouflage = blockStateAbove.getBlock().getMetaFromState(blockStateAbove);

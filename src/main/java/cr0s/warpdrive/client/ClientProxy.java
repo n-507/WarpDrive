@@ -83,7 +83,7 @@ public class ClientProxy extends CommonProxy {
 	}
 	
 	@Nonnull
-	public static ModelResourceLocation getModelResourceLocation(final ItemStack itemStack) {
+	public static ModelResourceLocation getModelResourceLocation(@Nonnull final ItemStack itemStack) {
 		final Item item = itemStack.getItem();
 		ResourceLocation resourceLocation = item.getRegistryName();
 		assert resourceLocation != null;
@@ -107,9 +107,9 @@ public class ClientProxy extends CommonProxy {
 		return new ModelResourceLocation(resourceLocation, "inventory");
 	}
 	
-	public static void modelInitialisation(final Item item) {
+	public static void modelInitialisation(@Nonnull final Item item) {
 		if (!(item instanceof IItemBase)) {
-			throw new RuntimeException(String.format("Unable to item, expecting an IItemBase instance: %s",
+			throw new RuntimeException(String.format("Unable to initialize item's model, expecting an IItemBase instance: %s",
 			                                         item));
 		}
 		

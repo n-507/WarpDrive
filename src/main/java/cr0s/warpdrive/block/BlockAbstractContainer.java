@@ -108,7 +108,7 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	                                        @Nonnull final EntityLivingBase entityLivingBase, final EnumHand enumHand) {
 		final IBlockState blockState = super.getStateForPlacement(world, blockPos, facing, hitX, hitY, hitZ, metadata, entityLivingBase, enumHand);
 		final boolean isRotating = !ignoreFacingOnPlacement
-		                        && blockState.getProperties().containsKey(BlockProperties.FACING);
+		                           && blockState.getProperties().containsKey(BlockProperties.FACING);
 		if (isRotating) {
 			if (blockState.isFullBlock()) {
 				final EnumFacing enumFacing = Commons.getFacingFromEntity(entityLivingBase);
@@ -153,7 +153,7 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	}
 	
 	@Override
-	public void dropBlockAsItemWithChance(final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState,
+	public void dropBlockAsItemWithChance(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState,
 	                                      final float chance, final int fortune) {
 		super.dropBlockAsItemWithChance(world, blockPos, blockState, chance, fortune); // calls getDrops() here below
 		if ( !world.isRemote
@@ -222,14 +222,14 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 				final ResourceLocation registryName = blockNeighbor.getRegistryName();
 				WarpDrive.logger.error(String.format("Bad multithreading detected from mod %s %s, please report to mod author",
 				                                     registryName == null ? blockNeighbor : registryName.getNamespace(),
-				                                     Commons.format(blockAccess, blockPosNeighbor) ));
+				                                     Commons.format(blockAccess, blockPosNeighbor)));
 				new ConcurrentModificationException().printStackTrace();
 			}
 			return;
 		}
 		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
-		if ( tileEntity == null
-		  || tileEntity.getWorld().isRemote ) {
+		if (tileEntity == null
+		    || tileEntity.getWorld().isRemote) {
 			return;
 		}
 		if (tileEntity instanceof IBlockUpdateDetector) {
@@ -263,7 +263,7 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 		}
 	}
 	
-	public void onEMP(final World world, final BlockPos blockPos, final float efficiency) {
+	public void onEMP(@Nonnull final World world, @Nonnull final BlockPos blockPos, final float efficiency) {
 		final TileEntity tileEntity = world.getTileEntity(blockPos);
 		if (tileEntity instanceof TileEntityAbstractEnergy) {
 			final TileEntityAbstractEnergy tileEntityAbstractEnergy = (TileEntityAbstractEnergy) tileEntity;

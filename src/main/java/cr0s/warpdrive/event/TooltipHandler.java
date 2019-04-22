@@ -45,7 +45,7 @@ public class TooltipHandler {
 	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public void onTooltipEvent_first(final ItemTooltipEvent event) {
+	public void onTooltipEvent_first(@Nonnull final ItemTooltipEvent event) {
 		if (event.getEntityPlayer() == null) {
 			return;
 		}
@@ -64,7 +64,7 @@ public class TooltipHandler {
 	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public void onTooltipEvent_last(final ItemTooltipEvent event) {
+	public void onTooltipEvent_last(@Nonnull final ItemTooltipEvent event) {
 		if (event.getEntityPlayer() == null) {
 			return;
 		}

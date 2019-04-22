@@ -23,6 +23,12 @@ import net.minecraft.world.WorldServer;
 
 public class CommandSpace extends AbstractCommand {
 	
+	@Nonnull
+	@Override
+	public String getName() {
+		return "space";
+	}
+	
 	@Override
 	public int getRequiredPermissionLevel() {
 		return 2;
@@ -30,8 +36,8 @@ public class CommandSpace extends AbstractCommand {
 	
 	@Nonnull
 	@Override
-	public String getName() {
-		return "space";
+	public String getUsage(@Nonnull final ICommandSender commandSender) {
+		return "/space (<playerName>) ([overworld|nether|end|theend|space|hyper|hyperspace|<dimensionId>])";
 	}
 	
 	@Override
@@ -206,11 +212,5 @@ public class CommandSpace extends AbstractCommand {
 			// actual teleportation
 			Commons.moveEntity(entityPlayerMP, worldTarget, new Vector3(xTarget + 0.5D, yTarget + 0.2D, zTarget + 0.5D));
 		}
-	}
-	
-	@Nonnull
-	@Override
-	public String getUsage(@Nonnull final ICommandSender commandSender) {
-		return "/space (<playerName>) ([overworld|nether|end|theend|space|hyper|hyperspace|<dimensionId>])";
 	}
 }

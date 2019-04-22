@@ -113,15 +113,15 @@ public class ItemBlockAbstractBase extends ItemBlock implements IItemBase {
 		ClientProxy.modelInitialisation(this);
 	}
 	
-	@SideOnly(Side.CLIENT)
 	@Nonnull
+	@SideOnly(Side.CLIENT)
 	@Override
 	public ModelResourceLocation getModelResourceLocation(final ItemStack itemStack) {
 		return ClientProxy.getModelResourceLocation(itemStack);
 	}
 	
-	@Override
 	@SideOnly(Side.CLIENT)
+	@Override
 	public void addInformation(@Nonnull final ItemStack itemStack, @Nullable final World world,
 	                           @Nonnull final List<String> list, @Nullable final ITooltipFlag advancedItemTooltips) {
 		super.addInformation(itemStack, world, list, advancedItemTooltips);

@@ -8,6 +8,7 @@ import cr0s.warpdrive.block.movement.BlockShipCore;
 import cr0s.warpdrive.block.movement.TileEntityShipCore;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -225,7 +226,7 @@ public class StarMapRegistry {
 		return String.format("No ship found with name '%s'", nameShip);
 	}
 	
-	public StarMapRegistryItem findNearest(final EnumStarMapEntryType enumStarMapEntryType, final World world, final BlockPos blockPos) {
+	public StarMapRegistryItem findNearest(final EnumStarMapEntryType enumStarMapEntryType, @Nonnull final World world, @Nonnull final BlockPos blockPos) {
 		final CopyOnWriteArraySet<StarMapRegistryItem> setStarMapRegistryItems = registry.get(world.provider.getDimension());
 		if (setStarMapRegistryItems == null) {
 			return null;
@@ -253,7 +254,7 @@ public class StarMapRegistry {
 		return result;
 	}
 	
-	public void onBlockUpdated(final World world, final BlockPos blockPos, final IBlockState blockState) {
+	public void onBlockUpdated(@Nonnull final World world, @Nonnull final BlockPos blockPos, final IBlockState blockState) {
 		final CopyOnWriteArraySet<StarMapRegistryItem> setStarMapRegistryItems = registry.get(world.provider.getDimension());
 		if (setStarMapRegistryItems == null) {
 			return;
@@ -435,7 +436,7 @@ public class StarMapRegistry {
 		}
 	}
 	
-	public boolean isWarpCoreIntersectsWithOthers(final TileEntityShipCore shipCore1) {
+	public boolean isWarpCoreIntersectsWithOthers(@Nonnull final TileEntityShipCore shipCore1) {
 		cleanup();
 		
 		if (!shipCore1.isValid()) {
