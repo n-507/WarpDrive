@@ -254,8 +254,10 @@ public class MessageTransporterEffect implements IMessage, IMessageHandler<Messa
 		
 		final TileEntity tileEntity = vTransporter.getTileEntity(world);
 		if (!(tileEntity instanceof TileEntityTransporterCore)) {
-			WarpDrive.logger.error(String.format("Missing transporter core at %s: %s",
-			                                     vTransporter, tileEntity));
+			if (WarpDrive.isDev) {
+				WarpDrive.logger.warn(String.format("Missing transporter core at %s, is chunk loaded yet? %s",
+				                                    vTransporter, tileEntity));
+			}
 			return;
 		}
 		
