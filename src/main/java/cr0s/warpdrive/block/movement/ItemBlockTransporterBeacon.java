@@ -206,37 +206,6 @@ public class ItemBlockTransporterBeacon extends ItemBlockAbstractBase implements
 		super.onUpdate(itemStack, world, entity, indexSlot, isHeld);
 	}
 	
-	/* @TODO 1.10 is the upstream 1.7.10 bug fixed?
-	@Override
-	public boolean onItemUseFirst(final ItemStack itemStack, final EntityPlayer entityPlayer,
-	                              final World world, final int x, final int y, final int z,
-	                              final int side, final float hitX, final float hitY, final float hitZ) {
-		// itemStack is constantly updated for energy updates
-		// in net.minecraft.network.NetHandlerPlayServer.processPlayerBlockPlacement(NetHandlerPlayServer.java:657), a NPE appears randomly due to bad multithreading in upstream
-		// consequently, we prevent to use the item on any tile entity other than a TransporterCore
-		
-		// allows block placement while sneaking
-		if (entityPlayer.isSneaking()) {
-			return false;
-		}
-		
-		// allows non-tile entities or transporter core
-		final TileEntity tileEntity = world.getTileEntity(x, y, z);
-		if ( tileEntity == null
-		  || tileEntity instanceof ITransporterCore ) {
-			return false;
-		}
-		
-		// allow if beacon is disabled
-		if (!isActive(itemStack)) {
-			return false;
-		}
-		
-		// forbid everything else
-		return true;
-	}
-	/**/
-	
 	@Nonnull
 	@Override
 	public EnumActionResult onItemUse(@Nonnull final EntityPlayer entityPlayer,

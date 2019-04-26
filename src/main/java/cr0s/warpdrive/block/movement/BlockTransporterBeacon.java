@@ -22,6 +22,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -168,22 +169,27 @@ public class BlockTransporterBeacon extends BlockAbstractContainer {
 		}
 		final TileEntityTransporterBeacon tileEntityTransporterBeacon = (TileEntityTransporterBeacon) tileEntity;
 		
-		// sneaking with an empty hand
-		if ( itemStackHeld.isEmpty()
-		  && entityPlayer.isSneaking() ) {
-			final boolean isEnabledOld = tileEntityTransporterBeacon.getIsEnabled();
-			tileEntityTransporterBeacon.setIsEnabled(!isEnabledOld);
-			final boolean isEnabledNew = tileEntityTransporterBeacon.getIsEnabled();
-			if (isEnabledOld != isEnabledNew) {
-				if (isEnabledNew) {
-					Commons.addChatMessage(entityPlayer, Commons.getChatPrefix(this)
-					                                            .appendSibling(new TextComponentTranslation("warpdrive.is_enabled.set.enabled")));
-				} else {
-					Commons.addChatMessage(entityPlayer, Commons.getChatPrefix(this)
-					                                            .appendSibling(new TextComponentTranslation("warpdrive.is_enabled.set.disabled")));
+		if (itemStackHeld.isEmpty()) {
+			if (!entityPlayer.isSneaking()) {// non-sneaking with an empty hand
+				Commons.addChatMessage(entityPlayer, Commons.getChatPrefix(this)
+				                                            .appendSibling(new TextComponentString(tileEntityTransporterBeacon.stateTransporter)));
+				return true;
+				
+			} else {// sneaking with an empty hand
+				final boolean isEnabledOld = tileEntityTransporterBeacon.getIsEnabled();
+				tileEntityTransporterBeacon.setIsEnabled(!isEnabledOld);
+				final boolean isEnabledNew = tileEntityTransporterBeacon.getIsEnabled();
+				if (isEnabledOld != isEnabledNew) {
+					if (isEnabledNew) {
+						Commons.addChatMessage(entityPlayer, Commons.getChatPrefix(this)
+						                                            .appendSibling(new TextComponentTranslation("warpdrive.is_enabled.set.enabled")));
+					} else {
+						Commons.addChatMessage(entityPlayer, Commons.getChatPrefix(this)
+						                                            .appendSibling(new TextComponentTranslation("warpdrive.is_enabled.set.disabled")));
+					}
 				}
+				return true;
 			}
-			return true;
 		}
 		
 		return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);

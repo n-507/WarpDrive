@@ -49,7 +49,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -68,10 +67,14 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.ForgeChunkManager.Ticket;
+import net.minecraftforge.common.ForgeChunkManager.Type;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.Optional;
 
@@ -98,6 +101,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 	private int tickComputerPulse = 0;
 	private boolean isConnected = false;
 	private GlobalPosition globalPositionBeacon = null;
+	private Ticket ticketChunkloading;
 	private double energyCostForAcquiring = 0.0D;
 	private double energyCostForEnergizing = 0.0D;
 	private double lockStrengthOptimal = -1.0D;
@@ -258,6 +262,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 		// execute state transitions
 		switch (transporterState) {
 		case DISABLED:
+			releaseChunks();
 			isLockRequested = false;
 			isEnergizeRequested = false;
 			lockStrengthActual = 0.0D;
@@ -272,6 +277,8 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 				// force parameters validation for next tick
 				tickUpdateParameters = 0;
 				transporterState = EnumTransporterState.ACQUIRING;
+			} else {
+				releaseChunks();
 			}
 			break;
 		
@@ -322,6 +329,13 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 	}
 	
 	@Override
+	public void onChunkUnload() {
+		releaseChunks();
+		
+		super.onChunkUnload();
+	}
+	
+	@Override
 	public void invalidate() {
 		if (!world.isRemote) {
 			rebootTransporter();
@@ -340,6 +354,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 				}
 			}
 		}
+		releaseChunks();
 	}
 	
 	private void state_energizing() {
@@ -667,6 +682,30 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 		long mass;
 	}
 	
+	private void checkBeaconObsolescence() {
+		if (globalPositionBeacon != null) {
+			final WorldServer worldBeacon = globalPositionBeacon.getWorldServerIfLoaded();
+			if (worldBeacon == null) {
+				globalPositionBeacon = null;
+				isLockRequested = false;
+				isEnergizeRequested = false;
+				isJammed = false;
+				reasonJammed = "";
+				
+			} else {
+				final TileEntity tileEntity = worldBeacon.getTileEntity(new BlockPos(globalPositionBeacon.x, globalPositionBeacon.y, globalPositionBeacon.z));
+				if ( !(tileEntity instanceof ITransporterBeacon)
+				  || !((ITransporterBeacon) tileEntity).isActive() ) {
+					globalPositionBeacon = null;
+					isLockRequested = false;
+					isEnergizeRequested = false;
+					isJammed = false;
+					reasonJammed = "";
+				}
+			}
+		}
+	}
+	
 	private void updateParameters() {
 		isJammed = false;
 		reasonJammed = "";
@@ -688,23 +727,8 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 		final CelestialObject celestialObjectLocal = CelestialObjectManager.get(world, pos.getX(), pos.getZ());
 		final Vector3 v3Local_universal = StarMapRegistry.getUniversalCoordinates(celestialObjectLocal, globalPositionLocal.x, globalPositionLocal.y, globalPositionLocal.z);
 		
-		// check beacon obsolescence
-		if (globalPositionBeacon != null) {
-			final WorldServer worldBeacon = globalPositionBeacon.getWorldServerIfLoaded();
-			if (worldBeacon == null) {
-				globalPositionBeacon = null;
-				isLockRequested = false;
-				isEnergizeRequested = false;
-			} else {
-				final TileEntity tileEntity = worldBeacon.getTileEntity(new BlockPos(globalPositionBeacon.x, globalPositionBeacon.y, globalPositionBeacon.z));
-				if ( !(tileEntity instanceof ITransporterBeacon)
-				  || !((ITransporterBeacon) tileEntity).isActive() ) {
-					globalPositionBeacon = null;
-					isLockRequested = false;
-					isEnergizeRequested = false;
-				}
-			}
-		}
+		// validate context
+		checkBeaconObsolescence();
 		
 		// compute remote global position
 		GlobalPosition globalPositionRemoteNew = null;
@@ -722,8 +746,12 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 					globalPositionRemoteNew = new GlobalPosition(celestialObjectChild.dimensionId, vRequest.x, (vRequest.y + 1024) % 256, vRequest.z);
 				}
 			} else if (vRequest.y > 256) {
-				vRequest.translateBack(celestialObjectLocal.getEntryOffset());
-				globalPositionRemoteNew = new GlobalPosition(celestialObjectLocal.parent.dimensionId, vRequest.x, vRequest.y % 256, vRequest.z);
+				if (celestialObjectLocal == null) {
+					reasonJammed = "Unknown dimension, no reachable orbit";
+				} else {
+					vRequest.translateBack(celestialObjectLocal.getEntryOffset());
+					globalPositionRemoteNew = new GlobalPosition(celestialObjectLocal.parent.dimensionId, vRequest.x, vRequest.y % 256, vRequest.z);
+				}
 				
 			} else {
 				globalPositionRemoteNew = new GlobalPosition(world.provider.getDimension(), vRequest.x, vRequest.y, vRequest.z);
@@ -783,7 +811,8 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 		
 		// validate cross dimension transport rules
 		if (celestialObjectLocal != celestialObjectRemote) {
-			if ( celestialObjectLocal.isHyperspace()
+			if ( ( celestialObjectLocal != null
+			    && celestialObjectLocal.isHyperspace() )
 			  || celestialObjectRemote.isHyperspace() ) {
 				isJammed = true;
 				reasonJammed = "Blocked by warp field barrier";
@@ -920,15 +949,19 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 			if (globalPositionBeacon.distance2To(tileEntity) <= radius2) {// it's a beacon party! we're happy with it...
 				return true;
 			}
-			
-			if (!isJammed && WarpDriveConfig.LOGGING_TRANSPORTER) {// only log first jamming occurrence
-				WarpDrive.logger.info(String.format("%s Conflicting beacon requests received %s is not %s",
-				                                    this, tileEntity, uuid));
+
+			// always validate context
+			checkBeaconObsolescence();
+			if (globalPositionBeacon != null) {
+				if (!isJammed && WarpDriveConfig.LOGGING_TRANSPORTER) {// only log first jamming occurrence
+					WarpDrive.logger.info(String.format("%s Conflicting beacon requests received %s is not %s",
+					                                    this, tileEntity, uuid));
+				}
+				isJammed = true;
+				reasonJammed = "Conflicting beacon requests received";
+				tickCooldown = Math.max(tickCooldown, WarpDriveConfig.TRANSPORTER_JAMMED_COOLDOWN_TICKS);
+				return false;
 			}
-			isJammed = true;
-			reasonJammed = "Conflicting beacon requests received";
-			tickCooldown = Math.max(tickCooldown, WarpDriveConfig.TRANSPORTER_JAMMED_COOLDOWN_TICKS);
-			return false;
 		}
 		
 		// check for new beacon
@@ -938,6 +971,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 			isJammed = true;
 			reasonJammed = "Beacon request received";
 			lockStrengthActual = 0.0D;
+			forceChunks();
 			if (transporterState == EnumTransporterState.ENERGIZING) {
 				transporterState = EnumTransporterState.ACQUIRING;
 			}
@@ -945,6 +979,60 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 		
 		isLockRequested = true;
 		return true;
+	}
+	
+	private void forceChunks() {
+		if (ticketChunkloading != null) {
+			WarpDrive.logger.warn(String.format("%s Already chunkloading...",
+			                                     this));
+			return;
+		}
+		
+		if (WarpDriveConfig.LOGGING_TRANSPORTER) {
+			WarpDrive.logger.info(String.format("%s Forcing chunks",
+			                                    this));
+		}
+		ticketChunkloading = ForgeChunkManager.requestTicket(WarpDrive.instance, world, Type.NORMAL);
+		if (ticketChunkloading == null) {
+			WarpDrive.logger.error(String.format("%s Chunkloading rejected",
+			                                     this));
+			return;
+		}
+		final AxisAlignedBB aabbArea = getStarMapArea();
+		final int minX = (int) aabbArea.minX >> 4;
+		final int maxX = (int) aabbArea.maxX >> 4;
+		final int minZ = (int) aabbArea.minZ >> 4;
+		final int maxZ = (int) aabbArea.maxZ >> 4;
+		int chunkCount = 0;
+		for (int x = minX; x <= maxX; x++) {
+			for (int z = minZ; z <= maxZ; z++) {
+				chunkCount++;
+				if (chunkCount > ticketChunkloading.getMaxChunkListDepth()) {
+					WarpDrive.logger.error(String.format("%s Too many chunks to load: %d > %d",
+					                                     this,
+					                                     (maxX - minX + 1) * (maxZ - minZ + 1),
+					                                     ticketChunkloading.getMaxChunkListDepth() ));
+					return;
+				}
+				ForgeChunkManager.forceChunk(ticketChunkloading, new ChunkPos(x, z));
+			}
+		}
+		return;
+	}
+	
+	private void releaseChunks() {
+		if (ticketChunkloading == null) {
+			return;
+		}
+		
+		if (WarpDriveConfig.LOGGING_TRANSPORTER) {
+			WarpDrive.logger.info(this + " Releasing chunks");
+		}
+		
+		if (ticketChunkloading != null) {
+			ForgeChunkManager.releaseTicket(ticketChunkloading);
+			ticketChunkloading = null;
+		}
 	}
 	
 	private static FocusValues getFocusValueAtCoordinates(final World world, final VectorI vLocation, final int radius) {

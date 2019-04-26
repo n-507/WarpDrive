@@ -36,8 +36,9 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 	private UUID uuidTransporterCore;
 	private int tickDeploying = 0;
 	
-	// computer properties
+	// computed properties
 	private boolean isActive = false;
+	protected String stateTransporter = "";
 	
 	public TileEntityTransporterBeacon() {
 		super();
@@ -128,7 +129,11 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 		}
 		
 		final TileEntityTransporterCore tileEntityTransporterCore = (TileEntityTransporterCore) tileEntity;
-		return tileEntityTransporterCore.updateBeacon(this, uuidTransporterCore);
+		final boolean isActive = tileEntityTransporterCore.updateBeacon(this, uuidTransporterCore);
+		final Object[] state = tileEntityTransporterCore.state();
+		stateTransporter = (String) state[1];
+		
+		return isActive;
 	}
 	
 	@Override
@@ -144,6 +149,8 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 		if (isEnabled) {
 			tickDeploying = 0;
 		}
+		// always clear status
+		stateTransporter = "";
 	}
 	
 	@Override
