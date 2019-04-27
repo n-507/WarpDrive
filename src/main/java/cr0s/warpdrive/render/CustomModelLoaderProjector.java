@@ -28,7 +28,7 @@ import javax.vecmath.Matrix4f;
 import java.util.*;
 
 // Wrapper around OBJLoader to re-texture faces depending on IExtendedBlockState
-public enum MyCustomModelLoader implements ICustomModelLoader {
+public enum CustomModelLoaderProjector implements ICustomModelLoader {
 	
 	INSTANCE;
 	
@@ -103,6 +103,8 @@ public enum MyCustomModelLoader implements ICustomModelLoader {
 		
 		private final IBakedModel bakedModel;
 		
+		private long timeLastError = -1L;
+		
 		MyBakedModel(final IBakedModel bakedModel) {
 			this.bakedModel = bakedModel;
 			initSprites();
@@ -115,9 +117,13 @@ public enum MyCustomModelLoader implements ICustomModelLoader {
 			final IExtendedBlockState exState = (IExtendedBlockState) blockState;
 			EnumForceFieldShape enumForceFieldShape = exState != null ? exState.getValue(BlockForceFieldProjector.SHAPE) : EnumForceFieldShape.NONE;
 			if (enumForceFieldShape == null) {
-				new RuntimeException("Invalid shape").printStackTrace();
-				WarpDrive.logger.error(String.format("Invalid shape for %s facing %s",
-				                                     blockState, enumFacing));
+				final long time = System.currentTimeMillis();
+				if (time - timeLastError > 5000L) {
+					timeLastError = time;
+					new RuntimeException("Invalid shape").printStackTrace();
+					WarpDrive.logger.error(String.format("Invalid shape for %s facing %s",
+					                                     blockState, enumFacing));
+				}
 				enumForceFieldShape = EnumForceFieldShape.NONE;
 			}
 			final TextureAtlasSprite spriteShape = spriteShapes.get(enumForceFieldShape);

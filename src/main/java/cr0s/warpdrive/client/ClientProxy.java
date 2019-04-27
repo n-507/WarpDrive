@@ -37,7 +37,7 @@ public class ClientProxy extends CommonProxy {
 		
 		OBJLoader.INSTANCE.addDomain(WarpDrive.MODID);
 		
-		ModelLoaderRegistry.registerLoader(MyCustomModelLoader.INSTANCE);
+		ModelLoaderRegistry.registerLoader(CustomModelLoaderProjector.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(ModelBakeEventHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(SpriteManager.INSTANCE);
 	}

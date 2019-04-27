@@ -475,11 +475,11 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 								// => recover it
 								tileEntityForceField.setProjector(new VectorI(this));
 								tileEntityForceField.cache_blockStateCamouflage = forceFieldSetup.getCamouflageBlockState();
-								world.setBlockState(vector.getBlockPos(), tileEntityForceField.cache_blockStateCamouflage, 2);
+								// world.setBlockState(vector.getBlockPos(), tileEntityForceField.cache_blockStateCamouflage, 2);
 								
 							} else if (tileEntityForceFieldProjector == this) {// this is ours
-								if ( tileEntityForceField.cache_blockStateCamouflage.equals(forceFieldSetup.getCamouflageBlockState())
-								  || blockState.equals(blockStateForceField) ) {
+								if ( !tileEntityForceField.cache_blockStateCamouflage.equals(forceFieldSetup.getCamouflageBlockState())
+								  || !blockState.equals(blockStateForceField) ) {
 									// camouflage changed while chunk wasn't loaded or de-synchronisation
 									// force field downgraded during explosion
 									// => force a new placement
@@ -490,7 +490,8 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 						}
 					}
 					
-					doProjectThisBlock = blockState.getBlock().isReplaceable(world, vector.getBlockPos()) || (blockState.getBlock() == WarpDrive.blockForceFields[enumTier.getIndex()]);
+					doProjectThisBlock = blockState.getBlock().isReplaceable(world, vector.getBlockPos())
+					                  || blockState.getBlock() == WarpDrive.blockForceFields[enumTier.getIndex()];
 				}
 			}
 			
