@@ -3,7 +3,6 @@ package cr0s.warpdrive.block.hull;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBlockBase;
 import cr0s.warpdrive.api.IDamageReceiver;
-import cr0s.warpdrive.client.ClientProxy;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.Vector3;
@@ -25,7 +24,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -316,8 +314,7 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void modelInitialisation() {
-		final Item item = Item.getItemFromBlock(this);
-		ClientProxy.modelInitialisation(item);
+		// no operation
 	}
 	
 	@Override

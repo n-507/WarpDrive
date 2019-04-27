@@ -13,6 +13,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -65,6 +66,12 @@ public class BlockAbstractLamp extends BlockAbstractBase {
 	public int getMetaFromState(final IBlockState blockState) {
 		return (blockState.getValue(BlockProperties.ACTIVE) ? 0x8 : 0x0)
 		     | (blockState.getValue(BlockProperties.FACING).getIndex());
+	}
+	
+	@Nullable
+	@Override
+	public ItemBlock createItemBlock() {
+		return new ItemBlockLamp(this);
 	}
 	
 	@SuppressWarnings("deprecation")

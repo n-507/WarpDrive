@@ -6,7 +6,6 @@ import cr0s.warpdrive.api.IBlockBase;
 import cr0s.warpdrive.api.IBlockUpdateDetector;
 import cr0s.warpdrive.api.IVideoChannel;
 import cr0s.warpdrive.api.WarpDriveText;
-import cr0s.warpdrive.client.ClientProxy;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumTier;
@@ -81,8 +80,7 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void modelInitialisation() {
-		final Item item = Item.getItemFromBlock(this);
-		ClientProxy.modelInitialisation(item);
+		// no operation
 	}
 	
 	@SuppressWarnings("deprecation")

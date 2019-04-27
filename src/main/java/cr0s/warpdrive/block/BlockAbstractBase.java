@@ -3,13 +3,11 @@ package cr0s.warpdrive.block;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBlockBase;
-import cr0s.warpdrive.client.ClientProxy;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -55,8 +53,7 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void modelInitialisation() {
-		final Item item = Item.getItemFromBlock(this);
-		ClientProxy.modelInitialisation(item);
+		// no operation
 		
 		/*
 		// Force a single model through a custom state mapper

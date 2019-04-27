@@ -12,7 +12,11 @@ import cr0s.warpdrive.render.*;
 
 import javax.annotation.Nonnull;
 
+import java.util.Collection;
+
 import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -84,7 +88,7 @@ public class ClientProxy extends CommonProxy {
 		ResourceLocation resourceLocation = item.getRegistryName();
 		assert resourceLocation != null;
 		
-		// reuse blockstate rendering for ItemBlocks
+		// reuse blockstate rendering for ItemBlocks when their blockstate have at least one property (typically colored blocks)
 		if (item instanceof ItemBlock) {
 			final int damage = itemStack.getItemDamage();
 			if (damage < 0 || damage > 15) {
@@ -92,14 +96,20 @@ public class ClientProxy extends CommonProxy {
 				                                                 damage, itemStack.getItem()));
 			}
 			final Block block = ((ItemBlock) item).getBlock();
-			final String variant = block.getStateFromMeta(damage).toString().split("[\\[\\]]")[1];
-			return new ModelResourceLocation(resourceLocation, variant);
+			final IBlockState blockState = block.getStateFromMeta(damage);
+			final Collection<IProperty<?>> properties = blockState.getPropertyKeys();
+			if (!properties.isEmpty()) {// reuse defined properties
+				final String[] blockStateStrings = blockState.toString().split("[\\[\\]]");
+				final String variant = blockStateStrings[1];
+				return new ModelResourceLocation(resourceLocation, variant);
+			}
 		}
 		
-		// use damage value as suffix for pure items
+		// use damage value as suffix otherwise
 		if (item.getHasSubtypes()) {
 			resourceLocation = new ResourceLocation(resourceLocation.getNamespace(), resourceLocation.getPath() + "-" + itemStack.getItemDamage());
 		}
+		// defaults to inventory variant
 		return new ModelResourceLocation(resourceLocation, "inventory");
 	}
 	
@@ -110,8 +120,8 @@ public class ClientProxy extends CommonProxy {
 		}
 		
 		if (!item.getHasSubtypes()) {
-			assert item.getRegistryName() != null;
-			ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
+			final ModelResourceLocation modelResourceLocation = ((IItemBase) item).getModelResourceLocation(new ItemStack(item));
+			ModelLoader.setCustomModelResourceLocation(item, 0, modelResourceLocation);
 			
 		} else {
 			final NonNullList<ItemStack> listItemStacks = NonNullList.create();
