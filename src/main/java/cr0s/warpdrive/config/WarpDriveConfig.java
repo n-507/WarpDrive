@@ -14,6 +14,7 @@ import cr0s.warpdrive.compat.CompatBuildCraft;
 import cr0s.warpdrive.compat.CompatCarpentersBlocks;
 import cr0s.warpdrive.compat.CompatComputerCraft;
 import cr0s.warpdrive.compat.CompatCustomNpcs;
+import cr0s.warpdrive.compat.CompatDecocraft;
 import cr0s.warpdrive.compat.CompatDeepResonance;
 import cr0s.warpdrive.compat.CompatDraconicEvolution;
 import cr0s.warpdrive.compat.CompatEmbers;
@@ -1405,6 +1406,11 @@ public class WarpDriveConfig {
 		final boolean isCustomNpcsLoaded = Loader.isModLoaded("customnpcs");
 		if (isCustomNpcsLoaded) {
 			CompatCustomNpcs.register();
+		}
+		
+		final boolean isDecocraftLoaded = Loader.isModLoaded("props");
+		if (isDecocraftLoaded) {
+			CompatDecocraft.register();
 		}
 		
 		final boolean isDeepResonanceLoaded = Loader.isModLoaded("deepresonance");
