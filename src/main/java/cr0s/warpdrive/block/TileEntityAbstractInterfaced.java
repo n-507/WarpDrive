@@ -436,7 +436,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 			if (WarpDriveConfig.LOGGING_LUA) {
 				exception.printStackTrace();
 			}
-			throw new RuntimeException(String.format("LUA handling exception in %s\nEnable LUA logs for details.",
+			throw new RuntimeException(String.format("Internal exception in %s()\nEnable LUA logs for details.",
 			                                         methodName));
 		}
 	}
