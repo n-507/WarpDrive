@@ -880,7 +880,8 @@ warpdrive.ship.guide.moving_too_high=Ship core is moving too high.
 warpdrive.ship.guide.moving_too_low=Ship core is moving too low.
 warpdrive.ship.guide.jump_aborted=Jump aborted!
 warpdrive.ship.guide.jump_done=Jump done
-warpdrive.ship.guide.schematic_not_found=Schematic not found or unknown error reading it: '%1$s'.
+warpdrive.ship.guide.schematic_not_found=Schéma introuvable ou erreur de lecture: '%1$s'.
+warpdrive.ship.guide.schematic_invalid_format=Format de schéma invalide: %1$s
 
 warpdrive.ship.status_line.cooling=Encore %1$d s de refroidissement.
 warpdrive.ship.status_line.isolation=Les %1$d blocs d'isolations actifs fournissent %2$s%% d'absorption.

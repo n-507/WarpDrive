@@ -7,15 +7,16 @@ import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.movement.TileEntityShipCore;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.config.WarpDriveDataFixer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -70,35 +71,152 @@ public class JumpShip {
 			jumpShip.readFromNBT(schematic.getCompoundTag("ship"));
 			
 		} else {
-			// Set deployment variables
-			final short width = schematic.getShort("Width");
-			final short height = schematic.getShort("Height");
-			final short length = schematic.getShort("Length");
-			jumpShip.minX = 0;
-			jumpShip.maxX = width - 1;
-			jumpShip.minY = 0;
-			jumpShip.maxY = height - 1;
-			jumpShip.minZ = 0;
-			jumpShip.maxZ = length - 1;
-			jumpShip.core = null;
+			// Read dimensions
+			// note: WorldEdit uses shorts. Sponge uses integers.
+			final int width = schematic.getInteger("Width");
+			final int height = schematic.getInteger("Height");
+			final int length = schematic.getInteger("Length");
+			if (width <= 0 || height <= 0 || length <= 0) {
+				reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+				                                String.format("Invalid size values: expecting strictly positive integers, found %1d %2d %3d.",
+				                                              width, height, length) ));
+				return null;
+			}
+			
+			// Read core offset & original position
+			final boolean isWorldEdit = schematic.hasKey("WEOffsetX");
+			final VectorI vCore;
+			final VectorI vOrigin;
+			if (isWorldEdit) {
+				// WEOffset is origin position relative to the core
+				vCore = new VectorI(-schematic.getInteger("WEOffsetX"),
+				                    -schematic.getInteger("WEOffsetY"),
+				                    -schematic.getInteger("WEOffsetZ") );
+				
+				// WEOrigin is offset on tile entity coordinates (position of the first block in original world)
+				vOrigin = new VectorI(schematic.getInteger("WEOriginX"),
+				                      schematic.getInteger("WEOriginY"),
+				                      schematic.getInteger("WEOriginZ") );
+				
+			} else if (schematic.hasKey("Offset")){
+				// Offset is core position relative to origin
+				final int[] intOffset = schematic.getIntArray("Offset");
+				if (intOffset.length != 3) {
+					reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+					                                String.format("Invalid offset format: expecting 3 integers, found %1d",
+					                                              intOffset.length) ));
+					return null;
+				}
+				vCore = new VectorI(intOffset[0],
+				                    intOffset[1],
+				                    intOffset[2] );
+				
+				// Origin is unknown with Sponge, defaulting to 0
+				vOrigin = new VectorI(0, 0, 0 );
+				
+			} else {
+				reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+				                                "Unknown offset format"));
+				return null;
+			}
+			
+			// Read registry name's palette if defined (as introduced by MC1.13)
+			final HashMap<Integer, IBlockState> blockStatePalette;
+			if (schematic.hasKey("Palette")) {
+				final NBTTagCompound tagCompoundPalette = schematic.getCompoundTag("Palette");
+				blockStatePalette = new HashMap<>(tagCompoundPalette.getKeySet().size());
+				for (final String stringBlockstate : tagCompoundPalette.getKeySet()) {
+					final IBlockState blockState = WarpDriveDataFixer.getBlockState(stringBlockstate);
+					if (blockState != null) {
+						blockStatePalette.put(tagCompoundPalette.getInteger(stringBlockstate), blockState);
+					}
+				}
+			} else {
+				blockStatePalette = null;
+			}
+			
+			// Compute ship properties
+			jumpShip.core = new BlockPos(vOrigin.x + vCore.x,
+			                             vOrigin.y + vCore.y,
+			                             vOrigin.z + vCore.z );
+			jumpShip.minX = vOrigin.x;
+			jumpShip.maxX = vOrigin.x + width - 1;
+			jumpShip.minY = vOrigin.y;
+			jumpShip.maxY = vOrigin.y + height - 1;
+			jumpShip.minZ = vOrigin.z;
+			jumpShip.maxZ = vOrigin.z + length - 1;
 			jumpShip.jumpBlocks = new JumpBlock[width * height * length];
+			WarpDrive.logger.info(String.format("vCore %s vOrigin %s => shipCore %s",
+			                                    vCore, vOrigin, jumpShip.core ));
 			
-			// Read blocks and TileEntities from NBT to internal storage array
-			final byte localBlocks[] = schematic.getByteArray("Blocks");
-			final byte localAddBlocks[] = schematic.hasKey("AddBlocks") ? schematic.getByteArray("AddBlocks") : null;
-			final byte localMetadata[] = schematic.getByteArray("Data");
+			// Read blocks from NBT to internal storage array
+			// Before 1.13, WorldEdit uses Blocks for LSB, an optional AddBlocks for MSB.
+			// From 1.13, WorldEdit uses ???.
+			// Sponge uses BlockData with either a Palette or some custom encoding
+			final byte[] localBlocks = schematic.hasKey("Blocks") ? schematic.getByteArray("Blocks") : schematic.getByteArray("BlockData");
+			final byte[] localAddBlocks = schematic.hasKey("AddBlocks") ? schematic.getByteArray("AddBlocks") : null;
+			final byte[] localMetadata = blockStatePalette == null ? schematic.getByteArray("Data") : null;
+			if (localBlocks.length != jumpShip.jumpBlocks.length) {
+				reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+				                                String.format("Invalid array size for Blocks: expecting %d (%d x %d x %d), found %d",
+				                                              width, height, length,
+				                                              jumpShip.jumpBlocks.length,
+				                                              localBlocks.length ) ));
+				return null;
+			}
+			final int sizeAddBlocks = (int) Math.ceil((jumpShip.jumpBlocks.length + 1.0F) / 2);
+			if (localAddBlocks != null && localAddBlocks.length != sizeAddBlocks) {
+				reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+				                                String.format("Invalid array size for AddBlocks: expecting %d (%d x %d x %d), found %d",
+				                                              width, height, length,
+				                                              jumpShip.jumpBlocks.length,
+				                                              localAddBlocks.length ) ));
+				return null;
+			}
+			if (localMetadata != null && localMetadata.length != jumpShip.jumpBlocks.length) {
+				reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+				                                String.format("Invalid array size for Metadata: expecting %d (%d x %d x %d), found %d",
+				                                              width, height, length,
+				                                              jumpShip.jumpBlocks.length,
+				                                              localMetadata.length ) ));
+				return null;
+			}
 			
-			// Load Tile Entities
+			// Read Tile Entities
 			final NBTTagCompound[] tileEntities = new NBTTagCompound[jumpShip.jumpBlocks.length];
 			final NBTTagList tagListTileEntities = schematic.getTagList("TileEntities", Constants.NBT.TAG_COMPOUND);
 			
-			for (int i = 0; i < tagListTileEntities.tagCount(); i++) {
-				final NBTTagCompound tagTileEntity = tagListTileEntities.getCompoundTagAt(i);
-				final int teX = tagTileEntity.getInteger("x");
-				final int teY = tagTileEntity.getInteger("y");
-				final int teZ = tagTileEntity.getInteger("z");
+			for (int index = 0; index < tagListTileEntities.tagCount(); index++) {
+				final NBTTagCompound tagCompoundTileEntity = tagListTileEntities.getCompoundTagAt(index);
+				final int xTileEntity;
+				final int yTileEntity;
+				final int zTileEntity;
+				if (isWorldEdit) {
+					xTileEntity = tagCompoundTileEntity.getInteger("x");
+					yTileEntity = tagCompoundTileEntity.getInteger("y");
+					zTileEntity = tagCompoundTileEntity.getInteger("z");
+				} else if (tagCompoundTileEntity.hasKey("Pos")) {
+					final int[] intPosition = tagCompoundTileEntity.getIntArray("Pos");
+					if (intPosition.length != 3) {
+						reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+						                                String.format("Invalid array size for TileEntity Pos: expecting 3, found %d in %s",
+						                                              intPosition.length, tagCompoundTileEntity ) ));
+						return null;
+					}
+					xTileEntity = intPosition[0];
+					yTileEntity = intPosition[1];
+					zTileEntity = intPosition[2];
+				} else {
+					reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+					                                String.format("Missing position for TileEntity %s",
+					                                              tagCompoundTileEntity ) ));
+					return null;
+				}
+				tagCompoundTileEntity.setInteger("x", vOrigin.x + xTileEntity);
+				tagCompoundTileEntity.setInteger("y", vOrigin.y + yTileEntity);
+				tagCompoundTileEntity.setInteger("z", vOrigin.z + zTileEntity);
 				
-				tileEntities[teX + (teY * length + teZ) * width] = tagTileEntity;
+				tileEntities[xTileEntity + (yTileEntity * length + zTileEntity) * width] = tagCompoundTileEntity;
 			}
 			
 			// Create list of blocks to deploy
@@ -108,9 +226,9 @@ public class JumpShip {
 						final int index = x + (y * length + z) * width;
 						JumpBlock jumpBlock = new JumpBlock();
 						
-						jumpBlock.x = x;
-						jumpBlock.y = y;
-						jumpBlock.z = z;
+						jumpBlock.x = vOrigin.x + x;
+						jumpBlock.y = vOrigin.y + y;
+						jumpBlock.z = vOrigin.z + z;
 						
 						// rebuild block id from signed byte + nibble tables
 						int blockId = localBlocks[index];
@@ -129,9 +247,22 @@ public class JumpShip {
 							}
 						}
 						
-						jumpBlock.block = Block.getBlockById(blockId);
-						jumpBlock.blockMeta = (localMetadata[index]) & 0x0F;
-						jumpBlock.blockNBT = tileEntities[index];
+						if (blockStatePalette == null) {
+							jumpBlock.block = Block.getBlockById(blockId);
+							jumpBlock.blockMeta = (localMetadata[index]) & 0x0F;
+						} else {
+							final IBlockState blockState = blockStatePalette.get(blockId);
+							if (blockState != null) {
+								jumpBlock.block = blockState.getBlock();
+								jumpBlock.blockMeta = blockState.getBlock().getMetaFromState(blockState);
+							}
+						}
+						// only add NBT for non-air blocks due to missing blocks
+						if (jumpBlock.block != Blocks.AIR) {
+							jumpBlock.blockNBT = tileEntities[index];
+						} else {
+							jumpBlock.blockMeta = 0;
+						}
 						
 						if (jumpBlock.block != null) {
 							if (WarpDriveConfig.LOGGING_BUILDING) {
@@ -210,11 +341,9 @@ public class JumpShip {
 				continue;
 			}
 			if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
-				if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
-					WarpDrive.logger.info(String.format("Adding entity %s: %s",
-					                                    Dictionary.getId(entity),
-					                                    entity ));
-				}
+				WarpDrive.logger.info(String.format("Adding entity %s: %s",
+				                                    Dictionary.getId(entity),
+				                                    entity ));
 			}
 			final MovingEntity movingEntity = new MovingEntity(entity);
 			entitiesOnShip.add(movingEntity);

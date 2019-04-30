@@ -880,6 +880,7 @@ warpdrive.ship.guide.moving_too_low=Ship core is moving too low.
 warpdrive.ship.guide.jump_aborted=Jump aborted!
 warpdrive.ship.guide.jump_done=Jump done
 warpdrive.ship.guide.schematic_not_found=Schematic not found or unknown error reading it: '%1$s'.
+warpdrive.ship.guide.schematic_invalid_format=Invalid schematic format: %1$s
 
 warpdrive.ship.status_line.cooling=%1$d s 升降梯的冷卻中。
 warpdrive.ship.status_line.isolation=%1$d 主動隔離塊由 %2$s%% 吸收。
