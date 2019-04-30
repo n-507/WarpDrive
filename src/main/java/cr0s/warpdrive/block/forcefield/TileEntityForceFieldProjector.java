@@ -478,7 +478,10 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 								// world.setBlockState(vector.getBlockPos(), tileEntityForceField.cache_blockStateCamouflage, 2);
 								
 							} else if (tileEntityForceFieldProjector == this) {// this is ours
-								if ( !tileEntityForceField.cache_blockStateCamouflage.equals(forceFieldSetup.getCamouflageBlockState())
+								if ( ( tileEntityForceField.cache_blockStateCamouflage == null
+								    && forceFieldSetup.getCamouflageBlockState() != null )
+								  || ( tileEntityForceField.cache_blockStateCamouflage != null
+								    && !tileEntityForceField.cache_blockStateCamouflage.equals(forceFieldSetup.getCamouflageBlockState()) )
 								  || !blockState.equals(blockStateForceField) ) {
 									// camouflage changed while chunk wasn't loaded or de-synchronisation
 									// force field downgraded during explosion

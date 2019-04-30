@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -78,8 +79,9 @@ public class TileEntityForceField extends TileEntityAbstractBase {
 		if (vProjector != null) {
 			tagCompound.setTag("projector", vProjector.writeToNBT(new NBTTagCompound()));
 			tagCompound.setInteger(IBeamFrequency.BEAM_FREQUENCY_TAG, cache_beamFrequency);
-			if (cache_blockStateCamouflage != null) {
+			if (cache_blockStateCamouflage != null && cache_blockStateCamouflage.getBlock() != Blocks.AIR) {
 				final NBTTagCompound nbtCamouflage = new NBTTagCompound();
+				assert cache_blockStateCamouflage.getBlock().getRegistryName() != null;
 				nbtCamouflage.setString("block", cache_blockStateCamouflage.getBlock().getRegistryName().toString());
 				nbtCamouflage.setByte("meta", (byte) cache_blockStateCamouflage.getBlock().getMetaFromState(cache_blockStateCamouflage));
 				nbtCamouflage.setInteger("color", cache_colorMultiplierCamouflage);
