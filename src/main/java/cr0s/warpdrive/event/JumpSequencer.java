@@ -822,7 +822,7 @@ public class JumpSequencer extends AbstractSequencer {
 		
 		LocalProfiler.stop();
 		if (WarpDrive.isDev && WarpDriveConfig.LOGGING_JUMP) {
-			WarpDrive.logger.info(String.format("Removing TE duplicates: tileEntities in target world before jump: %d",
+			WarpDrive.logger.info(String.format("Checking for TE duplicates: tileEntities in target world before jump: %d",
 			                                    targetWorld.loadedTileEntityList.size()));
 		}
 	}
@@ -1184,9 +1184,11 @@ public class JumpSequencer extends AbstractSequencer {
 				final double newEntityZ = target.z;
 				
 				if (WarpDriveConfig.LOGGING_JUMP) {
-					WarpDrive.logger.info(String.format("Entity moving: (%.2f %.2f %.2f) -> (%.2f %.2f %.2f) entity %s",
-							movingEntity.v3OriginalPosition.x, movingEntity.v3OriginalPosition.y, movingEntity.v3OriginalPosition.z,
-							newEntityX, newEntityY, newEntityZ, entity.toString()));
+					WarpDrive.logger.info(String.format("%s Entity moving: (%.2f %.2f %.2f) -> (%.2f %.2f %.2f) entity %s",
+					                                    this,
+							                            movingEntity.v3OriginalPosition.x, movingEntity.v3OriginalPosition.y, movingEntity.v3OriginalPosition.z,
+							                            newEntityX, newEntityY, newEntityZ,
+							                            entity.toString() ));
 				}
 				
 				transformation.rotate(entity);
@@ -1298,12 +1300,11 @@ public class JumpSequencer extends AbstractSequencer {
 		final int countBefore = targetWorld.loadedTileEntityList.size();
 		
 		try {
-			// @TODO MC1.10 still leaking tile entities?
 			// targetWorld.loadedTileEntityList = removeDuplicates(targetWorld.loadedTileEntityList);
 			removeDuplicates(targetWorld.loadedTileEntityList);
 		} catch (final Exception exception) {
 			if (WarpDriveConfig.LOGGING_JUMP) {
-				WarpDrive.logger.info(String.format("TE Duplicates removing exception: %s", exception.getMessage()));
+				WarpDrive.logger.info(String.format("Exception while checking for TE duplicates: %s", exception.getMessage()));
 				exception.printStackTrace();
 			}
 		}
@@ -1313,7 +1314,7 @@ public class JumpSequencer extends AbstractSequencer {
 		disable(true, new WarpDriveText(Commons.styleCorrect, "warpdrive.ship.guide.jump_done"));
 		final int countAfter = targetWorld.loadedTileEntityList.size();
 		if (WarpDriveConfig.LOGGING_JUMP && countBefore != countAfter) {
-			WarpDrive.logger.info(String.format("Removing TE duplicates: tileEntities in target world after jump, cleanup %d -> %d",
+			WarpDrive.logger.info(String.format("Checking for TE duplicates: tileEntities in target world after jump, cleanup %d -> %d",
 			                      countBefore, countAfter));
 		}
 		LocalProfiler.stop();
@@ -1646,13 +1647,26 @@ public class JumpSequencer extends AbstractSequencer {
 		final Set<TileEntity> setTileEntities = new TreeSet<>(new Comparator<TileEntity>() {
 			@Override
 			public int compare(final TileEntity tileEntity1, final TileEntity tileEntity2) {
+				if (tileEntity1 == tileEntity2) {
+					if (WarpDriveConfig.LOGGING_JUMP) {
+						WarpDrive.logger.warn(String.format("Checking for TE duplicates: same instance listed twice %s: %s",
+						                                    Commons.format(tileEntity1.getWorld(), tileEntity1.getPos()),
+						                                    tileEntity1 ));
+						
+						final NBTTagCompound nbtTagCompound1 = new NBTTagCompound();
+						tileEntity1.writeToNBT(nbtTagCompound1);
+						WarpDrive.logger.warn(String.format("NBT is %s", nbtTagCompound1));
+					}
+					return 0;
+				}
+				
 				if ( tileEntity1.getPos().getX() == tileEntity2.getPos().getX()
 				  && tileEntity1.getPos().getY() == tileEntity2.getPos().getY()
 				  && tileEntity1.getPos().getZ() == tileEntity2.getPos().getZ()
 				  && !tileEntity1.isInvalid()
 				  && !tileEntity2.isInvalid() ) {
 					if (WarpDriveConfig.LOGGING_JUMP) {
-						WarpDrive.logger.warn(String.format("Removing TE duplicates: detected duplicate %s: %s vs %s",
+						WarpDrive.logger.warn(String.format("Checking for TE duplicates: detected duplicate %s: %s vs %s",
 						                                    Commons.format(tileEntity1.getWorld(), tileEntity1.getPos()),
 						                                    tileEntity1, tileEntity2));
 						
