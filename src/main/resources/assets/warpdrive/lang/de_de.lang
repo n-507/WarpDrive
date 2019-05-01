@@ -59,7 +59,9 @@ item.warpdrive.armor.chestplate.name=Warp Brustpanzer
 item.warpdrive.armor.leggings.name=Warp Beinschutz
 item.warpdrive.armor.boots.name=Warp Stiefel
 
-item.warpdrive.atomic.electromagnetic_cell.name=Elektromagnetische Zelle
+item.warpdrive.atomic.electromagnetic_cell.basic.name=Standard Elektromagnetische Zelle
+item.warpdrive.atomic.electromagnetic_cell.advanced.name=Weiterentwickelter Elektromagnetische Zelle
+item.warpdrive.atomic.electromagnetic_cell.superior.name=Überlegener Elektromagnetische Zelle
 item.warpdrive.atomic.electromagnetic_cell.tooltip.empty=Nutze einen Teilchenbeschleuniger, um mich zu füllen!
 item.warpdrive.atomic.electromagnetic_cell.tooltip.filled=Enthält %1$s Å³ %2$s
 

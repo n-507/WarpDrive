@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -117,6 +118,12 @@ public class ItemBlockAbstractBase extends ItemBlock implements IItemBase {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public ModelResourceLocation getModelResourceLocation(final ItemStack itemStack) {
+		if (hasUniqueName) {
+			final ResourceLocation resourceLocation = getRegistryName();
+			assert resourceLocation != null;
+			return new ModelResourceLocation(resourceLocation, "inventory");
+		}
+		
 		return ClientProxy.getModelResourceLocation(itemStack);
 	}
 	

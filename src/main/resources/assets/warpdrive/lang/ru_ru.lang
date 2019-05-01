@@ -59,7 +59,9 @@ item.warpdrive.armor.chestplate.name=Warp Chestplate
 item.warpdrive.armor.leggings.name=Warp Leggings
 item.warpdrive.armor.boots.name=Warp Boots
 
-item.warpdrive.atomic.electromagnetic_cell.name=Electromagnetic cell
+item.warpdrive.atomic.electromagnetic_cell.basic.name=Basic Electromagnetic cell
+item.warpdrive.atomic.electromagnetic_cell.advanced.name=Advanced Electromagnetic cell
+item.warpdrive.atomic.electromagnetic_cell.superior.name=Superior Electromagnetic cell
 item.warpdrive.atomic.electromagnetic_cell.tooltip.empty=Use a particle collider to fill me!
 item.warpdrive.atomic.electromagnetic_cell.tooltip.filled=Contains %1$s Å³ of %2$s
 

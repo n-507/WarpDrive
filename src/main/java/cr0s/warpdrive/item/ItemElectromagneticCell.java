@@ -70,8 +70,14 @@ public class ItemElectromagneticCell extends ItemAbstractBase implements IPartic
 		return new ModelResourceLocation(resourceLocation, "inventory");
 	}
 	
-	public static ItemStack getItemStackNoCache(final Particle particle, final int amount) {
-		final ItemStack itemStack = new ItemStack(WarpDrive.itemElectromagneticCell[EnumTier.BASIC.getIndex()], 1, 0);
+	@Nonnull
+	public static ItemStack getItemStackNoCache(@Nonnull final EnumTier enumTier, @Nullable final Particle particle, final int amount) {
+		return WarpDrive.itemElectromagneticCell[enumTier.getIndex()].getItemStackNoCache(particle, amount);
+	}
+	
+	@Nonnull
+	public ItemStack getItemStackNoCache(@Nullable final Particle particle, final int amount) {
+		final ItemStack itemStack = new ItemStack(WarpDrive.itemElectromagneticCell[enumTier.getIndex()], 1, 0);
 		ParticleStack particleStack = null;
 		if (particle != null && amount != 0) {
 			particleStack = new ParticleStack(particle, amount);

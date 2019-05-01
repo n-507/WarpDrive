@@ -1,0 +1,14 @@
+{
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "warpdrive:items/atomic/electromagnetic_cell-empty"
+	},
+    "overrides": [
+        { "predicate": { "warpdrive:fill": 0.0000 }, "model": "warpdrive:item/atomic/electromagnetic_cell-pink-0" },
+        { "predicate": { "warpdrive:fill": 0.2000 }, "model": "warpdrive:item/atomic/electromagnetic_cell-pink-20" },
+        { "predicate": { "warpdrive:fill": 0.4000 }, "model": "warpdrive:item/atomic/electromagnetic_cell-pink-40" },
+        { "predicate": { "warpdrive:fill": 0.6000 }, "model": "warpdrive:item/atomic/electromagnetic_cell-pink-60" },
+        { "predicate": { "warpdrive:fill": 0.8000 }, "model": "warpdrive:item/atomic/electromagnetic_cell-pink-80" },
+        { "predicate": { "warpdrive:fill": 0.9999 }, "model": "warpdrive:item/atomic/electromagnetic_cell-pink-full" }
+    ]
+}

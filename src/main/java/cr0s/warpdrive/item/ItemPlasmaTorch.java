@@ -4,7 +4,6 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IParticleContainerItem;
 import cr0s.warpdrive.api.Particle;
-import cr0s.warpdrive.api.ParticleRegistry;
 import cr0s.warpdrive.api.ParticleStack;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnumTier;
@@ -14,7 +13,6 @@ import javax.annotation.Nullable;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -53,6 +51,7 @@ public class ItemPlasmaTorch extends ItemAbstractBase implements IParticleContai
 		});
 	}
 	
+	/*
 	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -67,9 +66,16 @@ public class ItemPlasmaTorch extends ItemAbstractBase implements IParticleContai
 		resourceLocation = new ResourceLocation(resourceLocation.getNamespace(), resourceLocation.getPath() + "-" + variant);
 		return new ModelResourceLocation(resourceLocation, "inventory");
 	}
+	/**/
 	
-	public static ItemStack getItemStackNoCache(final Particle particle, final int amount) {
-		final ItemStack itemStack = new ItemStack(WarpDrive.itemElectromagneticCell[EnumTier.BASIC.getIndex()], 1, 0);
+	@Nonnull
+	public static ItemStack getItemStackNoCache(@Nonnull final EnumTier enumTier, @Nullable final Particle particle, final int amount) {
+		return WarpDrive.itemPlasmaTorch[enumTier.getIndex()].getItemStackNoCache(particle, amount);
+	}
+	
+	@Nonnull
+	public ItemStack getItemStackNoCache(@Nullable final Particle particle, final int amount) {
+		final ItemStack itemStack = new ItemStack(this, 1, 0);
 		ParticleStack particleStack = null;
 		if (particle != null && amount != 0) {
 			particleStack = new ParticleStack(particle, amount);
@@ -87,10 +93,10 @@ public class ItemPlasmaTorch extends ItemAbstractBase implements IParticleContai
 			return;
 		}
 		list.add(getItemStackNoCache(null, 0));
-		list.add(getItemStackNoCache(ParticleRegistry.ION, 1000));
-		list.add(getItemStackNoCache(ParticleRegistry.PROTON, 1000));
-		list.add(getItemStackNoCache(ParticleRegistry.ANTIMATTER, 1000));
-		list.add(getItemStackNoCache(ParticleRegistry.STRANGE_MATTER, 1000));
+		// list.add(getItemStackNoCache(ParticleRegistry.ION, 1000));
+		// list.add(getItemStackNoCache(ParticleRegistry.PROTON, 1000));
+		// list.add(getItemStackNoCache(ParticleRegistry.ANTIMATTER, 1000));
+		// list.add(getItemStackNoCache(ParticleRegistry.STRANGE_MATTER, 1000));
 		// list.add(getItemStackNoCache(ParticleRegistry.TACHYONS, 1000));
 	}
 	

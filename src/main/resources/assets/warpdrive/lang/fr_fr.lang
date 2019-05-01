@@ -59,7 +59,9 @@ item.warpdrive.armor.chestplate.name=Plastron warp
 item.warpdrive.armor.leggings.name=Jambières warp
 item.warpdrive.armor.boots.name=Bottes warp
 
-item.warpdrive.atomic.electromagnetic_cell.name=Cage électromagnétique
+item.warpdrive.atomic.electromagnetic_cell.basic.name=Cage électromagnétique élémentaire
+item.warpdrive.atomic.electromagnetic_cell.advanced.name=Cage électromagnétique avancée
+item.warpdrive.atomic.electromagnetic_cell.superior.name=Cage électromagnétique supérieure
 item.warpdrive.atomic.electromagnetic_cell.tooltip.empty=Utilise un collisionneur de particules pour me remplir!
 item.warpdrive.atomic.electromagnetic_cell.tooltip.filled=Contient %1$s Å³ de %2$s
 

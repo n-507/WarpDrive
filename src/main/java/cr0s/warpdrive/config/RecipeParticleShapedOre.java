@@ -1,6 +1,5 @@
 package cr0s.warpdrive.config;
 
-import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IParticleContainerItem;
 import cr0s.warpdrive.api.ParticleStack;
 
@@ -29,7 +28,7 @@ public class RecipeParticleShapedOre extends ShapedOreRecipe {
 		super(group, result, primer);
 		
 		// add lower priority vanilla Shaped recipe for NEI support
-		WarpDrive.register(new ShapedOreRecipe(group, result, primer));
+		// WarpDrive.register(new ShapedOreRecipe(group, result, primer));
 	}
 	
 	protected boolean checkMatch(final InventoryCrafting inventoryCrafting, final int startX, final int startY, final boolean mirror) {

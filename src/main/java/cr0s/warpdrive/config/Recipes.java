@@ -103,10 +103,10 @@ public class Recipes {
 		if (WarpDriveConfig.ACCELERATOR_ENABLE) {
 			registerOreDictionary("blockVoidShell", new ItemStack(WarpDrive.blockVoidShellPlain, 1));
 			registerOreDictionary("blockVoidShell", new ItemStack(WarpDrive.blockVoidShellGlass, 1));
-			for (int tier = 1; tier <= 3; tier++) {
-				final int index = tier - 1;
-				registerOreDictionary("blockElectromagnet" + tier, new ItemStack(WarpDrive.blockElectromagnets_plain[index], 1));
-				registerOreDictionary("blockElectromagnet" + tier, new ItemStack(WarpDrive.blockElectromagnets_glass[index], 1));
+			for (final EnumTier enumTier : EnumTier.nonCreative()) {
+				final int index = enumTier.getIndex();
+				registerOreDictionary("blockElectromagnet" + index, new ItemStack(WarpDrive.blockElectromagnets_plain[index], 1));
+				registerOreDictionary("blockElectromagnet" + index, new ItemStack(WarpDrive.blockElectromagnets_glass[index], 1));
 			}
 		}
 		
@@ -610,7 +610,7 @@ public class Recipes {
 		} else {
 			WarpDrive.register(new RecipeParticleShapedOre(groupMachines,
 			                                               ItemComponent.getItemStack(EnumComponentType.REACTOR_CORE), false, "chc", "hph", "cec",
-			                                               'p', ItemElectromagneticCell.getItemStackNoCache(ParticleRegistry.PROTON, 1000),
+			                                               'p', ItemElectromagneticCell.getItemStackNoCache(EnumTier.BASIC, ParticleRegistry.PROTON, 1000),
 			                                               'h', "blockHull3_plain",
 			                                               'c', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL),
 			                                               'e', ItemComponent.getItemStack(EnumComponentType.EMERALD_CRYSTAL)));
@@ -867,12 +867,12 @@ public class Recipes {
 		// Advanced electromagnets
 		WarpDrive.register(new RecipeParticleShapedOre(groupMachines,
 		                                               new ItemStack(WarpDrive.blockElectromagnets_plain[EnumTier.ADVANCED.getIndex()], 6), "mpm", "pip", "mpm",
-		                                               'i', ItemElectromagneticCell.getItemStackNoCache(ParticleRegistry.ION, 200),
+		                                               'i', ItemElectromagneticCell.getItemStackNoCache(EnumTier.BASIC, ParticleRegistry.ION, 200),
 		                                               'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
 		                                               'm', WarpDrive.blockElectromagnets_plain[EnumTier.BASIC.getIndex()]));
 		WarpDrive.register(new RecipeParticleShapedOre(groupMachines,
 		                                               new ItemStack(WarpDrive.blockElectromagnets_glass[EnumTier.ADVANCED.getIndex()], 6), "mpm", "pip", "mpm",
-		                                               'i', ItemElectromagneticCell.getItemStackNoCache(ParticleRegistry.ION, 200),
+		                                               'i', ItemElectromagneticCell.getItemStackNoCache(EnumTier.BASIC, ParticleRegistry.ION, 200),
 		                                               'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
 		                                               'm', WarpDrive.blockElectromagnets_glass[EnumTier.BASIC.getIndex()]));
 		
@@ -881,14 +881,14 @@ public class Recipes {
 		                                               new ItemStack(WarpDrive.blockElectromagnets_plain[EnumTier.SUPERIOR.getIndex()], 6), "mtm", "sps", "mMm",
 		                                               't', ItemComponent.getItemStack(EnumComponentType.GLASS_TANK),
 		                                               's', ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR),
-		                                               'p', ItemElectromagneticCell.getItemStackNoCache(ParticleRegistry.PROTON, 24),
+		                                               'p', ItemElectromagneticCell.getItemStackNoCache(EnumTier.BASIC, ParticleRegistry.PROTON, 24),
 		                                               'M', itemStackMotors[2],
 		                                               'm', WarpDrive.blockElectromagnets_plain[EnumTier.ADVANCED.getIndex()]));
 		WarpDrive.register(new RecipeParticleShapedOre(groupMachines,
 		                                               new ItemStack(WarpDrive.blockElectromagnets_glass[EnumTier.SUPERIOR.getIndex()], 6), "mtm", "sps", "mMm",
 		                                               't', ItemComponent.getItemStack(EnumComponentType.GLASS_TANK),
 		                                               's', ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR),
-		                                               'p', ItemElectromagneticCell.getItemStackNoCache(ParticleRegistry.PROTON, 24),
+		                                               'p', ItemElectromagneticCell.getItemStackNoCache(EnumTier.BASIC, ParticleRegistry.PROTON, 24),
 		                                               'M', itemStackMotors[2],
 		                                               'm', WarpDrive.blockElectromagnets_glass[EnumTier.ADVANCED.getIndex()]));
 		
@@ -899,7 +899,7 @@ public class Recipes {
 			removeRecipe(itemStackAntimatterExplosive);
 			WarpDrive.register(new RecipeParticleShapedOre(groupComponents,
 			                                               itemStackAntimatterExplosive, "aaa", "ana", "aaa",
-			                                               'a', ItemElectromagneticCell.getItemStackNoCache(ParticleRegistry.ANTIMATTER, 1000),
+			                                               'a', ItemElectromagneticCell.getItemStackNoCache(EnumTier.ADVANCED, ParticleRegistry.ANTIMATTER, 1000),
 			                                               'n', WarpDriveConfig.getItemStackOrFire("icbmclassic:icbmCExplosive", 15)));
 			
 			// red matter
@@ -907,7 +907,7 @@ public class Recipes {
 			removeRecipe(itemStackRedMatterExplosive);
 			WarpDrive.register(new RecipeParticleShapedOre(groupComponents,
 			                                               itemStackRedMatterExplosive, "sss", "sas", "sss",
-			                                               's', ItemElectromagneticCell.getItemStackNoCache(ParticleRegistry.STRANGE_MATTER, 1000),
+			                                               's', ItemElectromagneticCell.getItemStackNoCache(EnumTier.ADVANCED, ParticleRegistry.STRANGE_MATTER, 1000),
 			                                               'a', WarpDriveConfig.getItemStackOrFire("icbmclassic:icbmCExplosive", 22)));
 		}
 	}

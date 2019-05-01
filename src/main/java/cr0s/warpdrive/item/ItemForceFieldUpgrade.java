@@ -41,15 +41,13 @@ public class ItemForceFieldUpgrade extends ItemAbstractBase {
 		itemStackCache = new ItemStack[EnumForceFieldUpgrade.length];
 	}
 	
-	public static ItemStack getItemStack(final EnumForceFieldUpgrade forceFieldUpgrade) {
-		if (forceFieldUpgrade != null) {
-			final int damage = forceFieldUpgrade.ordinal();
-			if (itemStackCache[damage] == null) {
-				itemStackCache[damage] = new ItemStack(WarpDrive.itemForceFieldUpgrade, 1, damage);
-			}
-			return itemStackCache[damage];
+	@Nonnull
+	public static ItemStack getItemStack(@Nonnull final EnumForceFieldUpgrade forceFieldUpgrade) {
+		final int damage = forceFieldUpgrade.ordinal();
+		if (itemStackCache[damage] == null) {
+			itemStackCache[damage] = new ItemStack(WarpDrive.itemForceFieldUpgrade, 1, damage);
 		}
-		return null;
+		return itemStackCache[damage];
 	}
 	
 	public static ItemStack getItemStackNoCache(final EnumForceFieldUpgrade forceFieldUpgrade, final int amount) {

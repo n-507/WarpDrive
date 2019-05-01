@@ -59,7 +59,9 @@ item.warpdrive.armor.chestplate.name=Warp Borstplaat
 item.warpdrive.armor.leggings.name=Warp Broek
 item.warpdrive.armor.boots.name=Warp Schoenen
 
-item.warpdrive.atomic.electromagnetic_cell.name=Electromagnetische Cell
+item.warpdrive.atomic.electromagnetic_cell.basic.name=Electromagnetische Cell
+item.warpdrive.atomic.electromagnetic_cell.advanced.name=Electromagnetische Cell
+item.warpdrive.atomic.electromagnetic_cell.superior.name=Electromagnetische Cell
 item.warpdrive.atomic.electromagnetic_cell.tooltip.empty=Gebruik een deeltjesversneller om me te vullen!
 item.warpdrive.atomic.electromagnetic_cell.tooltip.filled=Is gevuld met %1$s Å³ van %2$s
 
