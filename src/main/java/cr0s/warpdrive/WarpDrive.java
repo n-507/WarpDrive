@@ -861,11 +861,6 @@ public class WarpDrive {
 				logger.error(String.format("Overlapping recipe detected, please report this to the mod author %s",
 				                           registryName));
 				registryName = new ResourceLocation(MODID, path + "!" + System.nanoTime());
-				try {
-					Thread.sleep(10000);
-				} catch (final Exception exception) {
-					// ignored
-				}
 				assert false;
 			}
 			recipe.setRegistryName(registryName);
@@ -889,17 +884,21 @@ public class WarpDrive {
 	
 	@SubscribeEvent
 	public void onRegisterBiomes(@Nonnull final RegistryEvent.Register<Biome> event) {
-		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
+		LocalProfiler.start(String.format("Registering %s", event.getName()));
+		
 		for (final Biome biome : biomes) {
 			event.getRegistry().register(biome);
 		}
 		
 		BiomeDictionary.addTypes(biomeSpace, BiomeDictionary.Type.DEAD, BiomeDictionary.Type.WASTELAND);
+		
+		LocalProfiler.stop(1000);
 	}
 	
 	@SubscribeEvent
 	public void onRegisterBlocks(@Nonnull final RegistryEvent.Register<Block> event) {
-		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
+		LocalProfiler.start(String.format("Registering %s", event.getName()));
+		
 		for (final Block block : blocks) {
 			event.getRegistry().register(block);
 		}
@@ -935,19 +934,24 @@ public class WarpDrive {
 		GameRegistry.registerTileEntity(TileEntityTransporterBeacon.class, new ResourceLocation(WarpDrive.MODID, "transporter_beacon"));
 		GameRegistry.registerTileEntity(TileEntityTransporterCore.class, new ResourceLocation(WarpDrive.MODID, "transporter_core"));
 		GameRegistry.registerTileEntity(TileEntityWeaponController.class, new ResourceLocation(WarpDrive.MODID, "weapon_controller"));
+		
+		LocalProfiler.stop(1000);
 	}
 	
 	@SubscribeEvent
 	public void onRegisterEnchantments(@Nonnull final RegistryEvent.Register<Enchantment> event) {
-		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
+		LocalProfiler.start(String.format("Registering %s", event.getName()));
+		
 		for (final Enchantment enchantment : enchantments) {
 			event.getRegistry().register(enchantment);
 		}
+		
+		LocalProfiler.stop(1000);
 	}
 	
 	@SubscribeEvent
 	public void onRegisterEntities(@Nonnull final RegistryEvent.Register<EntityEntry> event) {
-		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
+		LocalProfiler.start(String.format("Registering %s", event.getName()));
 		
 		EntityEntry entityEntry;
 		
@@ -978,11 +982,14 @@ public class WarpDrive {
 		                                .id("entityParticleBunch", WarpDriveConfig.G_ENTITY_PARTICLE_BUNCH_ID).name("EntityParticleBunch")
 		                                .build();
 		event.getRegistry().register(entityEntry);
+		
+		LocalProfiler.stop(1000);
 	}
 	
 	@SubscribeEvent
 	public void onRegisterItems(@Nonnull final RegistryEvent.Register<Item> event) {
-		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
+		LocalProfiler.start(String.format("Registering %s", event.getName()));
+		
 		for (final Item item : items) {
 			event.getRegistry().register(item);
 			proxy.onModelInitialisation(item);
@@ -990,51 +997,71 @@ public class WarpDrive {
 		for (final Block block : blocks) {
 			proxy.onModelInitialisation(block);
 		}
+		
+		LocalProfiler.stop(1000);
 	}
 	
 	@SubscribeEvent
 	public void onRegisterPotions(@Nonnull final RegistryEvent.Register<Potion> event) {
-		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
+		LocalProfiler.start(String.format("Registering %s", event.getName()));
+		
 		for (final Potion potion : potions) {
 			event.getRegistry().register(potion);
 		}
+		
+		LocalProfiler.stop(1000);
 	}
 	
 	@SubscribeEvent
 	public void onRegisterPotionTypes(@Nonnull final RegistryEvent.Register<PotionType> event) {
-		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
+		LocalProfiler.start(String.format("Registering %s", event.getName()));
+		
 		for (final PotionType potionType : potionTypes) {
 			event.getRegistry().register(potionType);
 		}
+		
+		LocalProfiler.stop(1000);
 	}
 	
 	@SubscribeEvent
 	public void onRegisterRecipes(@Nonnull final RegistryEvent.Register<IRecipe> event) {
-		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
+		LocalProfiler.start(String.format("Registering %s step 1", event.getName()));
 		
 		Recipes.initOreDictionary();
 		
 		Recipes.initDynamic();
 		
+		LocalProfiler.stop(1000);
+		
+		LocalProfiler.start(String.format("Registering %s step 2", event.getName()));
+		
 		for (final IRecipe recipe : recipes.values()) {
 			event.getRegistry().register(recipe);
 		}
+		
+		LocalProfiler.stop(1000);
 	}
 	
 	@SubscribeEvent
 	public void onRegisterSoundEvents(@Nonnull final RegistryEvent.Register<SoundEvent> event) {
-		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
+		LocalProfiler.start(String.format("Registering %s", event.getName()));
+		
 		cr0s.warpdrive.data.SoundEvents.registerSounds();
 		for (final SoundEvent soundEvent : soundEvents) {
 			event.getRegistry().register(soundEvent);
 		}
+		
+		LocalProfiler.stop(1000);
 	}
 	
 	@SubscribeEvent
 	public void onRegisterVillagerProfessions(@Nonnull final RegistryEvent.Register<VillagerProfession> event) {
-		WarpDrive.logger.debug(String.format("Registering %s", event.getName()));
+		LocalProfiler.start(String.format("Registering %s", event.getName()));
+		
 		for (final VillagerProfession villagerProfession : villagerProfessions) {
 			event.getRegistry().register(villagerProfession);
 		}
+		
+		LocalProfiler.stop(1000);
 	}
 }
