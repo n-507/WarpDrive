@@ -91,7 +91,7 @@ public class JumpSequencer extends AbstractSequencer {
 	
 	protected boolean isEnabled = false;
 	private EnumJumpSequencerState enumJumpSequencerState = EnumJumpSequencerState.IDLE;
-	private int actualIndexInShip = 0;
+	protected int actualIndexInShip = 0;
 	
 	protected final JumpShip ship;
 	private boolean betweenWorlds;

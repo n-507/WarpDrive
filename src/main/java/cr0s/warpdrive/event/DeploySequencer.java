@@ -47,6 +47,12 @@ public class DeploySequencer extends JumpSequencer {
 	}
 	
 	@Override
+	protected void state_removeBlocks() {
+		// skip removal in deployment mode
+		actualIndexInShip = ship.jumpBlocks.length;
+	}
+	
+	@Override
 	protected void state_chunkReleasing() {
 		super.state_chunkReleasing();
 		
