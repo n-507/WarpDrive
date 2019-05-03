@@ -10,6 +10,7 @@ import cr0s.warpdrive.block.movement.BlockShipCore;
 import cr0s.warpdrive.compat.CompatForgeMultipart;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.config.Filler;
+import cr0s.warpdrive.config.WarpDriveDataFixer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -449,16 +450,21 @@ public class JumpBlock {
 	}
 	
 	public void readFromNBT(final NBTTagCompound tagCompound) {
-		block = Block.getBlockFromName(tagCompound.getString("block"));
-		if (block == null) {
+		final String blockName = tagCompound.getString("block");
+		blockMeta = tagCompound.getByte("blockMeta");
+		final String stringBlockState = String.format("%s@%d", blockName, blockMeta);
+		final IBlockState blockState = WarpDriveDataFixer.getFixedBlockState(stringBlockState);
+		if (blockState == null) {
 			if (WarpDriveConfig.LOGGING_BUILDING) {
-				WarpDrive.logger.warn(String.format("Ignoring unknown block %s from tag %s",
-				                                    tagCompound.getString("block"), tagCompound));
+				WarpDrive.logger.warn(String.format("Ignoring unknown blockstate %s from tag %s, consider updating your warpdrive/dataFixer.yml",
+				                                    stringBlockState, tagCompound));
 			}
 			block = Blocks.AIR;
 			return;
 		}
-		blockMeta = tagCompound.getByte("blockMeta");
+		block = blockState.getBlock();
+		blockMeta = blockState.getBlock().getMetaFromState(blockState);
+		
 		weakTileEntity = null;
 		if (tagCompound.hasKey("blockNBT")) {
 			blockNBT = tagCompound.getCompoundTag("blockNBT");

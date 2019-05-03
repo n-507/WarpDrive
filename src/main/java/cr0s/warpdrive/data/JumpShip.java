@@ -129,6 +129,9 @@ public class JumpShip {
 					final IBlockState blockState = WarpDriveDataFixer.getBlockState(stringBlockstate);
 					if (blockState != null) {
 						blockStatePalette.put(tagCompoundPalette.getInteger(stringBlockstate), blockState);
+					} else {
+						WarpDrive.logger.warn(String.format("Ignoring missing BlockState %s, consider updating your warpdrive/dataFixer.yml",
+						                                    stringBlockstate));
 					}
 				}
 			} else {

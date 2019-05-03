@@ -557,7 +557,18 @@ public class WarpDrive {
 		event.registerServerCommand(new CommandSpace());
 	}
 	
-	/* @TODO MC1.12
+	/* DataFixer documentation/feature on limbo => use midas configuration instead
+	public static void registerFixes(final DataFixer dataFixer) {
+		final CompoundDataFixer compoundDataFixer = FMLServerHandler.instance().getDataFixer();
+		compoundDataFixer.registerWalker(FixTypes.BLOCK_ENTITY, new ItemStackData(TileEntityEnanReactorLaser.class, WarpDrive.MODID + ":enan_reactor_laser"));
+	}
+	
+	@SubscribeEvent
+	public void onMissingMappings(final RegistryEvent.MissingMappings<Block> event) {
+		WarpDrive.logger.debug(String.format("Missing mappings %s", event.getName()));
+		// event.getMappings();
+	}
+	
 	@SuppressWarnings("ConstantConditions")
 	@Mod.EventHandler
 	public void onFMLMissingMappings(final FMLMissingMappingsEvent event) {
@@ -637,7 +648,7 @@ public class WarpDrive {
 						mapping.remap(Item.getItemFromBlock(blockEnanReactorCore));
 						break;
 					case "WarpDrive:powerStore":
-						mapping.remap(Item.getItemFromBlock(blockEnergyBank));
+						mapping.remap(Item.getItemFromBlock(blockCapacitor));
 						break;
 					case "WarpDrive:protocolBlock":
 						mapping.remap(Item.getItemFromBlock(blockShipController));
@@ -736,7 +747,7 @@ public class WarpDrive {
 						mapping.remap(blockEnanReactorCore);
 						break;
 					case "WarpDrive:powerStore":
-						mapping.remap(blockEnergyBank);
+						mapping.remap(blockCapacitor);
 						break;
 					case "WarpDrive:protocolBlock":
 						mapping.remap(blockShipController);

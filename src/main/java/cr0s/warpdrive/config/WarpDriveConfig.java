@@ -698,6 +698,7 @@ public class WarpDriveConfig {
 		// read configuration files
 		loadConfig(new File(fileConfigDirectory, "config.yml"));
 		loadDictionary(new File(fileConfigDirectory, "dictionary.yml"));
+		loadDataFixer(new File(fileConfigDirectory, "dataFixer.yml"));
 		CelestialObjectManager.load(fileConfigDirectory);
 		
 		// create schematics folder
@@ -1314,9 +1315,17 @@ public class WarpDriveConfig {
 		final Configuration config = new Configuration(file);
 		config.load();
 		
-		// Dictionary
 		Dictionary.loadConfig(config);
 	
+		config.save();
+	}
+	
+	public static void loadDataFixer(final File file) {
+		final Configuration config = new Configuration(file);
+		config.load();
+		
+		WarpDriveDataFixer.loadConfig(config);
+		
 		config.save();
 	}
 	
@@ -1586,6 +1595,7 @@ public class WarpDriveConfig {
 		StructureManager.load(fileConfigDirectory);
 		
 		Dictionary.apply();
+		WarpDriveDataFixer.apply();
 	}
 	
 	private static void loadIC2() {
