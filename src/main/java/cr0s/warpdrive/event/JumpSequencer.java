@@ -171,7 +171,14 @@ public class JumpSequencer extends AbstractSequencer {
 		register();
 	}
 	
-	public void disableAndMessage(final boolean isSuccessful, final WarpDriveText reason) {
+	public void disableAndMessage(final boolean isSuccessful, final WarpDriveText reasonRaw) {
+		final WarpDriveText reason;
+		if (isSuccessful) {
+			reason = reasonRaw;
+		} else {
+			reason = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.movement_aborted")
+					         .append(reasonRaw);
+		}
 		disable(isSuccessful, reason);
 		ship.messageToAllPlayersOnShip(reason);
 	}
@@ -373,7 +380,7 @@ public class JumpSequencer extends AbstractSequencer {
 			for (int z = minZ; z <= maxZ; z++) {
 				chunkCount++;
 				if (chunkCount > sourceWorldTicket.getMaxChunkListDepth()) {
-					reason.append(Commons.styleWarning, "warpdrive.ship.guide.too_many_source_chunks_to_load",
+					reason.append(Commons.styleWarning, "warpdrive.ship.guide.too_many_chunks_to_load",
 					              (maxX - minX + 1) * (maxZ - minZ + 1),
 					              sourceWorldTicket.getMaxChunkListDepth());
 					reason.append(Commons.styleCommand, "warpdrive.ship.guide.max_chunkloading");
@@ -409,7 +416,7 @@ public class JumpSequencer extends AbstractSequencer {
 			for (int z = minZ; z <= maxZ; z++) {
 				chunkCount++;
 				if (chunkCount > targetWorldTicket.getMaxChunkListDepth()) {
-					reason.append(Commons.styleWarning, "warpdrive.ship.guide.too_many_target_chunks_to_load",
+					reason.append(Commons.styleWarning, "warpdrive.ship.guide.too_many_chunks_to_load",
 					              (maxX - minX + 1) * (maxZ - minZ + 1),
 					              targetWorldTicket.getMaxChunkListDepth());
 					reason.append(Commons.styleCommand, "warpdrive.ship.guide.max_chunkloading");
@@ -692,9 +699,12 @@ public class JumpSequencer extends AbstractSequencer {
 				doCollisionDamage(false);
 				
 				// cancel jump
+				final WarpDriveText textOverlapping = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.overlapping_source_and_target");
 				final WarpDriveText textComponent;
 				if (firstAdjustmentReason.isEmpty()) {
-					textComponent = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.overlapping_source_and_target");
+					textComponent = textOverlapping;
+				} else if (firstAdjustmentReason.getUnformattedText().equals(textOverlapping.getUnformattedText())) {
+					textComponent = firstAdjustmentReason;
 				} else {
 					textComponent = firstAdjustmentReason.append(Commons.styleWarning, "warpdrive.ship.guide.not_enough_space_after_adjustment");
 				}
@@ -728,7 +738,6 @@ public class JumpSequencer extends AbstractSequencer {
 			final CheckMovementResult checkMovementResult = checkCollisionAndProtection(transformation, true,
 			                                                                            "target", new VectorI(0, 0, 0));
 			if (checkMovementResult != null) {
-				checkMovementResult.reason.append(Commons.styleWarning, "warpdrive.ship.guide.jump_aborted");
 				disableAndMessage(false, checkMovementResult.reason);
 				LocalProfiler.stop();
 				return;
@@ -847,7 +856,7 @@ public class JumpSequencer extends AbstractSequencer {
 			final double distanceSquared = celestialObject.getSquareDistanceInParent(sourceWorld.provider.getDimension(), ship.core.getX(), ship.core.getZ());
 			if (distanceSquared > 0.0D) {
 				final AxisAlignedBB axisAlignedBB = celestialObject.getAreaInParent();
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.no_star_system_in_hyperspace",
+				reason.append(Commons.styleWarning, "warpdrive.ship.guide.no_star_system_in_range",
 				              (int) Math.sqrt(distanceSquared),
 				              (int) axisAlignedBB.minX, (int) axisAlignedBB.minY, (int) axisAlignedBB.minZ,
 				              (int) axisAlignedBB.maxX, (int) axisAlignedBB.maxY, (int) axisAlignedBB.maxZ);
@@ -862,7 +871,7 @@ public class JumpSequencer extends AbstractSequencer {
 				targetWorld = server.getWorld(dimensionIdSpace);
 			} catch (final Exception exception) {
 				exception.printStackTrace();
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.unable_to_load_space_dimension",
+				reason.append(Commons.styleWarning, "warpdrive.ship.guide.exception_loading_dimension",
 				              dimensionIdSpace);
 				return false;
 			}
@@ -891,7 +900,7 @@ public class JumpSequencer extends AbstractSequencer {
 				targetWorld = server.getWorld(dimensionIdHyperspace);
 			} catch (final Exception exception) {
 				exception.printStackTrace();
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.unable_to_load_hyperspace_dimension",
+				reason.append(Commons.styleWarning, "warpdrive.ship.guide.exception_loading_dimension",
 				              dimensionIdHyperspace);
 				return false;
 			}
@@ -930,7 +939,7 @@ public class JumpSequencer extends AbstractSequencer {
 				targetWorld = server.getWorld(dimensionIdSpace);
 			} catch (final Exception exception) {
 				exception.printStackTrace();
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.unable_to_load_space_dimension",
+				reason.append(Commons.styleWarning, "warpdrive.ship.guide.exception_loading_dimension",
 				              dimensionIdSpace);
 				return false;
 			}
@@ -976,7 +985,7 @@ public class JumpSequencer extends AbstractSequencer {
 				targetWorld = server.getWorld(celestialObject.dimensionId);
 			} catch (final Exception exception) {
 				exception.printStackTrace();
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.unable_to_land_invalid_id",
+				reason.append(Commons.styleWarning, "warpdrive.ship.guide.exception_loading_dimension",
 				              celestialObject.getDisplayName(), celestialObject.dimensionId);
 				return false;
 			}
@@ -1526,16 +1535,36 @@ public class JumpSequencer extends AbstractSequencer {
 		BlockPos blockPosTarget;
 		final BlockPos blockPosCoreAtTarget = transformation.apply(ship.core.getX(), ship.core.getY(), ship.core.getZ());
 		
-		// post event allowing other mods to do their own checks
+		// validate positions aren't overlapping
+		final AxisAlignedBB aabbSource = new AxisAlignedBB(
+				ship.minX, ship.minY, ship.minZ,
+				ship.maxX, ship.maxY, ship.maxZ);
+		aabbSource.expand(1.0D, 1.0D, 1.0D);
+		
 		final BlockPos blockPosMinAtTarget = transformation.apply(ship.minX, ship.minY, ship.minZ);
 		final BlockPos blockPosMaxAtTarget = transformation.apply(ship.maxX, ship.maxY, ship.maxZ);
-		final AxisAlignedBB targetAABB = new AxisAlignedBB(
+		final AxisAlignedBB aabbTarget = new AxisAlignedBB(
 				blockPosMinAtTarget.getX(), blockPosMinAtTarget.getY(), blockPosMinAtTarget.getZ(),
 				blockPosMaxAtTarget.getX(), blockPosMaxAtTarget.getY(), blockPosMaxAtTarget.getZ() );
+		
+		if ( shipMovementType != EnumShipMovementType.INSTANTIATE
+		  && shipMovementType != EnumShipMovementType.RESTORE
+		  && !betweenWorlds
+		  && aabbSource.intersects(aabbTarget) ) {
+			result.add(ship.core.getX(), ship.core.getY(), ship.core.getZ(),
+			           blockPosCoreAtTarget.getX(),
+			           blockPosCoreAtTarget.getY(),
+			           blockPosCoreAtTarget.getZ(),
+			           false,
+			           new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.overlapping_source_and_target") );
+			return result;
+		}
+		
+		// post event allowing other mods to do their own checks
 		final TargetCheck targetCheck = new TargetCheck(sourceWorld, ship.core,
 		                                                ship.shipCore, shipMovementType.getName(),
 		                                                vMovement.x, vMovement.y, vMovement.z,
-		                                                targetWorld, targetAABB);
+		                                                targetWorld, aabbTarget);
 		MinecraftForge.EVENT_BUS.post(targetCheck);
 		if (targetCheck.isCanceled()) {
 			result.add(ship.core.getX(), ship.core.getY(), ship.core.getZ(),
@@ -1582,7 +1611,8 @@ public class JumpSequencer extends AbstractSequencer {
 						           blockPosTarget.getZ() + 0.5D + offset.z * 0.1D,
 						           true,
 						           new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.obstacle_block_detected",
-						                             blockStateTarget, blockPosTarget.getX(), blockPosTarget.getY(), blockPosTarget.getZ()) );
+						                             Commons.format(blockStateTarget, targetWorld, blockPosTarget),
+						                             blockPosTarget.getX(), blockPosTarget.getY(), blockPosTarget.getZ()) );
 						if (!fullCollisionDetails) {
 							return result;
 						} else if (WarpDriveConfig.LOGGING_JUMP) {

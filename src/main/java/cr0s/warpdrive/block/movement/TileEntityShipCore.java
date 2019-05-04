@@ -165,8 +165,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			// report coo down time when a command is requested
 			if ( isEnabled
 			  && isCommandConfirmed
-			  && enumShipCommand != EnumShipCommand.IDLE
-			  && enumShipCommand != EnumShipCommand.MAINTENANCE ) {
+			  && enumShipCommand.isMovement() ) {
 				if (ticksCooldown % 20 == 0) {
 					final int seconds = ticksCooldown / 20;
 					if (!isCooldownReported || (seconds < 5) || ((seconds < 30) && (seconds % 5 == 0)) || (seconds % 10 == 0)) {
@@ -316,8 +315,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		switch (stateCurrent) {
 		case IDLE:
 			if ( isCommandConfirmed
-			  && enumShipCommand != EnumShipCommand.IDLE
-			  && enumShipCommand != EnumShipCommand.MAINTENANCE ) {
+			  && enumShipCommand.isMovement() ) {
 				commandCurrent = enumShipCommand;
 				stateCurrent = EnumShipCoreState.ONLINE;
 				/*
@@ -529,8 +527,15 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	}
 	
 	@Override
-	protected void commandDone(final boolean success, @Nonnull final WarpDriveText reason) {
-		assert success || !reason.getUnformattedText().isEmpty();
+	protected void commandDone(final boolean success, @Nonnull final WarpDriveText reasonRaw) {
+		assert success || !reasonRaw.getUnformattedText().isEmpty();
+		final WarpDriveText reason;
+		if (success || !commandCurrent.isMovement()) {
+			reason = reasonRaw;
+		} else {
+			reason = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.movement_aborted")
+					         .append(reasonRaw);
+		}
 		super.commandDone(success, reason);
 		if (!success) {
 			Commons.messageToAllPlayersInArea(this, reason);
@@ -1233,7 +1238,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	@Override
 	public Object[] isAssemblyValid() {
 		if (!isValid) {
-			return new Object[] { false, reasonInvalid.getUnformattedText() };
+			return new Object[] { false, Commons.removeFormatting( reasonInvalid.getUnformattedText() ) };
 		}
 		return super.isAssemblyValid();
 	}

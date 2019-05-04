@@ -80,4 +80,8 @@ public class WarpDriveText extends TextComponentBase {
 		appendSibling(textComponent);
 		return this;
 	}
+	
+	public WarpDriveText appendSibling(final WarpDriveText textComponent) {
+		return (WarpDriveText) super.appendSibling(textComponent);
+	}
 }

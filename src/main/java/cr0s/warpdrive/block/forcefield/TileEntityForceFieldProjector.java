@@ -997,7 +997,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		final EnumForceFieldShape enumForceFieldShape = getShape();
 		final WarpDriveText displayName = new WarpDriveText(null, "warpdrive.force_field.shape.status_line." + enumForceFieldShape.getName());
 		if (enumForceFieldShape == EnumForceFieldShape.NONE) {
-			return new WarpDriveText(null, "warpdrive.force_field.shape.status_line.none",
+			return new WarpDriveText(Commons.styleWarning, "warpdrive.force_field.shape.status_line.none",
 			                         displayName);
 		} else if (isDoubleSided) {
 			return new WarpDriveText(null, "warpdrive.force_field.shape.status_line.double",

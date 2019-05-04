@@ -28,7 +28,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 import net.minecraftforge.common.util.Constants;
@@ -291,8 +290,8 @@ public class JumpShip {
 	}
 	
 	public void messageToAllPlayersOnShip(final WarpDriveText textComponent) {
-		final ITextComponent messageFormatted = new TextComponentString((shipCore != null && !shipCore.name.isEmpty()) ? shipCore.name + " " : "ShipCore ").setStyle(Commons.styleHeader)
-						.appendSibling(textComponent);
+		final String name = (shipCore != null && !shipCore.name.isEmpty()) ? shipCore.name : "ShipCore";
+		final ITextComponent messageFormatted = Commons.getNamedPrefix(name).appendSibling(textComponent);
 		if (entitiesOnShip == null) {
 			// entities not saved yet, get them now
 			final WarpDriveText reason = new WarpDriveText();
@@ -567,7 +566,7 @@ public class JumpShip {
 			actualMass = newMass;
 		} catch (final Exception exception) {
 			exception.printStackTrace();
-			final WarpDriveText textComponent = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.corrupted_block",
+			final WarpDriveText textComponent = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.save_exception",
 			                                                      Commons.format(world, blockPos));
 			WarpDrive.logger.error(textComponent.getUnformattedText());
 			reason.appendSibling(textComponent);

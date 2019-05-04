@@ -7,16 +7,17 @@ import net.minecraft.util.IStringSerializable;
 
 public enum EnumShipCommand implements IStringSerializable {
 	
-	OFFLINE     ("offline"),      // Offline allows to move sub-ships
-	IDLE        ("idle"),         //
-	MANUAL      ("manual"),       // Move ship around including take off and landing
-	// AUTOPILOT("autopilot"),    // Move ship towards a far destination
-	// SUMMON   ("summon"),       // Summoning crew
-	HYPERDRIVE  ("hyperdrive"),   // Jump to/from Hyperspace
-	GATE        ("gate"),         // Jump via jumpgate
-	MAINTENANCE ("maintenance");  // Maintenance mode
+	OFFLINE     ("offline"        , false), // Offline allows to move overlapping ships
+	IDLE        ("idle"           , false), //
+	MANUAL      ("manual"         , true ), // Move ship around including take off and landing
+	// AUTOPILOT("autopilot"         , true ), // Move ship towards a far destination
+	// SUMMON   ("summon"            , false), // Summoning crew
+	HYPERDRIVE  ("hyperdrive"     , true ), // Jump to/from Hyperspace
+	GATE        ("gate"           , true ), // Jump via jumpgate
+	MAINTENANCE ("maintenance"    , false); // Maintenance mode
 	
 	private final String name;
+	private final boolean isMovement;
 	
 	// cached values
 	public static final int length;
@@ -29,8 +30,9 @@ public enum EnumShipCommand implements IStringSerializable {
 		}
 	}
 	
-	EnumShipCommand(final String name) {
+	EnumShipCommand(@Nonnull final String name, final boolean isMovement) {
 		this.name = name;
+		this.isMovement = isMovement;
 	}
 	
 	public static EnumShipCommand get(final int damage) {
@@ -41,5 +43,9 @@ public enum EnumShipCommand implements IStringSerializable {
 	@Override
 	public String getName() {
 		return name;
+	}
+	
+	public boolean isMovement() {
+		return isMovement;
 	}
 }

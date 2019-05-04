@@ -449,7 +449,7 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyConsumer {
 		if (!isValid) {
 			textStatus = textValidityIssues;
 		} else if (!isEnabled) {
-			textStatus = new WarpDriveText(null, "warpdrive.cloaking_core.disabled",
+			textStatus = new WarpDriveText(Commons.styleNormal, "warpdrive.cloaking_core.disabled",
 			                               isFullyTransparent ? 2 : 1,
 			                               volume);
 		} else if (!isCloaking) {
@@ -477,7 +477,7 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyConsumer {
 	@Override
 	public Object[] isAssemblyValid() {
 		if (!isValid) {
-			return new Object[] { false, Commons.removeFormatting(textValidityIssues.getUnformattedText()) };
+			return new Object[] { false, Commons.removeFormatting( textValidityIssues.getUnformattedText() ) };
 		}
 		return super.isAssemblyValid();
 	}

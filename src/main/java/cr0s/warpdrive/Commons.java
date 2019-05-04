@@ -153,6 +153,7 @@ public class Commons {
 	public static Style styleCommand  = new Style().setColor(TextFormatting.AQUA);
 	public static Style styleHeader   = new Style().setColor(TextFormatting.GOLD);
 	public static Style styleCorrect  = new Style().setColor(TextFormatting.GREEN);
+	public static Style styleNormal   = new Style().setColor(TextFormatting.WHITE);
 	public static Style styleWarning  = new Style().setColor(TextFormatting.RED);
 	public static Style styleValue    = new Style().setColor(TextFormatting.YELLOW);
 	public static Style styleVoltage  = new Style().setColor(TextFormatting.DARK_GREEN);
@@ -193,8 +194,24 @@ public class Commons {
 		}
 		
 		final String[] lines = updateEscapeCodes(message).split("\n");
+		String formatNextLine = "";
 		for (final String line : lines) {
-			commandSender.sendMessage(new TextComponentString(line));
+			commandSender.sendMessage(new TextComponentString(formatNextLine + line));
+			
+			// compute remaining format
+			int index = 0;
+			while (index < line.length()) {
+				if (line.charAt(index) == (char) 167 && index + 1 < line.length()) {
+					index++;
+					final char charFormat = line.charAt(index);
+					if (charFormat == 'r') {
+						formatNextLine = CHAR_FORMATTING + charFormat;
+					} else {
+						formatNextLine += CHAR_FORMATTING + charFormat;
+					}
+				}
+				index++;
+			}
 		}
 		
 		// logger.info(message);
@@ -392,7 +409,22 @@ public class Commons {
 		                     stringNBT);
 	}
 	
-	public static String sanitizeFileName(final String name) {
+	public static String format(@Nonnull final IBlockState blockState, @Nonnull final World world, @Nonnull final BlockPos blockPos) {
+		final Block block = blockState.getBlock();
+		try {
+			final ItemStack itemStack = block.getPickBlock(blockState, null, world, blockPos, null);
+			return new WarpDriveText(null, itemStack.getTranslationKey() + ".name").getFormattedText();
+		} catch (final Exception exception1) {
+			try {
+				return new WarpDriveText(null, block.getTranslationKey() + ".name").getFormattedText();
+			} catch (final Exception exception2) {
+				return blockState.toString();
+			}
+		}
+	}
+	
+	@Nonnull
+	public static String sanitizeFileName(@Nonnull final String name) {
 		return name.replace("/", "")
 		           .replace(".", "")
 		           .replace(":", "")
@@ -857,17 +889,17 @@ public class Commons {
 	public static void messageToAllPlayersInArea(@Nonnull final IStarMapRegistryTileEntity tileEntity, @Nonnull final WarpDriveText textComponent) {
 		assert tileEntity instanceof TileEntity;
 		final AxisAlignedBB starMapArea = tileEntity.getStarMapArea();
-		final ITextComponent messageFormatted = Commons.getChatPrefix(tileEntity.getStarMapName())
+		final WarpDriveText messagePrefixed = Commons.getChatPrefix(tileEntity.getStarMapName())
 		                                               .appendSibling(textComponent);
 		
-		WarpDrive.logger.info(String.format("%s messageToAllPlayersOnShip: %s",
+		WarpDrive.logger.info(String.format("%s messageToAllPlayersInArea: %s",
 		                                    tileEntity, textComponent.getFormattedText()));
 		for (final EntityPlayer entityPlayer : ((TileEntity) tileEntity).getWorld().playerEntities) {
 			if (!entityPlayer.getEntityBoundingBox().intersects(starMapArea)) {
 				continue;
 			}
 			
-			Commons.addChatMessage(entityPlayer, messageFormatted);
+			Commons.addChatMessage(entityPlayer, messagePrefixed);
 		}
 	}
 	

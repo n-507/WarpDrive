@@ -421,38 +421,40 @@ function ship_page_controls()
         ship.command("MANUAL", false)
         ship_updateMovementStats()
       end
-      -- w.writeLn("")
-      w.writeLn("Ship:")
-      w.writeLn(" Current position = " .. w.format_integer(ship_x) .. ", " .. w.format_integer(ship_y) .. ", " .. w.format_integer(ship_z))
-      local energyStored, energyMax, energyUnits = ship.getEnergyStatus()
-      if energyStored == nil then energyStored = 0 end
-      if energyMax == nil or energyMax == 0 then energyMax = 1 end
-      w.writeLn(" Energy           = " .. math.floor(energyStored / energyMax * 100) .. " % (" .. w.format_integer(energyStored) .. " " .. energyUnits .. ")")
-      
-      w.writeLn("")
-      -- w.writeLn("")
-      w.writeLn("Dimensions:")
-      w.writeLn(" Front, Right, Up = " .. w.format_integer(ship_front) .. ", " .. w.format_integer(ship_right) .. ", " .. w.format_integer(ship_up) .. " blocks")
-      w.writeLn(" Back, Left, Down = " .. w.format_integer(ship_back) .. ", " .. w.format_integer(ship_left) .. ", " .. w.format_integer(ship_down) .. " blocks")
-      local shipVolume, shipMass = ship.getShipSize()
-      if shipVolume == nil then
-        shipVolume = 0
-        shipMass = 0
-      end
-      w.write(" Volume, Mass     = ")
-      if shipVolume == 0 then
-        w.write("?")
-      else
-        w.write(w.format_integer(shipVolume))
-      end
-      w.write(" blocks, ")
-      if shipMass == 0 then
-        w.write("?")
-      else
-        w.write(w.format_integer(shipMass))
-      end
-      w.writeLn(" tons")
-      
+    end
+    
+    w.setCursorPos(1, 2)
+    w.writeLn("Ship:")
+    w.writeLn(" Current position = " .. w.format_integer(ship_x) .. ", " .. w.format_integer(ship_y) .. ", " .. w.format_integer(ship_z))
+    local energyStored, energyMax, energyUnits = ship.getEnergyStatus()
+    if energyStored == nil then energyStored = 0 end
+    if energyMax == nil or energyMax == 0 then energyMax = 1 end
+    w.writeLn(" Energy           = " .. math.floor(energyStored / energyMax * 100) .. " % (" .. w.format_integer(energyStored) .. " " .. energyUnits .. ")")
+    
+    w.writeLn("")
+    w.writeLn("Dimensions:")
+    w.writeLn(" Front, Right, Up = " .. w.format_integer(ship_front) .. ", " .. w.format_integer(ship_right) .. ", " .. w.format_integer(ship_up) .. " blocks")
+    w.writeLn(" Back, Left, Down = " .. w.format_integer(ship_back) .. ", " .. w.format_integer(ship_left) .. ", " .. w.format_integer(ship_down) .. " blocks")
+    local shipMass, shipVolume = ship.getShipSize()
+    if shipMass == nil then
+      shipMass = 0
+      shipVolume = 0
+    end
+    w.write(" Mass, Volume     = ")
+    if shipMass == 0 then
+      w.write("?")
+    else
+      w.write(w.format_integer(shipMass))
+    end
+    w.write(" tons, ")
+    if shipVolume == 0 then
+      w.write("?")
+    else
+      w.write(w.format_integer(shipVolume))
+    end
+    w.writeLn(" blocks")
+    
+    if isValid == true then
       w.writeLn("")
       w.writeLn("Warp data:")
       ship_writeMovement(" Movement         = ")

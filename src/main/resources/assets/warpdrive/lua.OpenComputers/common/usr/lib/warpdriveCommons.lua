@@ -34,6 +34,7 @@ local data_handlers = { }
 local device_handlers = {}
 
 local event_handlers = {}
+local event_timers = {}
 
 local monitors = {}
 local monitor_textScale = 0.5
@@ -47,8 +48,8 @@ local page_endText = ""
 local page_callbackDisplay
 local page_callbackKey
 
-local event_refreshPeriod_s = 20.0
-local event_refreshTimerId = -1
+local run_refreshPeriod_s = 20.0
+local status_period_s = 1.0
 
 local styles = {
   normal   = { front = colors.black    , back = colors.lightGray },
@@ -271,10 +272,12 @@ end
 
 local status_clockTarget = -1 -- < 0 when stopped, < clock when elapsed, > clock when ticking
 local status_isWarning = false
+local status_line = 0
 local status_text = ""
 local function status_clear()
   if status_clockTarget > 0 then
     status_clockTarget = -1
+    w.event_timer_stop("status")
     local xSize, ySize = w.getResolution()
     w.setCursorPos(1, ySize)
     w.setColorNormal()
@@ -286,38 +289,43 @@ local function status_isActive()
 end
 local function status_show(isWarning, text)
   if isWarning or not w.status_isActive() then
-    if isWarning then
-      status_clockTarget = w.event_clock() + 1.0
-    else
-      status_clockTarget = w.event_clock() + 0.5
-    end
+    status_line = 1
     status_isWarning = isWarning
-    if text ~= nil then
-      status_text = text
-    else
-      status_text = "???"
+    status_text = {}
+    local textToParse = text or "???"
+    for line in string.gmatch(textToParse, "[^\n]+") do
+      if line ~= "" then
+        table.insert(status_text, line)
+      end
     end
-    w.status_refresh()
+    if isWarning then
+      status_clockTarget = w.event_clock() + 1.0 * #status_text
+    else
+      status_clockTarget = w.event_clock() + 0.5 * #status_text
+    end
+    w.event_timer_start("status", status_period_s, "timer_status")
   end
+  -- always refresh as a visual clue
+  w.status_refresh()
 end
 local function status_refresh()
   if status_clockTarget > 0 then
-    local xSize, ySize = w.getResolution()
-    w.setCursorPos(1, ySize)
-    w.setColorNormal()
-    w.clearLine()
-    
-    if w.event_clock() < status_clockTarget then
+    if w.event_clock() > status_clockTarget and status_line == 1 then
+      w.status_clear()
+    else
+      local xSize, ySize = w.getResolution()
+      w.setCursorPos(1, ySize)
+      w.setColorNormal()
+      w.clearLine()
+
       if status_isWarning then
         w.setColorWarning()
       else
         w.setColorSuccess()
       end
-      w.setCursorPos((xSize - status_text:len() - 2) / 2, ySize)
-      w.write(" " .. status_text .. " ")
+      local text = status_text[status_line]
+      w.writeCentered(" " .. text .. " ")
       w.setColorNormal()
-    else
-      status_clockTarget = -1
     end
   end
 end
@@ -328,12 +336,14 @@ local function status_showSuccess(text)
   w.status_show(false, text)
 end
 local function status_tick()
-  if status_clockTarget > 0 and w.event_clock() > status_clockTarget then
-    local xSize, ySize = w.getResolution()
-    w.setCursorPos(1, ySize)
-    w.setColorNormal()
-    w.clearLine()
-    status_clockTarget = -1
+  if status_clockTarget > -1 then
+    local clockCurrent = w.event_clock()
+    if clockCurrent > status_clockTarget then
+      w.status_clear()
+    else
+      status_line = (status_line % #status_text) + 1
+      w.status_refresh()
+    end
   end
 end
 
@@ -421,7 +431,6 @@ local function input_readInteger(currentValue)
   
   term.setCursorBlink(true)
   repeat
-    w.status_tick()
     w.setCursorPos(x, y)
     w.setColorNormal()
     w.write(input .. "            ")
@@ -525,7 +534,6 @@ local function input_readText(currentValue)
   
   term.setCursorBlink(true)
   repeat
-    w.status_tick()
     -- update display clearing extra characters
     w.setCursorPos(x, y)
     w.setColorNormal()
@@ -646,7 +654,6 @@ local function input_readEnum(currentValue, list, toValue, toDescription, noValu
   
   term.setCursorBlink(true)
   repeat
-    w.status_tick()
     w.setCursorPos(x, y)
     w.setColorNormal()
     if #list == 0 then
@@ -762,21 +769,79 @@ local function event_clock()
   return computer.uptime()
 end
 
-local function event_refresh_start()
-  if event_refreshTimerId == -1 then
-    event_refreshTimerId = event.timer(event_refreshPeriod_s, function () w.event_refresh_tick() end, math.huge)
+local function event_timer_start(name, period_s, eventId)
+  local name = name or "-nameless-"
+  local eventId = eventId or "timer_" .. name
+  -- check for an already active timer
+  local countActives = 0
+  for id, entry in pairs(event_timers) do
+    if entry.name == name and entry.active then -- already one started
+      countActives = countActives + 1
+    end
+  end
+  if countActives > 0 then
+    if name ~= "status" then -- don't report status timer overlaps to prevent a stack overflow
+      w.status_showWarning("Timer already started for " .. name)
+    end
+    return
+  end
+  -- start a new timer
+  local period_s = period_s or 1.0
+  local id = event.timer(period_s, function () w.event_timer_tick(name) end, math.huge)
+  event_timers[id] = {
+    active = true,
+    eventId = eventId,
+    name = name,
+    period_s = period_s
+  }
+end
+
+local function event_timer_stop(name)
+  local name = name or "-nameless-"
+  for id, entry in pairs(event_timers) do
+    if entry.name == name then
+      if entry.active then -- kill any active one
+        entry.active = false
+        event.cancel(id)
+      else -- purge all legacy ones
+        event_timers[id] = nil
+      end
+    end
   end
 end
 
-local function event_refresh_stop()
-  if event_refreshTimerId ~= -1 then
-    event.cancel(event_refreshTimerId)
-    event_refreshTimerId = -1
+local function event_timer_stopAll()
+  for id, entry in pairs(event_timers) do
+    if entry.active then
+      event_timers[id] = nil
+      event.cancel(id)
+    end
   end
 end
 
-local function event_refresh_tick()
-  event.push("timer_refresh")
+local function event_timer_tick(name)
+  local entry = nil
+  local isUnknown = true
+  for idLoop, entryLoop in pairs(event_timers) do
+    if entryLoop.name == name then
+      isUnknown = false
+      if entryLoop.active then
+        entry = entryLoop
+      end
+    end
+  end
+  if isUnknown then -- unknown id, report a warning
+    w.status_showWarning("Timer " .. name .. " is unknown")
+    return
+  end
+  if entry == nil then -- dying timer, just ignore it
+      return
+  end
+  if not entry.active then -- dying timer, just ignore it
+      return
+  end
+  -- resolve the timer
+  event.push(entry.eventId)
 end
 
 local function event_register(eventName, callback)
@@ -788,8 +853,6 @@ local function event_handler(eventName, param)
   local needRedraw = false
   if eventName == "redstone" then
     -- w.redstone_event(param)
-  elseif eventName == "timer_refresh" then
-    needRedraw = page_callbackDisplay ~= page_handlers['0'].display
   elseif eventName == "key_up" then
   elseif eventName == "touch" then
     w.status_showSuccess("Use the keyboard, Luke!")
@@ -1056,12 +1119,13 @@ local function run()
   end
   
   -- start refresh timer
-  w.event_refresh_start()
+  w.event_register("timer_refresh", function() return page_callbackDisplay ~= page_handlers['0'].display end )
+  w.event_register("timer_status" , function() w.status_tick() return false end )
+  w.event_timer_start("refresh", run_refreshPeriod_s, "timer_refresh")
   
   -- main loop
   selectPage('0')
   repeat
-    w.status_tick()
     if refresh then
       w.clear()
       page_callbackDisplay(false)
@@ -1149,7 +1213,8 @@ local function run()
   until abort
   
   -- stop refresh timer
-  w.event_refresh_stop()
+  w.event_timer_stop("refresh")
+  w.event_timer_stopAll()
 end
 
 local function close()
@@ -1213,9 +1278,10 @@ w = {
   reboot = reboot,
   sleep = sleep,
   event_clock = event_clock,
-  event_refresh_start = event_refresh_start,
-  event_refresh_stop = event_refresh_stop,
-  event_refresh_tick = event_refresh_tick,
+  event_timer_start = event_timer_start,
+  event_timer_stop = event_timer_stop,
+  event_timer_stopAll = event_timer_stopAll,
+  event_timer_tick = event_timer_tick,
   event_register = event_register,
   event_handler = event_handler,
   data_get = data_get,

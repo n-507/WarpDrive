@@ -674,7 +674,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		}
 		final WarpDriveText reason = new WarpDriveText();
 		final boolean success = scanShip(reason);
-		return new Object[] { success, 3, reason.getUnformattedText() };
+		return new Object[] { success, 3, Commons.removeFormatting( reason.getUnformattedText() ) };
 	}
 	
 	private Object[] filename() {
@@ -717,7 +717,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 			playerName = "";
 		}
 		/**/
-		return new Object[] { result, reason.getUnformattedText() };
+		return new Object[] { result, Commons.removeFormatting( reason.getUnformattedText() ) };
 	}
 	
 	private Object[] state() {
@@ -823,7 +823,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		}
 		shipToken_countWarmup--;
 		if (shipToken_countWarmup > 0) {
-			Commons.addChatMessage(entityPlayer, new WarpDriveText(null, "warpdrive.builder.guide.ship_materialization_countdown",
+			Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleNormal, "warpdrive.builder.guide.ship_materialization_countdown",
 			                                                       shipToken_nameSchematic, shipToken_countWarmup));
 			return;
 		}

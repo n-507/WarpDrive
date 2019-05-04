@@ -47,7 +47,7 @@ public class TileEntityForceFieldRelay extends TileEntityAbstractForceField impl
 		final EnumForceFieldUpgrade enumForceFieldUpgrade = getUpgrade();
 		final ITextComponent strDisplayName = new TextComponentTranslation("warpdrive.force_field.upgrade.status_line." + enumForceFieldUpgrade.getName());
 		if (enumForceFieldUpgrade == EnumForceFieldUpgrade.NONE) {
-			return new WarpDriveText(null,"warpdrive.upgrade.status_line.none",
+			return new WarpDriveText(Commons.styleWarning,"warpdrive.upgrade.status_line.none",
 			                         strDisplayName);
 		} else {
 			return new WarpDriveText(Commons.styleCorrect,"warpdrive.upgrade.status_line.valid",
