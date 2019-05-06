@@ -205,6 +205,12 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
+		
+		// forge cleanup
+		if (tagCompound.getCompoundTag("ForgeCaps").isEmpty()) {
+			tagCompound.removeTag("ForgeCaps");
+		}
+		
 		if (!installedUpgrades.isEmpty()) {
 			final NBTTagCompound nbtTagCompoundUpgrades = new NBTTagCompound();
 			for (final Entry<Object, Integer> entry : installedUpgrades.entrySet()) {
@@ -213,6 +219,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 			}
 			tagCompound.setTag("upgrades", nbtTagCompoundUpgrades);
 		}
+		
 		return tagCompound;
 	}
 	
