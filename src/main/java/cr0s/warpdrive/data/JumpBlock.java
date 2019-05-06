@@ -5,6 +5,7 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBlockBase;
 import cr0s.warpdrive.api.IBlockTransformer;
 import cr0s.warpdrive.api.ITransformation;
+import cr0s.warpdrive.api.computer.ICoreSignature;
 import cr0s.warpdrive.block.energy.BlockCapacitor;
 import cr0s.warpdrive.block.movement.BlockShipCore;
 import cr0s.warpdrive.compat.CompatForgeMultipart;
@@ -536,9 +537,9 @@ public class JumpBlock {
 		}
 		
 		// WarpDrive UUID
-		if (tagCompound.hasKey("uuidMost")) {
-			tagCompound.removeTag("uuidMost");
-			tagCompound.removeTag("uuidLeast");
+		if (tagCompound.hasKey(ICoreSignature.UUID_MOST_TAG)) {
+			tagCompound.removeTag(ICoreSignature.UUID_MOST_TAG);
+			tagCompound.removeTag(ICoreSignature.UUID_LEAST_TAG);
 		}
 		
 		// WarpDrive any OC connected tile

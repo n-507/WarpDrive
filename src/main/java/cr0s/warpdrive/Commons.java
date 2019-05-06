@@ -889,8 +889,8 @@ public class Commons {
 	public static void messageToAllPlayersInArea(@Nonnull final IStarMapRegistryTileEntity tileEntity, @Nonnull final WarpDriveText textComponent) {
 		assert tileEntity instanceof TileEntity;
 		final AxisAlignedBB starMapArea = tileEntity.getStarMapArea();
-		final WarpDriveText messagePrefixed = Commons.getChatPrefix(tileEntity.getStarMapName())
-		                                               .appendSibling(textComponent);
+		final WarpDriveText messagePrefixed = Commons.getNamedPrefix(tileEntity.getSignatureName())
+		                                             .appendSibling(textComponent);
 		
 		WarpDrive.logger.info(String.format("%s messageToAllPlayersInArea: %s",
 		                                    tileEntity, textComponent.getFormattedText()));

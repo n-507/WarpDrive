@@ -333,19 +333,19 @@ tile.warpdrive.force_field.relay.superior.name=Überlegenes Kraftfeld Relais
 tile.warpdrive.force_field.relay.superior.tooltip=Unterstützt bis zu 1 Upgrade im Netzwerk
 
 tile.warpdrive.movement.lift.name=Lift
-tile.warpdrive.movement.ship_controller.basic.name=Shuttle Raumschiff Steuerung
-tile.warpdrive.movement.ship_controller.advanced.name=Corvette Raumschiff Steuerung
-tile.warpdrive.movement.ship_controller.superior.name=Frigate Raumschiff Steuerung
-tile.warpdrive.movement.ship_controller.exceptional.name=Capital Raumschiff Steuerung
-tile.warpdrive.movement.ship_controller.legendary.name=Planetary Raumschiff Steuerung
-tile.warpdrive.movement.ship_controller.tooltip=Link to a ship core to control it remotely. Schließe einen Computer an, um das Interface zu öffnen.
+tile.warpdrive.movement.ship_controller.basic.name=Remote Shuttle Raumschiff Steuerung
+tile.warpdrive.movement.ship_controller.advanced.name=Remote Corvette Raumschiff Steuerung
+tile.warpdrive.movement.ship_controller.superior.name=Remote Frigate Raumschiff Steuerung
+tile.warpdrive.movement.ship_controller.exceptional.name=Remote Capital Raumschiff Steuerung
+tile.warpdrive.movement.ship_controller.legendary.name=Remote Planetary Raumschiff Steuerung
+tile.warpdrive.movement.ship_controller.tooltip=Optional block to control a ship core remotely. Schließe einen Computer an, um das Interface zu öffnen.
+tile.warpdrive.movement.ship_controller.away_from_core=Remote controller is for remote usage, also they're optional now...
 tile.warpdrive.movement.ship_core.basic.name=Shuttle Raumschiff Kern
 tile.warpdrive.movement.ship_core.advanced.name=Corvette Raumschiff Kern
 tile.warpdrive.movement.ship_core.superior.name=Frigate Raumschiff Kern
 tile.warpdrive.movement.ship_core.exceptional.name=Capital Raumschiff Kern
 tile.warpdrive.movement.ship_core.legendary.name=Planetary Raumschiff Kern
 tile.warpdrive.movement.ship_core.tooltip=Defines your ship center. Schließe eine Energiequelle an, um den Kern zu laden. Schließe einen Computer an, um das Interface zu öffnen.
-
 tile.warpdrive.movement.ship_core.bounding_box.disabled=Bounding box display have been disabled.
 tile.warpdrive.movement.ship_core.bounding_box.enabled=Bounding box display is now enabled. Only you can see it.\nSneak right-click the Ship core again to disable it.
 tile.warpdrive.movement.transporter_beacon.name=Transporter Leuchtfeuer
@@ -664,6 +664,20 @@ warpdrive.control_channel.status_line.undefined=Nicht definierter Steuerungskana
 
 warpdrive.is_enabled.set.enabled=Switched ON!
 warpdrive.is_enabled.set.disabled=Switched off!
+
+# %1 is signature name, %2 is item name, %3 is block name
+warpdrive.core_signature.tooltip=Signature is set to %1$d
+warpdrive.core_signature.get_missing=%3$s has no signature yet!
+warpdrive.core_signature.get_same=%2$s is already linked to %1$s.
+warpdrive.core_signature.get=%2$s is now linked to %1$s.
+warpdrive.core_signature.set_not_supported=You can't change the signature of a %3$s.
+warpdrive.core_signature.set_missing=%2$s needs to be linked first!
+warpdrive.core_signature.set_same=%3$s is already linked to %1$s.
+warpdrive.core_signature.set=%3$s is now linked to %1$s.
+warpdrive.core_signature.status_line.defined=Signature is %1$d.\n§bRight-click a remote controller§r to apply this signature.
+warpdrive.core_signature.status_line.undefined=Undefined signature.\n§bSneak right-click§r a core or controller to set it.
+warpdrive.core_signature.status_line.unknown_core_signature=Unknown core signature!
+warpdrive.core_signature.status_line.world_not_loaded=Core world is not loaded!
 
 warpdrive.tooltip.item_tag.breathing_helmet=§bRaumatmung§r verbraucht Luftkanister oder IC2 Druckluftzellen.
 warpdrive.tooltip.item_tag.fly_in_space=§bRaumtaugliches Jetpack§r.

@@ -1,16 +1,14 @@
 package cr0s.warpdrive.block.atomic;
 
 import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
-import cr0s.warpdrive.block.TileEntityAbstractEnergy;
+import cr0s.warpdrive.block.TileEntityAbstractEnergyCoreOrController;
 import cr0s.warpdrive.data.EnumStarMapEntryType;
 import cr0s.warpdrive.data.VectorI;
-
-import java.util.UUID;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.AxisAlignedBB;
 
-public class TileEntityAcceleratorController extends TileEntityAbstractEnergy implements IStarMapRegistryTileEntity {
+public class TileEntityAcceleratorController extends TileEntityAbstractEnergyCoreOrController implements IStarMapRegistryTileEntity {
 	
 	public TileEntityAcceleratorController() {
 		super();
@@ -25,11 +23,6 @@ public class TileEntityAcceleratorController extends TileEntityAbstractEnergy im
 	@Override
 	public EnumStarMapEntryType getStarMapType() {
 		return EnumStarMapEntryType.ACCELERATOR;
-	}
-	
-	@Override
-	public UUID getUUID() {
-		return null;
 	}
 	
 	@Override
@@ -48,12 +41,12 @@ public class TileEntityAcceleratorController extends TileEntityAbstractEnergy im
 	}
 	
 	@Override
-	public String getStarMapName() {
-		return null;
+	public void onBlockUpdatedInArea(final VectorI vector, final IBlockState blockState) {
+		
 	}
 	
 	@Override
-	public void onBlockUpdatedInArea(final VectorI vector, final IBlockState blockState) {
-		
+	public Object[] getEnergyRequired() {
+		return new Object[0];
 	}
 }

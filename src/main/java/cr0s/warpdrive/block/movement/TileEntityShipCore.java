@@ -67,7 +67,6 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	
 	// persistent properties
 	public EnumFacing facing;
-	public UUID uuid = null;
 	private double isolationRate = 0.0D;
 	private final Set<BlockPos> blockPosShipControllers = new CopyOnWriteArraySet<>();
 	private int ticksCooldown = 0;
@@ -184,7 +183,9 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		}
 		
 		// enforce emergency stop
-		if (!isEnabled) {
+		if ( !isEnabled
+		  || ( isCommandConfirmed
+		    && enumShipCommand == EnumShipCommand.OFFLINE ) ) {
 			stateCurrent = EnumShipCoreState.IDLE;
 		}
 		
@@ -1128,10 +1129,6 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
-		uuid = new UUID(tagCompound.getLong("uuidMost"), tagCompound.getLong("uuidLeast"));
-		if (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0) {
-			uuid = UUID.randomUUID();
-		}
 		isolationRate = tagCompound.getDouble("isolationRate");
 		ticksCooldown = tagCompound.getInteger("cooldownTime");
 		warmupTime_ticks = tagCompound.getInteger("warmupTime");
@@ -1142,10 +1139,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
-		if (uuid != null) {
-			tagCompound.setLong("uuidMost", uuid.getMostSignificantBits());
-			tagCompound.setLong("uuidLeast", uuid.getLeastSignificantBits());
-		}
+		
 		tagCompound.setDouble("isolationRate", isolationRate);
 		tagCompound.setInteger("cooldownTime", ticksCooldown);
 		tagCompound.setInteger("warmupTime", warmupTime_ticks);
@@ -1198,15 +1192,15 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		super.invalidate();
 	}
 	
+	@Override
+	public String getSignatureName() {
+		return name;
+	}
+	
 	// IStarMapRegistryTileEntity overrides
 	@Override
 	public EnumStarMapEntryType getStarMapType() {
 		return EnumStarMapEntryType.SHIP;
-	}
-	
-	@Override
-	public UUID getUUID() {
-		return uuid;
 	}
 	
 	@Override
@@ -1222,11 +1216,6 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	@Override
 	public double getIsolationRate() {
 		return isolationRate;
-	}
-	
-	@Override
-	public String getStarMapName() {
-		return name.isEmpty() ? "ShipCore" : name;
 	}
 	
 	@Override

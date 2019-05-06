@@ -3,10 +3,9 @@ package cr0s.warpdrive.block.movement;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
-import cr0s.warpdrive.block.TileEntityAbstractMachine;
+import cr0s.warpdrive.block.TileEntityAbstractEnergyCoreOrController;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnumStarMapEntryType;
-import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
 import cr0s.warpdrive.render.EntityFXBoundingBox;
@@ -26,7 +25,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityJumpGateCore extends TileEntityAbstractMachine implements IStarMapRegistryTileEntity {
+public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrController implements IStarMapRegistryTileEntity {
 	
 	private static final int BOUNDING_BOX_INTERVAL_TICKS = 60;
 	
@@ -149,10 +148,6 @@ public class TileEntityJumpGateCore extends TileEntityAbstractMachine implements
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
-		uuid = new UUID(tagCompound.getLong("uuidMost"), tagCompound.getLong("uuidLeast"));
-		if (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0) {
-			uuid = UUID.randomUUID();
-		}
 		minX = tagCompound.getInteger("minX");
 		maxX = tagCompound.getInteger("maxX");
 		minY = tagCompound.getInteger("minY");
@@ -168,10 +163,6 @@ public class TileEntityJumpGateCore extends TileEntityAbstractMachine implements
 	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
-		if (uuid != null) {
-			tagCompound.setLong("uuidMost", uuid.getMostSignificantBits());
-			tagCompound.setLong("uuidLeast", uuid.getLeastSignificantBits());
-		}
 		tagCompound.setInteger("minX", minX);
 		tagCompound.setInteger("maxX", maxX);
 		tagCompound.setInteger("minY", minY);
@@ -222,11 +213,6 @@ public class TileEntityJumpGateCore extends TileEntityAbstractMachine implements
 	}
 	
 	@Override
-	public UUID getUUID() {
-		return uuid;
-	}
-	
-	@Override
 	public AxisAlignedBB getStarMapArea() {
 		return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
 	}
@@ -242,16 +228,17 @@ public class TileEntityJumpGateCore extends TileEntityAbstractMachine implements
 	}
 	
 	@Override
-	public String getStarMapName() {
-		return name;
-	}
-	
-	@Override
 	public void onBlockUpdatedInArea(final VectorI vector, final IBlockState blockState) {
 		// no operation
 	}
 	
 	// Common OC/CC methods
+	
+	@Override
+	public Object[] getEnergyRequired() {
+		return new Object[0];
+	}
+	
 	public Object[] area(final Object[] arguments) {
 		try {
 			if (arguments != null && arguments.length == 6) {

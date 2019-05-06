@@ -283,7 +283,7 @@ tile.warpdrive.detection.cloaking_core.name=Noyau d'invisibilité
 tile.warpdrive.detection.monitor.name=Moniteur
 tile.warpdrive.detection.radar.name=Radar
 tile.warpdrive.detection.warp_isolation.name=Bloc d'isolation de champ de Warp
-tile.warpdrive.detection.warp_isolation.tooltip.usage=Placer jusqu'à %5$d m par rapport au coeur de vaisseau\nUtilise %1$d à %3$d blocs d'isolation pour absorber %2$d %% à %4$d %% des ondes radar
+tile.warpdrive.detection.warp_isolation.tooltip.usage=Placer jusqu'à %5$d m par rapport au cœur de vaisseau\nUtilise %1$d à %3$d blocs d'isolation pour absorber %2$d %% à %4$d %% des ondes radar
 
 tile.warpdrive.detection.siren_industrial.basic.name=Sirène industrielle basique
 tile.warpdrive.detection.siren_industrial.advanced.name=Sirène industrielle avancée
@@ -331,21 +331,22 @@ tile.warpdrive.force_field.relay.superior.name=Relais supérieur de champ de for
 tile.warpdrive.force_field.relay.superior.tooltip=Supporte jusqu'à 1 augmentation de champ de force partagée avec son réseau
 
 tile.warpdrive.movement.lift.name=Ascenseur
-tile.warpdrive.movement.ship_controller.basic.name=Controlleur de vaisseau navette
-tile.warpdrive.movement.ship_controller.advanced.name=Controlleur de vaisseau corvette
-tile.warpdrive.movement.ship_controller.superior.name=Controlleur de vaisseau frégate
-tile.warpdrive.movement.ship_controller.exceptional.name=Controlleur de vaisseau capital
-tile.warpdrive.movement.ship_controller.legendary.name=Controlleur de vaisseau planétaire
-tile.warpdrive.movement.ship_controller.tooltip=Lie à un cœur de vaisseau pour le contrôler à distance. Attache un ordinateur pour ouvrir l'interface utilisateur.
+tile.warpdrive.movement.ship_controller.basic.name=Controlleur distant de vaisseau navette
+tile.warpdrive.movement.ship_controller.advanced.name=Controlleur distant de vaisseau corvette
+tile.warpdrive.movement.ship_controller.superior.name=Controlleur distant de vaisseau frégate
+tile.warpdrive.movement.ship_controller.exceptional.name=Controlleur distant de vaisseau capital
+tile.warpdrive.movement.ship_controller.legendary.name=Controlleur distant de vaisseau planétaire
+tile.warpdrive.movement.ship_controller.tooltip=Block optional pour à distance d'un cœur de vaisseau. Attache un ordinateur pour ouvrir l'interface utilisateur.
+tile.warpdrive.movement.ship_controller.away_from_core=Remote controller is for remote usage, also they're optional now...
 tile.warpdrive.movement.ship_core.basic.name=Cœur de vaisseau navette
 tile.warpdrive.movement.ship_core.advanced.name=Cœur de vaisseau corvette
 tile.warpdrive.movement.ship_core.superior.name=Cœur de vaisseau frégate
 tile.warpdrive.movement.ship_core.exceptional.name=Cœur de vaisseau capital
 tile.warpdrive.movement.ship_core.legendary.name=Cœur de vaisseau planétaire
-tile.warpdrive.movement.ship_core.tooltip=Défini le centre du vaisseau. Connecte une source d'énergie pour charger le coeur. Attache un ordinateur pour ouvrir l'interface utilisateur.
+tile.warpdrive.movement.ship_core.tooltip=Défini le centre du vaisseau. Connecte une source d'énergie pour charger le cœur. Attache un ordinateur pour ouvrir l'interface utilisateur.
 
 tile.warpdrive.movement.ship_core.bounding_box.disabled=L'affichage des déliminations a été désactivé.
-tile.warpdrive.movement.ship_core.bounding_box.enabled=L'affichage des déliminations est maintement activé. Seul toi peut les voir.\n§bShift-clique droit§7 le coeur de vaisseau à nouveau pour le désactiver.
+tile.warpdrive.movement.ship_core.bounding_box.enabled=L'affichage des déliminations est maintement activé. Seul toi peut les voir.\n§bShift-clique droit§7 le cœur de vaisseau à nouveau pour le désactiver.
 tile.warpdrive.movement.transporter_beacon.name=Balise de transporteur
 tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§7 to set its remote location\n§bSneak§7 to retrieve its signature\n§bPlace as a block§7 to trigger emergency transportation
 tile.warpdrive.movement.transporter_containment.name=Confinement de transporteur
@@ -662,6 +663,20 @@ warpdrive.control_channel.status_line.undefined=Le canal de contrôle est non d�
 
 warpdrive.is_enabled.set.enabled=Switched ON!
 warpdrive.is_enabled.set.disabled=Switched off!
+
+# %1 is signature name, %2 is item name, %3 is block name
+warpdrive.core_signature.tooltip=Signature est définie à %1$d.
+warpdrive.core_signature.get_missing=%3$s n'a pas encore de signature!
+warpdrive.core_signature.get_same=%2$s est déjà relié à %1$s.
+warpdrive.core_signature.get=%2$s est désormais lié à %1$s.
+warpdrive.core_signature.set_not_supported=Tu ne peux pas changer la signature de %3$s.
+warpdrive.core_signature.set_missing=%2$s doit d'abord être relié!
+warpdrive.core_signature.set_same=%3$s est déjà relié à %1$s.
+warpdrive.core_signature.set=%3$s est désormais lié à %1$s.
+warpdrive.core_signature.status_line.defined=Signature est définie à %1$d.\n§bClique droit un controller à distance§r pour appliquer cette signature.
+warpdrive.core_signature.status_line.undefined=Undefined signature.\n§bShift-clique droit§r un cœur ou controller pour prendre sa signature.
+warpdrive.core_signature.status_line.unknown_core_signature=Signature de cœur inconnue!
+warpdrive.core_signature.status_line.world_not_loaded=Le monde du cœur n'est pas chargé!
 
 warpdrive.tooltip.item_tag.breathing_helmet=Permet de §brespirer dans le vide§r en consommant des cartouches d'air et des cellules d'air comprimé de IC2 depuis l'inventaire.
 warpdrive.tooltip.item_tag.fly_in_space=Jetpack compatible avec une utilisation §bspatiale§r.

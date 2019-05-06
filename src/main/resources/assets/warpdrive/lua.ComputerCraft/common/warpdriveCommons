@@ -1012,7 +1012,7 @@ local function data_shouldUpdateName()
   for name, handlers in pairs(data_handlers) do
     if handlers.name ~= nil then
       local componentName = handlers.name()
-      if componentName == "default" or componentName == "" then
+      if componentName == "" then
         shouldUpdateName = true
       elseif shouldUpdateName then
         data_name = componentName

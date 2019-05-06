@@ -331,12 +331,13 @@ tile.warpdrive.force_field.relay.superior.name=Superior Force Field Relay
 tile.warpdrive.force_field.relay.superior.tooltip=支持在其網絡內共享最多1個力場升級
 
 tile.warpdrive.movement.lift.name=升降機
-tile.warpdrive.movement.ship_controller.basic.name=Shuttle 船艦制禦器
-tile.warpdrive.movement.ship_controller.advanced.name=Corvette 船艦制禦器
-tile.warpdrive.movement.ship_controller.superior.name=Frigate 船艦制禦器
-tile.warpdrive.movement.ship_controller.exceptional.name=Capital 船艦制禦器
-tile.warpdrive.movement.ship_controller.legendary.name=Planetary 船艦制禦器
-tile.warpdrive.movement.ship_controller.tooltip=Link to a ship core to control it remotely. Attach a computer to open the user interface.
+tile.warpdrive.movement.ship_controller.basic.name=Remote Shuttle 船艦制禦器
+tile.warpdrive.movement.ship_controller.advanced.name=Remote Corvette 船艦制禦器
+tile.warpdrive.movement.ship_controller.superior.name=Remote Frigate 船艦制禦器
+tile.warpdrive.movement.ship_controller.exceptional.name=Remote Capital 船艦制禦器
+tile.warpdrive.movement.ship_controller.legendary.name=Remote Planetary 船艦制禦器
+tile.warpdrive.movement.ship_controller.tooltip=Optional block to control a ship core remotely. Attach a computer to open the user interface.
+tile.warpdrive.movement.ship_controller.away_from_core=Remote controller is for remote usage, also they're optional now...
 tile.warpdrive.movement.ship_core.basic.name=Shuttle 波動核心
 tile.warpdrive.movement.ship_core.advanced.name=Corvette 波動核心
 tile.warpdrive.movement.ship_core.superior.name=Frigate 波動核心
@@ -660,6 +661,20 @@ warpdrive.control_channel.status_line.undefined=Undefined Control channel.\n§bU
 
 warpdrive.is_enabled.set.enabled=Switched ON!
 warpdrive.is_enabled.set.disabled=Switched off!
+
+# %1 is signature name, %2 is item name, %3 is block name
+warpdrive.core_signature.tooltip=Signature is set to %1$d
+warpdrive.core_signature.get_missing=%3$s has no signature yet!
+warpdrive.core_signature.get_same=%2$s is already linked to %1$s.
+warpdrive.core_signature.get=%2$s is now linked to %1$s.
+warpdrive.core_signature.set_not_supported=You can't change the signature of a %3$s.
+warpdrive.core_signature.set_missing=%2$s needs to be linked first!
+warpdrive.core_signature.set_same=%3$s is already linked to %1$s.
+warpdrive.core_signature.set=%3$s is now linked to %1$s.
+warpdrive.core_signature.status_line.defined=Signature is %1$d.\n§bRight-click a remote controller§r to apply this signature.
+warpdrive.core_signature.status_line.undefined=Undefined signature.\n§bSneak right-click§r a core or controller to set it.
+warpdrive.core_signature.status_line.unknown_core_signature=Unknown core signature!
+warpdrive.core_signature.status_line.world_not_loaded=Core world is not loaded!
 
 warpdrive.tooltip.item_tag.breathing_helmet-legacyTranslation=§b空間呼吸§r 正在從您的庫存消耗IC2的壓縮空氣囊。
 warpdrive.tooltip.item_tag.breathing_helmet=§bSpace breathing§r consuming Air canisters and IC2 Compressed air cells from your inventory.

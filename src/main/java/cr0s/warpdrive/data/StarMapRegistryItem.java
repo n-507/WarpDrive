@@ -2,6 +2,7 @@ package cr0s.warpdrive.data;
 
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
+import cr0s.warpdrive.api.computer.ICoreSignature;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -18,8 +19,8 @@ public class StarMapRegistryItem extends GlobalPosition {
 	public int maxX, maxY, maxZ;
 	public int minX, minY, minZ;
 	public int mass;
-	public double isolationRate = 0.0D;
-	public String name = "default";
+	public double isolationRate;
+	public String name;
 	
 	public StarMapRegistryItem(
 	                          final EnumStarMapEntryType type, final UUID uuid,
@@ -52,12 +53,12 @@ public class StarMapRegistryItem extends GlobalPosition {
 	
 	public StarMapRegistryItem(final IStarMapRegistryTileEntity tileEntity) {
 		this(
-			tileEntity.getStarMapType(), tileEntity.getUUID(),
+			tileEntity.getStarMapType(), tileEntity.getSignatureUUID(),
 			((TileEntity) tileEntity).getWorld().provider.getDimension(),
 			((TileEntity) tileEntity).getPos().getX(), ((TileEntity) tileEntity).getPos().getY(), ((TileEntity) tileEntity).getPos().getZ(),
 			tileEntity.getStarMapArea(),
 			tileEntity.getMass(), tileEntity.getIsolationRate(),
-			tileEntity.getStarMapName());
+			tileEntity.getSignatureName() );
 	}
 	
 	public boolean sameCoordinates(final IStarMapRegistryTileEntity tileEntity) {
@@ -72,7 +73,7 @@ public class StarMapRegistryItem extends GlobalPosition {
 		if (WarpDrive.isDev) {
 			assert tileEntity instanceof TileEntity;
 			assert type == tileEntity.getStarMapType();
-			assert uuid.equals(tileEntity.getUUID());
+			assert uuid.equals(tileEntity.getSignatureUUID());
 		}
 		final AxisAlignedBB aabbArea = tileEntity.getStarMapArea();
 		if (aabbArea != null) {
@@ -85,7 +86,7 @@ public class StarMapRegistryItem extends GlobalPosition {
 		}
 		mass = tileEntity.getMass();
 		isolationRate = tileEntity.getIsolationRate();
-		name = tileEntity.getStarMapName();
+		name = tileEntity.getSignatureName();
 	}
 	
 	public boolean contains(@Nonnull final BlockPos blockPos) {
@@ -101,7 +102,8 @@ public class StarMapRegistryItem extends GlobalPosition {
 	public StarMapRegistryItem(final NBTTagCompound tagCompound) {
 		super(tagCompound);
 		type = EnumStarMapEntryType.getByName(tagCompound.getString("type"));
-		UUID uuidLocal = new UUID(tagCompound.getLong("uuidMost"), tagCompound.getLong("uuidLeast"));
+		name = tagCompound.getString(ICoreSignature.NAME_TAG);
+		UUID uuidLocal = new UUID(tagCompound.getLong(ICoreSignature.UUID_MOST_TAG), tagCompound.getLong(ICoreSignature.UUID_LEAST_TAG));
 		if (uuidLocal.getMostSignificantBits() == 0 && uuidLocal.getLeastSignificantBits() == 0) {
 			uuidLocal = UUID.randomUUID();
 		}
@@ -114,16 +116,18 @@ public class StarMapRegistryItem extends GlobalPosition {
 		minZ = tagCompound.getInteger("minZ");
 		mass = tagCompound.getInteger("mass");
 		isolationRate = tagCompound.getDouble("isolationRate");
-		name = tagCompound.getString("name");
 	}
 	
 	@Override
 	public void writeToNBT(final NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
 		tagCompound.setString("type", type.getName());
+		if (name != null && !name.isEmpty()) {
+			tagCompound.setString(ICoreSignature.NAME_TAG, name);
+		}
 		if (uuid != null) {
-			tagCompound.setLong("uuidMost", uuid.getMostSignificantBits());
-			tagCompound.setLong("uuidLeast", uuid.getLeastSignificantBits());
+			tagCompound.setLong(ICoreSignature.UUID_MOST_TAG, uuid.getMostSignificantBits());
+			tagCompound.setLong(ICoreSignature.UUID_LEAST_TAG, uuid.getLeastSignificantBits());
 		}
 		tagCompound.setInteger("maxX", maxX);
 		tagCompound.setInteger("maxY", maxY);
@@ -133,9 +137,6 @@ public class StarMapRegistryItem extends GlobalPosition {
 		tagCompound.setInteger("minZ", minZ);
 		tagCompound.setInteger("mass", mass);
 		tagCompound.setDouble("isolationRate", isolationRate);
-		if (name != null && !name.isEmpty()) {
-			tagCompound.setString("name", name);
-		}
 	}
 	
 	public String getFormattedLocation() {

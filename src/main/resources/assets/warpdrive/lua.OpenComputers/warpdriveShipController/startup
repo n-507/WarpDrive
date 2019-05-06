@@ -45,7 +45,7 @@ function ship_boot()
   w.setColorNormal()
   w.writeLn("Booting Ship")
   
-  w.write("- internal parameters: ")
+  w.write("- acquiring parameters: ")
   ship_front, ship_right, ship_up = ship.dim_positive()
   ship_back, ship_left, ship_down = ship.dim_negative()
   ship_isInHyper = ship.isInHyperspace()
@@ -55,7 +55,7 @@ function ship_boot()
   w.writeLn("ok")
   
   w.setColorNormal()
-  w.write("- detecting Ship Core: ")
+  w.write("- checking assembly   : ")
   local timeout = 10
   local isValid, message
   repeat
@@ -72,12 +72,12 @@ function ship_boot()
     -- don't reboot as the player might need to set new dimensions to fix it
   else
     w.setColorSuccess()
-    w.writeLn("linked")
+    w.writeLn("validated")
   end
   w.sleep(0.2)
   
   w.setColorNormal()
-  w.write("- global position    : ")
+  w.write("- celestial position  : ")
   timeout = 10
   local pos
   repeat
@@ -101,7 +101,7 @@ function ship_boot()
   w.sleep(0.2)
   
   w.setColorNormal()
-  w.write("- integrity check    : ")
+  w.write("- integrity check     : ")
   timeout = 10
   local shipSize
   repeat

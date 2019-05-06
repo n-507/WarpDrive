@@ -75,7 +75,7 @@ public class StarMapRegistry {
 		
 		// get entry
 		final ArrayList<StarMapRegistryItem> listToRemove = new ArrayList<>(3);
-		final UUID uuidTileEntity = tileEntity.getUUID();
+		final UUID uuidTileEntity = tileEntity.getSignatureUUID();
 		for (final StarMapRegistryItem registryItem : setRegistryItems) {
 			if (registryItem.uuid == null) {
 				WarpDrive.logger.error(String.format("Removing invalid StarMapRegistryItem %s",
@@ -551,6 +551,7 @@ public class StarMapRegistry {
 						isValid = block instanceof BlockShipCore && tileEntity != null && !tileEntity.isInvalid();
 						break;
 					case JUMP_GATE:
+						// isValid = block == WarpDrive.blockJumpGateCore && tileEntity != null && !tileEntity.isInvalid();
 						break;
 					case PLANET:
 						break;

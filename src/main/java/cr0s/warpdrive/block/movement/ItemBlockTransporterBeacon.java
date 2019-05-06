@@ -4,7 +4,6 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IItemTransporterBeacon;
 import cr0s.warpdrive.api.computer.ITransporterCore;
-import cr0s.warpdrive.block.ItemBlockAbstractBase;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnergyWrapper;
 
@@ -35,10 +34,10 @@ import java.util.UUID;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockTransporterBeacon extends ItemBlockAbstractBase implements IItemTransporterBeacon {
+public class ItemBlockTransporterBeacon extends ItemBlockController implements IItemTransporterBeacon {
 	
 	public ItemBlockTransporterBeacon(final Block block) {
-		super(block, false, false);
+		super(block);
 		
 		setMaxStackSize(1);
 		setMaxDamage(100 * 8);
@@ -63,75 +62,7 @@ public class ItemBlockTransporterBeacon extends ItemBlockAbstractBase implements
 		return new ModelResourceLocation(resourceLocation.toString() + "-item", "inventory");
 	}
 	
-	private static String getTransporterName(final ItemStack itemStack) {
-		if (!(itemStack.getItem() instanceof ItemBlockTransporterBeacon)) {
-			return "";
-		}
-		final NBTTagCompound tagCompound = itemStack.getTagCompound();
-		if (tagCompound == null) {
-			return "";
-		}
-		final String name = tagCompound.getString("name");
-		final UUID uuid = new UUID(tagCompound.getLong("uuidMost"), tagCompound.getLong("uuidLeast"));
-		if (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0) {
-			return "";
-		}
-		return name;
-	}
-	
-	private static ItemStack setTransporterName(final ItemStack itemStack, final String name) {
-		if (!(itemStack.getItem() instanceof ItemBlockTransporterBeacon)) {
-			return itemStack;
-		}
-		NBTTagCompound tagCompound = itemStack.getTagCompound();
-		if (tagCompound == null) {
-			tagCompound = new NBTTagCompound();
-		}
-		if ( name == null
-		  || name.isEmpty() ) {
-			tagCompound.removeTag("name");
-		} else {
-			tagCompound.setString("name", name);
-		}
-		itemStack.setTagCompound(tagCompound);
-		return itemStack;
-	}
-	
-	private static UUID getTransporterSignature(final ItemStack itemStack) {
-		if (!(itemStack.getItem() instanceof ItemBlockTransporterBeacon)) {
-			return null;
-		}
-		final NBTTagCompound tagCompound = itemStack.getTagCompound();
-		if (tagCompound == null) {
-			return null;
-		}
-		final UUID uuid = new UUID(tagCompound.getLong("uuidMost"), tagCompound.getLong("uuidLeast"));
-		if (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0) {
-			return null;
-		}
-		return uuid;
-	}
-	
-	private static ItemStack setTransporterSignature(final ItemStack itemStack, final UUID uuid) {
-		if (!(itemStack.getItem() instanceof ItemBlockTransporterBeacon)) {
-			return itemStack;
-		}
-		NBTTagCompound tagCompound = itemStack.getTagCompound();
-		if (tagCompound == null) {
-			tagCompound = new NBTTagCompound();
-		}
-		if (uuid == null) {
-			tagCompound.removeTag("uuidMost");
-			tagCompound.removeTag("uuidLeast");
-		} else {
-			tagCompound.setLong("uuidMost", uuid.getMostSignificantBits());
-			tagCompound.setLong("uuidLeast", uuid.getLeastSignificantBits());
-		}
-		itemStack.setTagCompound(tagCompound);
-		return itemStack;
-	}
-	
-	private static int getEnergy(final ItemStack itemStack) {
+	private static int getEnergy(@Nonnull final ItemStack itemStack) {
 		if (!(itemStack.getItem() instanceof ItemBlockTransporterBeacon)) {
 			return 0;
 		}
@@ -232,11 +163,11 @@ public class ItemBlockTransporterBeacon extends ItemBlockAbstractBase implements
 			return EnumActionResult.FAIL;
 		}
 		
-		final UUID uuidBeacon = getTransporterSignature(itemStackHeld);
-		final String nameBeacon = getTransporterName(itemStackHeld);
-		final UUID uuidTransporter = ((ITransporterCore) tileEntity).getUUID();
+		final UUID uuidBeacon = getSignature(itemStackHeld);
+		final String nameBeacon = getName(itemStackHeld);
+		final UUID uuidTransporter = ((ITransporterCore) tileEntity).getSignatureUUID();
 		if (entityPlayer.isSneaking()) {// update transporter signature
-			final String nameTransporter = ((ITransporterCore) tileEntity).getStarMapName();
+			final String nameTransporter = ((ITransporterCore) tileEntity).getSignatureName();
 			
 			if ( uuidTransporter == null
 			  || nameTransporter == null
@@ -248,8 +179,7 @@ public class ItemBlockTransporterBeacon extends ItemBlockAbstractBase implements
 				                                                                  nameTransporter));
 				
 			} else {
-				final ItemStack itemStackNew = setTransporterName(itemStackHeld, nameTransporter);
-				setTransporterSignature(itemStackNew, uuidTransporter);
+				final ItemStack itemStackNew = setNameAndSignature(itemStackHeld, nameTransporter, uuidTransporter);
 				Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.transporter_signature.get",
 				                                                                  nameTransporter));
 				world.playSound(entityPlayer.posX + 0.5D, entityPlayer.posY + 0.5D, entityPlayer.posZ + 0.5D,

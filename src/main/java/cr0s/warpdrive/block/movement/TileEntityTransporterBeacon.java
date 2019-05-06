@@ -3,6 +3,7 @@ package cr0s.warpdrive.block.movement;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.WarpDriveText;
+import cr0s.warpdrive.api.computer.ICoreSignature;
 import cr0s.warpdrive.api.computer.ITransporterBeacon;
 import cr0s.warpdrive.block.TileEntityAbstractEnergyConsumer;
 import cr0s.warpdrive.config.WarpDriveConfig;
@@ -228,9 +229,9 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		if (uuidTransporterCore != null) {
-			tagCompound.setString("name", nameTransporterCore);
-			tagCompound.setLong("uuidMost", uuidTransporterCore.getMostSignificantBits());
-			tagCompound.setLong("uuidLeast", uuidTransporterCore.getLeastSignificantBits());
+			tagCompound.setString(ICoreSignature.NAME_TAG, nameTransporterCore);
+			tagCompound.setLong(ICoreSignature.UUID_MOST_TAG, uuidTransporterCore.getMostSignificantBits());
+			tagCompound.setLong(ICoreSignature.UUID_LEAST_TAG, uuidTransporterCore.getLeastSignificantBits());
 		}
 		
 		tagCompound.setInteger("tickDeploying", tickDeploying);
@@ -241,8 +242,8 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
-		nameTransporterCore = tagCompound.getString("name");
-		uuidTransporterCore = new UUID(tagCompound.getLong("uuidMost"), tagCompound.getLong("uuidLeast"));
+		nameTransporterCore = tagCompound.getString(ICoreSignature.NAME_TAG);
+		uuidTransporterCore = new UUID(tagCompound.getLong(ICoreSignature.UUID_MOST_TAG), tagCompound.getLong(ICoreSignature.UUID_LEAST_TAG));
 		if (uuidTransporterCore.getMostSignificantBits() == 0 && uuidTransporterCore.getLeastSignificantBits() == 0) {
 			uuidTransporterCore = null;
 			nameTransporterCore = "";

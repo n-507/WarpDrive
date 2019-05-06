@@ -291,7 +291,8 @@ public class JumpShip {
 	
 	public void messageToAllPlayersOnShip(final WarpDriveText textComponent) {
 		final String name = (shipCore != null && !shipCore.name.isEmpty()) ? shipCore.name : "ShipCore";
-		final ITextComponent messageFormatted = Commons.getNamedPrefix(name).appendSibling(textComponent);
+		final ITextComponent messageFormatted = Commons.getNamedPrefix(name)
+		                                               .appendSibling(textComponent);
 		if (entitiesOnShip == null) {
 			// entities not saved yet, get them now
 			final WarpDriveText reason = new WarpDriveText();

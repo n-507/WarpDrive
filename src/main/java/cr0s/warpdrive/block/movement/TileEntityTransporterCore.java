@@ -6,9 +6,10 @@ import cr0s.warpdrive.api.IBeamFrequency;
 import cr0s.warpdrive.api.IItemTransporterBeacon;
 import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
 import cr0s.warpdrive.api.WarpDriveText;
+import cr0s.warpdrive.api.computer.ICoreSignature;
 import cr0s.warpdrive.api.computer.ITransporterBeacon;
 import cr0s.warpdrive.api.computer.ITransporterCore;
-import cr0s.warpdrive.block.TileEntityAbstractEnergyConsumer;
+import cr0s.warpdrive.block.TileEntityAbstractEnergyCoreOrController;
 import cr0s.warpdrive.block.forcefield.BlockForceField;
 import cr0s.warpdrive.block.forcefield.TileEntityForceField;
 import cr0s.warpdrive.config.Dictionary;
@@ -78,7 +79,7 @@ import net.minecraftforge.common.ForgeChunkManager.Type;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.Optional;
 
-public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer implements ITransporterCore, IBeamFrequency, IStarMapRegistryTileEntity {
+public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrController implements ITransporterCore, IBeamFrequency, IStarMapRegistryTileEntity {
 	
 	// persistent properties
 	private UUID uuid = null;
@@ -532,11 +533,6 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 	}
 	
 	@Override
-	public UUID getUUID() {
-		return uuid;
-	}
-	
-	@Override
 	public AxisAlignedBB getStarMapArea() {
 		return new AxisAlignedBB(
 			Math.min(pos.getX() - WarpDriveConfig.TRANSPORTER_SETUP_SCANNER_RANGE_XZ_BLOCKS     , aabbLocalScanners == null ? pos.getX() : aabbLocalScanners.minX),
@@ -555,11 +551,6 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 	@Override
 	public double getIsolationRate() {
 		return 0.0D;
-	}
-	
-	@Override
-	public String getStarMapName() {
-		return name;
 	}
 	
 	@Override
@@ -1524,8 +1515,8 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		if (uuid != null) {
-			tagCompound.setLong("uuidMost", uuid.getMostSignificantBits());
-			tagCompound.setLong("uuidLeast", uuid.getLeastSignificantBits());
+			tagCompound.setLong(ICoreSignature.UUID_MOST_TAG, uuid.getMostSignificantBits());
+			tagCompound.setLong(ICoreSignature.UUID_LEAST_TAG, uuid.getLeastSignificantBits());
 		}
 		
 		if ( vLocalScanners != null
@@ -1551,8 +1542,8 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 		
 		NBTTagCompound tagRemoteLocation = new NBTTagCompound();
 		if (remoteLocationRequested instanceof UUID) {
-			tagRemoteLocation.setLong("uuidMost", ((UUID) remoteLocationRequested).getMostSignificantBits());
-			tagRemoteLocation.setLong("uuidLeast", ((UUID) remoteLocationRequested).getLeastSignificantBits());
+			tagRemoteLocation.setLong(ICoreSignature.UUID_MOST_TAG, ((UUID) remoteLocationRequested).getMostSignificantBits());
+			tagRemoteLocation.setLong(ICoreSignature.UUID_LEAST_TAG, ((UUID) remoteLocationRequested).getLeastSignificantBits());
 		} else if (remoteLocationRequested instanceof VectorI) {
 			tagRemoteLocation = ((VectorI) remoteLocationRequested).writeToNBT(tagRemoteLocation);
 		} else if (remoteLocationRequested instanceof String) {
@@ -1573,7 +1564,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
-		uuid = new UUID(tagCompound.getLong("uuidMost"), tagCompound.getLong("uuidLeast"));
+		uuid = new UUID(tagCompound.getLong(ICoreSignature.UUID_MOST_TAG), tagCompound.getLong(ICoreSignature.UUID_LEAST_TAG));
 		if (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0) {
 			uuid = UUID.randomUUID();
 		}
@@ -1603,10 +1594,10 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 		final NBTBase tagRemoteLocation = tagCompound.getTag("remoteLocation");
 		if (tagRemoteLocation instanceof NBTTagCompound) {
 			final NBTTagCompound tagCompoundRemoteLocation = (NBTTagCompound) tagRemoteLocation;
-			if (tagCompoundRemoteLocation.hasKey("uuidMost")) {
+			if (tagCompoundRemoteLocation.hasKey(ICoreSignature.UUID_MOST_TAG)) {
 				remoteLocationRequested = new UUID(
-						tagCompoundRemoteLocation.getLong("uuidMost"),
-						tagCompoundRemoteLocation.getLong("uuidLeast"));
+						tagCompoundRemoteLocation.getLong(ICoreSignature.UUID_MOST_TAG),
+						tagCompoundRemoteLocation.getLong(ICoreSignature.UUID_LEAST_TAG));
 				
 			} else if (tagCompoundRemoteLocation.hasKey("x")) {
 				remoteLocationRequested = new VectorI();
@@ -1633,8 +1624,9 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyConsumer 
 	public NBTTagCompound getUpdateTag() {
 		final NBTTagCompound tagCompound = new NBTTagCompound();
 		writeToNBT(tagCompound);
-		tagCompound.removeTag("uuidMost");
-		tagCompound.removeTag("uuidLeast");
+		
+		tagCompound.removeTag(ICoreSignature.UUID_MOST_TAG);
+		tagCompound.removeTag(ICoreSignature.UUID_LEAST_TAG);
 		tagCompound.removeTag(IBeamFrequency.BEAM_FREQUENCY_TAG);
 		
 		return tagCompound;

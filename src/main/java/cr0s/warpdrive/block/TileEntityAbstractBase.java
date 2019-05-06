@@ -8,6 +8,7 @@ import cr0s.warpdrive.api.IBlockBase;
 import cr0s.warpdrive.api.IBlockUpdateDetector;
 import cr0s.warpdrive.api.IVideoChannel;
 import cr0s.warpdrive.api.WarpDriveText;
+import cr0s.warpdrive.api.computer.ICoreSignature;
 import cr0s.warpdrive.data.CameraRegistryItem;
 import cr0s.warpdrive.data.EnumTier;
 
@@ -295,6 +296,16 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		}
 	}
 	
+	@Nonnull
+	protected WarpDriveText getCoreSignatureStatus(final String nameSignature) {
+		// note: we only report 'undefined' status for Remote controllers
+		if (nameSignature != null && !nameSignature.isEmpty()) {
+			return new WarpDriveText(Commons.styleCorrect, "warpdrive.core_signature.status_line.defined",
+			                         nameSignature);
+		}
+		return new WarpDriveText();
+	}
+	
 	public WarpDriveText getStatusHeader() {
 		return new WarpDriveText();
 	}
@@ -316,6 +327,14 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 			if ( world == null
 			  || world.isRemote ) {
 				message.append( getVideoChannelStatus(((IVideoChannel) this).getVideoChannel()) );
+			}
+		}
+		
+		if (this instanceof ICoreSignature) {
+			// only show in item form or from client side
+			if ( world == null
+			  || world.isRemote ) {
+				message.append( getCoreSignatureStatus(((ICoreSignature) this).getSignatureName()) );
 			}
 		}
 		
