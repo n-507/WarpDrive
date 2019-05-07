@@ -238,6 +238,11 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		return new SPacketUpdateTileEntity(pos, getBlockMetadata(), getUpdateTag());
 	}
 	
+	// tier
+	public int getTierIndex() {
+		return enumTier.getIndex();
+	}
+	
 	// status
 	protected WarpDriveText getUpgradeStatus() {
 		final String strUpgrades = getUpgradesAsString();

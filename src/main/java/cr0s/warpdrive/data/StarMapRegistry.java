@@ -442,19 +442,19 @@ public class StarMapRegistry {
 		}
 	}
 	
-	public boolean isWarpCoreIntersectsWithOthers(@Nonnull final TileEntityShipCore shipCore1) {
+	public TileEntityShipCore getIntersectingShipCore(@Nonnull final TileEntityShipCore shipCore1) {
 		cleanup();
 		
 		if (!shipCore1.isValid()) {
-			WarpDrive.logger.error(String.format("isWarpCoreIntersectsWithOthers() with invalid ship %s, assuming intersection",
+			WarpDrive.logger.error(String.format("isShipCoreIntersectingWithOthers() with invalid ship %s, assuming intersection",
 			                                     shipCore1));
-			return false;
+			return null;
 		}
 		final AxisAlignedBB aabb1 = new AxisAlignedBB(shipCore1.minX, shipCore1.minY, shipCore1.minZ, shipCore1.maxX, shipCore1.maxY, shipCore1.maxZ);
 		
 		final CopyOnWriteArraySet<StarMapRegistryItem> setRegistryItems = registry.get(shipCore1.getWorld().provider.getDimension());
 		if (setRegistryItems == null) {
-			return false;
+			return null;
 		}
 		for (final StarMapRegistryItem registryItem : setRegistryItems) {
 			assert registryItem.dimensionId == shipCore1.getWorld().provider.getDimension();
@@ -485,21 +485,26 @@ public class StarMapRegistry {
 			}
 			final TileEntityShipCore shipCore2 = (TileEntityShipCore) tileEntity;
 			
-			// Skip offline ship cores
-			if (shipCore2.isOffline()) {
-				continue;
-			}
-			
 			// Skip invalid ships
 			if (!shipCore2.isValid()) {
 				continue;
 			}
 			
+			// Skip offline ship cores
+			if (shipCore2.isOffline()) {
+				continue;
+			}
+			
+			// Skip lower tiers ships
+			if (shipCore2.getTierIndex() < shipCore1.getTierIndex()) {
+				continue;
+			}
+			
 			// ship is intersecting, online and valid
-			return true;
+			return shipCore2;
 		}
 		
-		return false;
+		return null;
 	}
 	
 	// do not call during tileEntity construction (readFromNBT and validate)

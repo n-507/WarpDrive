@@ -445,8 +445,10 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				return;
 			}
 			
-			if (WarpDrive.starMap.isWarpCoreIntersectsWithOthers(this)) {
-				commandDone(false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.warp_field_overlapping"));
+			final TileEntityShipCore shipCoreIntersecting = WarpDrive.starMap.getIntersectingShipCore(this);
+			if (shipCoreIntersecting != null) {
+				commandDone(false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.warp_field_overlapping",
+				                                     shipCoreIntersecting.getSignatureName() ));
 				return;
 			}
 			
