@@ -263,6 +263,8 @@ public class InventoryWrapper {
 			return ((IInventory) inventory).getSizeInventory();
 		} else if (inventory instanceof IItemHandler) {
 			return ((IItemHandler) inventory).getSlots();
+		} else if (inventory instanceof ItemStack) {
+			return 1;
 		} else {
 			WarpDrive.logger.error(String.format("Invalid inventory type, please report to mod author: %s",
 			                                     inventory ));
@@ -275,6 +277,8 @@ public class InventoryWrapper {
 			return ((IInventory) inventory).getStackInSlot(indexSlot);
 		} else if (inventory instanceof IItemHandler) {
 			return ((IItemHandler) inventory).getStackInSlot(indexSlot);
+		} else if (inventory instanceof ItemStack) {
+			return (ItemStack) inventory;
 		} else {
 			WarpDrive.logger.error(String.format("Invalid inventory type, please report to mod author: %s",
 			                                     inventory ));

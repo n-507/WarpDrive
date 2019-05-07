@@ -2,8 +2,11 @@ package cr0s.warpdrive.command;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.data.EnumStarMapEntryType;
+import cr0s.warpdrive.data.StarMapRegistryItem;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 
@@ -25,7 +28,7 @@ public class CommandFind extends AbstractCommand {
 	@Nonnull
 	@Override
 	public String getUsage(@Nonnull final ICommandSender commandSender) {
-		return getName() + " (<shipName>)"
+		return "/" + getName() + " (<shipName>)"
 		       + "\nshipName: name of the ship to find. Exact casing is preferred.";
 	}
 	
@@ -33,9 +36,23 @@ public class CommandFind extends AbstractCommand {
 	public void execute(@Nonnull final MinecraftServer server, @Nonnull final ICommandSender commandSender, @Nonnull final String[] args) {
 		// parse arguments
 		final String nameToken;
+		final EntityPlayerMP entityPlayer = commandSender instanceof EntityPlayerMP ? (EntityPlayerMP) commandSender : null;
 		if (args.length == 0) {
-			Commons.addChatMessage(commandSender, new TextComponentString(getUsage(commandSender)));
+			if (entityPlayer == null) {
+				Commons.addChatMessage(commandSender, new TextComponentString(getUsage(commandSender)));
+				return;
+			}
+			final StarMapRegistryItem starMapRegistryItem = WarpDrive.starMap.findNearest(EnumStarMapEntryType.SHIP, entityPlayer.world, entityPlayer.getPosition());
+			if (starMapRegistryItem != null) {
+				Commons.addChatMessage(commandSender, new TextComponentString(String.format("Ship '%s' found in %s",
+				                                                                            starMapRegistryItem.name,
+				                                                                            starMapRegistryItem.getFormattedLocation() )));
+			} else {
+				Commons.addChatMessage(commandSender, new TextComponentString(String.format("No ship found in %s",
+				                                                                            Commons.format(entityPlayer.world) )));
+			}
 			return;
+			
 		} else if (args.length == 1) {
 			if ( args[0].equalsIgnoreCase("help")
 			  || args[0].equalsIgnoreCase("?") ) {
@@ -43,6 +60,7 @@ public class CommandFind extends AbstractCommand {
 				return;
 			}
 			nameToken = args[0];
+			
 		} else {
 			final StringBuilder nameBuilder = new StringBuilder();
 			for (final String param : args) {

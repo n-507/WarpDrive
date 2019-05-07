@@ -2,6 +2,7 @@ package cr0s.warpdrive.command;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.api.WarpDriveText;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -147,11 +148,10 @@ public class CommandEntity extends AbstractCommand {
 				}
 				if (!filter.isEmpty()) {
 					if (count == 1) {
-						final ITextComponent textComponent = new TextComponentTranslation("warpdrive.command.found_title", entity).setStyle(styleFound);
-						Commons.addChatMessage(commandSender, textComponent);
+						Commons.addChatMessage(commandSender, new WarpDriveText(styleFound, "warpdrive.command.found_title"));
 					}
-					final ITextComponent textComponent = new TextComponentTranslation("warpdrive.command.found_line", entity).setStyle(styleFound);
-					Commons.addChatMessage(commandSender, textComponent);
+					Commons.addChatMessage(commandSender, new WarpDriveText(styleFound, "warpdrive.command.found_line",
+					                                                        entity));
 				}
 				// remove entity
 				if (kill && !entity.isEntityInvulnerable(WarpDrive.damageAsphyxia)) {

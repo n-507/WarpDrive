@@ -2,26 +2,22 @@ package cr0s.warpdrive.command;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.data.InventoryWrapper;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
 public class CommandDump extends AbstractCommand {
-	
-	@Override
-	public int getRequiredPermissionLevel() {
-		return 2;
-	}
 	
 	@Nonnull
 	@Override
@@ -30,34 +26,126 @@ public class CommandDump extends AbstractCommand {
 	}
 	
 	@Override
+	public int getRequiredPermissionLevel() {
+		return 2;
+	}
+	
+	@Nonnull
+	@Override
+	public String getUsage(@Nonnull final ICommandSender commandSender) {
+		return "/" + getName() + " (<inventory type>) (<player selector>)"
+		       + "\nWrite loot table in console for selected inventory type of selected player"
+		       + "\nInventory types are:"
+		       + "\n- container: any item container below or next to player"
+		       + "\n- enderchest: player's enderchest"
+		       + "\n- hand: player's main hand"
+		       + "\n- player: player's inventory";
+	}
+	
+	@Override
 	public void execute(@Nonnull final MinecraftServer server, @Nonnull final ICommandSender commandSender, @Nonnull final String[] args) {
-		final World world = commandSender.getEntityWorld();
-		final BlockPos blockPos = commandSender.getPosition();
-		
-		//noinspection ConstantConditions
-		if (world == null || blockPos == null) {
-			Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.invalid_location").setStyle(Commons.styleWarning)));
-			return;
-		}
-		
 		// parse arguments
-		if (args.length != 0) {
+		if (args.length > 2) {
 			Commons.addChatMessage(commandSender, new TextComponentString(getUsage(commandSender)));
 			return;
+			
 		}
 		
-		// validate
-		final Collection<Object> inventories = InventoryWrapper.getConnectedInventories(world, blockPos);
-		if (inventories.isEmpty()) {
-			Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.no_container").setStyle(Commons.styleWarning)));
+		EntityPlayerMP entityPlayer = commandSender instanceof EntityPlayerMP ? (EntityPlayerMP) commandSender : null;
+		final String subCommand;
+		
+		if (args.length == 0) {
+			subCommand = "container";
+			
+		} else {
+			if ( args[0].equalsIgnoreCase("help")
+			  || args[0].equalsIgnoreCase("?") ) {
+				Commons.addChatMessage(commandSender, new TextComponentString(getUsage(commandSender)));
+				return;
+			}
+			
+			// get player context
+			if (args.length == 2) {
+				final EntityPlayerMP[] entityPlayers = Commons.getOnlinePlayerByNameOrSelector(commandSender, args[1]);
+				if (entityPlayers == null || entityPlayers.length < 1) {
+					Commons.addChatMessage(commandSender, new WarpDriveText().append(getPrefix())
+					                                                         .append(Commons.styleWarning, "warpdrive.command.player_not_found",
+					                                                                 args[1]) );
+					return;
+				}
+				entityPlayer = entityPlayers[0];
+			}
+			
+			// get sub command
+			subCommand = args[0];
+		}
+		
+		// validate context
+		if (entityPlayer == null) {
+			Commons.addChatMessage(commandSender, new WarpDriveText().append(getPrefix())
+			                                                         .append(Commons.styleWarning, "warpdrive.command.player_required") );
 			return;
 		}
-		final Object inventory = inventories.iterator().next();
+		
+		// evaluate sub command
+		final Object inventory;
+		switch (subCommand.toLowerCase()) {
+		case "container":
+			final World world = entityPlayer.getEntityWorld();
+			final BlockPos blockPos = entityPlayer.getPosition();
+			
+			//noinspection ConstantConditions
+			if (world == null || blockPos == null) {
+				Commons.addChatMessage(commandSender, new WarpDriveText().append(getPrefix())
+				                                                         .append(Commons.styleWarning, "warpdrive.command.invalid_location") );
+				return;
+			}
+			
+			final Collection<Object> inventories = InventoryWrapper.getConnectedInventories(world, blockPos);
+			if (inventories.isEmpty()) {
+				Commons.addChatMessage(commandSender, new WarpDriveText().append(getPrefix())
+				                                                         .append(Commons.styleWarning, "warpdrive.command.no_container") );
+				return;
+			}
+			inventory = inventories.iterator().next();
+			WarpDrive.logger.info(String.format("Dumping content from container %s:",
+			                                    Commons.format(world, blockPos) ));
+			break;
+			
+		case "enderchest":
+			inventory = entityPlayer.getInventoryEnderChest();
+			WarpDrive.logger.info(String.format("Dumping content from %s ender chest:",
+			                                    entityPlayer.getDisplayNameString() ));
+			break;
+			
+		case "hand":
+			inventory = entityPlayer.getHeldItemMainhand();
+			WarpDrive.logger.info(String.format("Dumping content from %s main hand:",
+			                                    entityPlayer.getDisplayNameString() ));
+			break;
+			
+		case "player":
+			inventory = entityPlayer.inventory;
+			WarpDrive.logger.info(String.format("Dumping content from %s inventory:",
+			                                    entityPlayer.getDisplayNameString() ));
+			break;
+			
+		default:
+			Commons.addChatMessage(commandSender, new WarpDriveText().append(getPrefix())
+			                                                         .append(Commons.styleWarning, "warpdrive.command.invalid_parameter", 
+			                                                                 args[0])
+			                                                         .appendLineBreak()
+			                                                         .appendSibling(new TextComponentString(getUsage(commandSender))) );
+			return;
+		}
 		
 		// actually dump
-		WarpDrive.logger.info(String.format("Dumping content from container %s:",
-		                                    Commons.format(world, blockPos)));
-		for (int indexSlot = 0; indexSlot < InventoryWrapper.getSize(inventory); indexSlot++) {
+		final int size = InventoryWrapper.getSize(inventory);
+		if (size == 0) {
+			Commons.addChatMessage(commandSender, new WarpDriveText().append(getPrefix())
+			                                                         .append(Commons.styleWarning, "warpdrive.command.empty_inventory") );
+		}
+		for (int indexSlot = 0; indexSlot < size; indexSlot++) {
 			final ItemStack itemStack = InventoryWrapper.getStackInSlot(inventory, indexSlot);
 			if (itemStack != ItemStack.EMPTY && !itemStack.isEmpty()) {
 				final ResourceLocation uniqueIdentifier = itemStack.getItem().getRegistryName();
@@ -73,11 +161,5 @@ public class CommandDump extends AbstractCommand {
 				                                    itemStack.getDisplayName()));
 			}
 		}
-	}
-	
-	@Nonnull
-	@Override
-	public String getUsage(@Nonnull final ICommandSender icommandsender) {
-		return "/wdump: write loot table in console for item container below or next to player";
 	}
 }
