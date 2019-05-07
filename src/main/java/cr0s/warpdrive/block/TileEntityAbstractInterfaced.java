@@ -431,7 +431,12 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		
 		// we separate the proxy from the logs so children can override the proxy without having to handle the logs themselves
 		try {
-			return CC_callMethod(methodName, arguments);
+			final Object[] result = CC_callMethod(methodName, arguments);
+			if (WarpDriveConfig.LOGGING_LUA) {
+				WarpDrive.logger.info(String.format("[CC] LUA call is returning %s",
+				                                    Commons.format(result)));
+			}
+			return result;
 		} catch (final Exception exception) {
 			if (WarpDriveConfig.LOGGING_LUA) {
 				exception.printStackTrace();
