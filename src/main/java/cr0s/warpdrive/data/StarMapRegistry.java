@@ -56,6 +56,12 @@ public class StarMapRegistry {
 		if (!Commons.isSafeThread()) {
 			WarpDrive.logger.error(String.format("Non-threadsafe call to StarMapRegistry:updateInRegistry outside main thread, for %s",
 			                                     tileEntity));
+			return;
+		}
+		if (tileEntity.getSignatureUUID() == null) {
+			WarpDrive.logger.error(String.format("Ignoring invalid StarMapRegistryItem with no UUID %s",
+			                                     tileEntity));
+			return;
 		}
 		
 		// update statistics

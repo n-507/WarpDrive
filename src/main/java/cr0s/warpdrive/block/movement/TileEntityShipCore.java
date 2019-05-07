@@ -1181,7 +1181,9 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			return;
 		}
 		
-		WarpDrive.starMap.updateInRegistry(this);
+		if (uuid != null) {
+			WarpDrive.starMap.updateInRegistry(this);
+		}
 	}
 	
 	@Override
