@@ -227,7 +227,7 @@ public class CelestialObjectManager extends XmlFileManager {
 						  && celestialObject1.parentId != null
 						  && !celestialObject1.parentId.isEmpty() ) {
 							countErrors++;
-							WarpDrive.logger.error(String.format("CelestiaObjects validation error #%d\nCelestial object %s refers to unknown parent %s",
+							WarpDrive.logger.error(String.format("CelestialObjects validation error #%d\nCelestial object %s refers to unknown parent %s",
 							                                     countErrors,
 							                                     celestialObject1.id,
 							                                     celestialObject1.parentId));
@@ -237,7 +237,7 @@ public class CelestialObjectManager extends XmlFileManager {
 					         || celestialObject1.parentCenterX + celestialObject1.borderRadiusX > celestialObjectParent.dimensionCenterX + celestialObjectParent.borderRadiusX
 					         || celestialObject1.parentCenterZ + celestialObject1.borderRadiusZ > celestialObjectParent.dimensionCenterZ + celestialObjectParent.borderRadiusZ ) {
 						countErrors++;
-						WarpDrive.logger.error(String.format("CelestiaObjects validation error #%d\nCelestial object %s is outside its parent border.\n%s\n%s\n%s's area in parent %s is outside %s's border %s",
+						WarpDrive.logger.error(String.format("CelestialObjects validation error #%d\nCelestial object %s is outside its parent border.\n%s\n%s\n%s's area in parent %s is outside %s's border %s",
 						                                     countErrors,
 						                                     celestialObject1.id,
 						                                     celestialObject1,
@@ -253,7 +253,7 @@ public class CelestialObjectManager extends XmlFileManager {
 				  || celestialObject1.dimensionCenterX + celestialObject1.borderRadiusX >= 30000000
 				  || celestialObject1.dimensionCenterZ + celestialObject1.borderRadiusZ >= 30000000 ) {
 					countErrors++;
-					WarpDrive.logger.error(String.format("CelestiaObjects validation error #%d\nCelestial object %s is outside the game border +/-30000000.\n%s\n%s border is %s",
+					WarpDrive.logger.error(String.format("CelestialObjects validation error #%d\nCelestial object %s is outside the game border +/-30000000.\n%s\n%s border is %s",
 					                                     countErrors,
 					                                     celestialObject1.id,
 					                                     celestialObject1,
@@ -275,7 +275,7 @@ public class CelestialObjectManager extends XmlFileManager {
 					final AxisAlignedBB areaInParent2 = celestialObject2.getAreaInParent();
 					if (areaInParent1.intersects(areaInParent2)) {
 						countErrors++;
-						WarpDrive.logger.error(String.format("CelestiaObjects validation error #%d\nOverlapping parent areas detected in dimension %d between %s and %s\nArea1 %s from %s\nArea2 %s from %s", 
+						WarpDrive.logger.error(String.format("CelestialObjects validation error #%d\nOverlapping parent areas detected in dimension %d between %s and %s\nArea1 %s from %s\nArea2 %s from %s", 
 						                                     countErrors, 
 						                                     celestialObject1.parent.dimensionId, 
 						                                     celestialObject1.id, 
@@ -294,7 +294,7 @@ public class CelestialObjectManager extends XmlFileManager {
 					final AxisAlignedBB worldBorderArea2 = celestialObject2.getWorldBorderArea();
 					if (worldBorderArea1.intersects(worldBorderArea2)) {
 						countErrors++;
-						WarpDrive.logger.error(String.format("CelestiaObjects validation error #%d\nOverlapping areas detected in dimension %d between %s and %s\nArea1 %s from %s\nArea2 %s from %s",
+						WarpDrive.logger.error(String.format("CelestialObjects validation error #%d\nOverlapping areas detected in dimension %d between %s and %s\nArea1 %s from %s\nArea2 %s from %s",
 						                                     countErrors,
 						                                     celestialObject1.dimensionId,
 						                                     celestialObject1.id,
@@ -310,19 +310,19 @@ public class CelestialObjectManager extends XmlFileManager {
 		
 		if (!isRemote && countHyperspace == 0) {
 			countErrors++;
-			WarpDrive.logger.error(String.format("CelestiaObjects validation error #%d\nAt least one hyperspace celestial object should be defined!",
+			WarpDrive.logger.error(String.format("CelestialObjects validation error #%d\nAt least one hyperspace celestial object should be defined!",
 			                                     countErrors ));
 		} else if (!isRemote && countSpace == 0) {
 			countErrors++;
-			WarpDrive.logger.error(String.format("CelestiaObjects validation error #%d\nAt least one space celestial object should be defined!",
+			WarpDrive.logger.error(String.format("CelestialObjects validation error #%d\nAt least one space celestial object should be defined!",
 			                                     countErrors ));
 		}
 		
 		if (countErrors == 1) {
-			throw new RuntimeException("Invalid celestial objects definition: update your configuration to fix this validation error, search your logs for 'CelestiaObjects validation error' to get more details.");
+			throw new RuntimeException("Invalid celestial objects definition: update your configuration to fix this validation error, search your logs for 'CelestialObjects validation error' to get more details.");
 		} else if (countErrors > 0) {
 			throw new RuntimeException(String.format(
-				"Invalid celestial objects definition: update your configuration to fix those %d validation errors, search your logs for 'CelestiaObjects validation error' to get more details.",
+				"Invalid celestial objects definition: update your configuration to fix those %d validation errors, search your logs for 'CelestialObjects validation error' to get more details.",
 				countErrors));
 		}
 		
