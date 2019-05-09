@@ -229,6 +229,24 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		// scan ship content progressively
 		if (timeLastShipScanDone <= 0L) {
 			timeLastShipScanDone = world.getTotalWorldTime();
+			
+			// validate ship side constrains before scanning
+			if ( getBack() == 0 && getFront() == 0
+			  && getLeft() == 0 && getRight() == 0
+			  && getDown() == 0 && getUp() == 0 ) {
+				reasonInvalid = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.no_dimension_set");
+				isValid = false;
+				return;
+			}
+			if ( (getBack() + getFront()) > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]
+			     || (getLeft() + getRight()) > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]
+			     || (getDown() + getUp()   ) > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()] ) {
+				reasonInvalid = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.too_large_side_for_tier",
+				                                  WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]);
+				isValid = false;
+				return;
+			}
+			
 			shipScanner = new ShipScanner(world, minX, minY, minZ, maxX, maxY, maxZ);
 			if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
 				WarpDrive.logger.info(String.format("%s scanning started",
@@ -304,6 +322,8 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 					return;
 				}
 			}
+			reasonInvalid = new WarpDriveText();
+			isValid = true;
 		}
 		
 		// skip state handling while cooling down
@@ -762,20 +782,8 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		// update dimensions to client
 		markDirty();
 		
-		// validate ship side constrains
-		if ( (getBack() + getFront()) > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]
-		  || (getLeft() + getRight()) > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]
-		  || (getDown() + getUp()   ) > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()] ) {
-			reasonInvalid = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.too_large_side_for_tier",
-			                                  WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]);
-			isValid = false;
-			return;
-		}
-		
 		// request new ship scan
 		timeLastShipScanDone = -1;
-		
-		isValid = true;
 	}
 	
 	private boolean validateShipMovementParameters(final WarpDriveText reason) {

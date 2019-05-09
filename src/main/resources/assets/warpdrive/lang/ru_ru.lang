@@ -848,6 +848,7 @@ warpdrive.ship.guide.insufficient_energy=Insufficient energy in core.
 warpdrive.ship.guide.warp_field_overlapping=Own warp field contains another ship.\nDisable ship core %1$s to continue.
 warpdrive.ship.guide.cloaking_field_overlapping=Core is cloaked.\nDisable cloak to continue.
 warpdrive.ship.guide.pre_jump_success=Ok
+warpdrive.ship.guide.no_dimension_set=Ship has no dimension set yet.
 warpdrive.ship.guide.too_large_side_for_tier=Ship is too large, max is %1$d per side.\nUpgrade ship core or reduce span.
 warpdrive.ship.guide.too_much_mass_for_planet=Ship is too big for a planet.\nReduce your mass below %1$d blocks.
 warpdrive.ship.guide.insufficient_mass_for_tier=Ship is too small, min is %1$d block.\nDowngrade ship core or increase mass.
