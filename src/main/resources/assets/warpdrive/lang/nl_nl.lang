@@ -19,9 +19,13 @@ itemGroup.warpdrive.main=WarpDrive
 
 item.warpdrive.component.malformed.name=Verkeerd item
 item.warpdrive.component.memory_crystal.name=Geheugen Kristal
-item.warpdrive.component.capacitive_crystal.name=Capacitief Kristal
+item.warpdrive.component.memory_cluster.name=Memory Cluster
+
 item.warpdrive.component.diamond_crystal.name=Diamant afgestemd kristal
 item.warpdrive.component.emerald_crystal.name=Smaragd afgestemd kristal
+
+item.warpdrive.component.capacitive_crystal.name=Capacitief Kristal
+item.warpdrive.component.capacitive_cluster.name=Capacitive Cluster
 
 item.warpdrive.component.ender_coil.name=Einde afgestemd kristal
 item.warpdrive.component.diamond_coil.name=Spoelkristal
@@ -53,6 +57,16 @@ item.warpdrive.component.reactor_core.name=Reactor Kern
 item.warpdrive.component.raw_rubber.name=Raw rubber clump
 item.warpdrive.component.raw_rubber.tooltip=Harvested from Jungle wood with Laser tree farm
 item.warpdrive.component.rubber.name=Rubber
+
+item.warpdrive.component.biopulp.name=Biopulp
+item.warpdrive.component.biofiber.name=Biofiber
+
+item.warpdrive.component.raw_ceramic.name=Raw Ceramic
+item.warpdrive.component.ceramic.name=Ceramic
+
+item.warpdrive.component.raw_carbon_fiber.name=Raw Carbon fiber
+item.warpdrive.component.raw_carbon_mesh.name=Raw Carbon Mesh
+item.warpdrive.component.carbon_fiber.name=Carbon Fiber
 
 item.warpdrive.armor.helmet.name=Warp Helm
 item.warpdrive.armor.chestplate.name=Warp Borstplaat

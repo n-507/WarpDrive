@@ -19,9 +19,13 @@ itemGroup.warpdrive.main=曲率驱动
 
 item.warpdrive.component.malformed.name=畸变废品
 item.warpdrive.component.memory_crystal.name=记忆水晶
-item.warpdrive.component.capacitive_crystal.name=电容水晶
+item.warpdrive.component.memory_cluster.name=Memory Cluster
+
 item.warpdrive.component.diamond_crystal.name=钻石调谐水晶
 item.warpdrive.component.emerald_crystal.name=绿宝石调谐水晶
+
+item.warpdrive.component.capacitive_crystal.name=电容水晶
+item.warpdrive.component.capacitive_cluster.name=Capacitive Cluster
 
 item.warpdrive.component.ender_coil.name=末影调谐水晶
 item.warpdrive.component.diamond_coil.name=线圈水晶
@@ -53,6 +57,16 @@ item.warpdrive.component.reactor_core.name=反应堆芯
 item.warpdrive.component.raw_rubber.name=Raw rubber clump
 item.warpdrive.component.raw_rubber.tooltip=Harvested from Jungle wood with Laser tree farm
 item.warpdrive.component.rubber.name=Rubber
+
+item.warpdrive.component.biopulp.name=Biopulp
+item.warpdrive.component.biofiber.name=Biofiber
+
+item.warpdrive.component.raw_ceramic.name=Raw Ceramic
+item.warpdrive.component.ceramic.name=Ceramic
+
+item.warpdrive.component.raw_carbon_fiber.name=Raw Carbon fiber
+item.warpdrive.component.raw_carbon_mesh.name=Raw Carbon Mesh
+item.warpdrive.component.carbon_fiber.name=Carbon Fiber
 
 item.warpdrive.armor.helmet.name=曲率头盔
 item.warpdrive.armor.chestplate.name=曲率胸甲

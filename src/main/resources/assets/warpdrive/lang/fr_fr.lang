@@ -19,12 +19,16 @@ itemGroup.warpdrive.main=WarpDrive
 
 item.warpdrive.component.malformed.name=Item invalide
 item.warpdrive.component.memory_crystal.name=Cristal de mémoire
-item.warpdrive.component.capacitive_crystal.name=Cristal capacitif
-item.warpdrive.component.diamond_crystal.name=Cristal de diamond accordé
+item.warpdrive.component.memory_cluster.name=Cluster de mémoire
+
+item.warpdrive.component.diamond_crystal.name=Cristal de diamant accordé
 item.warpdrive.component.emerald_crystal.name=Cristal d'émeraude accordé
 
-item.warpdrive.component.ender_coil.name=Cristal de l'ender accordé
-item.warpdrive.component.diamond_coil.name=Cristal bobiné
+item.warpdrive.component.capacitive_crystal.name=Cristal capacitif
+item.warpdrive.component.capacitive_cluster.name=Cluster capacitif
+
+item.warpdrive.component.ender_coil.name=Bobine de l'ender crystalisé
+item.warpdrive.component.diamond_coil.name=Bobine de diamant crystalisé
 item.warpdrive.component.computer_interface.name=Interface informatique
 
 item.warpdrive.component.bone_charcoal.name=Charbon d'ossements
@@ -53,6 +57,16 @@ item.warpdrive.component.reactor_core.name=Noyau de réacteur
 item.warpdrive.component.raw_rubber.name=Bloc de caoutchouc brut
 item.warpdrive.component.raw_rubber.tooltip=Issue du bois d'acajou avec un laser forestier
 item.warpdrive.component.rubber.name=Caoutchouc
+
+item.warpdrive.component.biopulp.name=Biopulp
+item.warpdrive.component.biofiber.name=Biofibre
+
+item.warpdrive.component.raw_ceramic.name=Céramique brute
+item.warpdrive.component.ceramic.name=Céramique
+
+item.warpdrive.component.raw_carbon_fiber.name=Fibre de carbone brute
+item.warpdrive.component.raw_carbon_mesh.name=Maille de carbone brute
+item.warpdrive.component.carbon_fiber.name=Fibre de carbone
 
 item.warpdrive.armor.helmet.name=Casque warp
 item.warpdrive.armor.chestplate.name=Plastron warp

@@ -77,6 +77,10 @@ public class Recipes {
 	private static Object emeraldOrSuperiorCircuit;
 	
 	public static void initOreDictionary() {
+		// vanilla
+		registerOreDictionary("blockMushroom", new ItemStack(Blocks.BROWN_MUSHROOM_BLOCK));
+		registerOreDictionary("blockMushroom", new ItemStack(Blocks.RED_MUSHROOM_BLOCK));
+		
 		// components
 		registerOreDictionary("itemRubber", ItemComponent.getItemStack(EnumComponentType.RUBBER));
 		
@@ -323,31 +327,44 @@ public class Recipes {
 	}
 	
 	private static void initComponents() {
-		// *** processing components
+		// *** memory storage
 		// Memory crystal is 2 Papers, 2 Iron bars, 4 Comparators, 1 Redstone
-		if (OreDictionary.doesOreNameExist("circuitPrimitive") && !OreDictionary.getOres("circuitPrimitive").isEmpty()) { // GregTech
-			WarpDrive.register(new ShapedOreRecipe(groupComponents,
-			                                       ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL), false, "cic", "cic", "prp",
-			                                       'i', barsIron,
-			                                       'c', "circuitPrimitive",
-			                                       'r', Items.REDSTONE,
-			                                       'p', Items.PAPER));
-		} else if (OreDictionary.doesOreNameExist("oc:ram3") && !OreDictionary.getOres("oc:ram3").isEmpty()) {
-			WarpDrive.register(new ShapedOreRecipe(groupComponents,
-			                                       ItemComponent.getItemStackNoCache(EnumComponentType.MEMORY_CRYSTAL, 4), false, "cic", "cic", "prp",
-			                                       'i', barsIron,
-			                                       'c', "oc:ram3",
-			                                       'r', Items.REDSTONE,
-			                                       'p', Items.PAPER));
-		} else {
-			WarpDrive.register(new ShapedOreRecipe(groupComponents,
-			                                       ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL), false, "cic", "cic", "prp",
-			                                       'i', barsIron,
-			                                       'c', Items.COMPARATOR,
-			                                       'r', Items.REDSTONE,
-			                                       'p', Items.PAPER));
-		}
+		final Object memory = WarpDriveConfig.getOreOrItemStack(
+				"ore:circuitPrimitive", 0,       // comes with GregTech
+				"ore:oc:ram2", 0,
+				"opencomputers:components", 8,   // Memory Tier 1.5 (workaround for ore dictionary oc:ram2)
+				"minecraft:comparator", 0 );
+		WarpDrive.register(new ShapedOreRecipe(groupComponents,
+		                                       ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL), false, "gmg", "gmg", "prp",
+		                                       'g', "paneGlassColorless",
+		                                       'm', memory,
+		                                       'r', Items.REDSTONE,
+		                                       'p', Items.PAPER ));
+		WarpDrive.register(new ShapelessOreRecipe(groupComponents,
+		                                          ItemComponent.getItemStack(EnumComponentType.MEMORY_CLUSTER),
+		                                          ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL),
+		                                          ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL),
+		                                          ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL),
+		                                          ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL) ));
 		
+		// *** processing
+		// Diamond crystal
+		WarpDrive.register(new ShapedOreRecipe(groupComponents,
+		                                       ItemComponent.getItemStack(EnumComponentType.DIAMOND_CRYSTAL), false, " d ", "BBB", "prp",
+		                                       'd', Items.DIAMOND,
+		                                       'B', barsIron,
+		                                       'r', Items.REDSTONE,
+		                                       'p', Items.PAPER ));
+		
+		// Emerald crystal
+		WarpDrive.register(new ShapedOreRecipe(groupComponents,
+		                                       ItemComponent.getItemStack(EnumComponentType.EMERALD_CRYSTAL), false, " e ", "BBB", "qrq",
+		                                       'e', Items.EMERALD,
+		                                       'B', barsIron,
+		                                       'r', Items.REDSTONE,
+		                                       'q', Items.QUARTZ ));
+		
+		// *** energy storage
 		// Capacitive crystal is 2 Redstone block, 4 Paper, 1 Regeneration potion, 2 (lithium dust or electrum dust or electrical steel ingot or gold ingot)
 		final Object lithiumOrElectrum = WarpDriveConfig.getOreOrItemStack(
 				"ore:dustLithium", 0,            // comes with GregTech, Industrial Craft 2 and Mekanism
@@ -364,32 +381,23 @@ public class Recipes {
 		                                       'r', "blockRedstone",
 		                                       'l', lithiumOrElectrum,
 		                                       'p', Items.PAPER ));
+		WarpDrive.register(new ShapelessOreRecipe(groupComponents,
+		                                          ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CLUSTER),
+		                                          ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL),
+		                                          ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL),
+		                                          ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL),
+		                                          ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL) ));
 		
-		// Diamond crystal
+		// *** networking
+		// Ender coil crystal
+		final Object nuggetGoldOrSilver = WarpDriveConfig.getOreOrItemStack(
+				"ore:nuggetElectrum", 0,
+				"ore:nuggetSilver", 0,
+				"ore:nuggetGold", 0 );
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
-		                                       ItemComponent.getItemStack(EnumComponentType.DIAMOND_CRYSTAL), false, " d ", "BBB", "prp",
-		                                       'd', Items.DIAMOND,
-		                                       'B', barsIron,
-		                                       'r', Items.REDSTONE,
-		                                       'p', Items.PAPER));
-		
-		// Emerald crystal
-		WarpDrive.register(new ShapedOreRecipe(groupComponents,
-		                                       ItemComponent.getItemStack(EnumComponentType.EMERALD_CRYSTAL), false, " e ", "BBB", "qrq",
-		                                       'e', Items.EMERALD,
-		                                       'B', barsIron,
-		                                       'r', Items.REDSTONE,
-		                                       'q', Items.QUARTZ));
-		
-		// *** networking components
-		// Ender crystal
-		final Object nuggetGoldOrSilver = WarpDriveConfig.getOreOrItemStack("ore:nuggetElectrum", 0,
-		                                                                    "ore:nuggetSilver", 0,
-		                                                                    "ore:nuggetGold", 0);
-		WarpDrive.register(new ShapedOreRecipe(groupComponents,
-		                                       ItemComponent.getItemStackNoCache(EnumComponentType.ENDER_COIL, 2), false, "BBg", "rer", "gBB",
+		                                       ItemComponent.getItemStackNoCache(EnumComponentType.ENDER_COIL, 2), false, "GGg", "rer", "gGG",
 		                                       'e', Items.ENDER_PEARL,
-		                                       'B', barsIron,
+		                                       'G', "paneGlassColorless",
 		                                       'r', Items.REDSTONE,
 		                                       'g', nuggetGoldOrSilver ));
 		
@@ -410,21 +418,17 @@ public class Recipes {
 			redstoneOrModem = WarpDriveConfig.getItemStackOrFire("computercraft:cable", 1); // Wired modem
 		}
 		
-		Object oreCircuitOrHeavyPressurePlate = Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE;
-		int outputFactor = 1;
-		if (OreDictionary.doesOreNameExist("oc:materialCU") && !OreDictionary.getOres("oc:materialCU").isEmpty()) {
-			oreCircuitOrHeavyPressurePlate = "oc:materialCU";	// Control circuit is 5 redstone, 5 gold ingot, 3 paper
-			outputFactor = 2;
-		} else if (OreDictionary.doesOreNameExist("circuitBasic") && !OreDictionary.getOres("circuitBasic").isEmpty()) {// comes with IndustrialCraft2, GregTech, ICBM-Classic
-			oreCircuitOrHeavyPressurePlate = "circuitBasic";
-			outputFactor = 2;
-		}
+		final Object controlUnitOrBasicCircuit = WarpDriveConfig.getOreOrItemStack(
+				"ore:oc:materialCU", 0,
+				"opencomputers:material", 11, // Control unit is 5 gold ingot, 2 redstone, 1 paper, 3 iron ingot
+				"ore:circuitBasic", 0,
+				"minecraft:light_weighted_pressure_plate", 0 );
 		
 		// Computer interface: double output with Soldering alloy
 		if (OreDictionary.doesOreNameExist("ingotSolderingAlloy") && !OreDictionary.getOres("ingotSolderingAlloy").isEmpty()) {
 			WarpDrive.register(new ShapedOreRecipe(groupComponents,
-			                                       ItemComponent.getItemStackNoCache(EnumComponentType.COMPUTER_INTERFACE, 2 * outputFactor), false, "   ", "rar", "gGg",
-			                                       'G', oreCircuitOrHeavyPressurePlate,
+			                                       ItemComponent.getItemStackNoCache(EnumComponentType.COMPUTER_INTERFACE, 4), false, "   ", "rar", "gGg",
+			                                       'G', controlUnitOrBasicCircuit,
 			                                       'g', "ingotGold",
 			                                       'r', redstoneOrModem,
 			                                       'a', "ingotSolderingAlloy" ));
@@ -436,13 +440,13 @@ public class Recipes {
 				"ore:ingotLead", 0,
 				"ore:slimeball", 0 );
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
-		                                       ItemComponent.getItemStackNoCache(EnumComponentType.COMPUTER_INTERFACE, outputFactor), false, "   ", "rar", "gGg",
-		                                       'G', oreCircuitOrHeavyPressurePlate,
+		                                       ItemComponent.getItemStackNoCache(EnumComponentType.COMPUTER_INTERFACE, 2), false, "   ", "rar", "gGg",
+		                                       'G', controlUnitOrBasicCircuit,
 		                                       'g', "ingotGold",
 		                                       'r', redstoneOrModem,
 		                                       'a', slimeOrTinOrLead ));
 		
-		// *** breathing components
+		// *** breathing
 		// Bone charcoal is smelting 1 Bone
 		GameRegistry.addSmelting(Items.BONE, ItemComponent.getItemStackNoCache(EnumComponentType.BONE_CHARCOAL, 1), 1);
 		
@@ -473,7 +477,7 @@ public class Recipes {
 		                                       'y', woolPurple,
 		                                       'i', barsIron ));
 		
-		// *** human interface components
+		// *** human interface
 		// Flat screen is 3 Dyes, 1 Glowstone dust, 2 Paper, 3 Glass panes
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStack(EnumComponentType.FLAT_SCREEN), false, "gRp", "gGd", "gBp",
@@ -493,7 +497,7 @@ public class Recipes {
 		                                       'c', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE),
 		                                       'E', ItemComponent.getItemStack(EnumComponentType.EMERALD_CRYSTAL) ));
 		
-		// *** mechanical components
+		// *** mechanical
 		// Glass tank is 4 Slime balls, 4 Glass
 		// slimeball && blockGlass are defined by forge itself
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
@@ -516,36 +520,19 @@ public class Recipes {
 		                                       'm', itemStackMotors[0],
 		                                       't', ItemComponent.getItemStack(EnumComponentType.GLASS_TANK) ));
 		
-		// *** optical components
-		// Lens is 1 Diamond, 2 Gold ingots, 2 Glass panels
-		if (OreDictionary.doesOreNameExist("lensDiamond") && !OreDictionary.getOres("lensDiamond").isEmpty()) {
-			if (OreDictionary.doesOreNameExist("craftingLensWhite") && !OreDictionary.getOres("craftingLensWhite").isEmpty()) {
-				WarpDrive.register(new ShapedOreRecipe(groupComponents,
-				                                       ItemComponent.getItemStackNoCache(EnumComponentType.LENS, 3), false, "ggg", "pdp", "ggg",
-				                                       'g', "nuggetGold",
-				                                       'p', "craftingLensWhite",
-				                                       'd', "lensDiamond"));
-			} else {
-				WarpDrive.register(new ShapedOreRecipe(groupComponents,
-				                                       ItemComponent.getItemStack(EnumComponentType.LENS), false, " g ", "pdp", " g ",
-				                                       'g', "ingotGold",
-				                                       'p', "paneGlassColorless",
-				                                       'd', "lensDiamond"));
-			}
-		} else if (WarpDriveConfig.isAdvancedRepulsionSystemLoaded) {
-			final ItemStack diamondLens = WarpDriveConfig.getItemStackOrFire("AdvancedRepulsionSystems:{A8F3AF2F-0384-4EAA-9486-8F7E7A1B96E7}", 1);
-			WarpDrive.register(new ShapedOreRecipe(groupComponents,
-			                                       ItemComponent.getItemStack(EnumComponentType.LENS), false, " g ", "pdp", " g ",
-			                                       'g', "ingotGold",
-			                                       'p', "paneGlassColorless",
-			                                       'd', diamondLens));
-		} else {
-			WarpDrive.register(new ShapedOreRecipe(groupComponents,
-			                                       ItemComponent.getItemStackNoCache(EnumComponentType.LENS, 2), false, " g ", "pdp", " g ",
-			                                       'g', "ingotGold",
-			                                       'p', "paneGlassColorless",
-			                                       'd', "gemDiamond"));
-		}
+		// *** optical
+		// Lens is 1 Diamond, 6 Gold nugget, 2 Glass panel, gives 2
+		final Object diamondLensOrGem = WarpDriveConfig.getOreOrItemStack(
+				"ore:lensDiamond", 0,
+				"ore:demDiamond", 0 );
+		final Object whiteLensOrGlassPane = WarpDriveConfig.getOreOrItemStack(
+				"ore:craftingLensWhite", 0,
+				"ore:paneGlassColorless", 0 );
+		WarpDrive.register(new ShapedOreRecipe(groupComponents,
+		                                       ItemComponent.getItemStackNoCache(EnumComponentType.LENS, 2), false, "ggg", "pdp", "ggg",
+		                                       'g', "nuggetGold",
+		                                       'p', whiteLensOrGlassPane,
+		                                       'd', diamondLensOrGem ));
 		
 		// Zoom is 3 Lens, 2 Iron ingot, 2 Dyes, 1 Redstone, 1 Basic motor
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
@@ -563,7 +550,7 @@ public class Recipes {
 		                                       'i', barsIron,
 		                                       'g', Blocks.GLOWSTONE ));
 		
-		// *** energy components
+		// *** energy interface
 		// Power interface is 4 Redstone, 2 Rubber, 3 Gold ingot
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStackNoCache(EnumComponentType.POWER_INTERFACE, 3), false, "rgr", "RgR", "rgr",
@@ -616,6 +603,7 @@ public class Recipes {
 			                                               'e', ItemComponent.getItemStack(EnumComponentType.EMERALD_CRYSTAL)));
 		}
 		
+		// *** rubber material
 		// Raw rubber lump is produced from Jungle wood in the laser tree farm
 		// (no direct recipe)
 		
@@ -624,7 +612,88 @@ public class Recipes {
 		GameRegistry.addSmelting(
 				ItemComponent.getItemStack(EnumComponentType.RAW_RUBBER),
 				ItemComponent.getItemStack(EnumComponentType.RUBBER),
-				0);
+				0 );
+		
+		// *** composite materials
+		// Biopulp is some mycelium, fiber (bamboo, sugar cane) and lots of leaves
+		// silktouch recipe
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       ItemComponent.getItemStackNoCache(EnumComponentType.BIOPULP, 9), false, "lll", "lml", "lll",
+		                                       'l', leaves,
+		                                       'm', "blockMushroom" ), "block");
+		
+		// easier but more expensive from bamboo/sugar cane
+		final Object bambooOrSugarCane = WarpDriveConfig.getOreOrItemStack(
+				"biomesoplenty:bamboo", 0,
+				"minecraft:reeds", 0 );
+		final Object oreOrBrownMushroom = WarpDriveConfig.getOreOrItemStack(
+				"ore:listAllmushroom", 0,
+				"minecraft:brown_mushroom", 0 );
+		final Object oreOrRedMushroom = WarpDriveConfig.getOreOrItemStack(
+				"ore:listAllmushroom", 0,
+				"minecraft:red_mushroom", 0 );
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       ItemComponent.getItemStackNoCache(EnumComponentType.BIOPULP, 2), false, "lll", "mbM", "lll",
+		                                       'b', bambooOrSugarCane,
+		                                       'l', leaves,
+		                                       'm', oreOrBrownMushroom,
+		                                       'M', oreOrRedMushroom ), "bamboo");
+		
+		// Biofiber is the product of washing/filtering/drying Biopulp
+		GameRegistry.addSmelting(
+				ItemComponent.getItemStack(EnumComponentType.BIOPULP),
+				ItemComponent.getItemStack(EnumComponentType.BIOFIBER),
+				0 );
+		
+		// Raw ceramic is clay, with silicate
+		WarpDrive.register(new ShapelessOreRecipe(groupMachines,
+		                                          ItemComponent.getItemStackNoCache(EnumComponentType.RAW_CERAMIC, 4),
+		                                          Items.CLAY_BALL,
+		                                          Items.CLAY_BALL,
+		                                          Items.CLAY_BALL,
+		                                          "sand" ));
+		
+		// Biofiber is the product of washing/filtering/drying Biopulp
+		GameRegistry.addSmelting(
+				ItemComponent.getItemStack(EnumComponentType.RAW_CERAMIC),
+				ItemComponent.getItemStack(EnumComponentType.CERAMIC),
+				0 );
+		
+		// Carbon fiber plate is a slow/expensive process from making fiber, then making mesh than cooking it
+		// Raw carbon fiber from 8 coal (dust), 1 blaze powder, gives 4
+		// for reference:
+		// - IC2 is from 4 coal dust, gives 1 fiber
+		// - TechGuns is 1 blaze powder, 1 diamond, 1B lava, gives 2 fiber/plate
+		final Object coalDustOrCoal = WarpDriveConfig.getOreOrItemStack(
+				"ore:dustCoal", 0,
+				"minecraft:coal", 0 );
+		WarpDrive.register(new ShapelessOreRecipe(groupMachines,
+		                                          ItemComponent.getItemStackNoCache(EnumComponentType.RAW_CARBON_FIBER, 4),
+		                                          Items.BLAZE_POWDER,
+		                                          coalDustOrCoal, coalDustOrCoal, coalDustOrCoal, coalDustOrCoal,
+		                                          coalDustOrCoal, coalDustOrCoal, coalDustOrCoal, coalDustOrCoal ), "coal");
+		// (alternate recipe, more expensive from charcoal)
+		final Object coalDustOrCharcoal = WarpDriveConfig.getOreOrItemStack(
+				"ore:dustCoal", 0,
+				"minecraft:coal", 1 );
+		WarpDrive.register(new ShapelessOreRecipe(groupMachines,
+		                                          ItemComponent.getItemStack(EnumComponentType.RAW_CARBON_FIBER),
+		                                          Items.BLAZE_POWDER,
+		                                          coalDustOrCharcoal, coalDustOrCharcoal, coalDustOrCharcoal, coalDustOrCharcoal ), "charcoal");
+		
+		// Raw carbon mesh is 2 Biofiber, 3 Carbon fiber
+		// for reference:
+		// - IC2 is 2 fiber, gives 1 mesh
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       ItemComponent.getItemStackNoCache(EnumComponentType.RAW_CARBON_MESH, 4), false, "fcf", "ccc", "fcf",
+		                                       'f', ItemComponent.getItemStack(EnumComponentType.BIOFIBER),
+		                                       'c', ItemComponent.getItemStack(EnumComponentType.RAW_CARBON_FIBER) ));
+		
+		// Carbon fiber is the product of cooking the mesh (under pressure?)
+		GameRegistry.addSmelting(
+				ItemComponent.getItemStack(EnumComponentType.RAW_CARBON_MESH),
+				ItemComponent.getItemStack(EnumComponentType.CARBON_FIBER),
+				0 );
 	}
 	
 	private static void initToolsAndArmor() {

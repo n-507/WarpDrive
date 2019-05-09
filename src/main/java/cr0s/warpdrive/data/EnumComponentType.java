@@ -6,13 +6,22 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 
 public enum EnumComponentType implements IStringSerializable {
-	// processing
+	// data storage
+	// (comparator)
 	MEMORY_CRYSTAL             ("memory_crystal"),
-	CAPACITIVE_CRYSTAL         ("capacitive_crystal"),
+	MEMORY_CLUSTER             ("memory_cluster"),
+	
+	// processing
+	// (circuits)
 	DIAMOND_CRYSTAL            ("diamond_crystal"),
 	EMERALD_CRYSTAL            ("emerald_crystal"),
 	
-	// networking
+	// energy storage
+	// (redstone)
+	CAPACITIVE_CRYSTAL         ("capacitive_crystal"),
+	CAPACITIVE_CLUSTER         ("capacitive_cluster"),
+	
+	// networking interface
 	ENDER_COIL                 ("ender_coil"),
 	DIAMOND_COIL               ("diamond_coil"),
 	COMPUTER_INTERFACE         ("computer_interface"),
@@ -22,7 +31,7 @@ public enum EnumComponentType implements IStringSerializable {
 	ACTIVATED_CARBON           ("activated_carbon"),
 	AIR_CANISTER               ("air_canister_empty"),
 	
-	// human
+	// human interface
 	// (redstone)
 	FLAT_SCREEN                ("flat_screen"),
 	HOLOGRAPHIC_PROJECTOR      ("holographic_projector"),
@@ -37,7 +46,7 @@ public enum EnumComponentType implements IStringSerializable {
 	ZOOM                       ("zoom"),
 	DIFFRACTION_GRATING        ("diffraction_grating"),
 	
-	// energy
+	// energy interface
 	POWER_INTERFACE            ("power_interface"),
 	SUPERCONDUCTOR             ("superconductor"),
 	
@@ -46,9 +55,20 @@ public enum EnumComponentType implements IStringSerializable {
 	ELECTROMAGNETIC_PROJECTOR  ("electromagnetic_projector"),
 	REACTOR_CORE               ("reactor_core"),
 	
-	// materials
+	// rubber material
 	RAW_RUBBER                 ("raw_rubber"),
 	RUBBER                     ("rubber"),
+	
+	// composite materials
+	BIOPULP                    ("biopulp"),
+	BIOFIBER                   ("biofiber"),
+	
+	RAW_CERAMIC                ("raw_ceramic"),
+	CERAMIC                    ("ceramic"),
+	
+	RAW_CARBON_FIBER           ("raw_carbon_fiber"),
+	RAW_CARBON_MESH            ("raw_carbon_mesh"),
+	CARBON_FIBER               ("carbon_fiber"),
 	;
 	
 	private final String name;

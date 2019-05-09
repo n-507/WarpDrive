@@ -19,9 +19,13 @@ itemGroup.warpdrive.main=WarpDrive
 
 item.warpdrive.component.malformed.name=不良道具[WD]
 item.warpdrive.component.memory_crystal.name=記憶水晶
-item.warpdrive.component.capacitive_crystal.name=電容結晶
+item.warpdrive.component.memory_cluster.name=Memory Cluster
+
 item.warpdrive.component.diamond_crystal.name=鑽石調諧水晶
 item.warpdrive.component.emerald_crystal.name=翡翠調諧水晶
+
+item.warpdrive.component.capacitive_crystal.name=電容結晶
+item.warpdrive.component.capacitive_cluster.name=Capacitive Cluster
 
 item.warpdrive.component.ender_coil.name=終界調諧水晶
 item.warpdrive.component.diamond_coil.name=回紋水晶
@@ -53,6 +57,16 @@ item.warpdrive.component.reactor_core.name=反應核心
 item.warpdrive.component.raw_rubber.name=Raw rubber clump
 item.warpdrive.component.raw_rubber.tooltip=Harvested from Jungle wood with Laser tree farm
 item.warpdrive.component.rubber.name=Rubber
+
+item.warpdrive.component.biopulp.name=Biopulp
+item.warpdrive.component.biofiber.name=Biofiber
+
+item.warpdrive.component.raw_ceramic.name=Raw Ceramic
+item.warpdrive.component.ceramic.name=Ceramic
+
+item.warpdrive.component.raw_carbon_fiber.name=Raw Carbon fiber
+item.warpdrive.component.raw_carbon_mesh.name=Raw Carbon Mesh
+item.warpdrive.component.carbon_fiber.name=Carbon Fiber
 
 item.warpdrive.armor.helmet.name=躍遷保護盔
 item.warpdrive.armor.chestplate.name=Warp Chestplate
