@@ -30,7 +30,7 @@ item.warpdrive.component.computer_interface.name=Computer Interface
 item.warpdrive.component.bone_charcoal.name=Botkool
 item.warpdrive.component.activated_carbon.name=Geactiveerde Koolstof
 item.warpdrive.component.air_canister_empty.name=Lege zuurstoffles
-item.warpdrive.component.air_canister_empty.tooltip=§bRechts-klik op de zuurstofgenerator§7 om me te hervullen
+item.warpdrive.component.air_canister_empty.tooltip=§bRechts-klik op de zuurstofgenerator§r om me te hervullen
 
 item.warpdrive.component.flat_screen.name=Flat Screen
 item.warpdrive.component.holographic_projector.name=Holographic projector
@@ -69,7 +69,7 @@ item.warpdrive.breathing.air_tank.canister.name=zuurstoffles
 item.warpdrive.breathing.air_tank.basic.name=Basic Air Tank
 item.warpdrive.breathing.air_tank.advanced.name=Advanced Air Tank
 item.warpdrive.breathing.air_tank.superior.name=Superior Air Tank
-item.warpdrive.breathing.air_tank.tooltip.usage=§bRight click an Air generator§7 to refill me
+item.warpdrive.breathing.air_tank.tooltip.usage=§bRight click an Air generator§r to refill me
 
 item.warpdrive.energy.IC2reactorLaserFocus.name=IC2 Reactor Laser Lens
 
@@ -89,7 +89,7 @@ item.warpdrive.force_field.shape.tube.name=Tube-vorm
 item.warpdrive.force_field.shape.tube.tooltip=
 item.warpdrive.force_field.shape.tunnel.name=Tunnel-vorm
 item.warpdrive.force_field.shape.tunnel.tooltip=
-item.warpdrive.force_field.shape.tooltip.usage=§bRechts-klik op een projector§7 om het te upgraden\n§bBuk+rechts-click§7 om het te downgraden
+item.warpdrive.force_field.shape.tooltip.usage=§bRechts-klik§r op een projector om het te upgraden\n§bBuk+rechts-click§r om het te downgraden
 
 item.warpdrive.force_field.upgrade.none.name=Geen upgrade
 item.warpdrive.force_field.upgrade.none.tooltip=§4Verkeerde item
@@ -129,9 +129,9 @@ item.warpdrive.force_field.upgrade.thickness.name=Dikheids-upgrade
 item.warpdrive.force_field.upgrade.thickness.tooltip=Verhoog de dikte van het krachtveld. Voeg meer dikheids-upgrades om het effect nog meer te verhogen, tot het dubbele.
 item.warpdrive.force_field.upgrade.translation.name=Veranderings-upgrade
 item.warpdrive.force_field.upgrade.translation.tooltip=Sta toe dat het krachtveld wordt verandert
-item.warpdrive.force_field.upgrade.tooltip.usage.projector=§brechts-klik op een projector§7 om het te upgraden
-item.warpdrive.force_field.upgrade.tooltip.usage.relay=§brechts-klik op een projector-relais§7 om het te upgraden
-item.warpdrive.force_field.upgrade.tooltip.usage.dismount=§bBuk+rechtsklik§7 om het te downgraden
+item.warpdrive.force_field.upgrade.tooltip.usage.projector=§brechts-klik op een projector§r om het te upgraden
+item.warpdrive.force_field.upgrade.tooltip.usage.relay=§brechts-klik op een projector-relais§r om het te upgraden
+item.warpdrive.force_field.upgrade.tooltip.usage.dismount=§bBuk+rechtsklik§r om het te downgraden
 
 item.warpdrive.upgrade.Power.name=Stroom-upgrade
 item.warpdrive.upgrade.Speed.name=Snelheids-upgrade
@@ -140,7 +140,7 @@ item.warpdrive.upgrade.Energy.name=Energiecapaciteits-upgrade
 
 
 item.warpdrive.tool.ship_token.name=Schip kenteken
-item.warpdrive.tool.ship_token.tooltip.usage=Schip inkapseling van het schip'%1$s'\n§bGa naar het rode bouwersveldd§7 om het schip te claimen
+item.warpdrive.tool.ship_token.tooltip.usage=Schip inkapseling van het schip'%1$s'\n§bGa naar het rode bouwersveldd§r om het schip te claimen
 item.warpdrive.tool.ship_token0.name=Schip kenteken #0
 item.warpdrive.tool.ship_token1.name=Schip kenteken #1
 item.warpdrive.tool.ship_token2.name=Schip kenteken #2
@@ -177,7 +177,7 @@ item.warpdrive.tool.tuning_driver.video_channel.name=Videokanaal afstemmer
 item.warpdrive.tool.tuning_driver.beam_frequency.name=Straal-frequentie afstemmer
 item.warpdrive.tool.tuning_driver.control_channel.name=Controle-kanaal afstemmer
 
-item.warpdrive.tool.tuning_driver.tooltip.usage=§bRechts-klik op een blok§7 om zijn kristallen af te stemmen\n§buk§7 om zijn waarden te verkrijgen\n§bRechts-klik in de lucht§7 om de modus te veranderen
+item.warpdrive.tool.tuning_driver.tooltip.usage=§bRechts-klik op een blok§r om zijn kristallen af te stemmen\n§buk§r om zijn waarden te verkrijgen\n§bRechts-klik in de lucht§r om de modus te veranderen
 
 
 item.warpdrive.tool.tuning_fork.name=Afstemmingsvork
@@ -198,11 +198,11 @@ item.warpdrive.tool.tuning_fork.green.name=Groene Afstemmingsvork
 item.warpdrive.tool.tuning_fork.red.name=Rode Afstemmingsvork
 item.warpdrive.tool.tuning_fork.black.name=Zwarte Afstemmingsvork
 
-item.warpdrive.tool.tuning_fork.tooltip.usage=§bRechts-klik op een blok§7 om zijn kristal af te stemmen\n§bbuk§7 om zijn andere kristallen af te stemmen
+item.warpdrive.tool.tuning_fork.tooltip.usage=§bRechts-klik op een blok§r om zijn kristal af te stemmen\n§bbuk§r om zijn andere kristallen af te stemmen
 
 
 item.warpdrive.tool.wrench.name=Wrench
-item.warpdrive.tool.wrench.tooltip=§bRight click a block§7 to rotate it
+item.warpdrive.tool.wrench.tooltip=§bRight click a block§r to rotate it
 
 
 tile.warpdrive.decoration.bedrock_glass.name=Bedrock Glass
@@ -217,7 +217,7 @@ tile.warpdrive.decoration.gas.name=Gasblok
 tile.warpdrive.decoration.lamp_bubble.name=Bubble Lamp
 tile.warpdrive.decoration.lamp_flat.name=Flat Lamp
 tile.warpdrive.decoration.lamp_long.name=Long Lamp
-item.warpdrive.decoration.lamp.tooltip.usage=§bRight click§7 to light on/off
+item.warpdrive.decoration.lamp.tooltip.usage=§bRight click§r to light on/off
 
 
 tile.warpdrive.passive.iridium_block.name=Iridium Blok
@@ -345,9 +345,9 @@ tile.warpdrive.movement.ship_core.exceptional.name=Capital Schip-Kern
 tile.warpdrive.movement.ship_core.legendary.name=Planetary Schip-Kern
 tile.warpdrive.movement.ship_core.tooltip=Defines your ship center. Sluit een stroombron aan om de kern op te laden. Sluit een computer aan om de interface te openen.
 tile.warpdrive.movement.ship_core.bounding_box.disabled=Bounding box display have been disabled.
-tile.warpdrive.movement.ship_core.bounding_box.enabled=Bounding box display is now enabled. Only you can see it.\n§bSneak right-click the Ship core§7 again to disable it.
+tile.warpdrive.movement.ship_core.bounding_box.enabled=Bounding box display is now enabled. Only you can see it.\n§bSneak right-click the Ship core§r to disable it.
 tile.warpdrive.movement.transporter_beacon.name=Transport-baken
-tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§7 to set its remote location\n§bSneak§7 to retrieve its signature\n§bPlace as a block§7 to trigger emergency transportation
+tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§r to set its remote location\n§bSneak§r to retrieve its signature\n§bPlace as a block§r to trigger emergency transportation
 tile.warpdrive.movement.transporter_containment.name=Transporter Containment
 tile.warpdrive.movement.transporter_core.name=Transporter Core
 tile.warpdrive.movement.transporter_scanner.name=Transporter Scanner

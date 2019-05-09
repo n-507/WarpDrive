@@ -89,7 +89,7 @@ item.warpdrive.force_field.shape.tube.name=Forme de tube
 item.warpdrive.force_field.shape.tube.tooltip=
 item.warpdrive.force_field.shape.tunnel.name=Forme de tunnel
 item.warpdrive.force_field.shape.tunnel.tooltip=
-item.warpdrive.force_field.shape.tooltip.usage=§bClique droit sur un projecteur§r pour appliquer la forme\n§bShift-clique droit§7 pour l'enlever
+item.warpdrive.force_field.shape.tooltip.usage=§bClique droit§r sur un projecteur pour appliquer la forme\n§bShift-clique droit§r pour l'enlever
 
 item.warpdrive.force_field.upgrade.none.name=Pas d'augmentation
 item.warpdrive.force_field.upgrade.none.tooltip=§4Item invalide
@@ -140,7 +140,7 @@ item.warpdrive.upgrade.Energy.name=Amélioration d'énergie
 
 
 item.warpdrive.tool.ship_token.name=Jeton de vaisseau
-item.warpdrive.tool.ship_token.tooltip.usage=Jeton échangeable pour un vaisseau '%1$s'\n§bEntre dans le champ d'un constructeur§7 pour réclamer ton vaisseau
+item.warpdrive.tool.ship_token.tooltip.usage=Jeton échangeable pour un vaisseau '%1$s'\n§bEntre dans le champ d'un constructeur§r pour réclamer ton vaisseau
 item.warpdrive.tool.ship_token0.name=Jeton de vaisseau #0
 item.warpdrive.tool.ship_token1.name=Jeton de vaisseau #1
 item.warpdrive.tool.ship_token2.name=Jeton de vaisseau #2
@@ -202,7 +202,7 @@ item.warpdrive.tool.tuning_fork.tooltip.usage=§bCliques droit sur un block§r p
 
 
 item.warpdrive.tool.wrench.name=Clé tournante
-item.warpdrive.tool.wrench.tooltip=§bCliques droit sur un block§7 pour le tourner
+item.warpdrive.tool.wrench.tooltip=§bCliques droit sur un block§r pour le tourner
 
 
 tile.warpdrive.decoration.bedrock_glass.name=Vitre de bedrock
@@ -217,7 +217,7 @@ tile.warpdrive.decoration.gas.name=Bloc de gaz
 tile.warpdrive.decoration.lamp_bubble.name=Lampe bulle
 tile.warpdrive.decoration.lamp_flat.name=Lampe plate
 tile.warpdrive.decoration.lamp_long.name=Lampe allongée
-item.warpdrive.decoration.lamp.tooltip.usage=§bClique droit§7 pour allumer/éteindre
+item.warpdrive.decoration.lamp.tooltip.usage=§bClique droit§r pour allumer/éteindre
 
 
 tile.warpdrive.passive.iridium_block.name=Bloc d'iridium
@@ -346,9 +346,9 @@ tile.warpdrive.movement.ship_core.legendary.name=Cœur de vaisseau planétaire
 tile.warpdrive.movement.ship_core.tooltip=Défini le centre du vaisseau. Connecte une source d'énergie pour charger le cœur. Attache un ordinateur pour ouvrir l'interface utilisateur.
 
 tile.warpdrive.movement.ship_core.bounding_box.disabled=L'affichage des déliminations a été désactivé.
-tile.warpdrive.movement.ship_core.bounding_box.enabled=L'affichage des déliminations est maintement activé. Seul toi peut les voir.\n§bShift-clique droit§7 le cœur de vaisseau à nouveau pour le désactiver.
+tile.warpdrive.movement.ship_core.bounding_box.enabled=L'affichage des déliminations est maintement activé. Seul toi peut les voir.\n§bShift-clique droit le cœur de vaisseau§r pour le désactiver.
 tile.warpdrive.movement.transporter_beacon.name=Balise de transporteur
-tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§7 to set its remote location\n§bSneak§7 to retrieve its signature\n§bPlace as a block§7 to trigger emergency transportation
+tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§r to set its remote location\n§bSneak§r to retrieve its signature\n§bPlace as a block§r to trigger emergency transportation
 tile.warpdrive.movement.transporter_containment.name=Confinement de transporteur
 tile.warpdrive.movement.transporter_core.name=Cœur de transporteur
 tile.warpdrive.movement.transporter_scanner.name=Scanneur de transporteur

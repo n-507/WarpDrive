@@ -30,7 +30,7 @@ item.warpdrive.component.computer_interface.name=Computer Schnittstelle
 item.warpdrive.component.bone_charcoal.name=Knochenkohle
 item.warpdrive.component.activated_carbon.name=Aktivkohle
 item.warpdrive.component.air_canister_empty.name=Leerer Luftkanister
-item.warpdrive.component.air_canister_empty.tooltip=§bRechtsklicke einen Luftgenerator um mich zu füllen
+item.warpdrive.component.air_canister_empty.tooltip=§bRechtsklicke einen Luftgenerator§r um mich zu füllen
 
 item.warpdrive.component.flat_screen.name=Flatscreen
 item.warpdrive.component.holographic_projector.name=Holographic projector
@@ -69,7 +69,7 @@ item.warpdrive.breathing.air_tank.canister.name=Luftkanister
 item.warpdrive.breathing.air_tank.basic.name=Basic Air Tank !!!
 item.warpdrive.breathing.air_tank.advanced.name=Advanced Air Tank !!!
 item.warpdrive.breathing.air_tank.superior.name=Superior Air Tank !!!
-item.warpdrive.breathing.air_tank.tooltip.usage=§bRechtsklicke einen Luftgenerator um mich zu füllen
+item.warpdrive.breathing.air_tank.tooltip.usage=§bRechtsklicke einen Luftgenerator§r um mich zu füllen
 
 item.warpdrive.energy.IC2reactorLaserFocus.name=IC2 Reaktor-Laser-Fokus
 
@@ -89,7 +89,7 @@ item.warpdrive.force_field.shape.tube.name=Röhren Form
 item.warpdrive.force_field.shape.tube.tooltip=
 item.warpdrive.force_field.shape.tunnel.name=Tunnel Form
 item.warpdrive.force_field.shape.tunnel.tooltip=
-item.warpdrive.force_field.shape.tooltip.usage=§bRechtsklicke einen Projektor§7 um ihn aufzuwerten\n§bSchleich-Rechtsklicke§7 zum abwerten
+item.warpdrive.force_field.shape.tooltip.usage=§bRechtsklicke§r einen Projektor um ihn aufzuwerten\n§bSchleich-Rechtsklicke§r zum abwerten
 
 item.warpdrive.force_field.upgrade.none.name=Kein Upgrade
 item.warpdrive.force_field.upgrade.none.tooltip=§4Ungültiges Item
@@ -129,9 +129,9 @@ item.warpdrive.force_field.upgrade.thickness.name=Stärke Upgrade
 item.warpdrive.force_field.upgrade.thickness.tooltip=Erhöhe die Dicke des Kraftfelds. Mehr Upgrades verstärken den Effekt (bis zu 2x).
 item.warpdrive.force_field.upgrade.translation.name=Translations Upgrade
 item.warpdrive.force_field.upgrade.translation.tooltip=Aktiviert Kraftfeld Translation.
-item.warpdrive.force_field.upgrade.tooltip.usage.projector=§bRechtsklicke einen Projektor§7 um ihn aufzuwerten
-item.warpdrive.force_field.upgrade.tooltip.usage.relay=§bRechtsklicke ein Realais§7 um es aufzuwerten
-item.warpdrive.force_field.upgrade.tooltip.usage.dismount=§bSchleich-Rechtsklicke§7 zum abwerten
+item.warpdrive.force_field.upgrade.tooltip.usage.projector=§bRechtsklicke einen Projektor§r um ihn aufzuwerten
+item.warpdrive.force_field.upgrade.tooltip.usage.relay=§bRechtsklicke ein Realais§r um es aufzuwerten
+item.warpdrive.force_field.upgrade.tooltip.usage.dismount=§bSchleich-Rechtsklicke§r zum abwerten
 
 item.warpdrive.upgrade.Power.name=Power Upgrade
 item.warpdrive.upgrade.Speed.name=Geschwindigkeits Upgrade
@@ -139,11 +139,9 @@ item.warpdrive.upgrade.Range.name=Reichweiten Upgrade
 item.warpdrive.upgrade.Energy.name=Energie Upgrade
 
 
-item.warpdrive.tool.crystalToken.tooltip_new=Crystal encapsulation of ship '%1$s'\n§bEnter the red builder's field§7 to claim a ship
-
 item.warpdrive.tool.ship_token.name=Schiffes token
-item.warpdrive.tool.ship_token.tooltip.usage=Token exchangeable for ship '%1$s'\n§bEnter a builder's field§7 to claim it
-item.warpdrive.tool.ship_token.tooltip_legacyTranslation=Kristall Kapsel des Schiffes '%1$s'\n§bBetritt das Scanner Feld§7 um das Schiff zu bauen.
+item.warpdrive.tool.ship_token.tooltip.usage=Token exchangeable for ship '%1$s'\n§bEnter a builder's field§r to claim it
+item.warpdrive.tool.ship_token.tooltip_legacyTranslation=Kristall Kapsel des Schiffes '%1$s'\n§bBetritt das Scanner Feld§r um das Schiff zu bauen.
 item.warpdrive.tool.ship_token0.name=Schiffes token #0
 item.warpdrive.tool.ship_token1.name=Schiffes token #1
 item.warpdrive.tool.ship_token2.name=Schiffes token #2
@@ -180,7 +178,7 @@ item.warpdrive.tool.tuning_driver.video_channel.name=Videokanal Werkzeug
 item.warpdrive.tool.tuning_driver.beam_frequency.name=Strahlfrequenz Werkzeug
 item.warpdrive.tool.tuning_driver.control_channel.name=Steuerungskanal Werkzeug
 
-item.warpdrive.tool.tuning_driver.tooltip.usage=§bRechtsklicke einen Block§7 um seine Kristalle einzustellen\n§bSchleiche§7 um seinen Wert zu erfahren\n§bRechtsklicke die Luft§7 um den Modus zu ändern
+item.warpdrive.tool.tuning_driver.tooltip.usage=§bRechtsklicke einen Block§r um seine Kristalle einzustellen\n§bSchleiche§r um seinen Wert zu erfahren\n§bRechtsklicke die Luft§r um den Modus zu ändern
 
 
 item.warpdrive.tool.tuning_fork.name=Stimmgabel
@@ -201,11 +199,11 @@ item.warpdrive.tool.tuning_fork.green.name=Grüne Stimmgabel
 item.warpdrive.tool.tuning_fork.red.name=Rote Stimmgabel
 item.warpdrive.tool.tuning_fork.black.name=Schwarze Stimmgabel
 
-item.warpdrive.tool.tuning_fork.tooltip.usage=§bRecktsklicke einen Block§7 um seine Kristalle einzustellen\n§bSchleiche§7 um alternative Kristalle einzustellen
+item.warpdrive.tool.tuning_fork.tooltip.usage=§bRecktsklicke einen Block§r um seine Kristalle einzustellen\n§bSchleiche§r um alternative Kristalle einzustellen
 
 
 item.warpdrive.tool.wrench.name=Wrench
-item.warpdrive.tool.wrench.tooltip=§bRight click a block§7 to rotate it
+item.warpdrive.tool.wrench.tooltip=§bRight click a block§r to rotate it
 
 
 tile.warpdrive.decoration.bedrock_glass.name=Bedrock Glass !!!
@@ -220,7 +218,7 @@ tile.warpdrive.decoration.gas.name=Gas Block
 tile.warpdrive.decoration.lamp_bubble.name=Bubble Lamp !!!
 tile.warpdrive.decoration.lamp_flat.name=Flat Lamp !!!
 tile.warpdrive.decoration.lamp_long.name=Long Lamp !!!
-item.warpdrive.decoration.lamp.tooltip.usage=§bRight click§7 to light on/off !!!
+item.warpdrive.decoration.lamp.tooltip.usage=§bRight click§r to light on/off !!!
 
 tile.warpdrive.passive.iridium_block.name=Iridium Block
 tile.warpdrive.passive.highly_advanced_machine.name=Stark weiterentwickelter Maschinen Block
@@ -347,9 +345,9 @@ tile.warpdrive.movement.ship_core.exceptional.name=Capital Raumschiff Kern
 tile.warpdrive.movement.ship_core.legendary.name=Planetary Raumschiff Kern
 tile.warpdrive.movement.ship_core.tooltip=Defines your ship center. Schließe eine Energiequelle an, um den Kern zu laden. Schließe einen Computer an, um das Interface zu öffnen.
 tile.warpdrive.movement.ship_core.bounding_box.disabled=Bounding box display have been disabled.
-tile.warpdrive.movement.ship_core.bounding_box.enabled=Bounding box display is now enabled. Only you can see it.\nSneak right-click the Ship core again to disable it.
+tile.warpdrive.movement.ship_core.bounding_box.enabled=Bounding box display is now enabled. Only you can see it.\n§bSneak right-click the Ship core§r to disable it.
 tile.warpdrive.movement.transporter_beacon.name=Transporter Leuchtfeuer
-tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§7 to set its remote location\n§bSneak§7 to retrieve its signature\n§bPlace as a block§7 to trigger emergency transportation
+tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§r to set its remote location\n§bSneak§r to retrieve its signature\n§bPlace as a block§r to trigger emergency transportation
 tile.warpdrive.movement.transporter_containment.name=Transporter Containment
 tile.warpdrive.movement.transporter_core.name=Transporter Core
 tile.warpdrive.movement.transporter_scanner.name=Transporter Scanner

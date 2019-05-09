@@ -30,7 +30,7 @@ item.warpdrive.component.computer_interface.name=電腦接入界面
 item.warpdrive.component.bone_charcoal.name=骨灰
 item.warpdrive.component.activated_carbon.name=活性炭
 item.warpdrive.component.air_canister_empty.name=虛空罐
-item.warpdrive.component.air_canister_empty.tooltip=§b右鍵單擊空氣發生器§7 填充虛空罐
+item.warpdrive.component.air_canister_empty.tooltip=§b右鍵單擊空氣發生器§r 填充虛空罐
 
 item.warpdrive.component.flat_screen.name=平面屏幕
 item.warpdrive.component.holographic_projector.name=Holographic projector
@@ -69,7 +69,7 @@ item.warpdrive.breathing.air_tank.canister.name=Air Canister
 item.warpdrive.breathing.air_tank.basic.name=Basic Air Tank
 item.warpdrive.breathing.air_tank.advanced.name=Advanced Air Tank
 item.warpdrive.breathing.air_tank.superior.name=Superior Air Tank
-item.warpdrive.breathing.air_tank.tooltip.usage=§bRight click an Air generator§7 to refill me
+item.warpdrive.breathing.air_tank.tooltip.usage=§bRight click an Air generator§r to refill me
 
 item.warpdrive.energy.IC2reactorLaserFocus.name=IC2 反應堆鐳射
 
@@ -89,7 +89,7 @@ item.warpdrive.force_field.shape.tube.name=管狀
 item.warpdrive.force_field.shape.tube.tooltip=
 item.warpdrive.force_field.shape.tunnel.name=隧道狀
 item.warpdrive.force_field.shape.tunnel.tooltip=
-item.warpdrive.force_field.shape.tooltip.usage=§b右鍵單擊投射器§7 升級\n§bShift加右鍵§7 降級
+item.warpdrive.force_field.shape.tooltip.usage=§b右鍵單擊投射器§r 升級\n§bShift加右鍵§r 降級
 
 item.warpdrive.force_field.upgrade.none.name=無需升級
 item.warpdrive.force_field.upgrade.none.tooltip=§4失效道具
@@ -129,9 +129,9 @@ item.warpdrive.force_field.upgrade.thickness.name=加厚芯片
 item.warpdrive.force_field.upgrade.thickness.tooltip=增加力場的厚度。 添加更多加厚芯片以增加效果，最多增加一倍。
 item.warpdrive.force_field.upgrade.translation.name=轉換芯片
 item.warpdrive.force_field.upgrade.translation.tooltip=啟用力場轉換。
-item.warpdrive.force_field.upgrade.tooltip.usage.projector=§b右鍵單擊投射器§7 來升級它
-item.warpdrive.force_field.upgrade.tooltip.usage.relay=§b右鍵單擊繼電器§7 來升級它
-item.warpdrive.force_field.upgrade.tooltip.usage.dismount=§bShift加右鍵§7 使它降級
+item.warpdrive.force_field.upgrade.tooltip.usage.projector=§b右鍵單擊投射器§r 來升級它
+item.warpdrive.force_field.upgrade.tooltip.usage.relay=§b右鍵單擊繼電器§r 來升級它
+item.warpdrive.force_field.upgrade.tooltip.usage.dismount=§bShift加右鍵§r 使它降級
 
 item.warpdrive.upgrade.Power.name=能量芯片
 item.warpdrive.upgrade.Speed.name=極速芯片
@@ -140,7 +140,7 @@ item.warpdrive.upgrade.Energy.name=能量芯片
 
 
 item.warpdrive.tool.ship_token.name=Ship token
-item.warpdrive.tool.ship_token.tooltip.usage=將水晶封裝在船上 '%1$s'\n§b啓動掃描力場§7 來建造你的船隻。
+item.warpdrive.tool.ship_token.tooltip.usage=將水晶封裝在船上 '%1$s'\n§b啓動掃描力場§r 來建造你的船隻。
 item.warpdrive.tool.ship_token0.name=Ship token #0
 item.warpdrive.tool.ship_token1.name=Ship token #1
 item.warpdrive.tool.ship_token2.name=Ship token #2
@@ -177,7 +177,7 @@ item.warpdrive.tool.tuning_driver.video_channel.name=Video Channel Tuning Driver
 item.warpdrive.tool.tuning_driver.beam_frequency.name=Beam Frequency Tuning Driver
 item.warpdrive.tool.tuning_driver.control_channel.name=Control Channel Tuning Driver
 
-item.warpdrive.tool.tuning_driver.tooltip.usage=§bRight click a block§7 to tune its crystals\n§bSneak§7 to retrieve its value\n§bRight click air§7 to change mode
+item.warpdrive.tool.tuning_driver.tooltip.usage=§bRight click a block§r to tune its crystals\n§bSneak§r to retrieve its value\n§bRight click air§r to change mode
 
 
 item.warpdrive.tool.tuning_fork.name=調音叉
@@ -198,11 +198,11 @@ item.warpdrive.tool.tuning_fork.green.name=肥鋒調音叉
 item.warpdrive.tool.tuning_fork.red.name=赤色調音叉
 item.warpdrive.tool.tuning_fork.black.name=黑色調音叉
 
-item.warpdrive.tool.tuning_fork.tooltip.usage=§b右鍵單擊一個方塊§7 以調整其水晶\n§b潛行§7 以調節交替水晶
+item.warpdrive.tool.tuning_fork.tooltip.usage=§b右鍵單擊一個方塊§r 以調整其水晶\n§b潛行§r 以調節交替水晶
 
 
 item.warpdrive.tool.wrench.name=Wrench
-item.warpdrive.tool.wrench.tooltip=§bRight click a block§7 to rotate it
+item.warpdrive.tool.wrench.tooltip=§bRight click a block§r to rotate it
 
 
 tile.warpdrive.decoration.bedrock_glass.name=Bedrock Glass
@@ -217,7 +217,7 @@ tile.warpdrive.decoration.gas.name=氣體方塊
 tile.warpdrive.decoration.lamp_bubble.name=Bubble Lamp
 tile.warpdrive.decoration.lamp_flat.name=Flat Lamp
 tile.warpdrive.decoration.lamp_long.name=Long Lamp
-item.warpdrive.decoration.lamp.tooltip.usage=§bRight click§7 to light on/off
+item.warpdrive.decoration.lamp.tooltip.usage=§bRight click§r to light on/off
 
 
 tile.warpdrive.passive.iridium_block.name=銥塊
@@ -346,9 +346,9 @@ tile.warpdrive.movement.ship_core.legendary.name=Planetary 波動核心
 tile.warpdrive.movement.ship_core.tooltip=Defines your ship center. Connecting an energy source will charge the core. Attach a computer to open the user interface.
 
 tile.warpdrive.movement.ship_core.bounding_box.disabled=Bounding box display have been disabled.
-tile.warpdrive.movement.ship_core.bounding_box.enabled=Bounding box display is now enabled. Only you can see it.\n§bSneak right-click the Ship core§7 again to disable it.
+tile.warpdrive.movement.ship_core.bounding_box.enabled=Bounding box display is now enabled. Only you can see it.\n§bSneak right-click the Ship core§r to disable it.
 tile.warpdrive.movement.transporter_beacon.name=傳送坐標
-tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§7 to set its remote location\n§bSneak§7 to retrieve its signature\n§bPlace as a block§7 to trigger emergency transportation
+tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§r to set its remote location\n§bSneak§r to retrieve its signature\n§bPlace as a block§r to trigger emergency transportation
 tile.warpdrive.movement.transporter_containment.name=Transporter Containment
 tile.warpdrive.movement.transporter_core.name=運輸
 tile.warpdrive.movement.transporter_scanner.name=Transporter Scanner

@@ -30,7 +30,7 @@ item.warpdrive.component.computer_interface.name=Компьютерный инт
 item.warpdrive.component.bone_charcoal.name=Костяной уголь
 item.warpdrive.component.activated_carbon.name=Активированный уголь
 item.warpdrive.component.air_canister_empty.name=Пустой баллон для воздуха
-item.warpdrive.component.air_canister_empty.tooltip=Используйте на генераторе воздуха, чтобы наполнить
+item.warpdrive.component.air_canister_empty.tooltip=Используйте на генераторе воздуха§r, чтобы наполнить
 
 item.warpdrive.component.flat_screen.name=Плоский экран
 item.warpdrive.component.holographic_projector.name=Holographic projector
@@ -69,7 +69,7 @@ item.warpdrive.breathing.air_tank.canister.name=Баллон с воздухом
 item.warpdrive.breathing.air_tank.basic.name=Basic Air Tank
 item.warpdrive.breathing.air_tank.advanced.name=Advanced Air Tank
 item.warpdrive.breathing.air_tank.superior.name=Superior Air Tank
-item.warpdrive.breathing.air_tank.tooltip.usage=§bRight click an Air generator§7 to refill me
+item.warpdrive.breathing.air_tank.tooltip.usage=§bRight click an Air generator§r to refill me
 
 item.warpdrive.energy.IC2reactorLaserFocus.name=Фокусировщик лазера реактора IC2
 
@@ -89,7 +89,7 @@ item.warpdrive.force_field.shape.tube.name=Tube shape
 item.warpdrive.force_field.shape.tube.tooltip=
 item.warpdrive.force_field.shape.tunnel.name=Tunnel shape
 item.warpdrive.force_field.shape.tunnel.tooltip=
-item.warpdrive.force_field.shape.tooltip.usage=§bRight click a projector§7 to upgrade it\n§bSneak-right click§7 to downgrade
+item.warpdrive.force_field.shape.tooltip.usage=§bRight click a projector§r to upgrade it\n§bSneak-right click§r to downgrade
 
 item.warpdrive.force_field.upgrade.none.name=No upgrade
 item.warpdrive.force_field.upgrade.none.tooltip=§4Invalid item
@@ -129,9 +129,9 @@ item.warpdrive.force_field.upgrade.thickness.name=Thickness upgrade
 item.warpdrive.force_field.upgrade.thickness.tooltip=Increase force field thickness. Add more Thickness upgrades to increase effect, up to doubling.
 item.warpdrive.force_field.upgrade.translation.name=Translation upgrade
 item.warpdrive.force_field.upgrade.translation.tooltip=Enable force field translation
-item.warpdrive.force_field.upgrade.tooltip.usage.projector=§bRight click a projector§7 to upgrade it
-item.warpdrive.force_field.upgrade.tooltip.usage.relay=§bRight click a relay§7 to upgrade it
-item.warpdrive.force_field.upgrade.tooltip.usage.dismount=§bSneak-right click§7 to downgrade
+item.warpdrive.force_field.upgrade.tooltip.usage.projector=§bRight click a projector§r to upgrade it
+item.warpdrive.force_field.upgrade.tooltip.usage.relay=§bRight click a relay§r to upgrade it
+item.warpdrive.force_field.upgrade.tooltip.usage.dismount=§bSneak-right click§r to downgrade
 
 item.warpdrive.upgrade.Power.name=Улучшение - Питание
 item.warpdrive.upgrade.Speed.name=Улучшение - Скорость
@@ -140,7 +140,7 @@ item.warpdrive.upgrade.Energy.name=Улучшение - Хранилище эн�
 
 
 item.warpdrive.tool.ship_token.name=Ship token
-item.warpdrive.tool.ship_token.tooltip.usage=Token exchangeable for ship '%1$s'\n§bEnter a builder's field§7 to claim it
+item.warpdrive.tool.ship_token.tooltip.usage=Token exchangeable for ship '%1$s'\n§bEnter a builder's field§r to claim it
 item.warpdrive.tool.ship_token0.name=Ship token #0
 item.warpdrive.tool.ship_token1.name=Ship token #1
 item.warpdrive.tool.ship_token2.name=Ship token #2
@@ -177,7 +177,7 @@ item.warpdrive.tool.tuning_driver.video_channel.name=Video Channel Tuning Driver
 item.warpdrive.tool.tuning_driver.beam_frequency.name=Beam Frequency Tuning Driver
 item.warpdrive.tool.tuning_driver.control_channel.name=Control Channel Tuning Driver
 
-item.warpdrive.tool.tuning_driver.tooltip.usage=§bRight click a block§7 to tune its crystals\n§bSneak§7 to retrieve its value\n§bRight click air§7 to change mode
+item.warpdrive.tool.tuning_driver.tooltip.usage=§bRight click a block§r to tune its crystals\n§bSneak§r to retrieve its value\n§bRight click air§r to change mode
 
 
 item.warpdrive.tool.tuning_fork.name=Камертон
@@ -198,11 +198,11 @@ item.warpdrive.tool.tuning_fork.green.name=Зеленый камертон
 item.warpdrive.tool.tuning_fork.red.name=Красный камертон
 item.warpdrive.tool.tuning_fork.black.name=Черный камертон
 
-item.warpdrive.tool.tuning_fork.tooltip.usage=§bИспользуйте на блоке§7, чтобы настроить его кристаллы\n§bПрисядьте§7, чтобы настроить вторичные кристаллы
+item.warpdrive.tool.tuning_fork.tooltip.usage=§bИспользуйте на блоке§r, чтобы настроить его кристаллы\n§bПрисядьте§r, чтобы настроить вторичные кристаллы
 
 
 item.warpdrive.tool.wrench.name=Wrench
-item.warpdrive.tool.wrench.tooltip=§bRight click a block§7 to rotate it
+item.warpdrive.tool.wrench.tooltip=§bRight click a block§r to rotate it
 
 
 tile.warpdrive.decoration.bedrock_glass.name=Bedrock Glass
@@ -217,7 +217,7 @@ tile.warpdrive.decoration.gas.name=Газ
 tile.warpdrive.decoration.lamp_bubble.name=Bubble Lamp
 tile.warpdrive.decoration.lamp_flat.name=Flat Lamp
 tile.warpdrive.decoration.lamp_long.name=Long Lamp
-item.warpdrive.decoration.lamp.tooltip.usage=§bRight click§7 to light on/off
+item.warpdrive.decoration.lamp.tooltip.usage=§bRight click§r to light on/off
 
 
 tile.warpdrive.passive.iridium_block.name=Блок иридия
@@ -345,9 +345,9 @@ tile.warpdrive.movement.ship_core.exceptional.name=Capital Ядро корабл
 tile.warpdrive.movement.ship_core.legendary.name=Planetary Ядро корабля
 tile.warpdrive.movement.ship_core.tooltip=Defines your ship center. Connecting an energy source will charge the core. Attach a computer to open the user interface.
 tile.warpdrive.movement.ship_core.bounding_box.disabled=Bounding box display have been disabled.
-tile.warpdrive.movement.ship_core.bounding_box.enabled=Bounding box display is now enabled. Only you can see it.\n§bSneak right-click the Ship core§7 again to disable it.
+tile.warpdrive.movement.ship_core.bounding_box.enabled=Bounding box display is now enabled. Only you can see it.\n§bSneak right-click the Ship core§r to disable it.
 tile.warpdrive.movement.transporter_beacon.name=Маяк для транспортера
-tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§7 to set its remote location\n§bSneak§7 to retrieve its signature\n§bPlace as a block§7 to trigger emergency transportation
+tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§r to set its remote location\n§bSneak§r to retrieve its signature\n§bPlace as a block§r to trigger emergency transportation
 tile.warpdrive.movement.transporter_containment.name=Transporter Containment
 tile.warpdrive.movement.transporter_core.name=Транспортер
 tile.warpdrive.movement.transporter_scanner.name=Transporter Scanner
