@@ -345,24 +345,26 @@ tile.warpdrive.force_field.relay.superior.name=Relais supérieur de champ de for
 tile.warpdrive.force_field.relay.superior.tooltip=Supporte jusqu'à 1 augmentation de champ de force partagée avec son réseau
 
 tile.warpdrive.movement.lift.name=Ascenseur
+
 tile.warpdrive.movement.ship_controller.basic.name=Controlleur distant de vaisseau navette
 tile.warpdrive.movement.ship_controller.advanced.name=Controlleur distant de vaisseau corvette
 tile.warpdrive.movement.ship_controller.superior.name=Controlleur distant de vaisseau frégate
 tile.warpdrive.movement.ship_controller.exceptional.name=Controlleur distant de vaisseau capital
 tile.warpdrive.movement.ship_controller.legendary.name=Controlleur distant de vaisseau planétaire
 tile.warpdrive.movement.ship_controller.tooltip=Block optional pour à distance d'un cœur de vaisseau. Attache un ordinateur pour ouvrir l'interface utilisateur.
-tile.warpdrive.movement.ship_controller.away_from_core=Remote controller is for remote usage, also they're optional now...
+tile.warpdrive.movement.ship_controller.away_from_core=Controlleur à distance est pour un usage à distance, de plus il est optionel désormais...
+
 tile.warpdrive.movement.ship_core.basic.name=Cœur de vaisseau navette
 tile.warpdrive.movement.ship_core.advanced.name=Cœur de vaisseau corvette
 tile.warpdrive.movement.ship_core.superior.name=Cœur de vaisseau frégate
 tile.warpdrive.movement.ship_core.exceptional.name=Cœur de vaisseau capital
 tile.warpdrive.movement.ship_core.legendary.name=Cœur de vaisseau planétaire
 tile.warpdrive.movement.ship_core.tooltip=Défini le centre du vaisseau. Connecte une source d'énergie pour charger le cœur. Attache un ordinateur pour ouvrir l'interface utilisateur.
-
 tile.warpdrive.movement.ship_core.bounding_box.disabled=L'affichage des déliminations a été désactivé.
 tile.warpdrive.movement.ship_core.bounding_box.enabled=L'affichage des déliminations est maintement activé. Seul toi peut les voir.\n§bShift-clique droit le cœur de vaisseau§r pour le désactiver.
+
 tile.warpdrive.movement.transporter_beacon.name=Balise de transporteur
-tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§r to set its remote location\n§bSneak§r to retrieve its signature\n§bPlace as a block§r to trigger emergency transportation
+tile.warpdrive.movement.transporter_beacon.tooltip=§bClique droit un Cœur de transporteur§r pour définir un emplacement distant.\n§bShift§r pour récupérer sa signature.\n§bPlace le en tant que block§r pour déclencher un transport d'urgence.
 tile.warpdrive.movement.transporter_containment.name=Confinement de transporteur
 tile.warpdrive.movement.transporter_core.name=Cœur de transporteur
 tile.warpdrive.movement.transporter_scanner.name=Scanneur de transporteur
@@ -632,38 +634,38 @@ tile.warpdrive.hull.superior.stairs.black.name=Escalier de coque supérieure noi
 
 warpdrive.guide.prefix=%1$s: 
 warpdrive.error.bad_tile_entity=Ce bloc requiers une mise à jour par dépose puis repose.
-warpdrive.error.internal_check_console=Internal error, check console for details
+warpdrive.error.internal_check_console=Erreur interne, vérifie la console pour plus de détails
 
-warpdrive.command.invalid_parameter=Invalid parameter %1$s
-warpdrive.command.invalid_location=Unknown world or coordinates, probably an invalid command sender in action here.
-warpdrive.command.no_container=No container found around player
-warpdrive.command.empty_inventory=Inventory is empty
-warpdrive.command.found_title=Found:
+warpdrive.command.invalid_parameter=Paramètre invalide %1$s
+warpdrive.command.invalid_location=Coordonnées ou monde inconnu, probablement un utilisateur ou paramètre invalide.
+warpdrive.command.no_container=Pas de conteneur trouvé autour du joueur
+warpdrive.command.empty_inventory=L'inventaire est vide
+warpdrive.command.found_title=Trouvé:
 warpdrive.command.found_line=- %1$s
-warpdrive.command.no_matching_entity=No matching entity found within %1$d blocks
-warpdrive.command.x_matching_entities=%1$d matching entities within %2$d blocks:
-warpdrive.command.only_in_space=this structure is only allowed in space!
-warpdrive.command.configuration_reloaded=WarpDrive configuration has been reloaded.
-warpdrive.command.liability_warning=Use at your own risk!
-warpdrive.command.player_required=Use as a player or provide a player name
-warpdrive.command.player_not_found=Player not found '%1$s'
-warpdrive.command.too_many_arguments=Too many arguments %1$d
-warpdrive.command.player_in_unknown_dimension=Player %1$s is in unknown dimension %2$d.
-warpdrive.command.player_can_t_go_virtual=player %1$s can't go to %2$s: this is a virtual celestial object.
-warpdrive.command.specify_explicit_dimension=Try specifying an explicit target dimension instead.
-warpdrive.command.undefined_dimension=Undefined dimension %1$d
-warpdrive.command.teleporting_to_x=Teleporting to %1$s
-warpdrive.command.teleporting_player_x_to_y=Teleporting player %1$s to %2$s
-warpdrive.command.teleporting_by_x_to_y=%1$s is teleporting you to %2$s
-warpdrive.command.no_bed_to_teleport_to_self=Teleportation failed:\nyou need to set your bed location in %1$s
-warpdrive.command.no_bed_to_teleport_to_other=Teleportation failed for player %1$s:\nplayer needs to set his/her bed location in %2$s
-warpdrive.command.lost_bed_can_t_teleport_self=Teleportation failed:\nyour bed is no longer there in %1$s
-warpdrive.command.lost_bed_can_t_teleport_other=Teleportation failed for player %1$s:\nbed is no longer there in %2$s
+warpdrive.command.no_matching_entity=Aucune entité correspondante trouvée dans les %1$d blocs
+warpdrive.command.x_matching_entities=%1$d entités correspondantes trouvées dans les %2$d blocs:
+warpdrive.command.only_in_space=Cette structure est autorisée uniquement dans l'espace!
+warpdrive.command.configuration_reloaded=La configuration de WarpDrive a été rechargée.
+warpdrive.command.liability_warning=Utilisez à vos propre risques!
+warpdrive.command.player_required=Utilises un joueur ou fourni un nom de joueur!
+warpdrive.command.player_not_found=Joueur introuvable '%1$s'
+warpdrive.command.too_many_arguments=Trop d'arguments %1$d
+warpdrive.command.player_in_unknown_dimension=Le joueur %1$s est dans une dimension inconnue %2$d.
+warpdrive.command.player_can_t_go_virtual=Le joueur %1$s ne peut aller à %2$s: c'est un objet céleste décoratif/virtuel!
+warpdrive.command.specify_explicit_dimension=Essaye plutôt de spécifier explicitement une dimension à atteindre.
+warpdrive.command.undefined_dimension=Cette dimension n'est pas définie %1$d
+warpdrive.command.teleporting_to_x=Teleportation vers %1$s
+warpdrive.command.teleporting_player_x_to_y=Teleportation du joueur %1$s vers %2$s
+warpdrive.command.teleporting_by_x_to_y=%1$s te téléportes vers %2$s
+warpdrive.command.no_bed_to_teleport_to_self=Teleportation échouée:\ntu dois définir l'emplacement de ton lit dans %1$s
+warpdrive.command.no_bed_to_teleport_to_other=Teleportation échouée pour le joueur %1$s:\nle joueur doit définir l'emplacement de son lit dans %2$s
+warpdrive.command.lost_bed_can_t_teleport_self=Teleportation échouée:\nton lit n'est plus là dans %1$s
+warpdrive.command.lost_bed_can_t_teleport_other=Teleportation échouée pour le joueur %1$s:\nle lit n'est plus là dans %2$s
 
 
-warpdrive.beam_frequency.tooltip=Fréquence de faisceau ajustée à %1$d
-warpdrive.beam_frequency.get=Beam frequency %2$d has been retrieved from %1$s
-warpdrive.beam_frequency.set=%1$s est désormais accordé à la Fréquence de faisceau %2$d
+warpdrive.beam_frequency.tooltip=Fréquence de faisceau ajustée à %1$d.
+warpdrive.beam_frequency.get=La fréquence de faisceau %2$d a été récupérée de %1$s.
+warpdrive.beam_frequency.set=%1$s est désormais accordé à la Fréquence de faisceau %2$d.
 warpdrive.beam_frequency.status_line.valid=La fréquence de faisceau %1$d est valide.
 warpdrive.beam_frequency.status_line.invalid=La fréquence de faisceau %1$d est invalide.
 warpdrive.beam_frequency.status_line.undefined=La fréquence de faisceau est non définie.\n§bUtilises un Diapason§f pour l'ajuster.
@@ -675,8 +677,8 @@ warpdrive.control_channel.status_line.valid=Le canal de contrôle %1$d est valid
 warpdrive.control_channel.status_line.invalid=Le canal de contrôle %1$d est invalide.
 warpdrive.control_channel.status_line.undefined=Le canal de contrôle est non défini.\n§bUtilises un Diapason§r pour l'ajuster.
 
-warpdrive.is_enabled.set.enabled=Switched ON!
-warpdrive.is_enabled.set.disabled=Switched off!
+warpdrive.is_enabled.set.enabled=Allumé!
+warpdrive.is_enabled.set.disabled=Eteint!
 
 # %1 is signature name, %2 is item name, %3 is block name
 warpdrive.core_signature.tooltip=Signature est définie à %1$d.
@@ -736,26 +738,26 @@ warpdrive.breathing.invalid_setup=Pas de casque respiratoire\nou armure incompl�
 warpdrive.breathing.low_reserve=Réserve d'air faible!
 warpdrive.breathing.no_air=Réserve d'air épuisée!
 
-warpdrive.builder.guide.deploying_out_of_range=Cannot deploy ship more than %1$d blocks away from scanner.
-warpdrive.builder.guide.deployment_area_occupied_by_blocks=Deployment area occupied with %1$d blocks. Can't deploy ship.
-warpdrive.builder.guide.deploying_ship=Deploying ship '%1$s'...
-warpdrive.builder.guide.deployment_area_occupied_by_block=Deployment area occupied by %1$s.\nCan't deploy new ship at (%2$d %3$d %4$d)
-warpdrive.builder.guide.deployment_area_corrupted_tile_entity=Deployment area occupied with invalid tile entity %1$s for ship core.
-warpdrive.builder.guide.contact_an_admin=Contact an admin for help %1$s
-warpdrive.builder.guide.deployment_area_with_active_crew=Deployment area occupied by active crew %s.
-warpdrive.builder.guide.wait_your_turn=Please wait or use another deployment spot
-warpdrive.builder.guide.deployment_area_is_busy=Deployment area is busy.
-warpdrive.builder.guide.deployment_area_occupied_by_your_ship1=Deployment area occupied by your ship, captain %1$s!
-warpdrive.builder.guide.deployment_area_occupied_by_your_ship2=Come back inside and use the computer to jump away!
-warpdrive.builder.guide.deployment_area_occupied_by_online_player1=Deployment area occupied with ship owned by %1$s.
-warpdrive.builder.guide.deployment_area_occupied_by_online_player2=Contact that player or use another deployment spot
+warpdrive.builder.guide.deploying_out_of_range=Impossible de déployer un vaisseau à plus de %1$d blocs du scanneur.
+warpdrive.builder.guide.deployment_area_occupied_by_blocks=Déploiement impossible! La zone est déjà occupée par %1$d blocs.
+warpdrive.builder.guide.deploying_ship=Deploiement du vaisseau '%1$s'...
+warpdrive.builder.guide.deployment_area_occupied_by_block=Impossible de déploier un nouveau vaisseau à (%2$d %3$d %4$d)!\nLa zone est déjà occupée par %1$s. 
+warpdrive.builder.guide.deployment_area_corrupted_tile_entity=Zone de déploiement occupée une entitée de bloc invalide pour un cœur de vaisseau %1$s.
+warpdrive.builder.guide.contact_an_admin=Demande l'aide d'un administrateur %1$s.
+warpdrive.builder.guide.deployment_area_with_active_crew=Zone de déploiement occupée par équipage actif %s.
+warpdrive.builder.guide.wait_your_turn=Merci de patienter ou d'utilisateur une zone de déploiement.
+warpdrive.builder.guide.deployment_area_is_busy=Zone de déploiement occupée.
+warpdrive.builder.guide.deployment_area_occupied_by_your_ship1=Zone de déploiement occupée par votre vaisseau, capitaine %1$s!
+warpdrive.builder.guide.deployment_area_occupied_by_your_ship2=Reviens à l'intérieur et utilises l'ordinateur pour le déplacer.
+warpdrive.builder.guide.deployment_area_occupied_by_online_player1=Zone de déploiement occupée par le vaisseau appartenant à %1$s!
+warpdrive.builder.guide.deployment_area_occupied_by_online_player2=Contacte ce joueur ou utilises une autre zone de déploiement.
 
-warpdrive.builder.guide.too_many_players=Too many players detected: please stand in the beam one at a time.
-warpdrive.builder.guide.no_ship_token=Please come back once you've a Ship token.
-warpdrive.builder.guide.ship_token_detected=Ship token '%1$s' detected!
-warpdrive.builder.guide.ship_materialization_countdown=Stand by for ship materialization in %2$d...
-warpdrive.builder.guide.ship_deployed=Ship deployed. Teleporting captain to the main deck
-warpdrive.builder.guide.welcome_aboard=Welcome aboard captain. Use the computer to get moving...
+warpdrive.builder.guide.too_many_players=Trop de joueurs détectés: veuillez vous tenir un seul à la fois dans le faisceau.
+warpdrive.builder.guide.no_ship_token=Merci de revenir quand tu auras un Jeton de vaisseau.
+warpdrive.builder.guide.ship_token_detected=Jeton de vaisseau '%1$s' détecté!
+warpdrive.builder.guide.ship_materialization_countdown=Tenez-vous prêt pour matérialisation du vaisseau dans %2$d...
+warpdrive.builder.guide.ship_deployed=Vaisseau déployé. Téléportation du capitaine au pont principal...
+warpdrive.builder.guide.welcome_aboard=Bienvenu à bord capitaine! Utilises l'ordinateur pour commencer les maneuvres...
 
 warpdrive.cloaking_core.missing_channeling_and_projecting_coils=Integrité réduite à %1$d%%: bobine(s) de canalisation manquante(nt) en direction de %2$s, et bobine(s) de projection manquante(nt) en direction de %3$s
 warpdrive.cloaking_core.missing_channeling_coils=Integrité réduite à %1$d%%: bobine(s) de canalisation manquante(nt) en direction de %2$s
@@ -765,10 +767,10 @@ warpdrive.cloaking_core.disabled=Le champ d'invisibilité est désactivé
 warpdrive.cloaking_core.low_power=Le champ d'invisibilité est en panne. Il nous faut plus d'énergie, Capitaine!
 warpdrive.cloaking_core.cloaking=Un champ de niveau %1$d couvre actuellement %2$d blocs!
 
-warpdrive.compat.guide.block_detected_on_board=%1$s detected on board!
-warpdrive.compat.guide.quantum_field_interference=Quantum field interference detected!
-warpdrive.compat.guide.draconic_evolution_portal=Portal detected!
-warpdrive.compat.guide.stargate_is_active=Stargate is active (%1$s)!
+warpdrive.compat.guide.block_detected_on_board=%1$s détecté à bord!
+warpdrive.compat.guide.quantum_field_interference=Interférence de champ quantique détecté!
+warpdrive.compat.guide.draconic_evolution_portal=Portail détecté!
+warpdrive.compat.guide.stargate_is_active=Porte des étoiles active (%1$s)!
 
 warpdrive.energy.status_line.charge=Chargé à
 warpdrive.energy.status_line.input_rate=Entrée à

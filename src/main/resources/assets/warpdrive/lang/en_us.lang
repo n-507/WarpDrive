@@ -345,6 +345,7 @@ tile.warpdrive.force_field.relay.superior.name=Superior Force Field Relay
 tile.warpdrive.force_field.relay.superior.tooltip=Supports up to 1 force field upgrade shared within its network
 
 tile.warpdrive.movement.lift.name=Lift
+
 tile.warpdrive.movement.ship_controller.basic.name=Remote Shuttle Ship Controller
 tile.warpdrive.movement.ship_controller.advanced.name=Remote Corvette Ship Controller
 tile.warpdrive.movement.ship_controller.superior.name=Remote Frigate Ship Controller
@@ -352,6 +353,7 @@ tile.warpdrive.movement.ship_controller.exceptional.name=Remote Capital Ship Con
 tile.warpdrive.movement.ship_controller.legendary.name=Remote Planetary Ship Controller
 tile.warpdrive.movement.ship_controller.tooltip=Optional block to control a ship core remotely. Attach a computer to open the user interface.
 tile.warpdrive.movement.ship_controller.away_from_core=Remote controller is for remote usage, also they're optional now...
+
 tile.warpdrive.movement.ship_core.basic.name=Shuttle Ship Core
 tile.warpdrive.movement.ship_core.advanced.name=Corvette Ship Core
 tile.warpdrive.movement.ship_core.superior.name=Frigate Ship Core
@@ -360,8 +362,9 @@ tile.warpdrive.movement.ship_core.legendary.name=Planetary Ship Core
 tile.warpdrive.movement.ship_core.tooltip=Defines your ship center. Connecting an energy source will charge the core. Attach a computer to open the user interface.
 tile.warpdrive.movement.ship_core.bounding_box.disabled=Bounding box display have been disabled.
 tile.warpdrive.movement.ship_core.bounding_box.enabled=Bounding box display is now enabled. Only you can see it.\n§bSneak right-click the Ship core§r to disable it.
+
 tile.warpdrive.movement.transporter_beacon.name=Transporter Beacon
-tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§r to set its remote location\n§bSneak§r to retrieve its signature\n§bPlace as a block§r to trigger emergency transportation
+tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§r to set its remote location.\n§bSneak§r to retrieve its signature.\n§bPlace as a block§r to trigger emergency transportation.
 tile.warpdrive.movement.transporter_containment.name=Transporter Containment
 tile.warpdrive.movement.transporter_core.name=Transporter Core
 tile.warpdrive.movement.transporter_scanner.name=Transporter Scanner
@@ -641,14 +644,14 @@ warpdrive.command.found_title=Found:
 warpdrive.command.found_line=- %1$s
 warpdrive.command.no_matching_entity=No matching entity found within %1$d blocks
 warpdrive.command.x_matching_entities=%1$d matching entities within %2$d blocks:
-warpdrive.command.only_in_space=this structure is only allowed in space!
+warpdrive.command.only_in_space=This structure is only allowed in space!
 warpdrive.command.configuration_reloaded=WarpDrive configuration has been reloaded.
 warpdrive.command.liability_warning=Use at your own risk!
-warpdrive.command.player_required=Use as a player or provide a player name
+warpdrive.command.player_required=Use as a player or provide a player name!
 warpdrive.command.player_not_found=Player not found '%1$s'
 warpdrive.command.too_many_arguments=Too many arguments %1$d
 warpdrive.command.player_in_unknown_dimension=Player %1$s is in unknown dimension %2$d.
-warpdrive.command.player_can_t_go_virtual=player %1$s can't go to %2$s: this is a virtual celestial object.
+warpdrive.command.player_can_t_go_virtual=Player %1$s can't go to %2$s: this is a decorative/virtual celestial object!
 warpdrive.command.specify_explicit_dimension=Try specifying an explicit target dimension instead.
 warpdrive.command.undefined_dimension=Undefined dimension %1$d
 warpdrive.command.teleporting_to_x=Teleporting to %1$s
@@ -660,7 +663,7 @@ warpdrive.command.lost_bed_can_t_teleport_self=Teleportation failed:\nyour bed i
 warpdrive.command.lost_bed_can_t_teleport_other=Teleportation failed for player %1$s:\nbed is no longer there in %2$s
 
 
-warpdrive.beam_frequency.tooltip=Beam frequency is set to %1$d
+warpdrive.beam_frequency.tooltip=Beam frequency is set to %1$d.
 warpdrive.beam_frequency.get=Beam frequency %2$d has been retrieved from %1$s.
 warpdrive.beam_frequency.set=%1$s is now aligned with Beam frequency %2$d.
 warpdrive.beam_frequency.status_line.valid=Beam frequency %1$d is valid.
@@ -736,25 +739,25 @@ warpdrive.breathing.low_reserve=Low air reserve!
 warpdrive.breathing.no_air=No more air!
 
 warpdrive.builder.guide.deploying_out_of_range=Cannot deploy ship more than %1$d blocks away from scanner.
-warpdrive.builder.guide.deployment_area_occupied_by_blocks=Deployment area occupied with %1$d blocks. Can't deploy ship.
+warpdrive.builder.guide.deployment_area_occupied_by_blocks=Unable to deploy! Area is already occupied by %1$d blocks.
 warpdrive.builder.guide.deploying_ship=Deploying ship '%1$s'...
-warpdrive.builder.guide.deployment_area_occupied_by_block=Deployment area occupied by %1$s.\nCan't deploy new ship at (%2$d %3$d %4$d)
+warpdrive.builder.guide.deployment_area_occupied_by_block=Unable to deploy new ship at (%2$d %3$d %4$d)!\nArea is already occupied by %1$s.
 warpdrive.builder.guide.deployment_area_corrupted_tile_entity=Deployment area occupied with invalid tile entity %1$s for ship core.
-warpdrive.builder.guide.contact_an_admin=Contact an admin for help %1$s
+warpdrive.builder.guide.contact_an_admin=Contact an admin for help %1$s.
 warpdrive.builder.guide.deployment_area_with_active_crew=Deployment area occupied by active crew %s.
-warpdrive.builder.guide.wait_your_turn=Please wait or use another deployment spot
+warpdrive.builder.guide.wait_your_turn=Please wait or use another deployment spot.
 warpdrive.builder.guide.deployment_area_is_busy=Deployment area is busy.
 warpdrive.builder.guide.deployment_area_occupied_by_your_ship1=Deployment area occupied by your ship, captain %1$s!
-warpdrive.builder.guide.deployment_area_occupied_by_your_ship2=Come back inside and use the computer to jump away!
-warpdrive.builder.guide.deployment_area_occupied_by_online_player1=Deployment area occupied with ship owned by %1$s.
-warpdrive.builder.guide.deployment_area_occupied_by_online_player2=Contact that player or use another deployment spot
+warpdrive.builder.guide.deployment_area_occupied_by_your_ship2=Come back inside and use the computer to jump away.
+warpdrive.builder.guide.deployment_area_occupied_by_online_player1=Deployment area occupied with ship owned by %1$s!
+warpdrive.builder.guide.deployment_area_occupied_by_online_player2=Contact that player or use another deployment spot.
 
 warpdrive.builder.guide.too_many_players=Too many players detected: please stand in the beam one at a time.
 warpdrive.builder.guide.no_ship_token=Please come back once you've a Ship token.
 warpdrive.builder.guide.ship_token_detected=Ship token '%1$s' detected!
 warpdrive.builder.guide.ship_materialization_countdown=Stand by for ship materialization in %2$d...
-warpdrive.builder.guide.ship_deployed=Ship deployed. Teleporting captain to the main deck
-warpdrive.builder.guide.welcome_aboard=Welcome aboard captain. Use the computer to get moving...
+warpdrive.builder.guide.ship_deployed=Ship deployed. Teleporting captain to the main deck...
+warpdrive.builder.guide.welcome_aboard=Welcome aboard captain! Use the computer to get moving...
 
 warpdrive.cloaking_core.missing_channeling_and_projecting_coils=Integrity down to %1$d%%: missing channeling coil(s) towards %2$s and projecting coil(s) towards %3$s
 warpdrive.cloaking_core.missing_channeling_coils=Integrity down to %1$d%%: missing channeling coil(s) towards %2$s
