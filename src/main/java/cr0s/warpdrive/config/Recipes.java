@@ -1768,52 +1768,65 @@ public class Recipes {
 	
 	private static void initMovement() {
 		// Ship core
-		// basic    (fighter)  is               4 Redstone dust     , 2 Ender pearls , 1 Power interface, 1 basic Ship controller
-		// advanced (corvette) is 1 Ghast tear , 4 Capacitive crystal, 2 Ender crystal, 1 Power interface, 1 advanced Ship controller
-		// superior (capital)  is 1 Nether star, 4 Capacitive block  , 2 Ender block  , 1 Power interface, 1 superior Ship controller
+		// note:
+		// - we want to recycle the previous tier
+		// - Ship controller should be more expensive than the core, so it can't be used as ingredient
+		// basic    (shuttle ) is 1 Diamond crystal, 3 Redstone dust     , 1 Power interface, 1 Memory crystal, 1 MV Machine casing, 1 Computer interface
+		// advanced (corvette) is 1 Emerald crystal, 3 Capacitive crystal, 1 Power interface, 1 Memory crystal, 1 MV Machine casing, 1 basic Ship core
+		// superior (frigate ) is 1 Nether star    , 3 Capacitive cluster, 1 Superconductor , 1 Memory cluster, 1 HV Machine casing, 1 advanced Ship core
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockShipCores[EnumTier.BASIC.getIndex()]),"c c", "eme", "cpc",
+		                                       new ItemStack(WarpDrive.blockShipCores[EnumTier.BASIC.getIndex()]),"ce ", "pmc", "cCM",
+		                                       'e', ItemComponent.getItemStack(EnumComponentType.DIAMOND_CRYSTAL),
 		                                       'c', Items.REDSTONE,
-		                                       'e', Items.ENDER_PEARL,
 		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
-		                                       'm', new ItemStack(WarpDrive.blockShipControllers[EnumTier.BASIC.getIndex()])));
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockShipCores[EnumTier.ADVANCED.getIndex()]),"csc", "eme", "cpc",
-		                                       's', Items.GHAST_TEAR,
-		                                       'c', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL),
-		                                       'e', ItemComponent.getItemStack(EnumComponentType.ENDER_COIL),
-		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
-		                                       'm', new ItemStack(WarpDrive.blockShipControllers[EnumTier.ADVANCED.getIndex()])));
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockShipCores[EnumTier.SUPERIOR.getIndex()]),"csc", "eme", "cpc",
-		                                       's', Items.NETHER_STAR,
-		                                       'c', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL),
-		                                       'e', ItemComponent.getItemStack(EnumComponentType.ENDER_COIL),
-		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
-		                                       'm', new ItemStack(WarpDrive.blockShipControllers[EnumTier.SUPERIOR.getIndex()])));
-		
-		// Ship controller
-		// basic    is 1 Computer interface, 1 Tuning emerald, 1 LV Machine casing, 2 Memory crystal
-		// advanced is 1 Computer interface, 1 Tuning emerald, 1 MV Machine casing, 4 Memory crystal
-		// superior is 1 Computer interface, 1 Tuning emerald, 1 HV Machine casing, 6 Memory crystal
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockShipControllers[EnumTier.BASIC.getIndex()]), false, " e ", "bmb", " c ",
-		                                       'c', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE),
-		                                       'e', ItemComponent.getItemStack(EnumComponentType.EMERALD_CRYSTAL),
+		                                       'M', ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL),
 		                                       'm', itemStackMachineCasings[0],
-		                                       'b', ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL)));
+		                                       'C', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE) ));
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockShipControllers[EnumTier.ADVANCED.getIndex()]), false, "beb", " m ", "bcb",
-		                                       'c', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE),
+		                                       new ItemStack(WarpDrive.blockShipCores[EnumTier.ADVANCED.getIndex()]),"ce ", "pmc", "cCM",
 		                                       'e', ItemComponent.getItemStack(EnumComponentType.EMERALD_CRYSTAL),
+		                                       'c', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL),
+		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
+		                                       'M', ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL),
 		                                       'm', itemStackMachineCasings[1],
-		                                       'b', ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL)));
+		                                       'C', new ItemStack(WarpDrive.blockShipCores[EnumTier.BASIC.getIndex()]) ));
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockShipControllers[EnumTier.SUPERIOR.getIndex()]), false, "beb", "bmb", "bcb",
-		                                       'c', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE),
-		                                       'e', ItemComponent.getItemStack(EnumComponentType.EMERALD_CRYSTAL),
+		                                       new ItemStack(WarpDrive.blockShipCores[EnumTier.SUPERIOR.getIndex()]),"ce ", "pmc", "cCM",
+		                                       'e', Items.NETHER_STAR,
+		                                       'c', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CLUSTER),
+		                                       'p', ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR),
+		                                       'M', ItemComponent.getItemStack(EnumComponentType.MEMORY_CLUSTER),
 		                                       'm', itemStackMachineCasings[2],
-		                                       'b', ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL)));
+		                                       'C', new ItemStack(WarpDrive.blockShipCores[EnumTier.ADVANCED.getIndex()]) ));
+		
+		// Remote ship controller
+		// basic    is 1 Ender pearl, 3 Ender coil, 1 Diamond crystal, 1 LV Machine casing, 1 Memory crystal, 1 Ender coil, 1 Computer interface
+		// advanced is 1 Ender pearl, 3 Ender coil, 1 Emerald crystal, 1 MV Machine casing, 1 Memory cluster, 2 Ender coil, 1 basic Ship controller
+		// superior is 1 Ender pearl, 3 Ender coil, 1 Nether star    , 1 HV Machine casing, 1 Memory cluster, 4 Ender coil, 1 advanced Ship controller
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       new ItemStack(WarpDrive.blockShipControllers[EnumTier.BASIC.getIndex()]), false, "ce ", "pmc", "cCM",
+		                                       'e', ItemComponent.getItemStack(EnumComponentType.DIAMOND_CRYSTAL),
+		                                       'c', ItemComponent.getItemStack(EnumComponentType.ENDER_COIL),
+		                                       'p', Items.ENDER_PEARL,
+		                                       'M', ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL),
+		                                       'm', itemStackMachineCasings[0],
+		                                       'C', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE) ));
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       new ItemStack(WarpDrive.blockShipControllers[EnumTier.ADVANCED.getIndex()]), false, "ce ", "pmc", "cCM",
+		                                       'e', ItemComponent.getItemStack(EnumComponentType.EMERALD_CRYSTAL),
+		                                       'c', ItemComponent.getItemStack(EnumComponentType.ENDER_COIL),
+		                                       'p', Items.ENDER_PEARL,
+		                                       'M', ItemComponent.getItemStack(EnumComponentType.MEMORY_CLUSTER),
+		                                       'm', itemStackMachineCasings[1],
+		                                       'C', new ItemStack(WarpDrive.blockShipControllers[EnumTier.BASIC.getIndex()]) ));
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       new ItemStack(WarpDrive.blockShipControllers[EnumTier.SUPERIOR.getIndex()]), false, "ce ", "pmc", "cCM",
+		                                       'e', Items.NETHER_STAR,
+		                                       'c', ItemComponent.getItemStack(EnumComponentType.ENDER_COIL),
+		                                       'p', Items.ENDER_PEARL,
+		                                       'M', ItemComponent.getItemStack(EnumComponentType.MEMORY_CLUSTER),
+		                                       'm', itemStackMachineCasings[2],
+		                                       'C', new ItemStack(WarpDrive.blockShipControllers[EnumTier.ADVANCED.getIndex()]) ));
 		
 		// Laser lift is ...
 		final Object enderPearlOrMagnetizer = WarpDriveConfig.getOreOrItemStack(
