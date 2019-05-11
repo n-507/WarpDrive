@@ -1,0 +1,22 @@
+local component = require("component")
+local term = require("term")
+
+if not term.isAvailable() then
+  computer.beep()
+  os.exit()
+end
+
+if not component.isAvailable("warpdriveCloakingCore") then
+  print("No cloaking core detected")
+else
+  local cloakingCore = component.warpdriveCloakingCore
+  if cloakingCore.isInterfaced() ~= true then
+    print("No cloaking core detected")
+  else
+    cloakingCore.enable(false)
+    os.sleep(1)
+    print("Cloaking core is disabled")
+  end
+end
+
+print()

@@ -52,7 +52,7 @@ end
 if #treefarms == 0 then
   term.setBackgroundColor(colors.red)
   term.setTextColor(colors.white)
-  term.write("No laser tree farm detected")
+  print("No laser tree farm detected")
   
   noExit = false
 end

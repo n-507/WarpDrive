@@ -6,28 +6,25 @@ end
 local sides = peripheral.getNames()
 local cloakingCore
 for _, side in pairs(sides) do
-  if peripheral.getType(side) == "warpdriveCloakingCore" then
-    print("Wrapping " .. side)
+  os.sleep(0)
+  local deviceType = peripheral.getType(side)
+  if deviceType == "warpdriveCloakingCore" then
     cloakingCore = peripheral.wrap(side)
-    break
   end
 end
 
-
-if cloakingCore == nil or cloakingCore.isInterfaced() == nil then
+if cloakingCore == nil or cloakingCore.isInterfaced() ~= true then
   term.setBackgroundColor(colors.red)
   term.setTextColor(colors.white)
-  term.write("No cloaking core detected")
+  print("No Cloaking core detected")
 else
   cloakingCore.enable(false)
-  term.setBackgroundColor(colors.lightGray)
-  term.setTextColor(colors.black)
-  term.write("Cloaking is disabled")
+  os.sleep(1)
+  term.setBackgroundColor(colors.lime)
+  term.setTextColor(colors.blue)
+  print("Cloaking core is disabled")
 end
 
 term.setBackgroundColor(colors.black)
 term.setTextColor(colors.white)
-
 print()
-print()
--- print("Program closed")

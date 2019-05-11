@@ -5,7 +5,7 @@ end
 
 local sides = peripheral.getNames()
 local projector
-for key, side in pairs(sides) do
+for _, side in pairs(sides) do
   os.sleep(0)
   local deviceType = peripheral.getType(side)
   if deviceType == "warpdriveForceFieldProjector" then
@@ -13,10 +13,10 @@ for key, side in pairs(sides) do
   end
 end
 
-if projector == nil then
+if projector == nil or projector.isInterfaced() ~= true then
   term.setBackgroundColor(colors.red)
   term.setTextColor(colors.white)
-  term.write("No force field projector detected")
+  print("No force field projector detected")
 else
   projector.enable(true)
   os.sleep(1)
@@ -25,18 +25,19 @@ else
     if isPowered then
       term.setBackgroundColor(colors.lime)
       term.setTextColor(colors.blue)
-      term.write("Projector is enabled")
+      print("Projector is enabled")
     else
       term.setBackgroundColor(colors.red)
       term.setTextColor(colors.white)
-      term.write("Projector is missing a shape!")
+      print("Projector is missing a shape!")
     end
   else
     term.setBackgroundColor(colors.red)
     term.setTextColor(colors.white)
-    term.write("Projector is missing a beam frequency!")
+    print("Projector is missing a beam frequency!")
   end
 end
+
 term.setBackgroundColor(colors.black)
 term.setTextColor(colors.white)
 print()

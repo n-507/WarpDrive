@@ -18,7 +18,7 @@ local function showError(message)
   component.gpu.set(xt, yt, message)
   component.gpu.setBackground(0x000000)
   component.gpu.setForeground(0xFFFFFF)
-  print("")
+  print()
 end
 
 local function showErrorAndExit(message)

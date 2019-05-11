@@ -66,7 +66,7 @@ public class BlockAirGeneratorTiered extends BlockAbstractRotatingContainer {
 							((EntityPlayerMP) entityPlayer).sendContainerToPlayer(entityPlayer.inventoryContainer);
 							airGenerator.energy_consume(WarpDriveConfig.BREATHING_ENERGY_PER_CANISTER, false);
 						}
-						return false;
+						return true;
 					}
 				}
 			}

@@ -120,8 +120,9 @@ if noExit then
   until not areActive
 end
 
-textOut(1, 9, "", 0xFFFFFF, 0x000000)
+textOut(1, 1, "", 0xFFFFFF, 0x000000)
 
+print()
 print()
 print()
 print()

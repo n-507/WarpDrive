@@ -35,7 +35,7 @@ public class BlockSecurityStation extends BlockAbstractContainer {
 	                                final EntityPlayer entityPlayer, final EnumHand enumHand,
 	                                final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
 		if (world.isRemote) {
-			return false;
+			return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 		}
 		
 		if (enumHand != EnumHand.MAIN_HAND) {
@@ -46,7 +46,7 @@ public class BlockSecurityStation extends BlockAbstractContainer {
 		final ItemStack itemStackHeld = entityPlayer.getHeldItem(enumHand);
 		final TileEntity tileEntity = world.getTileEntity(blockPos);
 		if (!(tileEntity instanceof TileEntitySecurityStation)) {
-			return false;
+			return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 		}
 		final TileEntitySecurityStation tileEntitySecurityStation = (TileEntitySecurityStation) tileEntity;
 		
@@ -59,6 +59,6 @@ public class BlockSecurityStation extends BlockAbstractContainer {
 			return true;
 		}
 		
-		return false;
+		return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 	}
 }

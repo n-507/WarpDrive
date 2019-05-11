@@ -21,12 +21,12 @@ term.setBackgroundColor(colors.black)
 term.clear()
 term.setBackgroundColor(colors.lime)
 term.setCursorPos(1, 1)
-term.write(label)
+print(label)
 
 if #mininglasers == 0 then
   term.setBackgroundColor(colors.red)
   term.setTextColor(colors.white)
-  term.write("No mining laser detected")
+  print("No mining laser detected")
 else
   for key, mininglaser in pairs(mininglasers) do
     term.setCursorPos(1, 2 + key)
@@ -40,7 +40,7 @@ else
       term.setBackgroundColor(colors.lime)
       term.setTextColor(colors.blue)
       term.write("Mining laser " .. key .. " of " .. #mininglasers .. " has been stopped")
-	end
+    end
   end
 end
 

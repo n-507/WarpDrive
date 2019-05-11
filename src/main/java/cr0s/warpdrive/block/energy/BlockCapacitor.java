@@ -191,7 +191,7 @@ public class BlockCapacitor extends BlockAbstractContainer implements IExplosion
 		final ItemStack itemStackHeld = entityPlayer.getHeldItem(enumHand);
 		final TileEntity tileEntity = world.getTileEntity(blockPos);
 		if (!(tileEntity instanceof TileEntityCapacitor)) {
-			return false;
+			return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 		}
 		final TileEntityCapacitor tileEntityCapacitor = (TileEntityCapacitor) tileEntity;
 		

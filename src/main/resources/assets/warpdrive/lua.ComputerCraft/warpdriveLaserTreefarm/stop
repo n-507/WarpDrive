@@ -21,12 +21,12 @@ term.setBackgroundColor(colors.black)
 term.clear()
 term.setBackgroundColor(colors.lime)
 term.setCursorPos(1, 1)
-term.write(label)
+print(label)
 
 if #treefarms == 0 then
   term.setBackgroundColor(colors.red)
   term.setTextColor(colors.white)
-  term.write("No laser tree farm detected")
+  print("No laser tree farm detected")
 else
   for key, treefarm in pairs(treefarms) do
     term.setCursorPos(1, 2 + key)

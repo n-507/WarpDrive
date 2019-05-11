@@ -4,14 +4,9 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBlockBase;
 import cr0s.warpdrive.api.IBlockUpdateDetector;
-import cr0s.warpdrive.api.IVideoChannel;
-import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.WarpDriveConfig;
-import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumTier;
-import cr0s.warpdrive.item.ItemComponent;
 import cr0s.warpdrive.data.BlockProperties;
-import cr0s.warpdrive.render.ClientCameraHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -32,7 +27,6 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -163,9 +157,9 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	// willHarvest was true during the call to removedPlayer so TileEntity is still there when drops will be computed hereafter
 	@Override
 	public void getDrops(@Nonnull final NonNullList<ItemStack> drops,
-	                     final IBlockAccess blockAccess, final BlockPos blockPos, @Nonnull final IBlockState blockState,
+	                     @Nullable final IBlockAccess blockAccess, final BlockPos blockPos, @Nonnull final IBlockState blockState,
 	                     final int fortune) {
-		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
+		final TileEntity tileEntity = blockAccess == null ? null : blockAccess.getTileEntity(blockPos);
 		if (!(tileEntity instanceof TileEntityAbstractBase)) {
 			WarpDrive.logger.error(String.format("Missing tile entity for %s %s, reverting to vanilla getDrops logic",
 			                                     this, Commons.format(blockAccess, blockPos)));
@@ -287,110 +281,10 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	public boolean onBlockActivated(final World world, final BlockPos blockPos, final IBlockState blockState,
 	                                final EntityPlayer entityPlayer, final EnumHand enumHand,
 	                                final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
-		if (enumHand != EnumHand.MAIN_HAND) {
-			return true;
-		}
-		if ( world.isRemote
-		  && ClientCameraHandler.isOverlayEnabled ) {
+		if (BlockAbstractBase.onCommonBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ)) {
 			return true;
 		}
 		
-		// get context
-		final ItemStack itemStackHeld = entityPlayer.getHeldItem(enumHand);
-		final TileEntity tileEntity = world.getTileEntity(blockPos);
-		if (!(tileEntity instanceof TileEntityAbstractBase)) {
-			return false;
-		}
-		final TileEntityAbstractBase tileEntityAbstractBase = (TileEntityAbstractBase) tileEntity;
-		final boolean hasVideoChannel = tileEntity instanceof IVideoChannel;
-		
-		// video channel is reported client side, everything else is reported server side
-		if ( world.isRemote
-		  && !hasVideoChannel ) {
-			return false;
-		}
-		
-		EnumComponentType enumComponentType = null;
-		if ( !itemStackHeld.isEmpty()
-		  && itemStackHeld.getItem() instanceof ItemComponent ) {
-			enumComponentType = EnumComponentType.get(itemStackHeld.getItemDamage());
-		}
-		
-		// sneaking with an empty hand or an upgrade item in hand to dismount current upgrade
-		if ( !world.isRemote
-		  && entityPlayer.isSneaking() ) {
-			// using an upgrade item or an empty hand means dismount upgrade
-			if ( tileEntityAbstractBase.isUpgradeable()
-			  && ( itemStackHeld.isEmpty()
-			    || enumComponentType != null ) ) {
-				// find a valid upgrade to dismount
-				if ( itemStackHeld.isEmpty()
-				  || !tileEntityAbstractBase.hasUpgrade(enumComponentType) ) {
-					enumComponentType = (EnumComponentType) tileEntityAbstractBase.getFirstUpgradeOfType(EnumComponentType.class, null);
-				}
-				
-				if (enumComponentType == null) {
-					// no more upgrades to dismount
-					Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.no_upgrade_to_dismount"));
-					return true;
-				}
-				
-				if (!entityPlayer.capabilities.isCreativeMode) {
-					// dismount the current upgrade item
-					final ItemStack itemStackDrop = ItemComponent.getItemStackNoCache(enumComponentType, 1);
-					final EntityItem entityItem = new EntityItem(world, entityPlayer.posX, entityPlayer.posY + 0.5D, entityPlayer.posZ, itemStackDrop);
-					entityItem.setNoPickupDelay();
-					world.spawnEntity(entityItem);
-				}
-				
-				tileEntityAbstractBase.dismountUpgrade(enumComponentType);
-				// upgrade dismounted
-				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleCorrect, "warpdrive.upgrade.result.dismounted",
-				                                                       enumComponentType.name()));
-				return true;
-			}
-			
-		} else if ( !entityPlayer.isSneaking()
-		         && itemStackHeld.isEmpty() ) {// no sneaking and no item in hand => show status
-			Commons.addChatMessage(entityPlayer, tileEntityAbstractBase.getStatus());
-			return true;
-			
-		} else if ( !world.isRemote
-		         && tileEntityAbstractBase.isUpgradeable()
-		         && enumComponentType != null ) {// no sneaking and an upgrade in hand => mounting an upgrade
-			// validate type
-			if (tileEntityAbstractBase.getUpgradeMaxCount(enumComponentType) <= 0) {
-				// invalid upgrade type
-				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning,"warpdrive.upgrade.result.invalid_upgrade"));
-				return true;
-			}
-			if (!tileEntityAbstractBase.canUpgrade(enumComponentType)) {
-				// too many upgrades
-				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning,"warpdrive.upgrade.result.too_many_upgrades",
-				                                                       tileEntityAbstractBase.getUpgradeMaxCount(enumComponentType)));
-				return true;
-			}
-			
-			if (!entityPlayer.capabilities.isCreativeMode) {
-				// validate quantity
-				if (itemStackHeld.getCount() < 1) {
-					// not enough upgrade items
-					Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.not_enough_upgrades"));
-					return true;
-				}
-				
-				// update player inventory
-				itemStackHeld.shrink(1);
-			}
-			
-			// mount the new upgrade item
-			tileEntityAbstractBase.mountUpgrade(enumComponentType);
-			// upgrade mounted
-			Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleCorrect, "warpdrive.upgrade.result.mounted",
-			                                                       enumComponentType.name()));
-			return true;
-		}
-		
-		return false;
+		return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 	}
 }

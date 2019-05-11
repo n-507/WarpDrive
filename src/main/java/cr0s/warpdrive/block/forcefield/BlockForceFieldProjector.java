@@ -199,7 +199,7 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 	                                final EntityPlayer entityPlayer, final EnumHand enumHand,
 	                                final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
 		if (world.isRemote) {
-			return false;
+			return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 		}
 		
 		if (enumHand != EnumHand.MAIN_HAND) {
@@ -210,7 +210,7 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 		final ItemStack itemStackHeld = entityPlayer.getHeldItem(enumHand);
 		final TileEntity tileEntity = world.getTileEntity(blockPos);
 		if (!(tileEntity instanceof TileEntityForceFieldProjector)) {
-			return false;
+			return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 		}
 		final TileEntityForceFieldProjector tileEntityForceFieldProjector = (TileEntityForceFieldProjector) tileEntity;
 		
@@ -233,9 +233,8 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 				}
 				
 				if (enumForceFieldUpgrade == EnumForceFieldUpgrade.NONE) {
-					// no more upgrades to dismount
-					Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.no_upgrade_to_dismount"));
-					return true;
+					// no more force field upgrades to dismount, let's try common ones
+					return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 				}
 				
 				if (!entityPlayer.capabilities.isCreativeMode) {
@@ -249,7 +248,7 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 				tileEntityForceFieldProjector.dismountUpgrade(enumForceFieldUpgrade);
 				// upgrade dismounted
 				Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.dismounted", enumForceFieldUpgrade.name()));
-				return false;
+				return true;
 				
 			} else {// default to dismount shape
 				if (tileEntityForceFieldProjector.getShape() != EnumForceFieldShape.NONE) {
@@ -265,17 +264,17 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 						tileEntityForceFieldProjector.setShape(EnumForceFieldShape.NONE);
 						// shape dismounted
 						Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.shape_dismounted"));
+						
 					} else {
 						// wrong side
 						Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.wrong_shape_side"));
-						return true;
 					}
 					
 				} else {
 					// no shape to dismount
 					Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.no_shape_to_dismount"));
-					return true;
 				}
+				return true;
 			}
 			
 		} else if (itemStackHeld.isEmpty()) {// no sneaking and no item in hand => show status
@@ -314,8 +313,8 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 			} else {
 				// wrong side
 				Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.wrong_shape_side"));
-				return true;
 			}
+			return true;
 			
 		} else if (itemStackHeld.getItem() instanceof ItemForceFieldUpgrade) {// no sneaking and an upgrade in hand => mounting an upgrade
 			// validate type
@@ -347,8 +346,9 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 			tileEntityForceFieldProjector.mountUpgrade(enumForceFieldUpgrade);
 			// upgrade mounted
 			Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.mounted", enumForceFieldUpgrade));
+			return true;
 		}
 		
-		return false;
+		return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 	}
 }

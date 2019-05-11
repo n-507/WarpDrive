@@ -50,7 +50,7 @@ end
 if #mininglasers == 0 then
   term.setBackgroundColor(colors.red)
   term.setTextColor(colors.white)
-  term.write("No mining laser detected")
+  print("No mining laser detected")
 
   noExit = false
 end

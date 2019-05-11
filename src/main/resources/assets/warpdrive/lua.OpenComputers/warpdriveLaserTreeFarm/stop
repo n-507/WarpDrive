@@ -41,24 +41,24 @@ end
 
 
 textOut(1, 1, label, 0x00FF00, 0x000000)
-print("")
+print()
 
 if #treefarms == 0 then
   computer.beep()
   textOut(1, 2, "No laser tree farm detected", 0xFF0000, 0x000000)
 else
   for key,treefarm in pairs(treefarms) do
-	local isEnabled = treefarm.enable()
+    local isEnabled = treefarm.enable()
     if not isEnabled then
       textOut(1, 2 + key, "Mining laser " .. key .. " of " .. #treefarms .. " is already stopped", 0xFFFFFF, 0xFF0000)
     else
       treefarm.enable(false)
       textOut(1, 2 + key, "Mining laser " .. key .. " of " .. #treefarms .. " has been stopped", 0x0000FF, 0x00FF00)
-	end
-	print("")
+    end
+    print()
   end
 end
+
 textOut(1, 1, "", 0xFFFFFF, 0x000000)
 
-print("")
-print("")
+print()

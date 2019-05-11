@@ -15,7 +15,7 @@ repeat
   eventName = params[1]
   side = params[2]
   if side == nil then side = "none" end
-  print("")
+  print()
   term.setTextColor(colors.red)
   term.write("Event")
   local index = 1
@@ -37,4 +37,4 @@ repeat
     abort = true
   end
 until abort
-print("")
+print()

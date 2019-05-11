@@ -181,7 +181,7 @@ public class BlockAbstractLamp extends BlockAbstractBase {
 		
 		// (visual feedback only: no status reported while sneaking)
 		
-		return false;
+		return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 	}
 	
 	@Override

@@ -41,7 +41,7 @@ public class BlockMonitor extends BlockAbstractRotatingContainer {
 	                                final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
 		// Monitor is only reacting client side
 		if (!world.isRemote) {
-			return false;
+			return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 		}
 		
 		if (enumHand != EnumHand.MAIN_HAND) {
@@ -83,6 +83,6 @@ public class BlockMonitor extends BlockAbstractRotatingContainer {
 			}
 		}
 		
-		return false;
+		return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 	}
 }

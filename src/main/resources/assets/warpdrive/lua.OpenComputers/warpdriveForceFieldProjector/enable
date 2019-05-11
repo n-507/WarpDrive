@@ -10,18 +10,22 @@ if not component.isAvailable("warpdriveForceFieldProjector") then
   print("No force field projector detected")
 else
   local projector = component.warpdriveForceFieldProjector
-  projector.enable(true)
-  os.sleep(1)
-  local status, isEnabled, isConnected, isPowered, shape, energy = projector.state()
-  if isConnected then
-    if isPowered then
-      print("Projector is enabled")
-    else
-      print("Projector is missing a shape!")
-    end
+  if projector.isInterfaced() ~= true then
+    print("No force field projector detected")
   else
-    print("Projector is missing a beam frequency!")
+    projector.enable(true)
+    os.sleep(1)
+    local status, isEnabled, isConnected, isPowered, shape, energy = projector.state()
+    if isConnected then
+      if isPowered then
+        print("Projector is enabled")
+      else
+        print("Projector is missing a shape!")
+      end
+    else
+      print("Projector is missing a beam frequency!")
+    end
   end
 end
 
-print("")
+print()

@@ -10,6 +10,7 @@ import cr0s.warpdrive.data.SoundEvents;
 import cr0s.warpdrive.item.ItemComponent;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -53,9 +54,9 @@ public class BlockShipCore extends BlockAbstractRotatingContainer {
 	}
 	
 	@Override
-	public void getDrops(@Nonnull final NonNullList<ItemStack> itemStacks, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos,
+	public void getDrops(@Nonnull final NonNullList<ItemStack> itemStacks, @Nullable final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos,
 	                     @Nonnull final IBlockState blockState, final int fortune) {
-		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
+		final TileEntity tileEntity = blockAccess == null ? null : blockAccess.getTileEntity(blockPos);
 		if (tileEntity instanceof TileEntityShipCore) {
 			if (((TileEntityShipCore) tileEntity).jumpCount == 0) {
 				super.getDrops(itemStacks, blockAccess, blockPos, blockState, fortune);
@@ -103,14 +104,14 @@ public class BlockShipCore extends BlockAbstractRotatingContainer {
 	                                final EntityPlayer entityPlayer, final EnumHand enumHand,
 	                                final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
 		if (enumHand != EnumHand.MAIN_HAND) {
-			return true;
+			return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 		}
 		
 		// get context
 		final ItemStack itemStackHeld = entityPlayer.getHeldItem(enumHand);
 		final TileEntity tileEntity = world.getTileEntity(blockPos);
 		if (!(tileEntity instanceof TileEntityShipCore)) {
-			return false;
+			return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 		}
 		final TileEntityShipCore tileEntityShipCore = (TileEntityShipCore) tileEntity;
 		
@@ -133,6 +134,6 @@ public class BlockShipCore extends BlockAbstractRotatingContainer {
 			}
 		}
 		
-		return false;
+		return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 	}
 }
