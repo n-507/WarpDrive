@@ -601,8 +601,9 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	
 	@Override
 	@Optional.Method(modid = "computercraft")
-	public boolean equals(final IPeripheral other) {
-		return other.hashCode() == hashCode();
+	public boolean equals(@Nullable final IPeripheral other) {
+		return other != null
+		    && other.hashCode() == hashCode();
 	}
 	
 	// Computer abstraction methods
