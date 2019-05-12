@@ -25,9 +25,7 @@ import ic2.api.energy.tile.IEnergySource;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.WeakHashMap;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -77,13 +75,13 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 	private long energyStored_internal = 0;
 	
 	// computed properties
-	private final HashMap<EnumFacing, IEnergyStorage>     FE_energyStorages = new HashMap<>(EnumFacing.VALUES.length + 1);
-	private final HashMap<EnumFacing, Object>             GT_energyContainers = new HashMap<>(EnumFacing.VALUES.length + 1);
+	private final IEnergyStorage[]  FE_energyStorages = new IEnergyStorage[EnumFacing.VALUES.length + 1];
+	private final Object[]          GT_energyContainers = new Object[EnumFacing.VALUES.length + 1];
 	private boolean addedToEnergyNet = false;
 	private int scanTickCount = WarpDriveConfig.ENERGY_SCAN_INTERVAL_TICKS;
 	
-	private final WeakHashMap<EnumFacing, IEnergyStorage> FE_energyReceivers = new WeakHashMap<>(EnumFacing.VALUES.length);
-	private final WeakHashMap<EnumFacing, TileEntity>     RF_energyReceivers = new WeakHashMap<>(EnumFacing.VALUES.length);
+	private final IEnergyStorage[]  FE_energyReceivers = new IEnergyStorage[EnumFacing.VALUES.length + 1];
+	private final TileEntity[]      RF_energyReceivers = new TileEntity[EnumFacing.VALUES.length + 1];
 	private boolean isOvervoltageLogged = false;
 	
 	public TileEntityAbstractEnergy() {
@@ -141,7 +139,7 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 		if (energy_getMaxStorage() != 0) {
 			if ( WarpDriveConfig.ENERGY_ENABLE_FE
 			  && capability == CapabilityEnergy.ENERGY ) {
-				IEnergyStorage energyStorage = FE_energyStorages.get(facing);
+				IEnergyStorage energyStorage = FE_energyStorages[Commons.getOrdinal(facing)];
 				if (energyStorage == null) {
 					energyStorage = new IEnergyStorage() {
 						
@@ -179,7 +177,7 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 						WarpDrive.logger.info(String.format("%s IEnergyStorage(%s) capability created!",
 						                                    this, facing));
 					}
-					FE_energyStorages.put(facing, energyStorage);
+					FE_energyStorages[Commons.getOrdinal(facing)] = energyStorage;
 				}
 				return CapabilityEnergy.ENERGY.cast(energyStorage);
 			}
@@ -197,7 +195,7 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 	private <T> T GT_getEnergyContainer(@Nonnull final Capability<T> capability, @Nullable final EnumFacing facing) {
 		assert capability == GregtechCapabilities.CAPABILITY_ENERGY_CONTAINER;
 		
-		IEnergyContainer energyContainer = (IEnergyContainer) GT_energyContainers.get(facing);
+		IEnergyContainer energyContainer = (IEnergyContainer) GT_energyContainers[Commons.getOrdinal(facing)];
 		if (energyContainer == null) {
 			energyContainer = new IEnergyContainer() {
 				
@@ -301,7 +299,7 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 				WarpDrive.logger.info(String.format("%s IEnergyContainer capability created!",
 				                                    this));
 			}
-			GT_energyContainers.put(facing, energyContainer);
+			GT_energyContainers[Commons.getOrdinal(facing)] = energyContainer;
 		}
 		return GregtechCapabilities.CAPABILITY_ENERGY_CONTAINER.cast(energyContainer);
 	}
@@ -767,7 +765,7 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 	@Optional.Method(modid = "redstoneflux")
 	private void RF_outputEnergy() {
 		for (final EnumFacing to : EnumFacing.VALUES) {
-			final TileEntity tileEntity = RF_energyReceivers.get(to);
+			final TileEntity tileEntity = RF_energyReceivers[Commons.getOrdinal(to)];
 			if ( tileEntity instanceof IEnergyReceiver
 			  && !tileEntity.isInvalid() ) {
 				RF_outputEnergy(to, (IEnergyReceiver) tileEntity);
@@ -776,7 +774,7 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 	}
 	private void FE_outputEnergy() {
 		for (final EnumFacing to : EnumFacing.VALUES) {
-			final IEnergyStorage energyStorage = FE_energyReceivers.get(to);
+			final IEnergyStorage energyStorage = FE_energyReceivers[Commons.getOrdinal(to)];
 			if (energyStorage != null) {
 				FE_outputEnergy(to, energyStorage);
 			}
@@ -785,34 +783,34 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 	
 	
 	@Optional.Method(modid = "redstoneflux")
-	private boolean RF_addEnergyReceiver(final EnumFacing to, final TileEntity tileEntity) {
+	private boolean RF_addEnergyReceiver(@Nonnull final EnumFacing to, final TileEntity tileEntity) {
 		if ( tileEntity instanceof IEnergyReceiver
 		  && !tileEntity.isInvalid() ) {
 			final IEnergyReceiver energyReceiver = (IEnergyReceiver) tileEntity;
 			if (energyReceiver.canConnectEnergy(to.getOpposite())) {
-				if (RF_energyReceivers.get(to) != tileEntity) {
-					RF_energyReceivers.put(to, tileEntity);
+				if (RF_energyReceivers[Commons.getOrdinal(to)] != tileEntity) {
+					RF_energyReceivers[Commons.getOrdinal(to)] = tileEntity;
 				}
 				return true;
 			}
 		}
-		RF_energyReceivers.put(to, null);
+		RF_energyReceivers[Commons.getOrdinal(to)] = null;
 		return false;
 	}
 	
-	private boolean FE_addEnergyReceiver(final EnumFacing to, final TileEntity tileEntity) {
+	private boolean FE_addEnergyReceiver(@Nonnull final EnumFacing to, final TileEntity tileEntity) {
 		if (tileEntity != null) {
 			final IEnergyStorage energyStorage = tileEntity.getCapability(CapabilityEnergy.ENERGY, to.getOpposite());
 			if (energyStorage != null) {
 				if (energyStorage.canReceive()) {
-					if (FE_energyReceivers.get(to) != energyStorage) {
-						FE_energyReceivers.put(to, energyStorage);
+					if (FE_energyReceivers[Commons.getOrdinal(to)] != energyStorage) {
+						FE_energyReceivers[Commons.getOrdinal(to)] = energyStorage;
 					}
 					return true;
 				}
 			}
 		}
-		FE_energyReceivers.put(to, null);
+		FE_energyReceivers[Commons.getOrdinal(to)] = null;
 		return false;
 	}
 	

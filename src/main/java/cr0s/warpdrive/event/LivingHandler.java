@@ -178,13 +178,14 @@ public class LivingHandler {
 		
 		
 		// *** world transition handling
-		// skip blacklisted entities
-		if ( Dictionary.isLeftBehind(entityLivingBase)
-		  || Dictionary.isAnchor(entityLivingBase) ) {
-			return;
-		}
 		// If entity is falling down, teleport to child celestial object or wrap around, as needed
 		if (entityLivingBase.posY < -10.0D) {
+			// skip blacklisted entities (lookup of entities id is slow, use with care)
+			if ( Dictionary.isLeftBehind(entityLivingBase)
+			  || Dictionary.isAnchor(entityLivingBase) ) {
+				return;
+			}
+			
 			final CelestialObject celestialObjectChild = CelestialObjectManager.getClosestChild(entityLivingBase.world, x, z);
 			// are we actually in orbit?
 			if ( celestialObjectChild != null
