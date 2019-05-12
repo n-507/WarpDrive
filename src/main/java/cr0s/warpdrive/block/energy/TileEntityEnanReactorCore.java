@@ -4,6 +4,7 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnergyWrapper;
+import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.ReactorFace;
 import cr0s.warpdrive.data.EnumReactorOutputMode;
 import cr0s.warpdrive.data.Vector3;
@@ -18,6 +19,8 @@ import java.util.Arrays;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
@@ -49,6 +52,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	private final double[] instabilityValues = new double[ReactorFace.maxInstabilities]; // no instability  = 0, explosion = 100
 	
 	// computed properties
+	private Vector3 vCenter = null;
 	private boolean isFirstException = true;
 	private int energyStored_max;
 	private int generation_offset;
@@ -86,6 +90,19 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		energy_setParameters(EnergyWrapper.convertRFtoInternal_floor(energyStored_max),
 		                     262144, 262144,
 		                     "HV", 0, "LuV", 2);
+		
+		vCenter = new Vector3(this).translate(0.5D);
+		switch (enumTier) {
+		case BASIC:
+		default:
+			break;
+		case ADVANCED:
+			vCenter.y += 3;
+			break;
+		case SUPERIOR:
+			vCenter.y += 4;
+			break;
+		}
 	}
 	
 	@Override
@@ -254,18 +271,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	}
 	
 	Vector3 getCenter() {
-		final Vector3 vCenter = new Vector3(this).translate(0.5D);
-		switch (enumTier) {
-		case BASIC:
-		default:
-			break;
-		case ADVANCED:
-			vCenter.y += 3;
-			break;
-		case SUPERIOR:
-			vCenter.y += 4;
-			break;
-		}
+		assert vCenter != null;
 		return vCenter;
 	}
 	
@@ -587,9 +593,13 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	
 	@Override
 	public boolean energy_canOutput(final EnumFacing from) {
+		if (enumTier == EnumTier.BASIC) {
+			return from == null
+			    || from.equals(EnumFacing.UP)
+			    || from.equals(EnumFacing.DOWN);
+		}
 		return from == null
-		    || from.equals(EnumFacing.UP)
-		    || from.equals(EnumFacing.DOWN);
+		    || !from.equals(EnumFacing.UP);
 	}
 	
 	@Override
@@ -674,5 +684,27 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		tagCompound.removeTag("energy");
 		tagCompound.removeTag("instability");
 		return tagCompound;
+	}
+	
+	@Nonnull
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		final NBTTagCompound tagCompound = new NBTTagCompound();
+		
+		tagCompound.removeTag("outputMode");
+		tagCompound.removeTag("outputThreshold");
+		tagCompound.removeTag("instabilityTarget");
+		tagCompound.removeTag("stabilizerEnergy");
+		
+		writeToNBT(tagCompound);
+		
+		return tagCompound;
+	}
+	
+	@Override
+	public void onDataPacket(@Nonnull final NetworkManager networkManager, @Nonnull final SPacketUpdateTileEntity packet) {
+		final NBTTagCompound tagCompound = packet.getNbtCompound();
+		
+		readFromNBT(tagCompound);
 	}
 }
