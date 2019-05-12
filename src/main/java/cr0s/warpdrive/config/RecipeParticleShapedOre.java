@@ -5,11 +5,16 @@ import cr0s.warpdrive.api.ParticleStack;
 
 import javax.annotation.Nonnull;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -51,23 +56,48 @@ public class RecipeParticleShapedOre extends ShapedOreRecipe {
 				if (itemStackTargets.length == 1) {// simple ingredient
 					final ItemStack itemStackTarget = itemStackTargets[0];
 					if ( !itemStackSlot.isEmpty()
-					  && itemStackSlot.hasTagCompound()
-					  && itemStackSlot.getItem() instanceof IParticleContainerItem
-					  && itemStackTarget.getItem() instanceof IParticleContainerItem ) {
-						final IParticleContainerItem particleContainerItemSlot = (IParticleContainerItem) itemStackSlot.getItem();
-						final ParticleStack particleStackSlot = particleContainerItemSlot.getParticleStack(itemStackSlot);
-						
-						final IParticleContainerItem particleContainerItemTarget = (IParticleContainerItem) itemStackTarget.getItem();
-						final ParticleStack particleStackTarget = particleContainerItemTarget.getParticleStack(itemStackTarget);
-						
-						// reject different particles or insufficient quantity
-						if (!particleStackSlot.containsParticle(particleStackTarget)) {
-							return false;
+					  && itemStackSlot.hasTagCompound() ) {
+						if ( itemStackSlot.getItem() instanceof IParticleContainerItem
+						  && itemStackTarget.getItem() instanceof IParticleContainerItem ) {
+							final IParticleContainerItem particleContainerItemSlot = (IParticleContainerItem) itemStackSlot.getItem();
+							final ParticleStack particleStackSlot = particleContainerItemSlot.getParticleStack(itemStackSlot);
+							
+							final IParticleContainerItem particleContainerItemTarget = (IParticleContainerItem) itemStackTarget.getItem();
+							final ParticleStack particleStackTarget = particleContainerItemTarget.getParticleStack(itemStackTarget);
+							
+							// reject different particles or insufficient quantity
+							if (!particleStackSlot.containsParticle(particleStackTarget)) {
+								return false;
+							}
+							
+							// it's a match! => mark quantity to consume
+							particleContainerItemSlot.setAmountToConsume(itemStackSlot, particleStackTarget.getAmount());
+							continue;
+							
+						} else if ( itemStackSlot.getItem() instanceof ItemPotion
+						         && itemStackTarget.getItem() instanceof ItemPotion ) {
+							final List<PotionEffect> potionEffectsSlot = PotionUtils.getEffectsFromStack(itemStackSlot);
+							final List<PotionEffect> potionEffectsTarget = PotionUtils.getEffectsFromStack(itemStackTarget);
+							
+							// reject different amount of potion effects 
+							if (potionEffectsSlot.size() != potionEffectsTarget.size()) {
+								return false;
+							}
+							
+							// verify matching effects
+							for (final PotionEffect potionEffectTarget : potionEffectsTarget) {
+								if (!potionEffectsSlot.contains(potionEffectTarget)) {
+									return false;
+								}
+							}
+							
+							// it's a match!
+							continue;
 						}
-						// mark quantity otherwise
-						particleContainerItemSlot.setAmountToConsume(itemStackSlot, particleStackTarget.getAmount());
-						
-					} else if (!OreDictionary.itemMatches(itemStackTarget, itemStackSlot, false)) {
+						// (single item stack but neither particle nor potion => default to ore dictionary matching)
+					}
+					
+					if (!OreDictionary.itemMatches(itemStackTarget, itemStackSlot, false)) {
 						return false;
 					}
 					

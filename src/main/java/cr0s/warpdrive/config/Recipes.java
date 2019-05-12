@@ -305,20 +305,20 @@ public class Recipes {
 		// superior is 1 laser medium (empty), 4 redstone blocks, 4 lapis blocks
 		final ItemStack itemStackWaterBottle = WarpDriveConfig.getItemStackOrFire("minecraft:potion", 0, "{Potion: \"minecraft:water\"}");
 		final ItemStack itemStackAwkwardPotion = WarpDriveConfig.getItemStackOrFire("minecraft:potion", 0, "{Potion: \"minecraft:awkward\"}");
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockLaserMediums[EnumTier.BASIC.getIndex()]), false, "   ", "dwd", "pm ",
-		                                       'd', "dye",
-		                                       'w', itemStackWaterBottle,
-		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
-		                                       'm', itemStackMachineCasings[0] ));
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockLaserMediums[EnumTier.ADVANCED.getIndex()]), false, "rAr", "lBl", "pm ",
-		                                       'r', "dustRedstone",
-		                                       'A', itemStackAwkwardPotion,
-		                                       'l', "gemLapis",
-		                                       'B', ItemComponent.getItemStack(EnumComponentType.GLASS_TANK),
-		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
-		                                       'm', itemStackMachineCasings[1] ));
+		WarpDrive.register(new RecipeParticleShapedOre(groupMachines,
+		                                               new ItemStack(WarpDrive.blockLaserMediums[EnumTier.BASIC.getIndex()]), false, "   ", "dwd", "pm ",
+		                                               'd', "dye",
+		                                               'w', itemStackWaterBottle,
+		                                               'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
+		                                               'm', itemStackMachineCasings[0] ));
+		WarpDrive.register(new RecipeParticleShapedOre(groupMachines,
+		                                               new ItemStack(WarpDrive.blockLaserMediums[EnumTier.ADVANCED.getIndex()]), false, "rAr", "lBl", "pm ",
+		                                               'r', "dustRedstone",
+		                                               'A', itemStackAwkwardPotion,
+		                                               'l', "gemLapis",
+		                                               'B', ItemComponent.getItemStack(EnumComponentType.GLASS_TANK),
+		                                               'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
+		                                               'm', itemStackMachineCasings[1] ));
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       new ItemStack(WarpDrive.blockLaserMediums[EnumTier.SUPERIOR.getIndex()]), false, "lrl", "rmr", "lrl",
 		                                       'm', ItemComponent.getItemStack(EnumComponentType.LASER_MEDIUM_EMPTY),
@@ -375,12 +375,12 @@ public class Recipes {
 		// (IC2 Experimental is 1 Lithium dust from 18 nether quartz)
 		// Regeneration II (ghast tear + glowstone)
 		final ItemStack itemStackStrongRegeneration = WarpDriveConfig.getItemStackOrFire("minecraft:potion", 0, "{Potion: \"minecraft:strong_regeneration\"}");
-		WarpDrive.register(new ShapedOreRecipe(groupComponents,
-		                                       ItemComponent.getItemStackNoCache(EnumComponentType.CAPACITIVE_CRYSTAL, 2), false, "prp", "lRl", "prp",
-		                                       'R', itemStackStrongRegeneration,
-		                                       'r', "blockRedstone",
-		                                       'l', lithiumOrElectrum,
-		                                       'p', Items.PAPER ));
+		WarpDrive.register(new RecipeParticleShapedOre(groupComponents,
+		                                               ItemComponent.getItemStackNoCache(EnumComponentType.CAPACITIVE_CRYSTAL, 2), false, "prp", "lRl", "prp",
+		                                               'R', itemStackStrongRegeneration,
+		                                               'r', "blockRedstone",
+		                                               'l', lithiumOrElectrum,
+		                                               'p', Items.PAPER ));
 		WarpDrive.register(new ShapelessOreRecipe(groupComponents,
 		                                          ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CLUSTER),
 		                                          ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL),
@@ -572,12 +572,12 @@ public class Recipes {
 		// *** crafting components
 		// Laser medium (empty) is 3 Glass tanks, 1 Power interface, 1 Computer interface, 1 MV Machine casing
 		final ItemStack itemStackAwkwardPotion = WarpDriveConfig.getItemStackOrFire("minecraft:potion", 0, "{Potion: \"minecraft:awkward\"}");
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       ItemComponent.getItemStack(EnumComponentType.LASER_MEDIUM_EMPTY), false, "   ", "gBg", "pm ",
-		                                       'B', itemStackAwkwardPotion,
-		                                       'g', ItemComponent.getItemStack(EnumComponentType.GLASS_TANK),
-		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
-		                                       'm', itemStackMachineCasings[2] ));
+		WarpDrive.register(new RecipeParticleShapedOre(groupMachines,
+		                                               ItemComponent.getItemStack(EnumComponentType.LASER_MEDIUM_EMPTY), false, "   ", "gBg", "pm ",
+		                                               'B', itemStackAwkwardPotion,
+		                                               'g', ItemComponent.getItemStack(EnumComponentType.GLASS_TANK),
+		                                               'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
+		                                               'm', itemStackMachineCasings[2] ));
 		
 		// Electromagnetic Projector is 5 Coil crystals, 1 Power interface, 1 Computer interface, 2 Motors
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
