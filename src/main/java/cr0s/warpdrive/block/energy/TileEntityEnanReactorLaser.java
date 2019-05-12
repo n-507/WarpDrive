@@ -174,31 +174,31 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	private void doStabilize(final int energy) {
 		if (energy <= 0) {
 			WarpDrive.logger.error(String.format("ReactorLaser %s on %s side can't increase instability %d",
-			                                     Commons.format(world, pos), reactorFace, energy));
+			                                     Commons.format(world, pos), reactorFace.name, energy));
 			return;
 		}
 		
 		if (laserMedium_direction == null) {
 			WarpDrive.logger.warn(String.format("ReactorLaser %s on %s side doesn't have a laser medium, unable to stabilize %d",
-			                                    Commons.format(world, pos), reactorFace, energy));
+			                                    Commons.format(world, pos), reactorFace.name, energy));
 			return;
 		}
 		
 		final TileEntityEnanReactorCore reactorCore = getReactorCore();
 		if (reactorCore == null) {
-			WarpDrive.logger.error(String.format("ReactorLaser %s on %s side doesn't have a core to stabilize %d",
-			                                     Commons.format(world, pos), reactorFace, energy));
+			WarpDrive.logger.warn(String.format("ReactorLaser %s on %s side doesn't have a core to stabilize %d",
+			                                     Commons.format(world, pos), reactorFace.name, energy));
 			return;
 		}
 		if (!laserMedium_consumeExactly(energy, false)) {
 			WarpDrive.logger.warn(String.format("ReactorLaser %s on %s side doesn't have enough energy %d",
-			                                    Commons.format(world, pos), reactorFace, energy));
+			                                    Commons.format(world, pos), reactorFace.name, energy));
 			return;
 		}
 		
 		if (WarpDriveConfig.LOGGING_ENERGY && WarpDriveConfig.LOGGING_LUA) {
 			WarpDrive.logger.info(String.format("ReactorLaser %s on %s side stabilizing %d",
-			                                    Commons.format(world, pos), reactorFace, energy));
+			                                    Commons.format(world, pos), reactorFace.name, energy));
 		}
 		reactorCore.decreaseInstability(reactorFace, energy);
 		PacketHandler.sendBeamPacket(world, vLaser, vReactorCore, 0.1F, 0.2F, 1.0F, 25, 50, 100);
