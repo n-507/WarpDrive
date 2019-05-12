@@ -6,6 +6,7 @@ import cr0s.warpdrive.api.IBeamFrequency;
 import cr0s.warpdrive.api.IControlChannel;
 import cr0s.warpdrive.api.IVideoChannel;
 import cr0s.warpdrive.api.IWarpTool;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.energy.BlockCapacitor;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.SoundEvents;
@@ -32,6 +33,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -348,24 +350,31 @@ public class ItemTuningDriver extends ItemAbstractBase implements IWarpTool {
 	                           @Nonnull final List<String> list, @Nullable final ITooltipFlag advancedItemTooltips) {
 		super.addInformation(itemStack, world, list, advancedItemTooltips);
 		
-		String tooltip;
+		
+		final WarpDriveText textTooltip = new WarpDriveText();
+		textTooltip.append(null, "warpdrive.video_channel.tooltip",
+		                   new WarpDriveText(Commons.styleValue, getVideoChannel(itemStack)) );
 		switch (itemStack.getItemDamage()) {
 		case MODE_VIDEO_CHANNEL:
-			tooltip = new TextComponentTranslation("warpdrive.video_channel.tooltip", getVideoChannel(itemStack)).getFormattedText();
+			textTooltip.append(null, "warpdrive.video_channel.tooltip",
+			                   new WarpDriveText(Commons.styleValue, getVideoChannel(itemStack)) );
 			break;
 		case MODE_BEAM_FREQUENCY:
-			tooltip = new TextComponentTranslation("warpdrive.beam_frequency.tooltip", getBeamFrequency(itemStack)).getFormattedText();
+			textTooltip.append(null, "warpdrive.beam_frequency.tooltip",
+			                   new WarpDriveText(Commons.styleValue, getBeamFrequency(itemStack)) );
 			break;
 		case MODE_CONTROL_CHANNEL:
-			tooltip = new TextComponentTranslation("warpdrive.control_channel.tooltip", getControlChannel(itemStack)).getFormattedText();
+			textTooltip.append(null, "warpdrive.control_channel.tooltip",
+			                   new WarpDriveText(Commons.styleValue, getControlChannel(itemStack)) );
 			break;
 		default:
-			tooltip = "I'm broken :(";
+			textTooltip.append(new TextComponentString("I'm broken :("));
 			break;
 		}
 		
-		tooltip += "\n" + new TextComponentTranslation("item.warpdrive.tool.tuning_driver.tooltip.usage").getFormattedText();
+		textTooltip.appendLineBreak();
+		textTooltip.append(null, "item.warpdrive.tool.tuning_driver.tooltip.usage");
 		
-		Commons.addTooltip(list, tooltip);
+		Commons.addTooltip(list, textTooltip.getFormattedText());
 	}
 }

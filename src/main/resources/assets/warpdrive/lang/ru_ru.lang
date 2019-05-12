@@ -362,6 +362,7 @@ tile.warpdrive.movement.ship_core.legendary.name=Planetary Ядро корабл
 tile.warpdrive.movement.ship_core.tooltip=Defines your ship center. Connecting an energy source will charge the core. Attach a computer to open the user interface.
 tile.warpdrive.movement.ship_core.bounding_box.disabled=Bounding box display have been disabled.
 tile.warpdrive.movement.ship_core.bounding_box.enabled=Bounding box display is now enabled. Only you can see it.\n§bSneak right-click the Ship core§r to disable it.
+tile.warpdrive.movement.ship_core.tooltip.constrains=Size is up to %1$d x %1$d x %1$d blocks.\nMass is %2$d to %3$d tons.\nMass on a planet is %4$d tons max.\nMass to engage warp is %5$d tons min.
 
 tile.warpdrive.movement.transporter_beacon.name=Маяк для транспортера
 tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§r to set its remote location.\n§bSneak§r to retrieve its signature.\n§bPlace as a block§r to trigger emergency transportation.
@@ -670,9 +671,9 @@ warpdrive.beam_frequency.status_line.valid=Частота луча %1$d дейс
 warpdrive.beam_frequency.status_line.invalid=Частота луча %1$d недействительна.
 warpdrive.beam_frequency.status_line.undefined=Undefined beam frequency.\n§bUse a Tuning fork§r to set Beam frequency.
 
-warpdrive.control_channel.tooltip=Control channel is set to %1$d
-warpdrive.control_channel.get=Control channel %2$d has been retrieved from %1$s
-warpdrive.control_channel.set=%1$s is now tuned with Control channel %2$d
+warpdrive.control_channel.tooltip=Control channel is set to %1$d.
+warpdrive.control_channel.get=Control channel %2$d has been retrieved from %1$s.
+warpdrive.control_channel.set=%1$s is now tuned with Control channel %2$d.
 warpdrive.control_channel.status_line.valid=Control channel %1$d is valid.
 warpdrive.control_channel.status_line.invalid=Control channel %1$d is invalid.
 warpdrive.control_channel.status_line.undefined=Undefined Control channel.\n§bUse a Tuning fork§r to set it.
@@ -718,9 +719,9 @@ warpdrive.upgrade.result.shape_mounted=Shape mounted successfully.
 warpdrive.upgrade.status_line.none=§7No upgrade installed.
 warpdrive.upgrade.status_line.valid=Upgraded with %1$s.
 
-warpdrive.video_channel.tooltip=Видеоканал установлен на %1$d
-warpdrive.video_channel.get=Video channel %2$d has been retrieved from %1$s
-warpdrive.video_channel.set=%1$s настроен на видеоканал %2$d
+warpdrive.video_channel.tooltip=Видеоканал установлен на %1$d.
+warpdrive.video_channel.get=Video channel %2$d has been retrieved from %1$s.
+warpdrive.video_channel.set=%1$s настроен на видеоканал %2$d.
 warpdrive.video_channel.status_line.valid_self=Видеоканал %1$d действителен.
 warpdrive.video_channel.status_line.valid_other=Видеоканал %1$d действителен для камеры на %2$s.
 warpdrive.video_channel.status_line.invalid=Видеоканал %1$d недействителен.

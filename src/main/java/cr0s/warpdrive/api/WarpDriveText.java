@@ -15,6 +15,16 @@ public class WarpDriveText extends TextComponentBase {
 		super();
 	}
 	
+	public WarpDriveText(@Nullable final Style style, final long value) {
+		super();
+		
+		final ITextComponent textComponent = new TextComponentString(String.format("%d", value));
+		if (style != null) {
+			textComponent.setStyle(style);
+		}
+		append(textComponent);
+	}
+	
 	public WarpDriveText(@Nullable final Style style, @Nonnull final String translationKey, final Object... args) {
 		super();
 		
@@ -74,6 +84,15 @@ public class WarpDriveText extends TextComponentBase {
 	
 	public WarpDriveText appendInLine(@Nullable final Style style, @Nonnull final String translationKey, final Object... args) {
 		final ITextComponent textComponent = new TextComponentTranslation(translationKey, args);
+		if (style != null) {
+			textComponent.setStyle(style);
+		}
+		appendSibling(textComponent);
+		return this;
+	}
+	
+	public WarpDriveText appendInLine(@Nullable final Style style, final long value) {
+		final ITextComponent textComponent = new TextComponentString(String.format("%d", value));
 		if (style != null) {
 			textComponent.setStyle(style);
 		}

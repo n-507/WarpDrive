@@ -362,6 +362,7 @@ tile.warpdrive.movement.ship_core.legendary.name=Planetary 波動核心
 tile.warpdrive.movement.ship_core.tooltip=Defines your ship center. Connecting an energy source will charge the core. Attach a computer to open the user interface.
 tile.warpdrive.movement.ship_core.bounding_box.disabled=Bounding box display have been disabled.
 tile.warpdrive.movement.ship_core.bounding_box.enabled=Bounding box display is now enabled. Only you can see it.\n§bSneak right-click the Ship core§r to disable it.
+tile.warpdrive.movement.ship_core.tooltip.constrains=Size is up to %1$d x %1$d x %1$d blocks.\nMass is %2$d to %3$d tons.\nMass on a planet is %4$d tons max.\nMass to engage warp is %5$d tons min.
 
 tile.warpdrive.movement.transporter_beacon.name=傳送坐標
 tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§r to set its remote location.\n§bSneak§r to retrieve its signature.\n§bPlace as a block§r to trigger emergency transportation.
@@ -668,9 +669,9 @@ warpdrive.beam_frequency.status_line.valid=光束頻率 %1$d 已驗證。
 warpdrive.beam_frequency.status_line.invalid=光束頻率 %1$d 是無效的。
 warpdrive.beam_frequency.status_line.undefined=無效的光束頻率。\n§bUse 使用調音叉§r 來設置。
 
-warpdrive.control_channel.tooltip=Control channel is set to %1$d
-warpdrive.control_channel.get=Control channel %2$d has been retrieved from %1$s
-warpdrive.control_channel.set=%1$s is now tuned with Control channel %2$d
+warpdrive.control_channel.tooltip=Control channel is set to %1$d.
+warpdrive.control_channel.get=Control channel %2$d has been retrieved from %1$s.
+warpdrive.control_channel.set=%1$s is now tuned with Control channel %2$d.
 warpdrive.control_channel.status_line.valid=Control channel %1$d is valid.
 warpdrive.control_channel.status_line.invalid=Control channel %1$d is invalid.
 warpdrive.control_channel.status_line.undefined=Undefined Control channel.\n§bUse a Tuning fork§r to set it.
@@ -717,9 +718,9 @@ warpdrive.upgrade.result.shape_mounted=形狀已成功安裝。
 warpdrive.upgrade.status_line.none=§7未安裝升級。
 warpdrive.upgrade.status_line.valid=已升級 %1$s.
 
-warpdrive.video_channel.tooltip=視頻頻道設置為 %1$d
-warpdrive.video_channel.get=Video channel %2$d has been retrieved from %1$s
-warpdrive.video_channel.set=%1$s 現在調整為視頻頻道 %2$d
+warpdrive.video_channel.tooltip=視頻頻道設置為 %1$d.
+warpdrive.video_channel.get=Video channel %2$d has been retrieved from %1$s.
+warpdrive.video_channel.set=%1$s 現在調整為視頻頻道 %2$d.
 warpdrive.video_channel.status_line.valid_self=視頻頻道 %1$d 有效。
 warpdrive.video_channel.status_line.valid_other=視頻頻道 %1$d 對於攝像機 %2$s 有效
 warpdrive.video_channel.status_line.invalid=視頻頻道 %1$d 是無效的。

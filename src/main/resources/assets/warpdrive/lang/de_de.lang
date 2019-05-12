@@ -362,6 +362,7 @@ tile.warpdrive.movement.ship_core.legendary.name=Planetary Raumschiff Kern
 tile.warpdrive.movement.ship_core.tooltip=Defines your ship center. Schließe eine Energiequelle an, um den Kern zu laden. Schließe einen Computer an, um das Interface zu öffnen.
 tile.warpdrive.movement.ship_core.bounding_box.disabled=Bounding box display have been disabled.
 tile.warpdrive.movement.ship_core.bounding_box.enabled=Bounding box display is now enabled. Only you can see it.\n§bSneak right-click the Ship core§r to disable it.
+tile.warpdrive.movement.ship_core.tooltip.constrains=Size is up to %1$d x %1$d x %1$d blocks.\nMass is %2$d to %3$d tons.\nMass on a planet is %4$d tons max.\nMass to engage warp is %5$d tons min.
 
 tile.warpdrive.movement.transporter_beacon.name=Transporter Leuchtfeuer
 tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§r to set its remote location.\n§bSneak§r to retrieve its signature.\n§bPlace as a block§r to trigger emergency transportation.
@@ -670,9 +671,9 @@ warpdrive.beam_frequency.status_line.valid=Strahlfrequenz %1$d ist gültig.
 warpdrive.beam_frequency.status_line.invalid=Strahlfrequenz %1$d ist ungültig.
 warpdrive.beam_frequency.status_line.undefined=Undefinierte Strahlfrequenz.\n§bNutze eine Stimmgabel§f um die Strahlfrequenz festzulegen.
 
-warpdrive.control_channel.tooltip=Steuerungskanal auf %1$d gestellt
-warpdrive.control_channel.get=Steuerungskanal %2$d wurde von %1$s abgerufen
-warpdrive.control_channel.set=%1$s ist jetzt auf Steuerungskanal %2$d gestellt
+warpdrive.control_channel.tooltip=Steuerungskanal auf %1$d gestellt.
+warpdrive.control_channel.get=Steuerungskanal %2$d wurde von %1$s abgerufen.
+warpdrive.control_channel.set=%1$s ist jetzt auf Steuerungskanal %2$d gestellt.
 warpdrive.control_channel.status_line.valid=Steuerungskanal %1$d ist gültig.
 warpdrive.control_channel.status_line.invalid=Steuerungskanal %1$d ist ungültig.
 warpdrive.control_channel.status_line.undefined=Nicht definierter Steuerungskanal.\n§bNutze eine Stimmgabel§r um ihn einzustellen.
@@ -718,9 +719,9 @@ warpdrive.upgrade.result.shape_mounted=Form erfolgreich installiert.
 warpdrive.upgrade.status_line.none=§7Kein Upgrade installiert.
 warpdrive.upgrade.status_line.valid=%1$s Upgrade installiert.
 
-warpdrive.video_channel.tooltip=Videokanal auf %1$d gestellt
-warpdrive.video_channel.get=Videokanal %2$d wurde von %1$s abgerufen
-warpdrive.video_channel.set=%1$s ist jetzt auf Videokanal %2$d gestellt
+warpdrive.video_channel.tooltip=Videokanal auf %1$d gestellt.
+warpdrive.video_channel.get=Videokanal %2$d wurde von %1$s abgerufen.
+warpdrive.video_channel.set=%1$s ist jetzt auf Videokanal %2$d gestellt.
 warpdrive.video_channel.status_line.valid_self=Videokanal %1$d ist gültig.
 warpdrive.video_channel.status_line.valid_other=Videokanal %1$d ist gültig für die Kamera bei %2$s.
 warpdrive.video_channel.status_line.invalid=Videokanal %1$d ist ungültig.

@@ -362,6 +362,7 @@ tile.warpdrive.movement.ship_core.legendary.name=Cœur de vaisseau planétaire
 tile.warpdrive.movement.ship_core.tooltip=Défini le centre du vaisseau. Connecte une source d'énergie pour charger le cœur. Attache un ordinateur pour ouvrir l'interface utilisateur.
 tile.warpdrive.movement.ship_core.bounding_box.disabled=L'affichage des déliminations a été désactivé.
 tile.warpdrive.movement.ship_core.bounding_box.enabled=L'affichage des déliminations est maintement activé. Seul toi peut les voir.\n§bShift-clique droit le cœur de vaisseau§r pour le désactiver.
+tile.warpdrive.movement.ship_core.tooltip.constrains=Taille max. de %1$d x %1$d x %1$d blocs.\nMasse requise de %2$d à %3$d tonnes.\nMasse max. de %4$d t sur une planète.\nMasse min. de %5$d t pour l'hyperdrive.
 
 tile.warpdrive.movement.transporter_beacon.name=Balise de transporteur
 tile.warpdrive.movement.transporter_beacon.tooltip=§bClique droit un Cœur de transporteur§r pour définir un emplacement distant.\n§bShift§r pour récupérer sa signature.\n§bPlace le en tant que block§r pour déclencher un transport d'urgence.
@@ -670,9 +671,9 @@ warpdrive.beam_frequency.status_line.valid=La fréquence de faisceau %1$d est va
 warpdrive.beam_frequency.status_line.invalid=La fréquence de faisceau %1$d est invalide.
 warpdrive.beam_frequency.status_line.undefined=La fréquence de faisceau est non définie.\n§bUtilises un Diapason§f pour l'ajuster.
 
-warpdrive.control_channel.tooltip=Canal de contrôle ajusté à %1$d
-warpdrive.control_channel.get=Le canal de contrôle %2$d a été récupéré de %1$s
-warpdrive.control_channel.set=%1$s est désormais accordé au Canal de contrôle %2$d
+warpdrive.control_channel.tooltip=Canal de contrôle ajusté à %1$d.
+warpdrive.control_channel.get=Le canal de contrôle %2$d a été récupéré de %1$s.
+warpdrive.control_channel.set=%1$s est désormais accordé au Canal de contrôle %2$d.
 warpdrive.control_channel.status_line.valid=Le canal de contrôle %1$d est valide.
 warpdrive.control_channel.status_line.invalid=Le canal de contrôle %1$d est invalide.
 warpdrive.control_channel.status_line.undefined=Le canal de contrôle est non défini.\n§bUtilises un Diapason§r pour l'ajuster.
@@ -718,9 +719,9 @@ warpdrive.upgrade.result.shape_mounted=Forme montée correctement.
 warpdrive.upgrade.status_line.none=§7Pas d'augmentation installée.
 warpdrive.upgrade.status_line.valid=Augmenté avec %1$s.
 
-warpdrive.video_channel.tooltip=Canal vidéo ajusté à %1$d
-warpdrive.video_channel.get=Le canal vidéo %2$d a été recupéré depuis %1$s
-warpdrive.video_channel.set=%1$s est désormais accordé au Canal vidéo %2$d
+warpdrive.video_channel.tooltip=Canal vidéo ajusté à %1$d.
+warpdrive.video_channel.get=Le canal vidéo %2$d a été recupéré depuis %1$s.
+warpdrive.video_channel.set=%1$s est désormais accordé au Canal vidéo %2$d.
 warpdrive.video_channel.status_line.valid_self=Le canal vidéo %1$d est valide.
 warpdrive.video_channel.status_line.valid_other=Le canal vidéo %1$d est valide pour la caméra à %2$s.
 warpdrive.video_channel.status_line.invalid=Le canal vidéo %1$d est invalide.

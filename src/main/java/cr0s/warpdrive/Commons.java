@@ -278,7 +278,7 @@ public class Commons {
 						}
 						
 						// cut for next line, recovering current format
-						lineRemaining = formatNextLine + " " + lineRemaining.substring(indexToCut + 1);
+						lineRemaining = formatNextLine + lineRemaining.substring(indexToCut + 1);
 					}
 				} else {
 					list.add(lineRemaining.replaceAll("\u00A0", " "));

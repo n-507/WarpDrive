@@ -5,6 +5,7 @@ import cr0s.warpdrive.api.IBeamFrequency;
 import cr0s.warpdrive.api.IControlChannel;
 import cr0s.warpdrive.api.IVideoChannel;
 import cr0s.warpdrive.api.IWarpTool;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.energy.BlockCapacitor;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.SoundEvents;
@@ -160,13 +161,16 @@ public class ItemTuningFork extends ItemAbstractBase implements IWarpTool {
 	                           @Nonnull final List<String> list, @Nullable final ITooltipFlag advancedItemTooltips) {
 		super.addInformation(itemStack, world, list, advancedItemTooltips);
 		
-		String tooltip = "";
-		tooltip += new TextComponentTranslation("warpdrive.video_channel.tooltip", getVideoChannel(itemStack)).getFormattedText();
-		tooltip += "\n" + new TextComponentTranslation("warpdrive.beam_frequency.tooltip", getBeamFrequency(itemStack)).getFormattedText();
-		tooltip += "\n" + new TextComponentTranslation("warpdrive.control_channel.tooltip", getControlChannel(itemStack)).getFormattedText();
+		final WarpDriveText textTooltip = new WarpDriveText();
+		textTooltip.append(null, "warpdrive.video_channel.tooltip",
+		               new WarpDriveText(Commons.styleValue, getVideoChannel(itemStack)) );
+		textTooltip.append(null, "warpdrive.beam_frequency.tooltip",
+		               new WarpDriveText(Commons.styleValue, getBeamFrequency(itemStack)) );
+		textTooltip.append(null, "warpdrive.control_channel.tooltip",
+		               new WarpDriveText(Commons.styleValue, getControlChannel(itemStack)) );
+		textTooltip.appendLineBreak();
+		textTooltip.append(null, "item.warpdrive.tool.tuning_fork.tooltip.usage");
 		
-		tooltip += "\n\n" + new TextComponentTranslation("item.warpdrive.tool.tuning_fork.tooltip.usage").getFormattedText();
-		
-		Commons.addTooltip(list, tooltip);
+		Commons.addTooltip(list, textTooltip.getFormattedText());
 	}
 }

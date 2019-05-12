@@ -161,13 +161,13 @@ public class EnergyWrapper {
 	private static void formatAndAppendRate(@Nonnull final WarpDriveText warpDriveText, @Nonnull final String translationKey,
 	                                        final long amperage, final long voltage, final int tier, @Nonnull final String units) {
 		final WarpDriveText textRate = new WarpDriveText(null, translationKey)
-				                               .appendInLine(Commons.styleValue, String.format(" %d", amperage))
+				                               .appendInLine(null, " ")
+				                               .appendInLine(Commons.styleValue, amperage)
 				                               .appendInLine(null, " x ")
-				                               .appendInLine(Commons.styleVoltage, String.format("%d", voltage))
+				                               .appendInLine(Commons.styleVoltage, voltage)
 				                               .appendInLine(null, String.format(" %s/t (", units))
 				                               .appendInLine(Commons.styleVoltage, EnergyWrapper.EU_nameTier[tier])
-				                               .appendInLine(null, ")")
-				                               .appendInLine(null, ".");
+				                               .appendInLine(null, ").");
 		warpDriveText.append(textRate);
 	}
 	

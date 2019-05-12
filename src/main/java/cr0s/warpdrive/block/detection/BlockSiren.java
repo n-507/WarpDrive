@@ -1,6 +1,7 @@
 package cr0s.warpdrive.block.detection;
 
 import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.BlockAbstractRotatingContainer;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnumTier;
@@ -56,6 +57,6 @@ public class BlockSiren extends BlockAbstractRotatingContainer {
 		final int range = MathHelper.floor(WarpDriveConfig.SIREN_RANGE_BLOCKS_BY_TIER[enumTier.getIndex()]);
 		final String unlocalizedName_withoutTier = getTranslationKey().replace("." + enumTier.getName(), "");
 		Commons.addTooltip(list, new TextComponentTranslation(unlocalizedName_withoutTier + ".tooltip.usage",
-		                                                      range).getFormattedText());
+		                                                      new WarpDriveText(Commons.styleValue, range) ).getFormattedText());
 	}
 }

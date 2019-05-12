@@ -2,7 +2,9 @@ package cr0s.warpdrive.block.movement;
 
 import cr0s.warpdrive.CommonProxy;
 import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.BlockAbstractRotatingContainer;
+import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumTier;
@@ -12,7 +14,10 @@ import cr0s.warpdrive.item.ItemComponent;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import java.util.List;
+
 import net.minecraft.block.material.Material;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.block.state.IBlockState;
@@ -24,6 +29,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -135,5 +141,18 @@ public class BlockShipCore extends BlockAbstractRotatingContainer {
 		}
 		
 		return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
+	}
+	
+	@Override
+	public void addInformation(final ItemStack stack, @Nullable final World world, @Nonnull final List<String> list,
+	                           @Nullable final ITooltipFlag advancedItemTooltips) {
+		super.addInformation(stack, world, list, advancedItemTooltips);
+		
+		Commons.addTooltip(list, new TextComponentTranslation("tile.warpdrive.movement.ship_core.tooltip.constrains",
+		                                                      new WarpDriveText(Commons.styleValue, WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]),
+		                                                      new WarpDriveText(Commons.styleValue, WarpDriveConfig.SHIP_MASS_MIN_BY_TIER[enumTier.getIndex()]),
+		                                                      new WarpDriveText(Commons.styleValue, WarpDriveConfig.SHIP_MASS_MAX_BY_TIER[enumTier.getIndex()]),
+		                                                      new WarpDriveText(Commons.styleValue, WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE),
+		                                                      new WarpDriveText(Commons.styleValue, WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE) ).getFormattedText());
 	}
 }

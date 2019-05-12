@@ -363,6 +363,7 @@ tile.warpdrive.movement.ship_core.legendary.name=Planetary 飞船核心
 tile.warpdrive.movement.ship_core.tooltip=Defines your ship center. 连接供能设备充能. 在相连的电脑上打开交互界面.
 tile.warpdrive.movement.ship_core.bounding_box.disabled=边界显示已禁用.
 tile.warpdrive.movement.ship_core.bounding_box.enabled=边界显示启用. 只有你可见.\n再次潜行右击核心可关闭.
+tile.warpdrive.movement.ship_core.tooltip.constrains=Size is up to %1$d x %1$d x %1$d blocks.\nMass is %2$d to %3$d tons.\nMass on a planet is %4$d tons max.\nMass to engage warp is %5$d tons min.
 
 tile.warpdrive.movement.transporter_beacon.name=运输信标
 tile.warpdrive.movement.transporter_beacon.tooltip=§bRight click a Transporter Core§r to set its remote location.\n§bSneak§r to retrieve its signature.\n§bPlace as a block§r to trigger emergency transportation.
@@ -671,9 +672,9 @@ warpdrive.beam_frequency.status_line.valid=光束频率%1$d有效.
 warpdrive.beam_frequency.status_line.invalid=光束频率%1$d无效.
 warpdrive.beam_frequency.status_line.undefined=未定义的光束频率.\n§b使用一个音叉§r进行设置
 
-warpdrive.control_channel.tooltip=控制连接设置为 %1$d
-warpdrive.control_channel.get=控制连接 %2$d 已从 %1$s 断开
-warpdrive.control_channel.set=%1$s 正与控制连接 %2$d 进行匹配
+warpdrive.control_channel.tooltip=控制连接设置为 %1$d.
+warpdrive.control_channel.get=控制连接 %2$d 已从 %1$s 断开.
+warpdrive.control_channel.set=%1$s 正与控制连接 %2$d 进行匹配.
 warpdrive.control_channel.status_line.valid=控制连接 %1$d 有效.
 warpdrive.control_channel.status_line.invalid=控制连接 %1$d 无效.
 warpdrive.control_channel.status_line.undefined=未定义控制连接.\n§b使用音叉§r进行设置.
@@ -719,10 +720,10 @@ warpdrive.upgrade.result.shape_mounted=模型加载成功.
 warpdrive.upgrade.status_line.none=§7没有安装升级
 warpdrive.upgrade.status_line.valid=用升级%1$s.
 
-warpdrive.video_channel.tooltip-tbc=频道设置为%1$d
-warpdrive.video_channel.get=视频频道 %2$d 已从频道 %1$s 断开
-warpdrive.video_channel.set=%1$s正在切换至频道%2$d
-warpdrive.video_channel.status_line.valid_self=视频通道%1$d有效
+warpdrive.video_channel.tooltip-tbc=频道设置为%1$d.
+warpdrive.video_channel.get=视频频道 %2$d 已从频道 %1$s 断开.
+warpdrive.video_channel.set=%1$s正在切换至频道%2$d.
+warpdrive.video_channel.status_line.valid_self=视频通道%1$d有效.
 warpdrive.video_channel.status_line.valid_other=相机的视频通道 %1$d有效，位于%2$s.
 warpdrive.video_channel.status_line.invalid=视频通道 %1$d 无效.
 warpdrive.video_channel.status_line.not_loaded=视频通道 %1$d 无效或者是相机的距离太远!

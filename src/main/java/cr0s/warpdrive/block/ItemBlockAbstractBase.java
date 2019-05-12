@@ -131,8 +131,6 @@ public class ItemBlockAbstractBase extends ItemBlock implements IItemBase {
 	@Override
 	public void addInformation(@Nonnull final ItemStack itemStack, @Nullable final World world,
 	                           @Nonnull final List<String> list, @Nullable final ITooltipFlag advancedItemTooltips) {
-		super.addInformation(itemStack, world, list, advancedItemTooltips);
-		
 		final String tooltipItemStack = getTranslationKey(itemStack) + ".tooltip";
 		if (I18n.hasKey(tooltipItemStack)) {
 			Commons.addTooltip(list, new TextComponentTranslation(tooltipItemStack).getFormattedText());
@@ -152,6 +150,8 @@ public class ItemBlockAbstractBase extends ItemBlock implements IItemBase {
 		}
 		
 		Commons.addTooltip(list, getStatus(world, itemStack).getFormattedText());
+		
+		super.addInformation(itemStack, world, list, advancedItemTooltips);
 	}
 	
 	@Override

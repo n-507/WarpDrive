@@ -6,6 +6,7 @@ import cr0s.warpdrive.api.IParticleContainerItem;
 import cr0s.warpdrive.api.Particle;
 import cr0s.warpdrive.api.ParticleRegistry;
 import cr0s.warpdrive.api.ParticleStack;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.Vector3;
@@ -289,7 +290,8 @@ public class ItemElectromagneticCell extends ItemAbstractBase implements IPartic
 			final Particle particle = particleStack.getParticle();
 			
 			tooltip = new TextComponentTranslation("item.warpdrive.atomic.electromagnetic_cell.tooltip.filled",
-				particleStack.getAmount(), particle.getLocalizedName()).getFormattedText();
+			                                       new WarpDriveText(Commons.styleValue, particleStack.getAmount()),
+			                                       new WarpDriveText(Commons.styleValue, particle.getLocalizedName()) ).getFormattedText();
 			Commons.addTooltip(list, tooltip);
 			
 			final String particleTooltip = particle.getLocalizedTooltip();
