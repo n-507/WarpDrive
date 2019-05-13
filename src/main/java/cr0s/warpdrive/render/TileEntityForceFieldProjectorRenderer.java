@@ -1,6 +1,5 @@
 package cr0s.warpdrive.render;
 
-import com.google.common.base.Function;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.forcefield.TileEntityForceFieldProjector;
 import net.minecraft.client.Minecraft;
@@ -9,12 +8,12 @@ import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.model.TRSRTransformation;
 import org.lwjgl.opengl.GL11;
 
@@ -24,22 +23,12 @@ public class TileEntityForceFieldProjectorRenderer extends TileEntitySpecialRend
 	
 	private IBakedModel bakedModel;
 	
-	private enum TextureGetter implements Function<ResourceLocation, TextureAtlasSprite> {
-		INSTANCE;
-		
-		@Override
-		public TextureAtlasSprite apply(final ResourceLocation location) {
-			// WarpDrive.logger.info(String.format("TileEntityForceFieldProjectorRenderer texture location %s", location));
-			return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
-		}
-	}
-	
 	private IBakedModel getBakedModel() {
 		// Since we cannot bake in preInit() we do lazy baking of the model as soon as we need it for rendering
 		if (bakedModel == null) {
 			final ResourceLocation resourceLocation = new ResourceLocation(WarpDrive.MODID, "block/forcefield/projector_ring.obj");
 			final IModel model = RenderCommons.getModel(resourceLocation);
-			bakedModel = model.bake(TRSRTransformation.identity(), DefaultVertexFormats.ITEM, TextureGetter.INSTANCE);
+			bakedModel = model.bake(TRSRTransformation.identity(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
 		}
 		return bakedModel;
 	}

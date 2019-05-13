@@ -154,9 +154,9 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		super.update();
 		
 		if (world.isRemote) {
+			rotation_deg += rotationSpeed_degPerTick;
 			rotationSpeed_degPerTick = 0.98F * rotationSpeed_degPerTick
 			                         + 0.02F * getState().getRotationSpeed_degPerTick();
-			rotation_deg += rotationSpeed_degPerTick;
 			return;
 		}
 		
