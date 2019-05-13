@@ -110,7 +110,9 @@ import cr0s.warpdrive.damage.DamageWarm;
 import cr0s.warpdrive.data.CamerasRegistry;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.CloakManager;
+import cr0s.warpdrive.data.EnumAirTankTier;
 import cr0s.warpdrive.data.EnumHullPlainType;
+import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.StarMapRegistry;
 import cr0s.warpdrive.entity.EntityParticleBunch;
 import cr0s.warpdrive.event.ChunkHandler;
@@ -123,18 +125,22 @@ import cr0s.warpdrive.item.ItemElectromagneticCell;
 import cr0s.warpdrive.item.ItemForceFieldShape;
 import cr0s.warpdrive.item.ItemForceFieldUpgrade;
 import cr0s.warpdrive.item.ItemIC2reactorLaserFocus;
+import cr0s.warpdrive.item.ItemPlasmaTorch;
 import cr0s.warpdrive.item.ItemShipToken;
 import cr0s.warpdrive.item.ItemTuningDriver;
 import cr0s.warpdrive.item.ItemTuningFork;
 import cr0s.warpdrive.item.ItemWarpArmor;
+import cr0s.warpdrive.item.ItemWrench;
 import cr0s.warpdrive.network.PacketHandler;
 import cr0s.warpdrive.render.EntityCamera;
 import cr0s.warpdrive.world.BiomeSpace;
 import cr0s.warpdrive.world.EntitySphereGen;
 import cr0s.warpdrive.world.EntityStarCore;
 import cr0s.warpdrive.world.HyperSpaceWorldProvider;
+import cr0s.warpdrive.world.SpaceWorldProvider;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockColored;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
@@ -210,78 +216,106 @@ public class WarpDrive {
 	public static final boolean isDev = VERSION.equals("@" + "version" + "@") || VERSION.contains("-dev");
 	public static GameProfile gameProfile = new GameProfile(UUID.nameUUIDFromBytes("[WarpDrive]".getBytes()), "[WarpDrive]");
 	
-	public static Block blockShipCore;
-	public static Block blockShipController;
-	public static Block blockRadar;
-	public static Block blockWarpIsolation;
-	public static Block blockAirGenerator;
-	public static Block[] blockAirGeneratorTiered = new Block[3];
+	// common blocks and items
 	public static Block blockLaser;
-	public static Block blockLaserCamera;
-	public static Block blockWeaponController;
-	public static Block blockCamera;
-	public static Block blockMonitor;
-	public static Block blockLaserMedium;
-	public static Block blockMiningLaser;
-	public static Block blockLaserTreeFarm;
-	public static Block blockLift;
-	public static Block blockShipScanner;
-	public static Block blockCloakingCore;
-	public static Block blockCloakingCoil;
-	public static Block blockTransporterBeacon;
-	public static Block blockTransporterCore;
-	public static Block blockTransporterContainment;
-	public static Block blockTransporterScanner;
-	public static Block blockIC2reactorLaserCooler;
-	public static Block blockEnanReactorCore;
-	public static Block blockEnanReactorLaser;
-	public static Block blockEnergyBank;
-	public static Block blockAir;
-	public static Block blockAirFlow;
-	public static Block blockAirSource;
-	public static Block blockAirShield;
-	public static Block blockBedrockGlass;
-	public static Block blockGas;
-	public static Block blockIridium;
-	public static Block blockLamp_bubble;
-	public static Block blockLamp_flat;
-	public static Block blockLamp_long;
-	public static Block blockHighlyAdvancedMachine;
-	public static Block blockChunkLoader;
-	public static Block[] blockForceFields;
-	public static Block[] blockForceFieldProjectors;
-	public static Block[] blockForceFieldRelays;
-	public static Block blockSecurityStation;
+	public static Block[] blockChunkLoaders;
+	public static Block[] blockLaserMediums;
+	public static ItemComponent itemComponent;
+	
+	// atomic blocks and items
 	public static Block blockAcceleratorController;
 	public static Block blockAcceleratorControlPoint;
 	public static Block blockParticlesCollider;
 	public static Block blockParticlesInjector;
 	public static Block blockVoidShellPlain;
 	public static Block blockVoidShellGlass;
-	public static Block[] blockElectromagnetPlain;
-	public static Block[] blockElectromagnetGlass;
+	public static Block[] blockElectromagnets_plain;
+	public static Block[] blockElectromagnets_glass;
 	public static Block[] blockChillers;
+	public static ItemElectromagneticCell[] itemElectromagneticCell;
+	public static ItemPlasmaTorch[] itemPlasmaTorch;
+	
+	// building blocks and items
+	public static Block[] blockShipScanners;
+	public static ItemShipToken itemShipToken;
+	
+	// breathing
+	public static Block blockAirFlow;
+	public static Block blockAirSource;
+	public static Block blockAirShield;
+	public static Block[] blockAirGeneratorTiered;
+	
+	// collection blocks
+	public static Block blockMiningLaser;
+	public static Block blockLaserTreeFarm;
+	
+	// decoration
+	public static Block blockBedrockGlass;
 	public static Block blockDecorative;
+	public static Block blockGas;
+	public static Block blockLamp_bubble;
+	public static Block blockLamp_flat;
+	public static Block blockLamp_long;
+	
+	// detection blocks
+	public static Block blockCamera;
+	public static Block blockCloakingCoil;
+	public static Block blockCloakingCore;
+	public static Block blockMonitor;
+	public static Block blockRadar;
+	public static Block[] blockSirenIndustrial;
+	public static Block[] blockSirenMilitary;
+	public static Block blockWarpIsolation;
+	
+	// energy blocks and items
+	public static Block[] blockCapacitor;
+	public static Block[] blockEnanReactorCores;
+	public static Block blockEnanReactorLaser;
+	public static Block blockIC2reactorLaserCooler;
+	public static Item itemIC2reactorLaserFocus;
+	
+	// force field blocks and items
+	public static Block[] blockForceFields;
+	public static Block[] blockForceFieldProjectors;
+	public static Block[] blockForceFieldRelays;
+	public static Block blockSecurityStation;
+	public static ItemForceFieldShape itemForceFieldShape;
+	public static ItemForceFieldUpgrade itemForceFieldUpgrade;
+	
+	// hull blocks
 	public static Block[][] blockHulls_plain;
 	public static Block[] blockHulls_glass;
 	public static Block[] blockHulls_omnipanel;
 	public static Block[][] blockHulls_stairs;
 	public static Block[][] blockHulls_slab;
-	public static Block blockSiren;
 	
-	public static Item itemIC2reactorLaserFocus;
-	public static ItemComponent itemComponent;
-	public static ItemShipToken itemShipToken;
+	// movement blocks
+	public static Block blockLift;
+	public static Block[] blockShipCores;
+	public static Block[] blockShipControllers;
+	public static Block blockTransporterBeacon;
+	public static Block blockTransporterCore;
+	public static Block blockTransporterContainment;
+	public static Block blockTransporterScanner;
+	
+	// passive blocks
+	public static Block blockHighlyAdvancedMachine;
+	public static Block blockIridium;
+	
+	// weapon blocks
+	public static Block blockLaserCamera;
+	public static Block blockWeaponController;
+	
+	public static final ArmorMaterial[] armorMaterial = new ArmorMaterial[EnumTier.length];
+	
+	// equipment items
+	public static ItemAirTank[] itemAirTanks;
 	public static ItemTuningFork itemTuningFork;
 	public static ItemTuningDriver itemTuningDriver;
-	public static ItemForceFieldShape itemForceFieldShape;
-	public static ItemForceFieldUpgrade itemForceFieldUpgrade;
-	public static ItemElectromagneticCell itemElectromagneticCell;
+	public static ItemWrench itemWrench;
+	public static ItemArmor[][] itemWarpArmor;
 	
-	public static final ArmorMaterial armorMaterial = EnumHelper.addArmorMaterial("WARP", "warp", 18, new int[] { 2, 6, 5, 2 }, 9, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 0.0F);
-	public static ItemArmor[] itemWarpArmor;
-	public static ItemAirTank[] itemAirTanks;
-	
+	// damage sources
 	public static DamageAsphyxia damageAsphyxia;
 	public static DamageCold damageCold;
 	public static DamageIrradiation damageIrradiation;
@@ -326,7 +360,7 @@ public class WarpDrive {
 	}
 	
 	@EventHandler
-	public void onFMLPreInitialization(final FMLPreInitializationEvent event) {
+	public void onFMLPreInitialization(@Nonnull final FMLPreInitializationEvent event) {
 		logger = event.getModLog();
 		
 		WarpDriveConfig.onFMLpreInitialization(event.getModConfigurationDirectory().getAbsolutePath());
@@ -335,148 +369,191 @@ public class WarpDrive {
 		fieldBlockHardness = Commons.getField(Block.class, "blockHardness", "field_149782_v");
 		methodBlock_getSilkTouch = ReflectionHelper.findMethod(Block.class, "getSilkTouchDrop", "func_180643_i", IBlockState.class);
 		
-		// common blocks
-		blockChunkLoader = new BlockChunkLoader("block_chunk_loader");
-		blockLaser = new BlockLaser("block_laser");
-		blockLaserMedium = new BlockLaserMedium("block_laser_medium");
+		// common blocks and items
+		blockLaser = new BlockLaser("laser", EnumTier.BASIC);
 		
-		// atomic blocks
-		if (WarpDriveConfig.ACCELERATOR_ENABLE) {
-			blockAcceleratorController = new BlockAcceleratorController("block_accelerator_controller");
-			blockAcceleratorControlPoint = new BlockAcceleratorControlPoint("block_accelerator_controlPoint");
-			blockParticlesCollider = new BlockParticlesCollider("block_particles_collider");
-			blockParticlesInjector = new BlockParticlesInjector("block_particles_injector");
-			blockVoidShellPlain = new BlockVoidShellPlain("block_void_shell_plain");
-			blockVoidShellGlass = new BlockVoidShellGlass("block_void_shell_glass");
-			
-			blockElectromagnetPlain = new Block[3];
-			blockElectromagnetGlass = new Block[3];
-			blockChillers = new Block[3];
-			for(byte tier = 1; tier <= 3; tier++) {
-				final int index = tier - 1;
-				blockElectromagnetPlain[index] = new BlockElectromagnetPlain("block_electromagnet_plain" + tier, tier);
-				blockElectromagnetGlass[index] = new BlockElectromagnetGlass("block_electromagnet_glass" + tier, tier);
-				blockChillers[index] = new BlockChiller("block_chiller" + tier, tier);
-			}
-			
-			itemElectromagneticCell = new ItemElectromagneticCell("item_electromagnetic_cell");
+		blockChunkLoaders = new Block[EnumTier.length];
+		for (final EnumTier enumTier : EnumTier.nonCreative()) {
+			final int index = enumTier.getIndex();
+			blockChunkLoaders[index] = new BlockChunkLoader("chunk_loader." + enumTier.getName(), enumTier);
 		}
 		
-		// building blocks
-		blockShipScanner = new BlockShipScanner("block_ship_scanner");
+		blockLaserMediums = new Block[EnumTier.length];
+		for (final EnumTier enumTier : EnumTier.nonCreative()) {
+			final int index = enumTier.getIndex();
+			blockLaserMediums[index] = new BlockLaserMedium("laser_medium." + enumTier.getName(), enumTier);
+		}
 		
-		// breathing blocks
-		blockAirFlow = new BlockAirFlow("block_air_flow");
-		blockAirSource = new BlockAirSource("block_air_source");
-		blockAirShield = new BlockAirShield("block_air_shield");
+		itemComponent = new ItemComponent("component", EnumTier.BASIC);
 		
-		blockAirGeneratorTiered = new Block[3];
-		for (byte tier = 1; tier <= 3; tier++) {
-			final int index = tier - 1;
-			blockAirGeneratorTiered[index] = new BlockAirGeneratorTiered("block_air_generator" + tier, tier);
+		// atomic blocks and items
+		if (WarpDriveConfig.ACCELERATOR_ENABLE) {
+			blockAcceleratorController = new BlockAcceleratorController("accelerator_core", EnumTier.BASIC);
+			blockAcceleratorControlPoint = new BlockAcceleratorControlPoint("accelerator_control_point", EnumTier.BASIC, false);
+			blockParticlesCollider = new BlockParticlesCollider("particles_collider", EnumTier.BASIC);
+			blockParticlesInjector = new BlockParticlesInjector("particles_injector", EnumTier.BASIC);
+			blockVoidShellPlain = new BlockVoidShellPlain("void_shell.plain", EnumTier.BASIC);
+			blockVoidShellGlass = new BlockVoidShellGlass("void_shell.glass", EnumTier.BASIC);
+			
+			blockElectromagnets_plain = new Block[EnumTier.length];
+			blockElectromagnets_glass = new Block[EnumTier.length];
+			blockChillers = new Block[EnumTier.length];
+			itemElectromagneticCell = new ItemElectromagneticCell[EnumTier.length];
+			itemPlasmaTorch = new ItemPlasmaTorch[EnumTier.length];
+			for(final EnumTier enumTier : EnumTier.nonCreative()) {
+				final int index = enumTier.getIndex();
+				blockElectromagnets_plain[index] = new BlockElectromagnetPlain("electromagnet." + enumTier.getName() + ".plain", enumTier);
+				blockElectromagnets_glass[index] = new BlockElectromagnetGlass("electromagnet." + enumTier.getName() + ".glass", enumTier);
+				blockChillers[index] = new BlockChiller("chiller." + enumTier.getName(), enumTier);
+				itemElectromagneticCell[index] = new ItemElectromagneticCell("electromagnetic_cell." + enumTier.getName(), enumTier);
+				// itemPlasmaTorch[index] = new ItemPlasmaTorch("plasma_torch." + enumTier.getName(), enumTier);
+			}
+		}
+		
+		// building blocks and items
+		blockShipScanners = new Block[EnumTier.length];
+		for(final EnumTier enumTier : EnumTier.nonCreative()) {
+			final int index = enumTier.getIndex();
+			blockShipScanners[index] = new BlockShipScanner("ship_scanner." + enumTier.getName(), enumTier);
+		}
+		itemShipToken = new ItemShipToken("ship_token", EnumTier.BASIC);
+		
+		// breathing blocks and items
+		blockAirFlow = new BlockAirFlow("air_flow", EnumTier.BASIC);
+		blockAirSource = new BlockAirSource("air_source", EnumTier.BASIC);
+		blockAirShield = new BlockAirShield("air_shield", EnumTier.BASIC);
+		
+		blockAirGeneratorTiered = new Block[EnumTier.length];
+		for(final EnumTier enumTier : EnumTier.nonCreative()) {
+			final int index = enumTier.getIndex();
+			blockAirGeneratorTiered[index] = new BlockAirGeneratorTiered("air_generator." + enumTier.getName(), enumTier);
+		}
+		
+		itemAirTanks = new ItemAirTank[4];
+		for (final EnumAirTankTier enumAirTankTier : EnumAirTankTier.values()) {
+			itemAirTanks[enumAirTankTier.getIndex()] = new ItemAirTank("air_tank." + enumAirTankTier.getName(), enumAirTankTier);
 		}
 		
 		// collection blocks
-		blockMiningLaser = new BlockMiningLaser("block_mining_laser");
-		blockLaserTreeFarm = new BlockLaserTreeFarm("block_laser_tree_farm");
+		blockMiningLaser = new BlockMiningLaser("mining_laser", EnumTier.BASIC);
+		blockLaserTreeFarm = new BlockLaserTreeFarm("laser_tree_farm", EnumTier.BASIC);
 		
-		// decorative
-		blockDecorative = new BlockDecorative("block_decorative");
-		blockGas = new BlockGas("block_gas");
-		blockLamp_bubble = new BlockLamp_bubble("block_lamp_bubble");
-		blockLamp_flat = new BlockLamp_flat("block_lamp_flat");
-		blockLamp_long = new BlockLamp_long("block_lamp_long");
+		// decoration
+		blockBedrockGlass = new BlockBedrockGlass("bedrock_glass", EnumTier.CREATIVE);
+		blockDecorative = new BlockDecorative("decorative", EnumTier.BASIC);
+		blockGas = new BlockGas("gas", EnumTier.BASIC);
+		blockLamp_bubble = new BlockLamp_bubble("lamp_bubble", EnumTier.BASIC);
+		blockLamp_flat = new BlockLamp_flat("lamp_flat", EnumTier.BASIC);
+		blockLamp_long = new BlockLamp_long("lamp_long", EnumTier.BASIC);
 		
 		// detection blocks
-		blockCamera = new BlockCamera("block_camera");
-		blockCloakingCore = new BlockCloakingCore("block_cloaking_core");
-		blockCloakingCoil = new BlockCloakingCoil("block_cloaking_coil");
-		blockMonitor = new BlockMonitor("block_monitor");
-		blockRadar = new BlockRadar("block_radar");
-		blockSiren = new BlockSiren("block_siren");
-		blockWarpIsolation = new BlockWarpIsolation("block_warp_isolation");
+		blockCamera = new BlockCamera("camera", EnumTier.BASIC);
+		blockCloakingCoil = new BlockCloakingCoil("cloaking_coil", EnumTier.BASIC);
+		blockCloakingCore = new BlockCloakingCore("cloaking_core", EnumTier.BASIC);
+		blockMonitor = new BlockMonitor("monitor", EnumTier.BASIC);
+		blockRadar = new BlockRadar("radar", EnumTier.BASIC);
+		
+		blockSirenIndustrial = new Block[EnumTier.length];
+		blockSirenMilitary = new Block[EnumTier.length];
+		for(final EnumTier enumTier : EnumTier.nonCreative()) {
+			final int index = enumTier.getIndex();
+			blockSirenIndustrial[index] = new BlockSiren("siren_industrial." + enumTier.getName(), enumTier, true);
+			blockSirenMilitary[index] = new BlockSiren("siren_military." + enumTier.getName(), enumTier, false);
+		}
+		blockWarpIsolation = new BlockWarpIsolation("warp_isolation", EnumTier.BASIC);
 		
 		// energy blocks and items
-		blockEnanReactorCore = new BlockEnanReactorCore("block_enan_reactor_core");
-		blockEnanReactorLaser = new BlockEnanReactorLaser("block_enan_reactor_laser");
-		blockEnergyBank = new BlockEnergyBank("block_subspace_capacitor");
+		blockCapacitor = new Block[EnumTier.length];
+		for(final EnumTier enumTier : EnumTier.values()) {
+			final int index = enumTier.getIndex();
+			blockCapacitor[index] = new BlockCapacitor("capacitor." + enumTier.getName(), enumTier);
+		}
+		blockEnanReactorCores = new Block[EnumTier.length];
+		for(final EnumTier enumTier : EnumTier.nonCreative()) {
+			final int index = enumTier.getIndex();
+			blockEnanReactorCores[index] = new BlockEnanReactorCore("enan_reactor_core." + enumTier.getName(), enumTier);
+		}
+		blockEnanReactorLaser = new BlockEnanReactorLaser("enan_reactor_laser", EnumTier.BASIC);
 		
 		if (WarpDriveConfig.isIndustrialCraft2Loaded) {
-			blockIC2reactorLaserCooler = new BlockIC2reactorLaserCooler("block_ic2_reactor_laser_cooler");
-			itemIC2reactorLaserFocus = new ItemIC2reactorLaserFocus("item_ic2_reactor_laser_focus");
+			blockIC2reactorLaserCooler = new BlockIC2reactorLaserCooler("ic2_reactor_laser_cooler", EnumTier.BASIC);
+			itemIC2reactorLaserFocus = new ItemIC2reactorLaserFocus("ic2_reactor_laser_focus", EnumTier.BASIC);
 		}
 		
 		// force field blocks and items
-		blockForceFields = new Block[3];
-		blockForceFieldProjectors = new Block[3];
-		blockForceFieldRelays = new Block[3];
-		for (byte tier = 1; tier <= 3; tier++) {
-			int index = tier - 1;
-			blockForceFields[index] = new BlockForceField("block_force_field" + tier, tier);
-			blockForceFieldProjectors[index] = new BlockForceFieldProjector("block_projector" + tier, tier);
-			blockForceFieldRelays[index] = new BlockForceFieldRelay("block_force_field_relay" + tier, tier);
+		blockForceFields = new Block[EnumTier.length];
+		blockForceFieldProjectors = new Block[EnumTier.length];
+		blockForceFieldRelays = new Block[EnumTier.length];
+		for(final EnumTier enumTier : EnumTier.nonCreative()) {
+			final int index = enumTier.getIndex();
+			blockForceFields[index] = new BlockForceField("force_field." + enumTier.getName(), enumTier);
+			blockForceFieldProjectors[index] = new BlockForceFieldProjector("projector." + enumTier.getName(), enumTier);
+			blockForceFieldRelays[index] = new BlockForceFieldRelay("force_field_relay." + enumTier.getName(), enumTier);
 		}
-		blockSecurityStation = new BlockSecurityStation("block_security_station");
-		itemForceFieldShape = new ItemForceFieldShape("item_force_field_shape");
-		itemForceFieldUpgrade = new ItemForceFieldUpgrade("item_force_field_upgrade");
+		blockSecurityStation = new BlockSecurityStation("security_station", EnumTier.BASIC);
+		itemForceFieldShape = new ItemForceFieldShape("force_field_shape", EnumTier.BASIC);
+		itemForceFieldUpgrade = new ItemForceFieldUpgrade("force_field_upgrade", EnumTier.BASIC);
 		
 		// hull blocks
-		blockHulls_plain = new Block[3][EnumHullPlainType.length];
-		blockHulls_glass = new Block[3];
-		blockHulls_omnipanel = new Block[3];
-		blockHulls_stairs = new Block[3][16];
-		blockHulls_slab = new Block[3][16];
+		blockHulls_plain = new Block[EnumTier.length][EnumHullPlainType.length];
+		blockHulls_glass = new Block[EnumTier.length];
+		blockHulls_omnipanel = new Block[EnumTier.length];
+		blockHulls_stairs = new Block[EnumTier.length][16];
+		blockHulls_slab = new Block[EnumTier.length][16];
 		
-		for (byte tier = 1; tier <= 3; tier++) {
-			final int index = tier - 1;
+		for(final EnumTier enumTier : EnumTier.nonCreative()) {
+			final int index = enumTier.getIndex();
 			for (final EnumHullPlainType hullPlainType : EnumHullPlainType.values()) {
-				blockHulls_plain[index][hullPlainType.ordinal()] = new BlockHullPlain("block_hull" + tier + "_" + hullPlainType.getName(), tier, hullPlainType);
+				blockHulls_plain[index][hullPlainType.ordinal()] = new BlockHullPlain("hull." + enumTier.getName() + "." + hullPlainType.getName(), enumTier, hullPlainType);
 			}
-			blockHulls_glass[index] = new BlockHullGlass("block_hull" + tier + "_glass", tier);
-			blockHulls_omnipanel[index] = new BlockHullOmnipanel("block_hull" + tier + "_omnipanel", tier);
+			blockHulls_glass[index] = new BlockHullGlass("hull." + enumTier.getName() + ".glass", enumTier);
+			blockHulls_omnipanel[index] = new BlockHullOmnipanel("hull." + enumTier.getName() + ".omnipanel", enumTier);
 			for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
-				blockHulls_stairs[index][enumDyeColor.getMetadata()] = new BlockHullStairs("block_hull" + tier + "_stairs_" + enumDyeColor.getName(), blockHulls_plain[index][0].getStateFromMeta(enumDyeColor.getMetadata()), tier);
-				blockHulls_slab[index][enumDyeColor.getMetadata()] = new BlockHullSlab("block_hull" + tier + "_slab_" + enumDyeColor.getName(), blockHulls_plain[index][0].getStateFromMeta(enumDyeColor.getMetadata()), tier);
+				final int metadata = enumDyeColor.getMetadata();
+				blockHulls_stairs[index][metadata] = new BlockHullStairs("hull." + enumTier.getName() + ".stairs_" + enumDyeColor.getName(), enumTier,
+				                                                         blockHulls_plain[index][0].getDefaultState().withProperty(BlockColored.COLOR, enumDyeColor));
+				blockHulls_slab[index][metadata] = new BlockHullSlab("hull." + enumTier.getName() + ".slab_" + enumDyeColor.getName(), enumTier,
+				                                                     blockHulls_plain[index][0].getDefaultState().withProperty(BlockColored.COLOR, enumDyeColor));
 			}
 		}
 		
 		// movement blocks
-		blockLift = new BlockLift("block_lift");
-		blockShipController = new BlockShipController("block_ship_controller");
-		blockShipCore = new BlockShipCore("block_ship_core");
-		blockTransporterBeacon = new BlockTransporterBeacon("block_transporter_beacon");
-		blockTransporterContainment = new BlockTransporterContainment("block_transporter_containment");
-		blockTransporterCore = new BlockTransporterCore("block_transporter_core");
-		blockTransporterScanner = new BlockTransporterScanner("block_transporter_scanner");
+		blockLift = new BlockLift("lift", EnumTier.BASIC);
 		
-		// passive blocks
-		blockBedrockGlass = new BlockBedrockGlass("block_bedrock_glass");
-		blockHighlyAdvancedMachine = new BlockHighlyAdvancedMachine("block_highly_advanced_machine");
-		blockIridium = new BlockIridium("block_iridium");
-		
-		// weapon blocks
-		blockLaserCamera = new BlockLaserCamera("block_laser_camera");
-		blockWeaponController = new BlockWeaponController("block_weapon_controller");
-		
-		// component items
-		itemComponent = new ItemComponent("item_component");
-		itemShipToken = new ItemShipToken("item_ship_token");
-		
-		// warp armor
-		itemWarpArmor = new ItemArmor[4];
-		itemWarpArmor[EntityEquipmentSlot.HEAD.getIndex() ] = new ItemWarpArmor("item_warp_armor_" + ItemWarpArmor.suffixes[EntityEquipmentSlot.HEAD.getIndex() ], armorMaterial, 3, EntityEquipmentSlot.HEAD );
-		itemWarpArmor[EntityEquipmentSlot.CHEST.getIndex()] = new ItemWarpArmor("item_warp_armor_" + ItemWarpArmor.suffixes[EntityEquipmentSlot.CHEST.getIndex()], armorMaterial, 3, EntityEquipmentSlot.CHEST);
-		itemWarpArmor[EntityEquipmentSlot.LEGS.getIndex() ] = new ItemWarpArmor("item_warp_armor_" + ItemWarpArmor.suffixes[EntityEquipmentSlot.LEGS.getIndex() ], armorMaterial, 3, EntityEquipmentSlot.LEGS );
-		itemWarpArmor[EntityEquipmentSlot.FEET.getIndex() ] = new ItemWarpArmor("item_warp_armor_" + ItemWarpArmor.suffixes[EntityEquipmentSlot.FEET.getIndex() ], armorMaterial, 3, EntityEquipmentSlot.FEET );
-		
-		itemAirTanks = new ItemAirTank[4];
-		for (int index = 0; index < 4; index++) {
-			itemAirTanks[index] = new ItemAirTank((byte) index, "item_air_tank" + index);
+		blockShipControllers = new Block[EnumTier.length];
+		blockShipCores = new Block[EnumTier.length];
+		for(final EnumTier enumTier : EnumTier.nonCreative()) {
+			final int index = enumTier.getIndex();
+			blockShipControllers[index] = new BlockShipController("ship_controller." + enumTier.getName(), enumTier);
+			blockShipCores[index] = new BlockShipCore("ship_core." + enumTier.getName(), enumTier);
 		}
 		
-		// tool items
-		itemTuningFork = new ItemTuningFork("item_tuning_fork");
-		itemTuningDriver = new ItemTuningDriver("item_tuning_driver");
+		blockTransporterBeacon = new BlockTransporterBeacon("transporter_beacon", EnumTier.BASIC);
+		blockTransporterContainment = new BlockTransporterContainment("transporter_containment", EnumTier.BASIC);
+		blockTransporterCore = new BlockTransporterCore("transporter_core", EnumTier.BASIC);
+		blockTransporterScanner = new BlockTransporterScanner("transporter_scanner", EnumTier.BASIC);
+		
+		// passive blocks
+		blockHighlyAdvancedMachine = new BlockHighlyAdvancedMachine("highly_advanced_machine", EnumTier.BASIC);
+		blockIridium = new BlockIridium("iridium_block", EnumTier.BASIC);
+		
+		// weapon blocks
+		blockLaserCamera = new BlockLaserCamera("laser_camera", EnumTier.BASIC);
+		blockWeaponController = new BlockWeaponController("weapon_controller", EnumTier.BASIC);
+		
+		// equipment items
+		itemTuningFork = new ItemTuningFork("tuning_fork", EnumTier.BASIC);
+		itemTuningDriver = new ItemTuningDriver("tuning_driver", EnumTier.ADVANCED);
+		itemWrench = new ItemWrench("wrench", EnumTier.BASIC);
+		
+		itemWarpArmor = new ItemArmor[EnumTier.length][4];
+		for(final EnumTier enumTier : EnumTier.nonCreative()) {
+			final int index = enumTier.getIndex();
+			itemWarpArmor[index][EntityEquipmentSlot.HEAD.getIndex() ] = new ItemWarpArmor("warp_armor." + enumTier.getName() + "." + ItemWarpArmor.suffixes[EntityEquipmentSlot.HEAD.getIndex() ], enumTier, armorMaterial[index], 3, EntityEquipmentSlot.HEAD );
+			itemWarpArmor[index][EntityEquipmentSlot.CHEST.getIndex()] = new ItemWarpArmor("warp_armor." + enumTier.getName() + "." + ItemWarpArmor.suffixes[EntityEquipmentSlot.CHEST.getIndex()], enumTier, armorMaterial[index], 3, EntityEquipmentSlot.CHEST);
+			itemWarpArmor[index][EntityEquipmentSlot.LEGS.getIndex() ] = new ItemWarpArmor("warp_armor." + enumTier.getName() + "." + ItemWarpArmor.suffixes[EntityEquipmentSlot.LEGS.getIndex() ], enumTier, armorMaterial[index], 3, EntityEquipmentSlot.LEGS );
+			itemWarpArmor[index][EntityEquipmentSlot.FEET.getIndex() ] = new ItemWarpArmor("warp_armor." + enumTier.getName() + "." + ItemWarpArmor.suffixes[EntityEquipmentSlot.FEET.getIndex() ], enumTier, armorMaterial[index], 3, EntityEquipmentSlot.FEET );
+		}
 		
 		// damage sources
 		damageAsphyxia = new DamageAsphyxia();
