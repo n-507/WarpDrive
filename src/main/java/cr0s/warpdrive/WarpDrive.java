@@ -318,6 +318,13 @@ public class WarpDrive {
 	
 	public static Logger logger;
 	
+	public WarpDrive() {
+		// 20% more durability, same enchantability (except basic is slightly lower), increased toughness
+		armorMaterial[EnumTier.BASIC.getIndex()   ] = EnumHelper.addArmorMaterial("warpBasic"   , "warpdrive:warp",  6, new int[] { 1, 2, 3, 1 }, 12, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0F);
+		armorMaterial[EnumTier.ADVANCED.getIndex()] = EnumHelper.addArmorMaterial("warpAdvanced", "warpdrive:warp", 18, new int[] { 2, 6, 5, 2 },  9, SoundEvents.ITEM_ARMOR_EQUIP_IRON   , 1.0F);
+		armorMaterial[EnumTier.SUPERIOR.getIndex()] = EnumHelper.addArmorMaterial("warpSuperior", "warpdrive:warp", 40, new int[] { 3, 6, 8, 3 }, 10, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 2.5F);
+	}
+	
 	@EventHandler
 	public void onFMLPreInitialization(final FMLPreInitializationEvent event) {
 		logger = event.getModLog();

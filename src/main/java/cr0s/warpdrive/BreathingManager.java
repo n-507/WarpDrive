@@ -4,6 +4,7 @@ import cr0s.warpdrive.api.IAirContainerItem;
 import cr0s.warpdrive.api.IBreathingHelmet;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.StateAir;
 import cr0s.warpdrive.data.VectorI;
 import cr0s.warpdrive.event.ChunkHandler;
@@ -15,7 +16,6 @@ import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -264,7 +264,7 @@ public class BreathingManager {
 		final ItemStack itemStackChestplate = entityLivingBase.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 		if (!itemStackChestplate.isEmpty()) {
 			final Item itemChestplate = itemStackChestplate.getItem();
-			if (itemChestplate == WarpDrive.itemWarpArmor[2]) {
+			if (itemChestplate == WarpDrive.itemWarpArmor[EnumTier.SUPERIOR.getIndex()][2]) {
 				return electrolyseIceToAir(entityLivingBase);
 			}
 		}
@@ -307,7 +307,7 @@ public class BreathingManager {
 		final ItemStack itemStackChestplate = entityPlayer.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 		if (!itemStackChestplate.isEmpty()) {
 			final Item itemChestplate = itemStackChestplate.getItem();
-			if (itemChestplate == WarpDrive.itemWarpArmor[2]) {
+			if (itemChestplate == WarpDrive.itemWarpArmor[EnumTier.SUPERIOR.getIndex()][2]) {
 				canElectrolyse = true;
 			}
 		}

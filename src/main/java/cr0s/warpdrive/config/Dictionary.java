@@ -422,8 +422,10 @@ public class Dictionary {
 			
 			config.get("item_tags", "ic2:rubber_boots"                             , "NoFallDamage").getString();
 			config.get("item_tags", "ic2:quantum_boots"                            , "NoFallDamage").getString();
-			config.get("item_tags", "warpdrive:warp_armor_leggings"                , "NoFallDamage").getString();
-			config.get("item_tags", "warpdrive:warp_armor_boots"                   , "NoFallDamage").getString();
+			config.get("item_tags", "warpdrive:warp_armor.advanced.leggings"       , "NoFallDamage").getString();
+			config.get("item_tags", "warpdrive:warp_armor.advanced.boots"          , "NoFallDamage").getString();
+			config.get("item_tags", "warpdrive:warp_armor.superior.leggings"       , "NoFallDamage").getString();
+			config.get("item_tags", "warpdrive:warp_armor.superior.boots"          , "NoFallDamage").getString();
 			
 			// *** read actual values
 			final String[] taggedItemsName = categoryItemTags.getValues().keySet().toArray(new String[0]);

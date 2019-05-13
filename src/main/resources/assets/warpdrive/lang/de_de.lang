@@ -68,10 +68,18 @@ item.warpdrive.component.raw_carbon_fiber.name=Raw Carbon fiber
 item.warpdrive.component.raw_carbon_mesh.name=Raw Carbon Mesh
 item.warpdrive.component.carbon_fiber.name=Carbon Fiber
 
-item.warpdrive.armor.helmet.name=Warp Helm
-item.warpdrive.armor.chestplate.name=Warp Brustpanzer
-item.warpdrive.armor.leggings.name=Warp Beinschutz
-item.warpdrive.armor.boots.name=Warp Stiefel
+item.warpdrive.armor.basic.helmet.name=Emergency Helm
+item.warpdrive.armor.basic.chestplate.name=Emergency Brustpanzer
+item.warpdrive.armor.basic.leggings.name=Emergency Beinschutz
+item.warpdrive.armor.basic.boots.name=Emergency Stiefel
+item.warpdrive.armor.advanced.helmet.name=Re-entry Helm
+item.warpdrive.armor.advanced.chestplate.name=Re-entry Brustpanzer
+item.warpdrive.armor.advanced.leggings.name=Re-entry Beinschutz
+item.warpdrive.armor.advanced.boots.name=Re-entry Stiefel
+item.warpdrive.armor.superior.helmet.name=Warp Helm
+item.warpdrive.armor.superior.chestplate.name=Warp Brustpanzer
+item.warpdrive.armor.superior.leggings.name=Warp Beinschutz
+item.warpdrive.armor.superior.boots.name=Warp Stiefel
 
 item.warpdrive.atomic.electromagnetic_cell.basic.name=Standard Elektromagnetische Zelle
 item.warpdrive.atomic.electromagnetic_cell.advanced.name=Weiterentwickelter Elektromagnetische Zelle

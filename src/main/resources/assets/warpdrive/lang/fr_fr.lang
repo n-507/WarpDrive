@@ -68,10 +68,18 @@ item.warpdrive.component.raw_carbon_fiber.name=Fibre de carbone brute
 item.warpdrive.component.raw_carbon_mesh.name=Maille de carbone brute
 item.warpdrive.component.carbon_fiber.name=Fibre de carbone
 
-item.warpdrive.armor.helmet.name=Casque warp
-item.warpdrive.armor.chestplate.name=Plastron warp
-item.warpdrive.armor.leggings.name=Jambières warp
-item.warpdrive.armor.boots.name=Bottes warp
+item.warpdrive.armor.basic.helmet.name=Casque de secours
+item.warpdrive.armor.basic.chestplate.name=Plastron de secours
+item.warpdrive.armor.basic.leggings.name=Jambières de secours
+item.warpdrive.armor.basic.boots.name=Bottes de secours
+item.warpdrive.armor.advanced.helmet.name=Casque de ré-entrée
+item.warpdrive.armor.advanced.chestplate.name=Plastron de ré-entrée
+item.warpdrive.armor.advanced.leggings.name=Jambières de ré-entrée
+item.warpdrive.armor.advanced.boots.name=Bottes de ré-entrée
+item.warpdrive.armor.superior.helmet.name=Casque warp
+item.warpdrive.armor.superior.chestplate.name=Plastron warp
+item.warpdrive.armor.superior.leggings.name=Jambières warp
+item.warpdrive.armor.superior.boots.name=Bottes warp
 
 item.warpdrive.atomic.electromagnetic_cell.basic.name=Cage électromagnétique élémentaire
 item.warpdrive.atomic.electromagnetic_cell.advanced.name=Cage électromagnétique avancée

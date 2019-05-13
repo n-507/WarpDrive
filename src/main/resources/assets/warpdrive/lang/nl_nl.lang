@@ -68,10 +68,18 @@ item.warpdrive.component.raw_carbon_fiber.name=Raw Carbon fiber
 item.warpdrive.component.raw_carbon_mesh.name=Raw Carbon Mesh
 item.warpdrive.component.carbon_fiber.name=Carbon Fiber
 
-item.warpdrive.armor.helmet.name=Warp Helm
-item.warpdrive.armor.chestplate.name=Warp Borstplaat
-item.warpdrive.armor.leggings.name=Warp Broek
-item.warpdrive.armor.boots.name=Warp Schoenen
+item.warpdrive.armor.basic.helmet.name=Emergency Helm
+item.warpdrive.armor.basic.chestplate.name=Emergency Borstplaat
+item.warpdrive.armor.basic.leggings.name=Emergency Broek
+item.warpdrive.armor.basic.boots.name=Emergency Schoenen
+item.warpdrive.armor.advanced.helmet.name=Re-entry Helm
+item.warpdrive.armor.advanced.chestplate.name=Re-entry Borstplaat
+item.warpdrive.armor.advanced.leggings.name=Re-entry Broek
+item.warpdrive.armor.advanced.boots.name=Re-entry Schoenen
+item.warpdrive.armor.superior.helmet.name=Warp Helm
+item.warpdrive.armor.superior.chestplate.name=Warp Borstplaat
+item.warpdrive.armor.superior.leggings.name=Warp Broek
+item.warpdrive.armor.superior.boots.name=Warp Schoenen
 
 item.warpdrive.atomic.electromagnetic_cell.basic.name=Electromagnetische Cell
 item.warpdrive.atomic.electromagnetic_cell.advanced.name=Electromagnetische Cell

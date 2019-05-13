@@ -699,36 +699,68 @@ public class Recipes {
 	private static void initToolsAndArmor() {
 		// Warp helmet
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
-		                                       WarpDrive.itemWarpArmor[EntityEquipmentSlot.HEAD.getIndex()], false, "ggg", "gig", "wcw",
-		                                       'i', Items.IRON_HELMET,
-		                                       'w', Blocks.WOOL,
-		                                       'g', "blockGlass",
-		                                       'c', ItemComponent.getItemStack(EnumComponentType.AIR_CANISTER)));
+		                                       WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][EntityEquipmentSlot.HEAD.getIndex()], false, "mmm", "mgm", "ici",
+		                                       'm', "itemRubber",
+		                                       'g', "blockHull1_glass",
+		                                       'c', ItemComponent.getItemStack(EnumComponentType.AIR_CANISTER),
+		                                       'i', "nuggetIron" ));
+		WarpDrive.register(new ShapedOreRecipe(groupTools,
+		                                       WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.HEAD.getIndex()], false, "mmm", "waw", "   ",
+		                                       'a', WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][EntityEquipmentSlot.HEAD.getIndex()],
+		                                       'm', ItemComponent.getItemStack(EnumComponentType.CERAMIC),
+		                                       'w', Blocks.WOOL ));
+		WarpDrive.register(new ShapedOreRecipe(groupTools,
+		                                       WarpDrive.itemWarpArmor[EnumTier.SUPERIOR.getIndex()][EntityEquipmentSlot.HEAD.getIndex()], false, "mmm", "mam", "   ",
+		                                       'a', WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.HEAD.getIndex()],
+		                                       'm', ItemComponent.getItemStack(EnumComponentType.CARBON_FIBER) ));
 		
 		// Warp chestplate
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
-		                                       WarpDrive.itemWarpArmor[EntityEquipmentSlot.CHEST.getIndex()], false, "gcg", "wiw", "GmG",
-		                                       'i', Items.IRON_CHESTPLATE,
-		                                       'w', Blocks.WOOL,
-		                                       'g', "blockHull3_glass",
-		                                       'm', ItemComponent.getItemStack(EnumComponentType.PUMP),
-		                                       'G', "ingotGold",
-		                                       'c', ItemComponent.getItemStack(EnumComponentType.AIR_CANISTER)));
+		                                       WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][EntityEquipmentSlot.CHEST.getIndex()], false, "i i", "mmm", "mmm",
+		                                       'm', "itemRubber",
+		                                       'i', "nuggetIron" ));
+		WarpDrive.register(new ShapedOreRecipe(groupTools,
+		                                       WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.CHEST.getIndex()], false, "m m", "mam", "mwm",
+		                                       'a', WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][EntityEquipmentSlot.CHEST.getIndex()],
+		                                       'm', ItemComponent.getItemStack(EnumComponentType.CERAMIC),
+		                                       'w', Blocks.WOOL ));
+		WarpDrive.register(new ShapedOreRecipe(groupTools,
+		                                       WarpDrive.itemWarpArmor[EnumTier.SUPERIOR.getIndex()][EntityEquipmentSlot.CHEST.getIndex()], false, "mam", "mpm", "mcm",
+		                                       'a', WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.CHEST.getIndex()],
+		                                       'm', ItemComponent.getItemStack(EnumComponentType.CARBON_FIBER),
+		                                       'p', ItemComponent.getItemStack(EnumComponentType.PUMP),
+		                                       'c', ItemComponent.getItemStack(EnumComponentType.AIR_CANISTER) ));
 		
 		// Warp Leggings
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
-		                                       WarpDrive.itemWarpArmor[EntityEquipmentSlot.LEGS.getIndex()], false, "gig", "m m", "w w",
-		                                       'i', Items.IRON_LEGGINGS,
-		                                       'm', itemStackMotors[1],
-		                                       'w', Blocks.WOOL,
-		                                       'g', "blockHull2_glass"));
+		                                       WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][EntityEquipmentSlot.LEGS.getIndex()], false, "imi", "m m", "m m",
+		                                       'm', "itemRubber",
+		                                       'i', "nuggetIron" ));
+		WarpDrive.register(new ShapedOreRecipe(groupTools,
+		                                       WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.LEGS.getIndex()], false, "mam", "M M", "w w",
+		                                       'a', WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][EntityEquipmentSlot.LEGS.getIndex()],
+		                                       'm', Items.IRON_INGOT,
+		                                       'M', itemStackMotors[1],
+		                                       'w', Blocks.WOOL ));
+		WarpDrive.register(new ShapedOreRecipe(groupTools,
+		                                       WarpDrive.itemWarpArmor[EnumTier.SUPERIOR.getIndex()][EntityEquipmentSlot.LEGS.getIndex()], false, "mam", "m m", "m m",
+		                                       'a', WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.LEGS.getIndex()],
+		                                       'm', ItemComponent.getItemStack(EnumComponentType.CARBON_FIBER) ));
 		
 		// Warp boots
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
-		                                       WarpDrive.itemWarpArmor[EntityEquipmentSlot.FEET.getIndex()], false, "wiw", "r r", "   ",
-		                                       'i', Items.IRON_BOOTS,
-		                                       'w', Blocks.WOOL,
-		                                       'r', rubber ));
+		                                       WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][EntityEquipmentSlot.FEET.getIndex()], false, "i i", "m m", "   ",
+		                                       'm', "itemRubber",
+		                                       'i', "nuggetIron" ));
+		WarpDrive.register(new ShapedOreRecipe(groupTools,
+		                                       WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.FEET.getIndex()], false, "cac", "m m", "   ",
+		                                       'a', WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][EntityEquipmentSlot.LEGS.getIndex()],
+		                                       'm', Items.IRON_INGOT,
+		                                       'c', ItemComponent.getItemStack(EnumComponentType.CERAMIC) ));
+		WarpDrive.register(new ShapedOreRecipe(groupTools,
+		                                       WarpDrive.itemWarpArmor[EnumTier.SUPERIOR.getIndex()][EntityEquipmentSlot.FEET.getIndex()], false, "mam", "m m", "   ",
+		                                       'a', WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.LEGS.getIndex()],
+		                                       'm', ItemComponent.getItemStack(EnumComponentType.CARBON_FIBER) ));
 		
 		// Tuning fork variations
 		for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {

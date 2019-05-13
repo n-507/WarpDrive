@@ -3,6 +3,7 @@ package cr0s.warpdrive.world;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.TileEntityAbstractEnergy;
 import cr0s.warpdrive.data.BlockProperties;
+import cr0s.warpdrive.data.EnumTier;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
@@ -570,7 +571,7 @@ public class WorldGenSmallShip extends WorldGenerator {
 			for (int idx = 0; idx < countMobs; idx++) {
 				final EntityVillager entityVillager = new EntityVillager(world, 0);
 				entityVillager.setLocationAndAngles(x + 0.5D, y, z + 0.5D, 0.0F, 0.0F);
-				entityVillager.setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(WarpDrive.itemWarpArmor[3], 1, 1));
+				entityVillager.setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][3], 1, 1));
 				world.spawnEntity(entityVillager);
 			}
 		} else if (world.rand.nextBoolean()) {// Zombies
