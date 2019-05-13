@@ -190,16 +190,17 @@ import javax.annotation.Nullable;
 @Mod(modid = WarpDrive.MODID,
      name = "WarpDrive",
      version = WarpDrive.VERSION,
-     dependencies = "after:ic2;"
-                  + "after:cofhcore;"
-                  + "after:computercraft;"
-                  + "after:opencomputer;"
-                  + "after:ccturtle;"
-                  + "after:gregtech;"
+     dependencies = ""
                   + "after:appliedenergistics;"
-                  + "after:enderio;"
+                  + "after:cofhcore;"
+                  + "after:ccturtle;"
                   + "after:defensetech;"
-                  + "after:icbmclassic;",
+                  + "after:computercraft;"
+                  + "after:enderio;"
+                  + "after:gregtech;"
+                  + "after:ic2;"
+                  + "after:icbmclassic;"
+                  + "after:opencomputers;",
      certificateFingerprint = "f7be6b40743c6a8205df86c5e57547d578605d8a"
 )
 public class WarpDrive {
