@@ -67,6 +67,16 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	private long releasedThisCycle = 0; // amount of energy released during current cycle
 	private long energyReleasedLastCycle = 0;
 	
+	// client properties
+	public float client_rotationCore_deg = 0.0F;
+	public float client_rotationSpeedCore_degPerTick = 2.0F;
+	public float client_rotationMatter_deg = 0.0F;
+	public float client_rotationSpeedMatter_degPerTick = 2.0F;
+	public float client_radiusMatter_m = 0.0F;
+	public float client_radiusSpeedMatter_mPerTick = 0.0F;
+	public float client_yCore = 0.0F;
+	public float client_yCoreSpeed_mPerTick = 0.0F;
+	
 	@SuppressWarnings("unchecked")
 	private final WeakReference<TileEntityEnanReactorLaser>[] weakTileEntityLasers = (WeakReference<TileEntityEnanReactorLaser>[]) Array.newInstance(WeakReference.class, ReactorFace.maxInstabilities);
 	
@@ -106,10 +116,56 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	}
 	
 	@Override
+	protected void onFirstUpdateTick() {
+		super.onFirstUpdateTick();
+		
+		client_rotationCore_deg = world.rand.nextFloat() * 360.0F;
+		client_rotationSpeedCore_degPerTick = 2.0F * (float) instabilityValues[0];
+		
+		client_rotationMatter_deg = world.rand.nextFloat() * 360.0F;
+		client_rotationSpeedMatter_degPerTick = client_rotationSpeedCore_degPerTick * 0.98F;
+		
+		client_radiusMatter_m = 0.0F;
+		client_radiusSpeedMatter_mPerTick = 0.0F;
+		
+		// we start at 0.5F to have a small animation on block placement
+		client_yCore = containedEnergy == 0 ? 0.5F : (float) vCenter.y - pos.getY();
+		client_yCoreSpeed_mPerTick = 0.0F;
+	}
+	
+	@Override
 	public void update() {
 		super.update();
 		
 		if (world.isRemote) {
+			float stabilityAverage = 0.0F;
+			final ReactorFace[] reactorFaces = ReactorFace.getLasers(enumTier);
+			for (final ReactorFace reactorFace : reactorFaces) {
+				stabilityAverage += (float) instabilityValues[reactorFace.indexStability];
+			}
+			stabilityAverage /= reactorFaces.length;
+			final float radiusMatterMax = (float) vCenter.y - pos.getY();
+			final float rotationTarget_degPerTick = 0.5F * stabilityAverage;
+			final float radiusMatterTarget = containedEnergy <= 10000 ? 0.0F : radiusMatterMax * (containedEnergy / (float) energyStored_max);
+			final float yCoreTarget = containedEnergy == 0 ? 1.0F : radiusMatterMax;
+			
+			// elastic rotation
+			client_rotationCore_deg += client_rotationSpeedCore_degPerTick;
+			client_rotationSpeedCore_degPerTick = 0.975F * client_rotationSpeedCore_degPerTick
+			                                    + 0.025F * rotationTarget_degPerTick;
+			client_rotationMatter_deg += client_rotationSpeedMatter_degPerTick;
+			client_rotationSpeedMatter_degPerTick = 0.985F * client_rotationSpeedMatter_degPerTick
+			                                      + 0.015F * rotationTarget_degPerTick;
+			
+			// linear radius
+			client_radiusMatter_m += client_radiusSpeedMatter_mPerTick;
+			final float radiusDelta = radiusMatterTarget - client_radiusMatter_m;
+			client_radiusSpeedMatter_mPerTick = Math.signum(radiusDelta) * Math.min(0.05F, Math.abs(radiusDelta));
+			
+			// linear position
+			client_yCore += client_yCoreSpeed_mPerTick;
+			final float yDelta = yCoreTarget - client_yCore;
+			client_yCoreSpeed_mPerTick = Math.signum(yDelta) * Math.min(0.05F, Math.abs(yDelta));
 			return;
 		}
 		

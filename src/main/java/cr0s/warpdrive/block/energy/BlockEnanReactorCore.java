@@ -3,6 +3,7 @@ package cr0s.warpdrive.block.energy;
 import cr0s.warpdrive.block.BlockAbstractContainer;
 import cr0s.warpdrive.data.ReactorFace;
 import cr0s.warpdrive.data.EnumTier;
+import cr0s.warpdrive.render.TileEntityEnanReactorCoreRenderer;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
@@ -13,6 +14,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockEnanReactorCore extends BlockAbstractContainer {
 	
@@ -54,6 +59,17 @@ public class BlockEnanReactorCore extends BlockAbstractContainer {
 	@Override
 	public TileEntity createNewTileEntity(@Nonnull final World world, final int metadata) {
 		return new TileEntityEnanReactorCore();
+	}
+	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void modelInitialisation() {
+		super.modelInitialisation();
+		
+		if (enumTier != EnumTier.BASIC) {
+			// Bind our TESR to our tile entity
+			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnanReactorCore.class, new TileEntityEnanReactorCoreRenderer());
+		}
 	}
 	
 	@Override
