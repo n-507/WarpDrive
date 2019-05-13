@@ -1146,6 +1146,8 @@ public class JumpSequencer extends AbstractSequencer {
 					                                    jumpBlock.x, jumpBlock.y, jumpBlock.z, jumpBlock.block, jumpBlock.blockMeta));
 				}
 				final TileEntity tileEntitySource = jumpBlock.getTileEntity(sourceWorld);
+				final BlockPos blockPosTarget = transformation.apply(jumpBlock.x, jumpBlock.y, jumpBlock.z);
+				final IBlockState blockStateTarget = targetWorld.getBlockState(blockPosTarget);
 				for (final Entry<String, NBTBase> external : jumpBlock.externals.entrySet()) {
 					final IBlockTransformer blockTransformer = WarpDriveConfig.blockTransformers.get(external.getKey());
 					if (blockTransformer != null) {
@@ -1155,11 +1157,9 @@ public class JumpSequencer extends AbstractSequencer {
 							                                 jumpBlock.block, jumpBlock.blockMeta, tileEntitySource);
 						}
 						
-						final BlockPos blockPosTarget = transformation.apply(jumpBlock.x, jumpBlock.y, jumpBlock.z);
-						final IBlockState blockStateTarget = targetWorld.getBlockState(blockPosTarget);
-						final TileEntity newTileEntity = jumpBlock.weakTileEntity == null ? null : targetWorld.getTileEntity(blockPosTarget);
+						final TileEntity tileEntityTarget = jumpBlock.weakTileEntity == null ? null : targetWorld.getTileEntity(blockPosTarget);
 						blockTransformer.restoreExternals(targetWorld, blockPosTarget,
-						                                  blockStateTarget, newTileEntity, transformation, external.getValue());
+						                                  blockStateTarget, tileEntityTarget, transformation, external.getValue());
 					}
 				}
 				index++;
