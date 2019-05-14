@@ -170,7 +170,7 @@ public class WarpDriveConfig {
 	public static int                  G_LUA_SCRIPTS = LUA_SCRIPTS_ALL;
 	public static String               G_SCHEMATICS_LOCATION = "warpDrive_schematics";
 	public static int                  G_BLOCKS_PER_TICK = 3500;
-	public static boolean              G_ENABLE_FAST_SET_BLOCKSTATE = true;
+	public static boolean              G_ENABLE_FAST_SET_BLOCKSTATE = false;
 	public static boolean              G_ENABLE_PROTECTION_CHECKS = true;
 	public static float                G_BLAST_RESISTANCE_CAP = 60.0F;
 	
