@@ -1,5 +1,6 @@
-package cr0s.warpdrive;
+package cr0s.warpdrive.block;
 
+import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.api.computer.ISecurityStation;
 import cr0s.warpdrive.block.TileEntityAbstractMachine;

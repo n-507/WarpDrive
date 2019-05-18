@@ -1,7 +1,6 @@
 package cr0s.warpdrive.block;
 
 import cr0s.warpdrive.Commons;
-import cr0s.warpdrive.TileEntitySecurityStation;
 import cr0s.warpdrive.data.EnumTier;
 
 import javax.annotation.Nonnull;

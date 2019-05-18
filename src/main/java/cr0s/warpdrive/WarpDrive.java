@@ -8,6 +8,7 @@ import cr0s.warpdrive.block.BlockSecurityStation;
 import cr0s.warpdrive.block.TileEntityChunkLoader;
 import cr0s.warpdrive.block.TileEntityLaser;
 import cr0s.warpdrive.block.TileEntityLaserMedium;
+import cr0s.warpdrive.block.TileEntitySecurityStation;
 import cr0s.warpdrive.block.atomic.BlockAcceleratorControlPoint;
 import cr0s.warpdrive.block.atomic.BlockAcceleratorController;
 import cr0s.warpdrive.block.atomic.BlockChiller;

@@ -1,7 +1,7 @@
 package cr0s.warpdrive.block.movement;
 
 import cr0s.warpdrive.Commons;
-import cr0s.warpdrive.TileEntitySecurityStation;
+import cr0s.warpdrive.block.TileEntitySecurityStation;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.EventWarpDrive.Ship.PreJump;
 import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
