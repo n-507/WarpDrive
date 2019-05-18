@@ -300,8 +300,8 @@ public class Recipes {
 		}
 		
 		// *** Laser medium
-		// basic    is 1 red dye, 1 green dye, 1 yellow dye, 3 water bottles, 1 power interface, 1 LV casing, 1 computer interface
-		// advanced is 2 redstone dust, 1 awkward potion, 2 lapis, 1 glass tank,  1 power interface, 1 LV casing, 1 computer interface
+		// basic    is 2 dyes, 1 water bottle, 1 gold nugget, 1 LV casing
+		// advanced is 2 redstone dust, 1 awkward potion, 2 lapis, 1 glass tank,  1 power interface, 1 MV casing
 		// superior is 1 laser medium (empty), 4 redstone blocks, 4 lapis blocks
 		final ItemStack itemStackWaterBottle = WarpDriveConfig.getItemStackOrFire("minecraft:potion", 0, "{Potion: \"minecraft:water\"}");
 		final ItemStack itemStackAwkwardPotion = WarpDriveConfig.getItemStackOrFire("minecraft:potion", 0, "{Potion: \"minecraft:awkward\"}");
@@ -309,7 +309,7 @@ public class Recipes {
 		                                               new ItemStack(WarpDrive.blockLaserMediums[EnumTier.BASIC.getIndex()]), false, "   ", "dwd", "pm ",
 		                                               'd', "dye",
 		                                               'w', itemStackWaterBottle,
-		                                               'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
+		                                               'p', "nuggetGold",
 		                                               'm', itemStackMachineCasings[0] ));
 		WarpDrive.register(new RecipeParticleShapedOre(groupMachines,
 		                                               new ItemStack(WarpDrive.blockLaserMediums[EnumTier.ADVANCED.getIndex()]), false, "rAr", "lBl", "pm ",
