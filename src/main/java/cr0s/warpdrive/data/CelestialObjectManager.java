@@ -3,6 +3,9 @@ package cr0s.warpdrive.data;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.InvalidXmlException;
 import cr0s.warpdrive.config.XmlFileManager;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -183,7 +186,7 @@ public class CelestialObjectManager extends XmlFileManager {
 	
 	// *** non-static methods ***
 	
-	private void addOrUpdateInRegistry(final CelestialObject celestialObject, final boolean isUpdating) {
+	private void addOrUpdateInRegistry(@Nonnull final CelestialObject celestialObject, final boolean isUpdating) {
 		final CelestialObject celestialObjectExisting = celestialObjectsById.get(celestialObject.id);
 		if (celestialObjectExisting == null || isUpdating) {
 			celestialObjectsById.put(celestialObject.id, celestialObject);
@@ -195,10 +198,10 @@ public class CelestialObjectManager extends XmlFileManager {
 	private void rebuildAndValidate(final boolean isRemote) {
 		// optimize execution speed by flattening the data structure
 		final int count = celestialObjectsById.size();
-		celestialObjects = new CelestialObject[count];
+		final CelestialObject[] celestialObjectsTemp = new CelestialObject[count];
 		int index = 0;
 		for (final CelestialObject celestialObject : celestialObjectsById.values()) {
-			celestialObjects[index++] = celestialObject;
+			celestialObjectsTemp[index++] = celestialObject;
 			celestialObject.resolveParent(celestialObjectsById.get(celestialObject.parentId));
 		}
 		
@@ -207,7 +210,7 @@ public class CelestialObjectManager extends XmlFileManager {
 		int countHyperspace = 0;
 		int countSpace = 0;
 		for (int indexCelestialObject1 = 0; indexCelestialObject1 < count; indexCelestialObject1++) {
-			final CelestialObject celestialObject1 = celestialObjects[indexCelestialObject1];
+			final CelestialObject celestialObject1 = celestialObjectsTemp[indexCelestialObject1];
 			celestialObject1.lateUpdate();
 			
 			// stats
@@ -264,7 +267,7 @@ public class CelestialObjectManager extends XmlFileManager {
 			
 			// validate against other celestial objects
 			for (int indexCelestialObject2 = indexCelestialObject1 + 1; indexCelestialObject2 < count; indexCelestialObject2++) {
-				final CelestialObject celestialObject2 = celestialObjects[indexCelestialObject2];
+				final CelestialObject celestialObject2 = celestialObjectsTemp[indexCelestialObject2];
 				// are they overlapping in a common parent dimension?
 				if ( !celestialObject1.isHyperspace()
 				  && !celestialObject2.isHyperspace()
@@ -328,6 +331,9 @@ public class CelestialObjectManager extends XmlFileManager {
 		
 		
 		// We're not checking invalid dimension id, so they can be pre-allocated (see MystCraft)
+		
+		// delay setting the array so the render thread can rely on its content
+		celestialObjects = celestialObjectsTemp;
 	}
 	
 	@Override
@@ -360,7 +366,8 @@ public class CelestialObjectManager extends XmlFileManager {
 		double distanceClosest = Double.POSITIVE_INFINITY;
 		CelestialObject celestialObjectClosest = null;
 		for (final CelestialObject celestialObject : celestialObjects) {
-			if ( !celestialObject.isVirtual() 
+			if ( celestialObject != null
+			  && !celestialObject.isVirtual() 
 			  && dimensionId == celestialObject.dimensionId ) {
 				final double distanceSquared = celestialObject.getSquareDistanceOutsideBorder(x, z);
 				if (distanceSquared <= 0) {
