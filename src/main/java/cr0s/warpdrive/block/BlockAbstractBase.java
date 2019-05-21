@@ -101,12 +101,6 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 	}
 	
 	@Override
-	public boolean removedByPlayer(@Nonnull final IBlockState blockState, final World world, @Nonnull final BlockPos blockPos,
-	                               @Nonnull final EntityPlayer player, final boolean willHarvest) {
-		return willHarvest || super.removedByPlayer(blockState, world, blockPos, player, false);
-	}
-	
-	@Override
 	public boolean rotateBlock(final World world, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing axis) {
 		// already handled by vanilla
 		return super.rotateBlock(world, blockPos, axis);
