@@ -175,7 +175,9 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 				final ItemStack itemStack = new ItemStack(item, 1, damageDropped(blockState));
 				final NBTTagCompound tagCompound = new NBTTagCompound();
 				((TileEntityAbstractBase) tileEntity).writeItemDropNBT(tagCompound);
-				itemStack.setTagCompound(tagCompound);
+				if (!tagCompound.isEmpty()) {
+					itemStack.setTagCompound(tagCompound);
+				}
 				drops.add(itemStack);
 			}
 		}

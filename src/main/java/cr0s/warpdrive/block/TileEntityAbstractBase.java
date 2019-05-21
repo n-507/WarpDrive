@@ -226,6 +226,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	
 	public NBTTagCompound writeItemDropNBT(final NBTTagCompound tagCompound) {
 		writeToNBT(tagCompound);
+		tagCompound.removeTag("id");
 		tagCompound.removeTag("x");
 		tagCompound.removeTag("y");
 		tagCompound.removeTag("z");
