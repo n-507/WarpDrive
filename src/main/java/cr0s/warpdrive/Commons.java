@@ -217,6 +217,26 @@ public class Commons {
 		// logger.info(message);
 	}
 	
+	// return cleaned tooltip for comparing independently from spacing, formatting and casing
+	private static String getComparableTooltipLine(final String line) {
+		String lineCleaned = removeFormatting(line)
+				                     .toLowerCase()
+				                     .replace("-", " ")
+				                     .replace(".", " ")
+				                     .replace(",", " ")
+				                     .replace(":", " ")
+				                     .replace(";", " ")
+				                     .replace("  ", " ")
+				                     .trim();
+		if (lineCleaned.startsWith("- ")) {
+			lineCleaned = lineCleaned.substring(2).trim();
+		}
+		if (lineCleaned.endsWith(":")) {
+			lineCleaned = lineCleaned.substring(0, lineCleaned.length() - 1).trim();
+		}
+		return lineCleaned;
+	}
+	
 	// add tooltip information with text formatting and line splitting
 	// will ensure it fits on minimum screen width
 	public static void addTooltip(final List<String> list, @Nonnull final String tooltip) {
@@ -232,9 +252,9 @@ public class Commons {
 		for (final String line : lines) {
 			// skip redundant information
 			boolean isExisting = false;
-			final String cleanToAdd = removeFormatting(line).trim().toLowerCase();
+			final String cleanToAdd = getComparableTooltipLine(line);
 			for (final String lineExisting : list) {
-				final String cleanExisting = removeFormatting(lineExisting).trim().toLowerCase();
+				final String cleanExisting = getComparableTooltipLine(lineExisting);
 				if (cleanExisting.equals(cleanToAdd)) {
 					isExisting = true;
 					break;
