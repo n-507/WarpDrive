@@ -112,6 +112,10 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 		list.add(new ItemStack(this, 1, 2));
 		list.add(new ItemStack(this, 1, 6));
 		list.add(new ItemStack(this, 1, 8));
+		list.add(new ItemStack(this, 1, 12));
+		list.add(new ItemStack(this, 1, 13));
+		list.add(new ItemStack(this, 1, 14));
+		list.add(new ItemStack(this, 1, 15));
 	}
 	
 	@Override
