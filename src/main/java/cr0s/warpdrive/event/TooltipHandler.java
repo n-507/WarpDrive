@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -17,10 +18,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -28,6 +32,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+
+import org.lwjgl.input.Keyboard;
 
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -69,7 +75,9 @@ public class TooltipHandler {
 			return;
 		}
 		
-		final boolean isSneaking = event.getEntityPlayer().isSneaking();
+		// note: event.getEntityPlayer().isSneaking() remains false inside GUIs, so we ask directly the driver
+		final int keyCodeSneak = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
+		final boolean isSneaking = Keyboard.isKeyDown(keyCodeSneak);
 		final boolean isCreativeMode = event.getEntityPlayer().capabilities.isCreativeMode;
 		
 		// cleanup the mess every mods add (notably the registry name)
@@ -350,7 +358,7 @@ public class TooltipHandler {
 	}
 	
 	@SideOnly(Side.CLIENT)
-	private static void addItemDetails(final ItemTooltipEvent event, final boolean isSneaking, final boolean isCreativeMode, final ItemStack itemStack) {
+	private static void addItemDetails(final ItemTooltipEvent event, final boolean isSneaking, final boolean isCreativeMode, @Nonnull final ItemStack itemStack) {
 		final Item item = itemStack.getItem();
 		
 		// registry name
@@ -375,33 +383,82 @@ public class TooltipHandler {
 				if (event.getItemStack().isItemStackDamageable()) {
 					Commons.addTooltip(event.getToolTip(), String.format("Durability: %d / %d",
 					                                                     event.getItemStack().getMaxDamage() - event.getItemStack().getItemDamage(),
-					                                                     event.getItemStack().getMaxDamage()));
+					                                                     event.getItemStack().getMaxDamage() ));
 				}
 			} catch (final Exception exception) {
 				// no operation
 			}
 		}
 		
-		// armor stats
-		if (WarpDriveConfig.TOOLTIP_ADD_ARMOR.isEnabled(isSneaking, isCreativeMode)) {
+		// armor points
+		if (WarpDriveConfig.TOOLTIP_ADD_ARMOR_POINTS.isEnabled(isSneaking, isCreativeMode)) {
 			try {
 				if (item instanceof ItemArmor) {
-					if (WarpDrive.isDev) {// Armor points is already shown by vanilla tooltips
-						Commons.addTooltip(event.getToolTip(), String.format("Armor points: %d",
-						                                                     ((ItemArmor) item).damageReduceAmount));
-					}
-					final ArmorMaterial armorMaterial = ((ItemArmor) item).getArmorMaterial();
-					Commons.addTooltip(event.getToolTip(), String.format("Enchantability: %d",
-					                                                     armorMaterial.getEnchantability()));
-					
-					if (WarpDriveConfig.TOOLTIP_ADD_REPAIR_WITH.isEnabled(isSneaking, isCreativeMode)) {
-						final ItemStack itemStackRepair = armorMaterial.getRepairItemStack();
-						if (!itemStackRepair.isEmpty()) {
-							Commons.addTooltip(event.getToolTip(), String.format("Repair with %s",
-							                                                     itemStackRepair.getTranslationKey()));
-						}
-					}
+					Commons.addTooltip(event.getToolTip(), String.format("§8Armor points is %d",
+					                                                     ((ItemArmor) item).damageReduceAmount ));
 				}
+			} catch (final Exception exception) {
+				// no operation
+			}
+		}
+		
+		// harvesting stats
+		if (WarpDriveConfig.TOOLTIP_ADD_HARVESTING.isEnabled(isSneaking, isCreativeMode)) {
+			try {
+				final Set<String> toolClasses = item.getToolClasses(itemStack);
+				for (final String toolClass : toolClasses) {
+					final int harvestLevel = item.getHarvestLevel(itemStack, toolClass, event.getEntityPlayer(), null);
+					if (harvestLevel == -1) {// (invalid tool class)
+						continue;
+					}
+					Commons.addTooltip(event.getToolTip(), String.format("§8Tool class is %s (%d)",
+					                                                     toolClass, harvestLevel ));
+				}
+			} catch (final Exception exception) {
+				// no operation
+			}
+		}
+		
+		// enchantability
+		if (WarpDriveConfig.TOOLTIP_ADD_ENCHANTABILITY.isEnabled(isSneaking, isCreativeMode)) {
+			final int enchantability = item.getItemEnchantability();
+			if (enchantability > 0) {
+				Commons.addTooltip(event.getToolTip(), String.format("§8Enchantability is %d",
+				                                                     enchantability));
+			}
+		}
+		
+		// repair material
+		if (WarpDriveConfig.TOOLTIP_ADD_REPAIR_WITH.isEnabled(isSneaking, isCreativeMode)) {
+			try {
+				// get the default repair material
+				final ItemStack itemStackRepair;
+				if (item instanceof ItemArmor) {
+					final ArmorMaterial armorMaterial = ((ItemArmor) item).getArmorMaterial();
+					itemStackRepair = armorMaterial.getRepairItemStack();
+					
+				} else if (item instanceof ItemTool) {
+					final String nameMaterial = ((ItemTool) item).getToolMaterialName();
+					final ToolMaterial toolMaterial = ToolMaterial.valueOf(nameMaterial);
+					
+					itemStackRepair = toolMaterial.getRepairItemStack();
+					
+				} else if (item instanceof ItemSword) {
+					final String nameMaterial = ((ItemSword) item).getToolMaterialName();
+					final ToolMaterial toolMaterial = ToolMaterial.valueOf(nameMaterial);
+					
+					itemStackRepair = toolMaterial.getRepairItemStack();
+					
+				} else {
+					itemStackRepair = ItemStack.EMPTY;
+				}
+				
+				// add tooltip
+				if (!itemStackRepair.isEmpty()) {
+					Commons.addTooltip(event.getToolTip(), String.format("§8Repairable with %s",
+					                                                     new TextComponentTranslation(itemStackRepair.getTranslationKey() + ".name").getFormattedText() ));
+				}
+				
 			} catch (final Exception exception) {
 				// no operation
 			}

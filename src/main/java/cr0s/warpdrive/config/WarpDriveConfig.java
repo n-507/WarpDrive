@@ -196,9 +196,10 @@ public class WarpDriveConfig {
 	};
 	public static EnumTooltipCondition TOOLTIP_ADD_REGISTRY_NAME = EnumTooltipCondition.ADVANCED_TOOLTIPS;
 	public static EnumTooltipCondition TOOLTIP_ADD_ORE_DICTIONARY_NAME = EnumTooltipCondition.ALWAYS;
-	public static EnumTooltipCondition TOOLTIP_ADD_ARMOR = EnumTooltipCondition.ALWAYS;
+	public static EnumTooltipCondition TOOLTIP_ADD_ARMOR_POINTS = EnumTooltipCondition.NEVER;
 	public static EnumTooltipCondition TOOLTIP_ADD_BURN_TIME = EnumTooltipCondition.ADVANCED_TOOLTIPS;
 	public static EnumTooltipCondition TOOLTIP_ADD_DURABILITY = EnumTooltipCondition.ALWAYS;
+	public static EnumTooltipCondition TOOLTIP_ADD_ENCHANTABILITY = EnumTooltipCondition.ON_SNEAK;
 	public static EnumTooltipCondition TOOLTIP_ADD_ENTITY_ID = EnumTooltipCondition.ADVANCED_TOOLTIPS;
 	public static EnumTooltipCondition TOOLTIP_ADD_FLAMMABILITY = EnumTooltipCondition.ADVANCED_TOOLTIPS;
 	public static EnumTooltipCondition TOOLTIP_ADD_FLUID = EnumTooltipCondition.ALWAYS;
@@ -803,12 +804,14 @@ public class WarpDriveConfig {
 		                                                                     String.format(commentTooltip, "registry name")).getString());
 		TOOLTIP_ADD_ORE_DICTIONARY_NAME = EnumTooltipCondition.valueOf(config.get("tooltip", "add_ore_dictionary_name", TOOLTIP_ADD_ORE_DICTIONARY_NAME.name(),
 		                                                                           String.format(commentTooltip, "ore dictionary names")).getString());
-		TOOLTIP_ADD_ARMOR = EnumTooltipCondition.valueOf(config.get("tooltip", "add_armor_stats", TOOLTIP_ADD_ARMOR.name(),
-		                                                             String.format(commentTooltip, "armor stats")).getString());
+		TOOLTIP_ADD_ARMOR_POINTS = EnumTooltipCondition.valueOf(config.get("tooltip", "add_armor_points", TOOLTIP_ADD_ARMOR_POINTS.name(),
+		                                                                   String.format(commentTooltip, "armor points")).getString());
 		TOOLTIP_ADD_BURN_TIME = EnumTooltipCondition.valueOf(config.get("tooltip", "add_burn_time", TOOLTIP_ADD_BURN_TIME.name(),
 		                                                                 String.format(commentTooltip, "burn time")).getString());
 		TOOLTIP_ADD_DURABILITY = EnumTooltipCondition.valueOf(config.get("tooltip", "add_durability", TOOLTIP_ADD_DURABILITY.name(),
 		                                                                  String.format(commentTooltip, "durability")).getString());
+		TOOLTIP_ADD_ENCHANTABILITY = EnumTooltipCondition.valueOf(config.get("tooltip", "add_enchantability", TOOLTIP_ADD_ENCHANTABILITY.name(),
+		                                                                   String.format(commentTooltip, "armor & tool enchantability")).getString());
 		TOOLTIP_ADD_ENTITY_ID = EnumTooltipCondition.valueOf(config.get("tooltip", "add_entity_id", TOOLTIP_ADD_ENTITY_ID.name(),
 		                                                                 String.format(commentTooltip, "entity id")).getString());
 		TOOLTIP_ADD_FLAMMABILITY = EnumTooltipCondition.valueOf(config.get("tooltip", "add_flammability", TOOLTIP_ADD_FLAMMABILITY.name(),
