@@ -1712,7 +1712,7 @@ public class Recipes {
 				WarpDrive.register(new ShapelessOreRecipe(groupHulls,
 				                                          new ItemStack(WarpDrive.blockHulls_plain[index][0], 1, metadataColor),
 				        new ItemStack(WarpDrive.blockHulls_plain[index][1], 1, metadataColor)));
-				/*
+				
 				// crafting omnipanel
 				WarpDrive.register(new ShapedOreRecipe(groupHulls,
 				                                       new ItemStack(WarpDrive.blockHulls_omnipanel[index], 16, metadataColor), false, "ggg", "ggg",
@@ -1729,7 +1729,7 @@ public class Recipes {
 				                                          new ItemStack(WarpDrive.blockHulls_omnipanel[index], 1, metadataColor),
 				                                          new ItemStack(WarpDrive.blockHulls_omnipanel[index], 1, metadataColor),
 				                                          new ItemStack(WarpDrive.blockHulls_omnipanel[index], 1, metadataColor) ));
-				/**/
+				
 				// crafting slab
 				WarpDrive.register(new ShapedOreRecipe(groupHulls,
 				                                       new ItemStack(WarpDrive.blockHulls_slab[index][metadataColor], 6, 0), false, "bbb",
