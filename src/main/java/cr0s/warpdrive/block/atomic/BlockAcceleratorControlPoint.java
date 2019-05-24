@@ -42,7 +42,7 @@ public class BlockAcceleratorControlPoint extends BlockAbstractAccelerator imple
 	}
 	
 	@Override
-	public int getMetaFromState(final IBlockState blockState) {
+	public int getMetaFromState(@Nonnull final IBlockState blockState) {
 		return (blockState.getValue(BlockProperties.ACTIVE) ? 8 : 0);
 	}
 	

@@ -85,7 +85,7 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 	}
 	
 	@Override
-	public int getMetaFromState(final IBlockState blockState) {
+	public int getMetaFromState(@Nonnull final IBlockState blockState) {
 		return blockState.getValue(BlockProperties.FACING).getIndex()
 		       + (blockState.getValue(IS_DOUBLE_SIDED) ? 8 : 0);
 	}

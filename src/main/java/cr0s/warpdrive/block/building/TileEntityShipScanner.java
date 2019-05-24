@@ -100,7 +100,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 			return;
 		}
 		
-		// @TODO inmplement ShipScanner.isEnabled
+		// @TODO implement ShipScanner.isEnabled
 		
 		searchTicks++;
 		if (searchTicks > WarpDriveConfig.SS_SEARCH_INTERVAL_TICKS) {
@@ -252,7 +252,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		TileEntityShipCore tileEntityShipCore = null;
 		
 		// Search for ship cores above
-		BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(pos);
+		final BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(pos);
 		for (int newY = pos.getY() + 1; newY <= 255; newY++) {
 			mutableBlockPos.setY(newY);
 			if (world.getBlockState(mutableBlockPos).getBlock() instanceof BlockShipCore) { // found ship core above
@@ -316,15 +316,15 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		schematic.setTag("ship", tagCompoundShip);
 		
 		// Storage collections
-		final String stringBlockRegistryNames[] = new String[size];
-		final byte byteMetadatas[] = new byte[size];
+		final String[] stringBlockRegistryNames = new String[size];
+		final byte[] byteMetadatas = new byte[size];
 		final NBTTagList tileEntitiesList = new NBTTagList();
 		
 		// Scan the whole area
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				for (int z = 0; z < length; z++) {
-					BlockPos blockPos = new BlockPos(shipCore.minX + x, shipCore.minY + y, shipCore.minZ + z);
+					final BlockPos blockPos = new BlockPos(shipCore.minX + x, shipCore.minY + y, shipCore.minZ + z);
 					IBlockState blockState = world.getBlockState(blockPos);
 					
 					// Skip leftBehind and anchor blocks

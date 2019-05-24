@@ -61,7 +61,7 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 	final EnumTier enumTier;
 	private final IBlockState blockStateHull;
 	
-	public BlockHullSlab(final String registryName, final EnumTier enumTier, final IBlockState blockStateHull) {
+	public BlockHullSlab(@Nonnull final String registryName, @Nonnull final EnumTier enumTier, @Nonnull final IBlockState blockStateHull) {
 		super(Material.ROCK);
 		
 		this.enumTier = enumTier;
@@ -94,7 +94,7 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 	}
 	
 	@Override
-	public int getMetaFromState(final IBlockState blockState) {
+	public int getMetaFromState(@Nonnull final IBlockState blockState) {
 		return blockState.getValue(VARIANT).ordinal();
 	}
 	
@@ -107,7 +107,7 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(final CreativeTabs creativeTab, final NonNullList<ItemStack> list) {
+	public void getSubBlocks(final CreativeTabs creativeTab, @Nonnull final NonNullList<ItemStack> list) {
 		list.add(new ItemStack(this, 1, 0));
 		list.add(new ItemStack(this, 1, 2));
 		list.add(new ItemStack(this, 1, 6));
@@ -171,13 +171,13 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isFullBlock(final IBlockState blockState) {
+	public boolean isFullBlock(@Nonnull final IBlockState blockState) {
 		return ((BlockSlab) blockState.getBlock()).isDouble();
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isFullCube(final IBlockState blockState) {
+	public boolean isFullCube(@Nonnull final IBlockState blockState) {
 		return ((BlockSlab) blockState.getBlock()).isDouble();
 	}
 	
@@ -270,7 +270,7 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 	}
 	
 	@Override
-	public boolean doesSideBlockRendering(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos, final EnumFacing side) {
+	public boolean doesSideBlockRendering(@Nonnull final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos, final EnumFacing side) {
 		if (blockState.isOpaqueCube()) {
 			return true;
 		}
@@ -281,7 +281,7 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isSideSolid(final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, final EnumFacing side) {
+	public boolean isSideSolid(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, final EnumFacing side) {
 		final EnumFacing enumFacing = blockState.getValue(VARIANT).getFacing();
 		return enumFacing == side;
 	}

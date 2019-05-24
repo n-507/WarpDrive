@@ -86,6 +86,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -573,7 +574,8 @@ public class WarpDriveConfig {
 		return getItemStackOrFire(registryName, meta, "");
 	}
 	
-	private static Object getOreOrItemStackOrNull(final String registryName, final int meta) {
+	@Nullable
+	private static Object getOreOrItemStackOrNull(@Nonnull final String registryName, final int meta) {
 		assert registryName.contains(":");
 		
 		if (registryName.startsWith("ore:")) {
@@ -608,7 +610,7 @@ public class WarpDriveConfig {
 	}
 	
 	public static Object getOreOrItemStack(final String registryName1, final int meta1,
-	                                       final Object... args) {
+	                                       @Nonnull final Object... args) {
 		// always validate parameters in dev space
 		assert args.length % 2 == 0;
 		for (int index = 0; index < args.length; index += 2) {
@@ -649,7 +651,7 @@ public class WarpDriveConfig {
 		return itemStacks.get(0);
 	}
 	
-	protected static double[] getDoubleList(final Configuration config, final String category, final String key, final String comment, final double[] valuesDefault) {
+	protected static double[] getDoubleList(@Nonnull final Configuration config, final String category, final String key, final String comment, final double[] valuesDefault) {
 		double[] valuesRead = config.get(category, key, valuesDefault, comment).getDoubleList();
 		if (valuesRead.length != valuesDefault.length) {
 			valuesRead = valuesDefault.clone();
@@ -1268,7 +1270,7 @@ public class WarpDriveConfig {
 		config.save();
 	}
 	
-	public static void clampByTier(final int min, final int max, final int[] values) {
+	public static void clampByTier(final int min, final int max, @Nonnull final int[] values) {
 		if (values.length != EnumTier.length) {
 			WarpDrive.logger.error(String.format("Invalid configuration value, expected %d values, got %d %s. Update your configuration and restart your game!",
 			                                     EnumTier.length, values.length, Arrays.toString(values)));
@@ -1281,7 +1283,7 @@ public class WarpDriveConfig {
 		values[3] = Commons.clamp(values[2], max      , values[3]);
 	}
 	
-	public static void clampByTier(final double min, final double max, final double[] values) {
+	public static void clampByTier(final double min, final double max, @Nonnull final double[] values) {
 		if (values.length != EnumTier.length) {
 			WarpDrive.logger.error(String.format("Invalid configuration value, expected %d values, got %d %s. Update your configuration and restart your game!",
 			                                     EnumTier.length, values.length, Arrays.toString(values)));
@@ -1294,7 +1296,7 @@ public class WarpDriveConfig {
 		values[3] = Commons.clamp(values[2], max      , values[3]);
 	}
 	
-	public static void clampByEnergyTierName(final String nameMin, final String nameMax, final String[] names) {
+	public static void clampByEnergyTierName(final String nameMin, final String nameMax, @Nonnull final String[] names) {
 		if (names.length != EnumTier.length) {
 			WarpDrive.logger.error(String.format("Invalid configuration value, expected %d string, got %d %s. Update your configuration and restart your game!",
 			                                     EnumTier.length, names.length, Arrays.toString(names)));

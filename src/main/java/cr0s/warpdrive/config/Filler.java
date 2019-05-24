@@ -1,6 +1,7 @@
 package cr0s.warpdrive.config;
 
 import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.FastSetBlockState;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IXmlRepresentableUnit;
 import cr0s.warpdrive.data.JumpBlock;
@@ -149,7 +150,7 @@ public class Filler implements IXmlRepresentableUnit {
 		final IBlockState blockState;
 		try {
 			blockState = block.getStateFromMeta(metadata);
-			JumpBlock.setBlockStateNoLight(world, blockPos, blockState, 2);
+			FastSetBlockState.setBlockStateNoLight(world, blockPos, blockState, 2);
 		} catch (final Throwable throwable) {
 			WarpDrive.logger.error(String.format("Throwable detected in Filler.setBlock(%s), check your configuration for that block!",
 			                                     getName()));

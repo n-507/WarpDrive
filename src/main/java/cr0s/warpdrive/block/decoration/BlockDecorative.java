@@ -58,7 +58,7 @@ public class BlockDecorative extends BlockAbstractBase {
 	}
 	
 	@Override
-	public int getMetaFromState(final IBlockState blockState) {
+	public int getMetaFromState(@Nonnull final IBlockState blockState) {
 		return blockState.getValue(TYPE).ordinal();
 	}
 	

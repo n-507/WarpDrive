@@ -2,6 +2,7 @@ package cr0s.warpdrive.event;
 
 import cr0s.warpdrive.CommonProxy;
 import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.FastSetBlockState;
 import cr0s.warpdrive.LocalProfiler;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.EventWarpDrive.Ship.JumpResult;
@@ -1262,11 +1263,11 @@ public class JumpSequencer extends AbstractSequencer {
 				}
 				try {
 					final BlockPos blockPos = new BlockPos(jumpBlock.x, jumpBlock.y, jumpBlock.z);
-					boolean isRemoved = JumpBlock.setBlockStateNoLight(sourceWorld, blockPos, Blocks.AIR.getDefaultState(), 2);
+					boolean isRemoved = FastSetBlockState.setBlockStateNoLight(sourceWorld, blockPos, Blocks.AIR.getDefaultState(), 2);
 					if (!isRemoved) {
 						WarpDrive.logger.info(String.format("Failed to remove %s@%d at (%d %d %d), retrying...",
 						                                    jumpBlock.block, jumpBlock.blockMeta, jumpBlock.x, jumpBlock.y, jumpBlock.z));
-						isRemoved = JumpBlock.setBlockStateNoLight(sourceWorld, blockPos, Blocks.AIR.getDefaultState(), 2);
+						isRemoved = FastSetBlockState.setBlockStateNoLight(sourceWorld, blockPos, Blocks.AIR.getDefaultState(), 2);
 						if (!isRemoved) {
 							WarpDrive.logger.error(String.format("Failed to remove %s@%d at (%d %d %d), still failing?",
 							                                     jumpBlock.block, jumpBlock.blockMeta, jumpBlock.x, jumpBlock.y, jumpBlock.z));

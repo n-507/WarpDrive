@@ -40,7 +40,7 @@ public class BlockLaserMedium extends BlockAbstractContainer {
 	}
 	
 	@Override
-	public int getMetaFromState(final IBlockState blockState) {
+	public int getMetaFromState(@Nonnull final IBlockState blockState) {
 		return blockState.getValue(LEVEL);
 	}
 	

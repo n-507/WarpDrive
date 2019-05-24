@@ -1,6 +1,7 @@
 package cr0s.warpdrive.config.structures;
 
 import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.FastSetBlockState;
 import cr0s.warpdrive.LocalProfiler;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.GenericSet;
@@ -175,7 +176,7 @@ public class MetaOrbInstance extends OrbInstance {
 		if (isSurface && jumpBlock.x % 4 == 0 && jumpBlock.z % 4 == 0) {
 			world.setBlockState(blockPos, jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta), 2);
 		} else {
-			JumpBlock.setBlockStateNoLight(world, blockPos, jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta), 2);
+			FastSetBlockState.setBlockStateNoLight(world, blockPos, jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta), 2);
 		}
 	}
 	

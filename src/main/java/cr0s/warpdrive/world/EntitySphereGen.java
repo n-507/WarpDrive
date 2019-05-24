@@ -1,5 +1,6 @@
 package cr0s.warpdrive.world;
 
+import cr0s.warpdrive.FastSetBlockState;
 import cr0s.warpdrive.LocalProfiler;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.Filler;
@@ -163,7 +164,7 @@ public final class EntitySphereGen extends Entity {
 			if (isSurfaces.get(currentIndex) && jumpBlock.x % 4 == 0 && jumpBlock.z % 4 == 0) {
 				world.setBlockState(mutableBlockPos, jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta), 2);
 			} else {
-				JumpBlock.setBlockStateNoLight(world, mutableBlockPos, jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta), 2);
+				FastSetBlockState.setBlockStateNoLight(world, mutableBlockPos, jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta), 2);
 			}
 			currentIndex++;
 		}

@@ -51,7 +51,7 @@ public class BlockEnanReactorCore extends BlockAbstractContainer {
 	}
 	
 	@Override
-	public int getMetaFromState(final IBlockState blockState) {
+	public int getMetaFromState(@Nonnull final IBlockState blockState) {
 		return blockState.getValue(ENERGY) + (blockState.getValue(INSTABILITY) << 2);
 	}
 	

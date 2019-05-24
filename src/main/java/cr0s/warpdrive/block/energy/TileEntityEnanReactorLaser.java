@@ -15,6 +15,7 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
 
@@ -122,6 +123,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		}
 	}
 	
+	@Nullable
 	private TileEntityEnanReactorCore getReactorCore() {
 		if (reactorFace == ReactorFace.UNKNOWN) {
 			return null;

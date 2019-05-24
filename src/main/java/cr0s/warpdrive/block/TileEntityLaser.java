@@ -28,7 +28,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -710,11 +709,11 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 	
 	private void playSoundCorrespondsEnergy(final int energy) {
 		if (energy <= 500000) {
-			world.playSound(null, pos, SoundEvents.LASER_LOW, SoundCategory.HOSTILE, 4F, 1F);
-		} else if (energy > 500000 && energy <= 1000000) {
-			world.playSound(null, pos, SoundEvents.LASER_MEDIUM, SoundCategory.HOSTILE, 4F, 1F);
-		} else if (energy > 1000000) {
-			world.playSound(null, pos, SoundEvents.LASER_HIGH, SoundCategory.HOSTILE, 4F, 1F);
+			world.playSound(null, pos, SoundEvents.LASER_LOW, SoundCategory.HOSTILE, 4.0F, 1.0F);
+		} else if (energy <= 1000000) {
+			world.playSound(null, pos, SoundEvents.LASER_MEDIUM, SoundCategory.HOSTILE, 4.0F, 1.0F);
+		} else {
+			world.playSound(null, pos, SoundEvents.LASER_HIGH, SoundCategory.HOSTILE, 4.0F, 1.0F);
 		}
 	}
 	

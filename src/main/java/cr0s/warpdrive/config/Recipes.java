@@ -15,6 +15,7 @@ import cr0s.warpdrive.item.ItemForceFieldShape;
 import cr0s.warpdrive.item.ItemForceFieldUpgrade;
 import cr0s.warpdrive.item.ItemTuningDriver;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -139,7 +140,7 @@ public class Recipes {
 		}
 	}
 	
-	private static void registerOreDictionary(final String name, final ItemStack itemStack) {
+	private static void registerOreDictionary(final String name, @Nonnull final ItemStack itemStack) {
 		if (!itemStack.isEmpty()) {
 			OreDictionary.registerOre(name, itemStack);
 		}

@@ -4,7 +4,6 @@ import cr0s.warpdrive.CommonProxy;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.TileEntityAbstractLaser;
-import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.FluidWrapper;
 import cr0s.warpdrive.data.InventoryWrapper;
 import cr0s.warpdrive.data.Vector3;
@@ -13,6 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -47,7 +47,7 @@ public abstract class TileEntityAbstractMiner extends TileEntityAbstractLaser {
 		laserOutput = new Vector3(this).translate(0.5D).translate(laserOutputSide, 0.5D);
 	}
 	
-	protected void harvestBlock(final BlockPos blockPos, final IBlockState blockState) {
+	protected void harvestBlock(@Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
 		if (blockState.getBlock().isAir(blockState, world, blockPos)) {
 			return;
 		}
@@ -77,6 +77,7 @@ public abstract class TileEntityAbstractMiner extends TileEntityAbstractLaser {
 		}
 	}
 	
+	@Nullable
 	private NonNullList<ItemStack> getItemStackFromBlock(final BlockPos blockPos, final IBlockState blockState) {
 		if (blockState == null) {
 			WarpDrive.logger.error(String.format("%s Invalid block %s",

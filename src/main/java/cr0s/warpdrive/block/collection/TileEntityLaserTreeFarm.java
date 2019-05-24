@@ -705,7 +705,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 		return blockStatePosList;
 	}
 	
-	private int comparatorSortLogsAndLeaves(final BlockStatePos o1, final BlockStatePos o2) {
+	private int comparatorSortLogsAndLeaves(@Nonnull final BlockStatePos o1, @Nonnull final BlockStatePos o2) {
 		// first, we clear central from bottom to top
 		if (o1.blockPos.getX() == pos.getX() && o1.blockPos.getZ() == pos.getZ()) {
 			if (o2.blockPos.getX() == pos.getX() && o2.blockPos.getZ() == pos.getZ()) {
@@ -1002,6 +1002,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 					final boolean breakLeaves = ((TileEntityLaserTreeFarm) tileEntity).breakLeaves;
 					final int maxDistance = ((TileEntityLaserTreeFarm) tileEntity).maxDistance;
 					final Comparator<BlockStatePos> comparator = ((TileEntityLaserTreeFarm) tileEntity)::comparatorSortLogsAndLeaves;
+					//noinspection UnusedAssignment
 					tileEntity = null;
 					
 					if (WarpDriveConfig.LOGGING_COLLECTION) {

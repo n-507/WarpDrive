@@ -37,7 +37,7 @@ public abstract class BlockAbstractRotatingContainer extends BlockAbstractContai
 	}
 	
 	@Override
-	public int getMetaFromState(final IBlockState blockState) {
+	public int getMetaFromState(@Nonnull final IBlockState blockState) {
 		return (blockState.getValue(BlockProperties.ACTIVE) ? 0x8 : 0x0)
 		     | (blockState.getValue(BlockProperties.FACING).getIndex());
 	}
