@@ -1,7 +1,9 @@
 package cr0s.warpdrive.block.collection;
 
+import cr0s.warpdrive.CommonProxy;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.api.ExceptionChunkNotLoaded;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
@@ -32,6 +34,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockOldLog;
 import net.minecraft.block.BlockPlanks.EnumType;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -43,6 +46,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.WorldServer;
 
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fml.common.Optional;
@@ -108,10 +112,20 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 		super.onFirstUpdateTick();
 		if (currentState == STATE_PLANTING || currentState == STATE_HARVESTING) {
 			updateParameters();
-			blockPosSoils = calculate_getSoilPositions(world, axisAlignedBBSoil);
-			indexSoil = 0;
-			blockPosValuables = calculate_getValuableStatePositions(world, axisAlignedBBScan, breakLeaves, maxDistance, this::comparatorSortLogsAndLeaves);
-			indexValuable = 0;
+			try {
+				blockPosSoils = calculate_getSoilPositions(world, axisAlignedBBSoil);
+				indexSoil = 0;
+				blockPosValuables = calculate_getValuableStatePositions(world, axisAlignedBBScan, breakLeaves, maxDistance, this::comparatorSortLogsAndLeaves);
+				indexValuable = 0;
+			} catch (final Exception exception) {
+				// not so supposed to happen, so just dump logs for now
+				exception.printStackTrace();
+				WarpDrive.logger.error(String.format("%s Calculation failed, please report to mod author %s",
+				                                     this, exception.getMessage() ));
+				// retry with a slight delay
+				currentState = STATE_SCANNING;
+				tickCurrentTask = 2;
+			}
 		}
 	}
 	
@@ -607,7 +621,8 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 	}
 	
 	private static ArrayList<BlockPos> calculate_getSoilPositions(@Nonnull final IBlockAccess blockAccess,
-	                                                              @Nonnull final AxisAlignedBB axisAlignedBB) {
+	                                                              @Nonnull final AxisAlignedBB axisAlignedBB) throws ExceptionChunkNotLoaded {
+		final boolean isSafeThread = Commons.isSafeThread();
 		final int xMin = (int) axisAlignedBB.minX;
 		final int xMax = (int) axisAlignedBB.maxX;
 		final int yMin = (int) axisAlignedBB.minY;
@@ -624,7 +639,14 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 			for (int z = zMin; z <= zMax; z++) {
 				// optimized loop to avoid getting twice the blockstate of each block, we're scanning from top to bottom
 				mutableBlockPos.setPos(x, yMax + 1, z);
-				IBlockState blockStateAbove = blockAccess.getBlockState(mutableBlockPos);
+				
+				IBlockState blockStateAbove = isSafeThread ? blockAccess.getBlockState(mutableBlockPos) : Commons.getBlockState_noChunkLoading(blockAccess, mutableBlockPos);
+				if (blockStateAbove == null) {
+					// chunk isn't loaded, abort treatment or it'll trigger a CME
+					throw new ExceptionChunkNotLoaded(String.format("Soil calculation aborted %s",
+					                                                Commons.format(blockAccess, mutableBlockPos)));
+				}
+				
 				do {
 					final boolean isAirAbove = blockStateAbove.getBlock().isAir(blockStateAbove, blockAccess, mutableBlockPos);
 					mutableBlockPos.setY(mutableBlockPos.getY() - 1);
@@ -637,7 +659,12 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 						blockPosSoils.add(mutableBlockPos.toImmutable());
 						
 						mutableBlockPos.setY(mutableBlockPos.getY() - 1);
-						blockStateAbove = blockAccess.getBlockState(mutableBlockPos);
+						blockStateAbove = isSafeThread ? blockAccess.getBlockState(mutableBlockPos) : Commons.getBlockState_noChunkLoading(blockAccess, mutableBlockPos);
+						if (blockStateAbove == null) {
+							// chunk isn't loaded, abort treatment or it'll trigger a CME
+							throw new ExceptionChunkNotLoaded(String.format("Soil calculation aborted %s",
+							                                                Commons.format(blockAccess, mutableBlockPos)));
+						}
 					} else {
 						blockStateAbove = blockStateCandidate;
 					}
@@ -655,7 +682,8 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 	                                                                            @Nonnull final AxisAlignedBB axisAlignedBB,
 	                                                                            final boolean breakLeaves,
 	                                                                            final int maxLogDistance,
-	                                                                            final Comparator<BlockStatePos> comparator) {
+	                                                                            final Comparator<BlockStatePos> comparator) throws ExceptionChunkNotLoaded {
+		final boolean isSafeThread = Commons.isSafeThread();
 		final int xMin = (int) axisAlignedBB.minX;
 		final int xMax = (int) axisAlignedBB.maxX;
 		final int yMin = (int) axisAlignedBB.minY;
@@ -671,7 +699,14 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 			for (int x = xMin; x <= xMax; x++) {
 				for (int z = zMin; z <= zMax; z++) {
 					mutableBlockPos.setPos(x, y, z);
-					final Block block = blockAccess.getBlockState(mutableBlockPos).getBlock();
+					final IBlockState blockState = isSafeThread ? blockAccess.getBlockState(mutableBlockPos) : Commons.getBlockState_noChunkLoading(blockAccess, mutableBlockPos);
+					if (blockState == null) {
+						// chunk isn't loaded, abort treatment or it'll trigger a CME
+						throw new ExceptionChunkNotLoaded(String.format("Valuable calculation aborted %s",
+						                                                Commons.format(blockAccess, mutableBlockPos)));
+					}
+					
+					final Block block = blockState.getBlock();
 					if (Dictionary.isLog(block)) {
 						if (!logPositions.contains(mutableBlockPos)) {
 							if (WarpDriveConfig.LOGGING_COLLECTION) {
