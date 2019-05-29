@@ -120,7 +120,7 @@ public class InventoryWrapper {
 					continue;
 				}
 				int qtyLeft = itemStack.getCount();
-				final ItemStack itemStackLeft = itemStack.copy();
+				ItemStack itemStackLeft = itemStack;
 				for (final Object inventory : inventories) {
 					if (inventory instanceof IInventory) {
 						qtyLeft = addToInventory(itemStack, (IInventory) inventory);
@@ -131,6 +131,9 @@ public class InventoryWrapper {
 						                                    Commons.format(world, blockPos), inventory ));
 					}
 					if (qtyLeft > 0) {
+						if (itemStackLeft == itemStack) {
+							itemStackLeft = itemStack.copy(); // due to capabilities handling, copy is very slow, so we call it only when strictly necessary
+						}
 						itemStackLeft.setCount(qtyLeft);
 					} else {
 						break;
