@@ -36,6 +36,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	
 	// computed properties
 	private Vector3 vLaser;
+	private String reactorSignatureName;
 	private Vector3 vReactorCore;
 	private WeakReference<TileEntityEnanReactorCore> weakReactorCore;
 	
@@ -96,6 +97,9 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	}
 	
 	public void setReactorFace(@Nonnull final ReactorFace reactorFace, final TileEntityEnanReactorCore reactorCore) {
+		// always update cached signature name
+		reactorSignatureName = reactorCore != null ? reactorCore.getSignatureName() : "";
+		
 		// skip if it's already set to save resources
 		if (this.reactorFace == reactorFace) {
 			return;
@@ -260,7 +264,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		if (reactorFace == null || reactorFace.enumTier == null) {
 			return new Object[] { null, null, null };
 		}
-		return new Object[] { reactorFace.indexStability, reactorFace.enumTier.getName(), reactorFace.getName() };
+		return new Object[] { reactorFace.indexStability, reactorFace.enumTier.getName(), reactorSignatureName };
 	}
 	
 	// OpenComputers callback methods
