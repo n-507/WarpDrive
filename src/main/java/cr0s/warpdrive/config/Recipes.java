@@ -868,6 +868,7 @@ public class Recipes {
 		                                       'c', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL)));
 		
 		// Plasma torch
+		/*
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
 		                                       WarpDrive.itemPlasmaTorch[EnumTier.BASIC.getIndex()], false, "tcr", "mgb", "i  ",
 		                                       't', WarpDrive.itemElectromagneticCell[EnumTier.BASIC.getIndex()],
@@ -877,6 +878,7 @@ public class Recipes {
 		                                       'g', "ingotGold",
 		                                       'b', Blocks.STONE_BUTTON,
 		                                       'i', ingotIronOrSteel));
+		/**/
 		
 		// Accelerator control point
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
