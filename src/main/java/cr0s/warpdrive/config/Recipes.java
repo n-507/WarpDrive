@@ -84,6 +84,9 @@ public class Recipes {
 		
 		// components
 		registerOreDictionary("itemRubber", ItemComponent.getItemStack(EnumComponentType.RUBBER));
+		registerOreDictionary("itemBiofiber", ItemComponent.getItemStack(EnumComponentType.BIOFIBER));
+		registerOreDictionary("itemCeramic", ItemComponent.getItemStack(EnumComponentType.CERAMIC));
+		registerOreDictionary("plateCarbon", ItemComponent.getItemStack(EnumComponentType.CARBON_FIBER));
 		
 		// air shields
 		for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
@@ -706,29 +709,29 @@ public class Recipes {
 		                                       'c', ItemComponent.getItemStack(EnumComponentType.AIR_CANISTER),
 		                                       'i', "nuggetIron" ));
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
-		                                       WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.HEAD.getIndex()], false, "mmm", "waw", "   ",
+		                                       WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.HEAD.getIndex()], false, "fmf", "mam", "   ",
 		                                       'a', WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][EntityEquipmentSlot.HEAD.getIndex()],
-		                                       'm', ItemComponent.getItemStack(EnumComponentType.CERAMIC),
-		                                       'w', Blocks.WOOL ));
+		                                       'm', "itemCeramic",
+		                                       'f', "itemBiofiber" ));
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
 		                                       WarpDrive.itemWarpArmor[EnumTier.SUPERIOR.getIndex()][EntityEquipmentSlot.HEAD.getIndex()], false, "mmm", "mam", "   ",
 		                                       'a', WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.HEAD.getIndex()],
-		                                       'm', ItemComponent.getItemStack(EnumComponentType.CARBON_FIBER) ));
+		                                       'm', "plateCarbon" ));
 		
 		// Warp chestplate
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
-		                                       WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][EntityEquipmentSlot.CHEST.getIndex()], false, "i i", "mmm", "mmm",
+		                                       WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][EntityEquipmentSlot.CHEST.getIndex()], false, "i i", "mmm", "mim",
 		                                       'm', "itemRubber",
 		                                       'i', "nuggetIron" ));
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
-		                                       WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.CHEST.getIndex()], false, "m m", "mam", "mwm",
+		                                       WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.CHEST.getIndex()], false, "faf", "mmm", "mfm",
 		                                       'a', WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][EntityEquipmentSlot.CHEST.getIndex()],
-		                                       'm', ItemComponent.getItemStack(EnumComponentType.CERAMIC),
-		                                       'w', Blocks.WOOL ));
+		                                       'm', "itemCeramic",
+		                                       'f', "itemBiofiber" ));
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
 		                                       WarpDrive.itemWarpArmor[EnumTier.SUPERIOR.getIndex()][EntityEquipmentSlot.CHEST.getIndex()], false, "mam", "mpm", "mcm",
 		                                       'a', WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.CHEST.getIndex()],
-		                                       'm', ItemComponent.getItemStack(EnumComponentType.CARBON_FIBER),
+		                                       'm', "plateCarbon",
 		                                       'p', ItemComponent.getItemStack(EnumComponentType.PUMP),
 		                                       'c', ItemComponent.getItemStack(EnumComponentType.AIR_CANISTER) ));
 		
@@ -738,15 +741,16 @@ public class Recipes {
 		                                       'm', "itemRubber",
 		                                       'i', "nuggetIron" ));
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
-		                                       WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.LEGS.getIndex()], false, "mam", "M M", "w w",
+		                                       WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.LEGS.getIndex()], false, "faf", "mMm", "w w",
 		                                       'a', WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][EntityEquipmentSlot.LEGS.getIndex()],
-		                                       'm', Items.IRON_INGOT,
-		                                       'M', itemStackMotors[1],
-		                                       'w', Blocks.WOOL ));
+		                                       'm', "itemCeramic",
+		                                       'f', "itemBiofiber",
+		                                       'w', Blocks.WOOL,
+		                                       'M', itemStackMotors[1] ));
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
 		                                       WarpDrive.itemWarpArmor[EnumTier.SUPERIOR.getIndex()][EntityEquipmentSlot.LEGS.getIndex()], false, "mam", "m m", "m m",
 		                                       'a', WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.LEGS.getIndex()],
-		                                       'm', ItemComponent.getItemStack(EnumComponentType.CARBON_FIBER) ));
+		                                       'm', "plateCarbon" ));
 		
 		// Warp boots
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
@@ -754,14 +758,16 @@ public class Recipes {
 		                                       'm', "itemRubber",
 		                                       'i', "nuggetIron" ));
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
-		                                       WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.FEET.getIndex()], false, "cac", "m m", "   ",
-		                                       'a', WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][EntityEquipmentSlot.LEGS.getIndex()],
-		                                       'm', Items.IRON_INGOT,
-		                                       'c', ItemComponent.getItemStack(EnumComponentType.CERAMIC) ));
+		                                       WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.FEET.getIndex()], false, "mam", "fMf", "w w",
+		                                       'a', WarpDrive.itemWarpArmor[EnumTier.BASIC.getIndex()][EntityEquipmentSlot.FEET.getIndex()],
+		                                       'm', "itemCeramic",
+		                                       'f', "itemBiofiber",
+		                                       'w', Blocks.WOOL,
+		                                       'M', itemStackMotors[1] ));
 		WarpDrive.register(new ShapedOreRecipe(groupTools,
 		                                       WarpDrive.itemWarpArmor[EnumTier.SUPERIOR.getIndex()][EntityEquipmentSlot.FEET.getIndex()], false, "mam", "m m", "   ",
-		                                       'a', WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.LEGS.getIndex()],
-		                                       'm', ItemComponent.getItemStack(EnumComponentType.CARBON_FIBER) ));
+		                                       'a', WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.FEET.getIndex()],
+		                                       'm', "plateCarbon" ));
 		
 		// Tuning fork variations
 		for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
@@ -1595,46 +1601,68 @@ public class Recipes {
 	}
 	
 	private static void initHull() {
-		// Hull blocks plain
-		// (BlockColored.func_150031_c is converting wool metadata into dye metadata)
-		// Tier 1 = 5 obsidian, 4 reinforced stone gives 10
-		// Tier 1 = 5 stone, 4 steel ingots gives 10
-		// Tier 1 = 5 stone, 4 iron ingots gives 10
-		// Tier 1 = 5 stone, 4 bronze ingots gives 5
-		// Tier 1 = 5 stone, 4 aluminium ingots gives 3
-		if (WarpDriveConfig.isIndustrialCraft2Loaded) {
-			final ItemStack reinforcedStone = WarpDriveConfig.getItemStackOrFire("ic2:resource", 11); // IC2 reinforced stone
+		// *** Hull blocks plain
+		
+		for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
+			final int metadataColor = enumDyeColor.getMetadata();
+			
+			// Tier 1 = 4 obsidian, 4 reinforced stone gives 10
+			//  IC2 Reinforced stone is 1 scaffolding = 7.5 * 144 / 16 = 67.5 mB of Iron
+			//  => 27 mB of Iron per Basic hull
+			if (WarpDriveConfig.isIndustrialCraft2Loaded) {
+				final ItemStack reinforcedStone = WarpDriveConfig.getItemStackOrFire("ic2:resource", 11); // IC2 reinforced stone
+				WarpDrive.register(new ShapedOreRecipe(groupHulls,
+				                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 10, 0), false, "cbc", "bXb", "cbc",
+				                                       'b', reinforcedStone,
+				                                       'c', Blocks.OBSIDIAN,
+				                                       'X', oreDyes.get(enumDyeColor) ));
+			}
+			
+			// Tier 1 = 1 concrete, 3 iron bars, 1 ceramic gives 4
+			//  1 Iron bar is 6 * 144 / 16 = 54 mB of Iron
+			//  => 40.5 mB of Iron per Basic hull (close to reinforced stone production)
+			WarpDrive.register(new ShapedOreRecipe(groupTaintedHulls,
+			                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 4, metadataColor), false, " b ", "bcb", " C ",
+			                                       'c', new ItemStack(Blocks.CONCRETE, 1, metadataColor),
+			                                       'b', barsIron,
+			                                       'C', "itemCeramic" ));
+			
+			// Tier 1 = 5 stone, 4 steel ingots gives 10
+			// Tier 1 = 5 stone, 4 iron ingots gives 10
+			//  => 57.6 mB of Iron/Steel per hull (twice more expensive using less crafting steps)
+			final Object ingotSteelOrIron = WarpDriveConfig.getOreOrItemStack("ore:ingotSteel", 0,
+			                                                                  "ore:ingotIron", 0);
 			WarpDrive.register(new ShapedOreRecipe(groupHulls,
-			                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 10, 0), false, "cbc", "bcb", "cbc",
-			                                       'b', reinforcedStone,
-			                                       'c', Blocks.OBSIDIAN ));
-		} else if (OreDictionary.doesOreNameExist("ingotSteel") && !OreDictionary.getOres("ingotSteel").isEmpty()) {
-			WarpDrive.register(new ShapedOreRecipe(groupHulls,
-			                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 10, 0), false, "cbc", "bcb", "cbc",
-			                                       'b', "ingotSteel",
-			                                       'c', "stone" ));
-		} else {
-			WarpDrive.register(new ShapedOreRecipe(groupHulls,
-			                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 10, 0), false, "cbc", "bcb", "cbc",
-			                                       'b', "ingotIron",
-			                                       'c', "stone" ));
-		}
-		if (OreDictionary.doesOreNameExist("ingotBronze") && !OreDictionary.getOres("ingotBronze").isEmpty()) {
-			WarpDrive.register(new ShapedOreRecipe(groupHulls,
-			                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 5, 0), false, "cbc", "bcb", "cbc",
-			                                       'b', "ingotBronze",
-			                                       'c', "stone" ));
-		}
-		if (OreDictionary.doesOreNameExist("ingotAluminium") && !OreDictionary.getOres("ingotAluminium").isEmpty()) {
-			WarpDrive.register(new ShapedOreRecipe(groupHulls,
-			                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 3, 0), false, "cbc", "bcb", "cbc",
-			                                       'b', "ingotAluminium",
-			                                       'c', "stone" ));
-		} else if (OreDictionary.doesOreNameExist("ingotAluminum") && !OreDictionary.getOres("ingotAluminum").isEmpty()) {
-			WarpDrive.register(new ShapedOreRecipe(groupHulls,
-			                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 3, 0), false, "cbc", "bcb", "cbc",
-			                                       'b', "ingotAluminum",
-			                                       'c', "stone" ));
+			                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 10, metadataColor), false, "cbc", "bXb", "cbc",
+			                                       'b', ingotSteelOrIron,
+			                                       'c', "stone",
+			                                       'X', oreDyes.get(enumDyeColor) ));
+			
+			// Tier 1 = 5 stone, 4 bronze ingots gives 6
+			//  => 96 mB of Bronze (almost twice more expensive using an common alloy) 
+			if (OreDictionary.doesOreNameExist("ingotBronze") && !OreDictionary.getOres("ingotBronze").isEmpty()) {
+				WarpDrive.register(new ShapedOreRecipe(groupHulls,
+				                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 5, metadataColor), false, "cbc", "bXb", "cbc",
+				                                       'b', "ingotBronze",
+				                                       'c', "stone",
+				                                       'X', oreDyes.get(enumDyeColor) ));
+			}
+			
+			// Tier 1 = 5 stone, 4 aluminium ingots gives 3
+			//  => 192 mB of Aluminium (very expensive with frequent but hardly used metal)
+			if (OreDictionary.doesOreNameExist("ingotAluminium") && !OreDictionary.getOres("ingotAluminium").isEmpty()) {
+				WarpDrive.register(new ShapedOreRecipe(groupHulls,
+				                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 3, metadataColor), false, "cbc", "bXb", "cbc",
+				                                       'b', "ingotAluminium",
+				                                       'c', "stone",
+				                                       'X', oreDyes.get(enumDyeColor) ));
+			} else if (OreDictionary.doesOreNameExist("ingotAluminum") && !OreDictionary.getOres("ingotAluminum").isEmpty()) {
+				WarpDrive.register(new ShapedOreRecipe(groupHulls,
+				                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 3, metadataColor), false, "cbc", "bXb", "cbc",
+				                                       'b', "ingotAluminum",
+				                                       'c', "stone",
+				                                       'X', oreDyes.get(enumDyeColor) ));
+			}
 		}
 		
 		// Tier 2 = 4 Tier 1, 4 GregTech 5 TungstenSteel reinforced block, IC2 Carbon plate, DarkSteel ingots or Obsidian, gives 4
@@ -1694,7 +1722,7 @@ public class Recipes {
 				                                       new ItemStack(WarpDrive.blockHulls_stairs[index][metadataColor], 4), false, "p  ", "pp ", "ppp",
 				                                       'p', new ItemStack(WarpDrive.blockHulls_plain[index][0], 1, metadataColor) ));
 				
-				// uncrafting
+				// uncrafting stairs
 				WarpDrive.register(new ShapelessOreRecipe(groupHulls,
 				                                          new ItemStack(WarpDrive.blockHulls_plain[index][0], 6, metadataColor),
 				                                          WarpDrive.blockHulls_stairs[index][metadataColor],

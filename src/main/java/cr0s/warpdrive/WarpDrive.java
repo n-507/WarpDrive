@@ -112,6 +112,7 @@ import cr0s.warpdrive.data.CamerasRegistry;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.CloakManager;
 import cr0s.warpdrive.data.EnumAirTankTier;
+import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumHullPlainType;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.StarMapRegistry;
@@ -355,10 +356,6 @@ public class WarpDrive {
 	public static Logger logger;
 	
 	public WarpDrive() {
-		// 20% more durability, same enchantability (except basic is slightly lower), increased toughness
-		armorMaterial[EnumTier.BASIC.getIndex()   ] = EnumHelper.addArmorMaterial("warpBasic"   , "warpdrive:warp",  6, new int[] { 1, 2, 3, 1 }, 12, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0F);
-		armorMaterial[EnumTier.ADVANCED.getIndex()] = EnumHelper.addArmorMaterial("warpAdvanced", "warpdrive:warp", 18, new int[] { 2, 6, 5, 2 },  9, SoundEvents.ITEM_ARMOR_EQUIP_IRON   , 1.0F);
-		armorMaterial[EnumTier.SUPERIOR.getIndex()] = EnumHelper.addArmorMaterial("warpSuperior", "warpdrive:warp", 40, new int[] { 3, 6, 8, 3 }, 10, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 2.5F);
 	}
 	
 	@EventHandler
@@ -387,6 +384,14 @@ public class WarpDrive {
 		}
 		
 		itemComponent = new ItemComponent("component", EnumTier.BASIC);
+		
+		// 20% more durability, same enchantability (except basic is slightly lower), increased toughness
+		armorMaterial[EnumTier.BASIC.getIndex()   ] = EnumHelper.addArmorMaterial("rubber"      , "warpdrive:warp",  6, new int[] { 1, 2, 3, 1 }, 12, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0F);
+		armorMaterial[EnumTier.BASIC.getIndex()   ].setRepairItem(ItemComponent.getItemStack(EnumComponentType.RUBBER));
+		armorMaterial[EnumTier.ADVANCED.getIndex()] = EnumHelper.addArmorMaterial("ceramic"     , "warpdrive:warp", 18, new int[] { 2, 6, 5, 2 },  9, SoundEvents.ITEM_ARMOR_EQUIP_IRON   , 1.0F);
+		armorMaterial[EnumTier.ADVANCED.getIndex()].setRepairItem(ItemComponent.getItemStack(EnumComponentType.CERAMIC));
+		armorMaterial[EnumTier.SUPERIOR.getIndex()] = EnumHelper.addArmorMaterial("carbon_fiber", "warpdrive:warp", 40, new int[] { 3, 6, 8, 3 }, 10, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND, 2.5F);
+		armorMaterial[EnumTier.SUPERIOR.getIndex()].setRepairItem(ItemComponent.getItemStack(EnumComponentType.CARBON_FIBER));
 		
 		// atomic blocks and items
 		if (WarpDriveConfig.ACCELERATOR_ENABLE) {
