@@ -380,6 +380,7 @@ public class JumpBlock {
 				                                    teClass,
 				                                    teClass.getSuperclass()));
 			}
+			final String className = teClass.getName();
 			try {
 				final String superClassName = teClass.getSuperclass().getName();
 				final boolean isIC2 = superClassName.contains("ic2.core.block");
@@ -391,7 +392,7 @@ public class JumpBlock {
 						onLoaded.invoke(tileEntity);
 					} else {
 						WarpDrive.logger.error(String.format("Missing IC2 (un)loaded events for TileEntity %s %s. Please report this issue!",
-						                                     teClass.getName(),
+						                                     className,
 						                                     Commons.format(world, blockPos)));
 					}
 					
@@ -400,19 +401,20 @@ public class JumpBlock {
 				
 				if (isIC2) {// IC2
 					// required in SSP during same dimension jump to update client with rotation data
-					if (teClass.getName().equals("ic2.core.block.wiring.TileEntityCable")) {
+					if (className.equals("ic2.core.block.wiring.TileEntityCable")) {
 						NetworkHelper_updateTileEntityField(tileEntity, "color");
 						NetworkHelper_updateTileEntityField(tileEntity, "foamColor");
 						NetworkHelper_updateTileEntityField(tileEntity, "foamed");
 					} else {
 						NetworkHelper_updateTileEntityField(tileEntity, "active");
 						NetworkHelper_updateTileEntityField(tileEntity, "facing");
-						if (teClass.getName().equals("ic2.core.block.reactor.TileEntityNuclearReactorElectric")) {
+						if (className.equals("ic2.core.block.reactor.TileEntityNuclearReactorElectric")) {
 							NetworkHelper_updateTileEntityField(tileEntity, "heat");	// not working, probably an IC2 bug here...
 						}
 						// not needed: if ic2.core.block.machine.tileentity.TileEntityMatter then updated "state"
 					}
-				} else if ( !superClassName.contains("$")
+				} else if ( !className.contains("$")
+				         && !superClassName.contains("$")
 				         && !superClassName.startsWith("mekanism.")
 				         && !superClassName.startsWith("micdoodle8.") ) {// IC2 extensions without network optimization (transferring all fields)
 					try {
@@ -431,7 +433,7 @@ public class JumpBlock {
 					} catch (final NoClassDefFoundError exception) {
 						if (WarpDriveConfig.LOGGING_JUMP) {
 							WarpDrive.logger.info(String.format("TileEntity %s %s is missing a class definition",
-							                                    teClass.getName(), Commons.format(world, blockPos)));
+							                                    className, Commons.format(world, blockPos)));
 							if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
 								exception.printStackTrace();
 							}
@@ -440,7 +442,7 @@ public class JumpBlock {
 				}
 			} catch (final Exception exception) {
 				WarpDrive.logger.info(String.format("Exception involving TileEntity %s %s",
-				                                    teClass.getName(), Commons.format(world, blockPos)));
+				                                    className, Commons.format(world, blockPos)));
 				exception.printStackTrace();
 			}
 		}
