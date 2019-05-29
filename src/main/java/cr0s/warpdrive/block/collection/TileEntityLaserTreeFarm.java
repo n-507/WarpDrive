@@ -378,9 +378,10 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 					final ItemBlock itemBlock = (ItemBlock) itemStackPlant.getItem();
 					final int metadata = itemBlock.getMetadata(itemStackPlant.getMetadata());
 					final Block block = itemBlock.getBlock();
+					final EntityPlayer playerFake = CommonProxy.getFakePlayer(null, (WorldServer) world, blockPosPlant);
 					blockStatePlant = block.getStateForPlacement(world, blockPosPlant, EnumFacing.UP,
 					                                             0.5F, 0.0F, 0.5F, metadata,
-					                                             null, EnumHand.MAIN_HAND); // @TODO use fake player to place sapling
+					                                             playerFake, EnumHand.MAIN_HAND);
 				} else {
 					blockStatePlant = plantable.getPlant(world, blockPosPlant);
 				}
