@@ -299,6 +299,8 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 						// chunk isn't updating properly => protect the reactor
 						instabilityValues[reactorFace.indexStability] = instabilityTarget;
 						hold = true;
+						// delay simulation for a few seconds
+						updateTicks = Math.max(updateTicks, WarpDriveConfig.ENAN_REACTOR_FREEZE_INTERVAL_TICKS);
 					}
 				}
 			}

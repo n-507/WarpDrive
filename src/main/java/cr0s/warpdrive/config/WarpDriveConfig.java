@@ -486,7 +486,8 @@ public class WarpDriveConfig {
 	
 	// Enantiomorphic power reactor
 	public static int[]            ENAN_REACTOR_MAX_ENERGY_STORED_BY_TIER = { 100000000, 100000000, 500000000, 2000000000 };
-	public static final int        ENAN_REACTOR_UPDATE_INTERVAL_TICKS = 5; // hardcoded in the equations,
+	public static final int        ENAN_REACTOR_UPDATE_INTERVAL_TICKS = 5; // hardcoded in the equations
+	public static final int        ENAN_REACTOR_FREEZE_INTERVAL_TICKS = 40;
 	public static int[]            ENAN_REACTOR_MAX_LASERS_PER_SECOND = { 64, 6, 12, 24 };
 	public static int[]            ENAN_REACTOR_GENERATION_MIN_RF_BY_TIER = { 4, 4, 4, 4 };
 	public static int[]            ENAN_REACTOR_GENERATION_MAX_RF_BY_TIER = { 64000, 64000, 192000, 576000 };
