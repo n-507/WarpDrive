@@ -172,6 +172,15 @@ local function writeLn(text)
   end
 end
 
+local function writeMultiLine(text)
+  local textToParse = text or ""
+  for line in string.gmatch(textToParse, "[^\n]+") do
+    if line ~= "" then
+      w.writeLn(line)
+    end
+  end
+end
+
 local function writeCentered(y, text)
   local unused
   if text == nil then
@@ -1251,6 +1260,7 @@ w = {
   clear = clear,
   clearLine = clearLine,
   writeLn = writeLn,
+  writeMultiLine = writeMultiLine,
   writeCentered = writeCentered,
   writeFullLine = writeFullLine,
   page_begin = page_begin,

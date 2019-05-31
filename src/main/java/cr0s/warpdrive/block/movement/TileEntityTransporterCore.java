@@ -731,14 +731,16 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 			if (vRequest.y < 0) {
 				final CelestialObject celestialObjectChild = CelestialObjectManager.getClosestChild(world, pos.getX(), pos.getZ());
 				if (celestialObjectChild == null) {
-					reasonJammed = "Not in orbit of a planet";
+					reasonJammed = "Not in orbit of a planet!\nIncrease target Y coordinate.";
 				} else {
 					vRequest.translate(celestialObjectChild.getEntryOffset());
 					globalPositionRemoteNew = new GlobalPosition(celestialObjectChild.dimensionId, vRequest.x, (vRequest.y + 1024) % 256, vRequest.z);
 				}
 			} else if (vRequest.y > 256) {
 				if (celestialObjectLocal == null) {
-					reasonJammed = "Unknown dimension, no reachable orbit";
+					reasonJammed = "Unknown local celestial object!\nThere's no orbit to reach from here.\nReduce target Y coordinate.";
+				} else if (celestialObjectLocal.parent == null) {
+					reasonJammed = "No parent dimension!\nThere's no orbit to reach from here.\nReduce target Y coordinate.";
 				} else {
 					vRequest.translateBack(celestialObjectLocal.getEntryOffset());
 					globalPositionRemoteNew = new GlobalPosition(celestialObjectLocal.parent.dimensionId, vRequest.x, vRequest.y % 256, vRequest.z);
@@ -806,7 +808,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 			    && celestialObjectLocal.isHyperspace() )
 			  || celestialObjectRemote.isHyperspace() ) {
 				isJammed = true;
-				reasonJammed = "Blocked by warp field barrier";
+				reasonJammed = "Blocked by warp field barrier!\nExit hyperspace to use transporter room.";
 				return;
 			}
 			
@@ -827,7 +829,8 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 				                                     celestialObjectRemote.dimensionId,
 				                                     this));
 				isJammed = true;
-				reasonJammed = String.format("Unable to initialize dimension %d", celestialObjectRemote.dimensionId);
+				reasonJammed = String.format("Unable to initialize dimension %d",
+				                             celestialObjectRemote.dimensionId);
 				return;
 			}
 		} else {

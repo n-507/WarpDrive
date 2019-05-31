@@ -152,7 +152,7 @@ function transporter_page()
     if isJammed then
       w.setColorBad()
     end
-    w.write(state)
+    w.writeMultiLine(state)
     w.setColorNormal()
     w.write(".")
   end
