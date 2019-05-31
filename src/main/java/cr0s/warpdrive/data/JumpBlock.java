@@ -253,16 +253,16 @@ public class JumpBlock {
 			mrot = mrotWoodLog;
 		} else if (block instanceof BlockSkull) {
 			// mrot = mrotNone;
-			final short facing = nbtTileEntity.getShort("Rot");
+			final byte facing = nbtTileEntity.getByte("Rot");
 			switch (rotationSteps) {
 			case 1:
-				nbtTileEntity.setShort("Rot", mrotSign[facing]);
+				nbtTileEntity.setByte("Rot", mrotSign[facing]);
 				break;
 			case 2:
-				nbtTileEntity.setShort("Rot", mrotSign[mrotSign[facing]]);
+				nbtTileEntity.setByte("Rot", mrotSign[mrotSign[facing]]);
 				break;
 			case 3:
-				nbtTileEntity.setShort("Rot", mrotSign[mrotSign[mrotSign[facing]]]);
+				nbtTileEntity.setByte("Rot", mrotSign[mrotSign[mrotSign[facing]]]);
 				break;
 			default:
 				break;
