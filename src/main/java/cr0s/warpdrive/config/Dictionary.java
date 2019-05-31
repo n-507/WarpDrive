@@ -206,6 +206,9 @@ public class Dictionary {
 			// placement priorities
 			config.get("block_tags", "minecraft:lever"                                 , "PlaceLatest").getString();
 			config.get("block_tags", "minecraft:obsidian"                              , "PlaceEarliest Mining").getString();
+			config.get("block_tags", "minecraft:redstone_torch"                        , "PlaceLatest Mining").getString();
+			config.get("block_tags", "minecraft:torch"                                 , "PlaceLatest Mining").getString();
+			config.get("block_tags", "minecraft:unlit_redstone_torch"                  , "PlaceLatest Mining").getString();
 			config.get("block_tags", "warpdrive:hull.basic.plain"                      , "PlaceEarliest StopMining").getString();
 			config.get("block_tags", "warpdrive:hull.advanced.plain"                   , "PlaceEarliest StopMining").getString();
 			config.get("block_tags", "warpdrive:hull.superior.plain"                   , "PlaceEarliest StopMining").getString();
@@ -246,6 +249,7 @@ public class Dictionary {
 			config.get("block_tags", "sgcraft:stargatebase"                            , "PlaceEarliest").getString(); // Stargate Atlantiscraft 1.3
 			config.get("block_tags", "sgcraft:stargatering"                            , "PlaceEarlier").getString();
 			config.get("block_tags", "sgcraft:stargatecontroller"                      , "PlaceLatest").getString();
+			config.get("block_tags", "techguns:lamp0"                                  , "PlaceLatest").getString();
 			
 			// expendables, a.k.a. "don't blow my ship with this..."
 			config.get("block_tags", "warpdrive:gas"                                   , "LeftBehind Expandable").getString();
@@ -267,7 +271,6 @@ public class Dictionary {
 			// mining a mineshaft...
 			config.get("block_tags", "minecraft:web"                                   , "Mining").getString();
 			config.get("block_tags", "minecraft:fence"                                 , "Mining").getString();
-			config.get("block_tags", "minecraft:torch"                                 , "Mining").getString();
 			config.get("block_tags", "minecraft:glowstone"                             , "Mining").getString();
 			config.get("block_tags", "minecraft:redstone_block"                        , "Mining").getString();
 			
