@@ -467,11 +467,6 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 			return;
 		}
 		
-		if (WarpDriveConfig.LOGGING_ENERGY) {
-			WarpDrive.logger.info(String.format("%s updateEntity() => %d/%d",
-			                                    this, scanTickCount, WarpDriveConfig.ENERGY_SCAN_INTERVAL_TICKS));
-		}
-		
 		// IndustrialCraft2
 		if ( WarpDriveConfig.ENERGY_ENABLE_IC2_EU
 		  && WarpDriveConfig.isIndustrialCraft2Loaded ) {
