@@ -56,7 +56,7 @@ public class JumpShip {
 		final NBTTagCompound schematic = Commons.readNBTFromFile(WarpDriveConfig.G_SCHEMATICS_LOCATION + "/" + fileName + ".schematic");
 		if (schematic == null) {
 			reason.append(Commons.styleWarning, "warpdrive.ship.guide.schematic_not_found",
-			              fileName);
+			              fileName + ".schematic");
 			return null;
 		}
 		

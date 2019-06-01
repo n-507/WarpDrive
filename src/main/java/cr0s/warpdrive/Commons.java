@@ -600,6 +600,16 @@ public class Commons {
 	
 	// data manipulation methods
 	
+	public static String toString(final Object object) {
+		if (object == null) {
+			return "null";
+		}
+		if (object instanceof String) {
+			return (String) object;
+		}
+		return object.toString();
+	}
+	
 	public static int toInt(final double d) {
 		return (int) Math.round(d);
 	}

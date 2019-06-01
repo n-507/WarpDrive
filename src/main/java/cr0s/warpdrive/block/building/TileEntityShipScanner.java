@@ -404,8 +404,8 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		return true;
 	}
 	
-	// Returns error code and reason string
-	private int deployShip(final String fileName, final int offsetX, final int offsetY, final int offsetZ,
+	// Returns true on success and reason string
+	private boolean deployShip(final String fileName, final int offsetX, final int offsetY, final int offsetZ,
 	                       final byte rotationSteps, final boolean isForced, final WarpDriveText reason) {
 		targetX = pos.getX() + offsetX;
 		targetY = pos.getY() + offsetY;
@@ -414,7 +414,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		
 		jumpShip = JumpShip.createFromFile(fileName, reason);
 		if (jumpShip == null) {
-			return -1;
+			return false;
 		}
 		
 		blocksToDeployCount = jumpShip.jumpBlocks.length;
@@ -434,7 +434,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 			if (distance > WarpDriveConfig.SS_MAX_DEPLOY_RADIUS_BLOCKS) {
 				reason.append(Commons.styleWarning, "warpdrive.builder.guide.deploying_out_of_range",
 				              WarpDriveConfig.SS_MAX_DEPLOY_RADIUS_BLOCKS);
-				return 5;
+				return false;
 			}
 			
 			// Compute target area
@@ -460,7 +460,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 						WarpDrive.logger.info(String.format("Deployment collision detected at (%d %d %d): no room for Ship core",
 						                                    targetX, targetY, targetZ));
 					}
-					return 2;
+					return false;
 				}
 				
 				// Clear specified area for any blocks to avoid corruption and ensure clean full ship
@@ -496,7 +496,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 				if (occupiedBlockCount > 0) {
 					reason.append(Commons.styleWarning, "warpdrive.builder.guide.deployment_area_occupied_by_blocks",
 					              occupiedBlockCount);
-					return 2;
+					return false;
 				}
 			}
 		}
@@ -508,7 +508,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		setState(EnumShipScannerState.DEPLOYING);
 		reason.append(Commons.styleCorrect, "warpdrive.builder.guide.deploying_ship",
 		              fileName);
-		return 3;
+		return true;
 	}
 	
 	private static boolean isShipCoreClear(final World world, final BlockPos blockPos,
@@ -690,22 +690,32 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 	}
 	
 	private Object[] deploy(final Object[] arguments) {
-		if (arguments.length != 5) {
-			return new Object[] { 4, "Invalid arguments count, you need <.schematic file name>, <offsetX>, <offsetY>, <offsetZ>, <rotationSteps>!" };
+		if (arguments == null || arguments.length != 5) {
+			return new Object[] { false, "Invalid arguments count, you need <.schematic file name>, <offsetX>, <offsetY>, <offsetZ>, <rotationSteps>!" };
 		}
+		final String fileName;
+		final int x;
+		final int y;
+		final int z;
+		final byte rotationSteps;
 		
-		final String fileName = (String) arguments[0];
-		final int x = Commons.toInt(arguments[1]);
-		final int y = Commons.toInt(arguments[2]);
-		final int z = Commons.toInt(arguments[3]);
-		final byte rotationSteps = (byte) Commons.toInt(arguments[4]);
-		
-		if (!new File(WarpDriveConfig.G_SCHEMATICS_LOCATION + "/" + fileName + ".schematic").exists()) {
-			return new Object[] { 0, "Specified schematic file was not found!" };
+		try {
+			fileName = Commons.toString(arguments[0]);
+			x = Commons.toInt(arguments[1]);
+			y = Commons.toInt(arguments[2]);
+			z = Commons.toInt(arguments[3]);
+			final int intRotationSteps = Commons.toInt(arguments[4]);
+			rotationSteps = (byte) ((1024 + intRotationSteps) % 4);
+		} catch (final Exception exception) {
+			if (WarpDriveConfig.LOGGING_LUA) {
+				WarpDrive.logger.info(String.format("%s Invalid arguments to deploy(): %s",
+				                                    this, Commons.format(arguments)));
+			}
+			return new Object[] { false, "Invalid argument format, you need <.schematic file name>, <offsetX>, <offsetY>, <offsetZ>, <rotationSteps>!" };
 		}
 		
 		final WarpDriveText reason = new WarpDriveText();
-		final int result = deployShip(fileName, x, y, z, rotationSteps, false, reason);
+		final boolean isSuccess = deployShip(fileName, x, y, z, rotationSteps, false, reason);
 		
 		// don't force captain when deploying from LUA
 		playerName = null;
@@ -717,7 +727,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 			playerName = "";
 		}
 		/**/
-		return new Object[] { result, Commons.removeFormatting( reason.getUnformattedText() ) };
+		return new Object[] { isSuccess, Commons.removeFormatting( reason.getUnformattedText() ) };
 	}
 	
 	private Object[] state() {
@@ -833,10 +843,10 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		
 		// try deploying
 		final WarpDriveText reason = new WarpDriveText();
-		deployShip(ItemShipToken.getSchematicName(itemStack),
-		           targetX - pos.getX(), targetY - pos.getY(), targetZ - pos.getZ(), rotationSteps,
-		           true, reason);
-		if (enumShipScannerState == EnumShipScannerState.IDLE) {
+		final boolean isSuccess = deployShip(ItemShipToken.getSchematicName(itemStack),
+		                                     targetX - pos.getX(), targetY - pos.getY(), targetZ - pos.getZ(), rotationSteps,
+		                                     true, reason);
+		if (!isSuccess) {
 			// failed
 			Commons.addChatMessage(entityPlayer, reason);
 			shipToken_nextUpdate_ticks = SHIP_TOKEN_UPDATE_DELAY_FAILED_DEPLOY_TICKS;
