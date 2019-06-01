@@ -224,9 +224,10 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 	// Common OC/CC methods
 	@Override
 	public Object[] getEnergyRequired() {
+		final String units = energy_getDisplayUnits();
 		return new Object[] {
 				true,
-				EnergyWrapper.convert(WarpDriveConfig.LIFT_ENERGY_PER_ENTITY, null) };
+				EnergyWrapper.convert(WarpDriveConfig.LIFT_ENERGY_PER_ENTITY, units) };
 	}
 	
 	@Override

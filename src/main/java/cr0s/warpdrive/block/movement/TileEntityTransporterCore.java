@@ -1759,10 +1759,11 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	
 	@Override
 	public Object[] getEnergyRequired() {
+		final String units = energy_getDisplayUnits();
 		return new Object[] {
 				true,
-				EnergyWrapper.convert(getEnergyRequired(EnumTransporterState.ACQUIRING), null),
-				EnergyWrapper.convert(getEnergyRequired(EnumTransporterState.ENERGIZING), null) };
+				EnergyWrapper.convert(getEnergyRequired(EnumTransporterState.ACQUIRING), units),
+				EnergyWrapper.convert(getEnergyRequired(EnumTransporterState.ENERGIZING), units) };
 	}
 	
 	@Override

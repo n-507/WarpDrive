@@ -166,9 +166,10 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 	
 	@Override
 	public Object[] getEnergyRequired() {
+		final String units = energy_getDisplayUnits();
 		return new Object[] {
 				true,
-				EnergyWrapper.convert(WarpDriveConfig.TRANSPORTER_BEACON_ENERGY_PER_TICK, null) };
+				EnergyWrapper.convert(WarpDriveConfig.TRANSPORTER_BEACON_ENERGY_PER_TICK, units) };
 	}
 	
 	// OpenComputers callback methods

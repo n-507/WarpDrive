@@ -122,11 +122,12 @@ public class TileEntityAirGeneratorTiered extends TileEntityAbstractEnergyConsum
 	
 	@Override
 	public Object[] getEnergyRequired() {
+		final String units = energy_getDisplayUnits();
 		final double energyRequired_newAir  = WarpDriveConfig.BREATHING_ENERGY_PER_NEW_AIR_BLOCK_BY_TIER     [enumTier.getIndex()] / (double) WarpDriveConfig.BREATHING_AIR_GENERATION_TICKS;
 		final double energyRequired_refresh = WarpDriveConfig.BREATHING_ENERGY_PER_EXISTING_AIR_BLOCK_BY_TIER[enumTier.getIndex()] / (double) WarpDriveConfig.BREATHING_AIR_GENERATION_TICKS;
 		return new Object[] {
 				true,
-				EnergyWrapper.convert((long) Math.ceil(energyRequired_newAir  * 100.0D), null) / 100.0F,
-				EnergyWrapper.convert((long) Math.ceil(energyRequired_refresh * 100.0D), null) / 100.0F };
+				EnergyWrapper.convert((long) Math.ceil(energyRequired_newAir  * 100.0D), units) / 100.0F,
+				EnergyWrapper.convert((long) Math.ceil(energyRequired_refresh * 100.0D), units) / 100.0F };
 	}
 }

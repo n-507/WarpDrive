@@ -9,6 +9,7 @@ import cr0s.warpdrive.block.forcefield.TileEntityForceField;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObjectManager;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.ForceFieldSetup;
 import cr0s.warpdrive.data.SoundEvents;
 import cr0s.warpdrive.data.Vector3;
@@ -742,6 +743,13 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 	}
 	
 	// Common OC/CC methods
+	@Override
+	public Object[] getEnergyRequired() {
+		final String units = energy_getDisplayUnits();
+		return new Object[] { true,
+		                      EnergyWrapper.convert(WarpDriveConfig.LASER_CANNON_MAX_LASER_ENERGY, units) };
+	}
+	
 	public Object[] beamFrequency(final Object[] arguments) {
 		if (arguments.length == 1) {
 			setBeamFrequency(Commons.toInt(arguments[0]));

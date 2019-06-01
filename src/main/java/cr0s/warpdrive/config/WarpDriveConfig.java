@@ -309,7 +309,7 @@ public class WarpDriveConfig {
 	public static int[]            LASER_MEDIUM_MAX_ENERGY_STORED_BY_TIER = { 1000000, 10000, 30000, 100000 };
 	public static double[]         LASER_MEDIUM_FACTOR_BY_TIER = { 1.25D, 0.5D, 1.0D, 1.5D };
 	
-	// Laser Emitter
+	// Laser cannon
 	// 1 main laser + 4 boosting lasers = 10 * 100k + 0.6 * 40 * 100k = 3.4M
 	public static int              LASER_CANNON_MAX_MEDIUMS_COUNT = 10;
 	public static int              LASER_CANNON_MAX_LASER_ENERGY = 3400000;
@@ -349,31 +349,33 @@ public class WarpDriveConfig {
 	// - harvesting one block is 60 MJ/block = 600 RF/block = ~145 EU/block
 	// - maximum speed is 3.846 ticks per blocks
 	// - overall consumption varies from 81.801 to 184.608 MJ/block (depending on speed) = up to 1846.08 RF/block = up to ~448 EU/block
-	// - at radius 5, one layer takes ~465 ticks ((ML_MAX_RADIUS * 2 + 1) ^ 2 * 3.846)
-	// - overall consumption is ((ML_MAX_RADIUS * 2 + 1) ^ 2) * 448 => ~ 54208 EU/layer
+	// - at radius 5, one layer takes ~465 ticks ((radius * 2 + 1) ^ 2 * 3.846)
+	// - overall consumption is ((radius * 2 + 1) ^ 2) * 448 => ~ 54208 EU/layer
 	// WarpDrive mining laser in comparison
 	// - each mined layer is scanned twice
 	// - default ore generation: 1 ore out of 25 blocks
-	// - overall consumption in 'all, space' is ML_EU_PER_LAYER_SPACE / ((ML_MAX_RADIUS * 2 + 1) ^ 2) + ML_EU_PER_BLOCK_SPACE => ~ 356 EU/block
-	// - overall consumption in 'all, space' is ML_EU_PER_LAYER_SPACE + ((ML_MAX_RADIUS * 2 + 1) ^ 2) * ML_EU_PER_BLOCK_SPACE => ~ 43150 EU/layer
-	// - overall consumption in 'ores, space' is ML_EU_PER_LAYER_SPACE + ((ML_MAX_RADIUS * 2 + 1) ^ 2) * ML_EU_PER_BLOCK_SPACE * ML_EU_MUL_ORESONLY / 25 => ~ 28630 EU/layer
-	// - at radius 5, one layer takes 403 ticks (2 * ML_SCAN_DELAY_TICKS + ML_MINE_DELAY_TICKS * (ML_MAX_RADIUS * 2 + 1) ^ 2)
+	// - overall consumption in 'all, space' is energyPerLayer / ((radius * 2 + 1) ^ 2) + energyPerBlock => ~ 356 EU/block in space
+	// - overall consumption in 'all, space' is energyPerLayer + ((radius * 2 + 1) ^ 2) * energyPerBlock => ~ 43150 EU/layer in space
+	// - overall consumption in 'ores, space' is energyPerLayer + ((radius * 2 + 1) ^ 2) * energyPerBlock * factorOresOnly / 25 => ~ 28630 EU/layer in space
+	// - at radius 5, one layer takes (2 * MINING_LASER_SCAN_DELAY_TICKS + MINING_LASER_MINE_DELAY_TICKS * (radius * 2 + 1) ^ 2) => 403 ticks
+	// Nota: this is only assuming minimum radius of 5 (11x11), with 1 ore for 25 blocks mined.
 	public static int              MINING_LASER_MAX_MEDIUMS_COUNT = 3;
 	public static int              MINING_LASER_RADIUS_NO_LASER_MEDIUM = 4;
 	public static int              MINING_LASER_RADIUS_PER_LASER_MEDIUM = 1;
 	
+	public static int              MINING_LASER_SETUP_UPDATE_PARAMETERS_TICKS = 20;
 	public static int              MINING_LASER_WARMUP_DELAY_TICKS = 20;
 	public static int              MINING_LASER_SCAN_DELAY_TICKS = 20;
 	public static int              MINING_LASER_MINE_DELAY_TICKS = 3;
 	
-	public static int              MINING_LASER_SPACE_ENERGY_PER_LAYER = 20000;
-	public static int              MINING_LASER_PLANET_ENERGY_PER_LAYER = 33000;
-	public static int              MINING_LASER_SPACE_ENERGY_PER_BLOCK = 1500;
-	public static int              MINING_LASER_PLANET_ENERGY_PER_BLOCK = 2500;
-	public static double           MINING_LASER_ORESONLY_ENERGY_FACTOR = 15.0; // lower value encourages to keep the land 'clean'
-	public static double           MINING_LASER_SILKTOUCH_ENERGY_FACTOR = 1.5;
-	public static double           MINING_LASER_SILKTOUCH_DEUTERIUM_L = 0.0;
-	public static double           MINING_LASER_FORTUNE_ENERGY_FACTOR = 1.5;
+	public static int              MINING_LASER_SCAN_ENERGY_PER_LAYER_IN_VOID = 20000;
+	public static int              MINING_LASER_SCAN_ENERGY_PER_LAYER_IN_ATMOSPHERE = 30000;
+	public static int              MINING_LASER_MINE_ENERGY_PER_BLOCK_IN_VOID = 1500;
+	public static int              MINING_LASER_MINE_ENERGY_PER_BLOCK_IN_ATMOSPHERE = 2500;
+	public static double           MINING_LASER_MINE_ORES_ONLY_ENERGY_FACTOR = 15.0; // lower than 25 to encourage keeping the land 'clean', higher than 13 to use more than scanning 
+	public static double           MINING_LASER_MINE_SILKTOUCH_ENERGY_FACTOR = 1.5;
+	public static int              MINING_LASER_MINE_SILKTOUCH_DEUTERIUM_MB = 0;
+	public static double           MINING_LASER_MINE_FORTUNE_ENERGY_FACTOR = 1.5;
 	
 	// Laser tree farm
 	// oak      tree height is 8 to 11 logs + 2 leaves
@@ -1093,28 +1095,28 @@ public class WarpDriveConfig {
 		MINING_LASER_MINE_DELAY_TICKS = Commons.clamp(1, 300,
 				config.get("mining_laser", "mine_delay_ticks", MINING_LASER_MINE_DELAY_TICKS, "Mining duration per scanned block").getInt());
 		
-		MINING_LASER_PLANET_ENERGY_PER_LAYER = Commons.clamp(1, Integer.MAX_VALUE,
-				config.get("mining_laser", "planet_energy_per_layer", MINING_LASER_PLANET_ENERGY_PER_LAYER, "Energy cost per layer on a planet").getInt());
-		MINING_LASER_PLANET_ENERGY_PER_BLOCK = Commons.clamp(1, Integer.MAX_VALUE,
-				config.get("mining_laser", "planet_energy_per_block", MINING_LASER_PLANET_ENERGY_PER_BLOCK, "Energy cost per block in space").getInt());
-		MINING_LASER_SPACE_ENERGY_PER_LAYER = Commons.clamp(1, Integer.MAX_VALUE,
-				config.get("mining_laser", "space_energy_per_layer", MINING_LASER_SPACE_ENERGY_PER_LAYER, "Energy cost per layer on a planet").getInt());
-		MINING_LASER_SPACE_ENERGY_PER_BLOCK = Commons.clamp(1, Integer.MAX_VALUE,
-				config.get("mining_laser", "space_energy_per_block", MINING_LASER_SPACE_ENERGY_PER_BLOCK, "Energy cost per block in space").getInt());
+		MINING_LASER_SCAN_ENERGY_PER_LAYER_IN_ATMOSPHERE = Commons.clamp(1, Integer.MAX_VALUE,
+				config.get("mining_laser", "scan_energy_per_layer_in_atmosphere", MINING_LASER_SCAN_ENERGY_PER_LAYER_IN_ATMOSPHERE, "Energy cost per layer on a planet with atmosphere").getInt());
+		MINING_LASER_MINE_ENERGY_PER_BLOCK_IN_ATMOSPHERE = Commons.clamp(1, Integer.MAX_VALUE,
+				config.get("mining_laser", "mine_energy_per_block_in_atmosphere", MINING_LASER_MINE_ENERGY_PER_BLOCK_IN_ATMOSPHERE, "Energy cost per block on a planet with atmosphere").getInt());
+		MINING_LASER_SCAN_ENERGY_PER_LAYER_IN_VOID = Commons.clamp(1, Integer.MAX_VALUE,
+				config.get("mining_laser", "scan_energy_per_layer_in_void", MINING_LASER_SCAN_ENERGY_PER_LAYER_IN_VOID, "Energy cost per layer in space or a planet without atmosphere").getInt());
+		MINING_LASER_MINE_ENERGY_PER_BLOCK_IN_VOID = Commons.clamp(1, Integer.MAX_VALUE,
+				config.get("mining_laser", "mine_energy_per_block_in_void", MINING_LASER_MINE_ENERGY_PER_BLOCK_IN_VOID, "Energy cost per block in space or a planet without atmosphere").getInt());
 		
-		MINING_LASER_ORESONLY_ENERGY_FACTOR = Commons.clamp(1.5D, 1000.0D,
-				config.get("mining_laser", "oresonly_energy_factor", MINING_LASER_ORESONLY_ENERGY_FACTOR, "Energy cost multiplier per block when mining only ores").getDouble(MINING_LASER_ORESONLY_ENERGY_FACTOR));
-		MINING_LASER_SILKTOUCH_ENERGY_FACTOR = Commons.clamp(1.5D, 1000.0D,
-				config.get("mining_laser", "silktouch_energy_factor", MINING_LASER_SILKTOUCH_ENERGY_FACTOR, "Energy cost multiplier per block when mining with silktouch").getDouble(MINING_LASER_SILKTOUCH_ENERGY_FACTOR));
+		MINING_LASER_MINE_ORES_ONLY_ENERGY_FACTOR = Commons.clamp(1.5D, 1000.0D,
+				config.get("mining_laser", "mine_ores_only_energy_factor", MINING_LASER_MINE_ORES_ONLY_ENERGY_FACTOR, "Energy cost multiplier per block when mining only ores").getDouble(MINING_LASER_MINE_ORES_ONLY_ENERGY_FACTOR));
+		MINING_LASER_MINE_SILKTOUCH_ENERGY_FACTOR = Commons.clamp(1.5D, 1000.0D,
+				config.get("mining_laser", "mine_silktouch_energy_factor", MINING_LASER_MINE_SILKTOUCH_ENERGY_FACTOR, "Energy cost multiplier per block when mining with silktouch").getDouble(MINING_LASER_MINE_SILKTOUCH_ENERGY_FACTOR));
 		
 		if (unused) {
-			MINING_LASER_SILKTOUCH_DEUTERIUM_L = Commons.clamp(0.0D, 10.0D,
-					config.get("mining_laser", "silktouch_deuterium_l", MINING_LASER_SILKTOUCH_DEUTERIUM_L, "Deuterium cost per block when mining with silktouch (0 to disable)").getDouble(1.0D));
-			if (MINING_LASER_SILKTOUCH_DEUTERIUM_L < 0.001D) {
-				MINING_LASER_SILKTOUCH_DEUTERIUM_L = 0.0D;
+			MINING_LASER_MINE_SILKTOUCH_DEUTERIUM_MB = Commons.clamp(0, 10000,
+					config.get("mining_laser", "mine_silktouch_deuterium_mB", MINING_LASER_MINE_SILKTOUCH_DEUTERIUM_MB, "Deuterium cost per block when mining with silktouch (0 to disable)").getInt());
+			if (MINING_LASER_MINE_SILKTOUCH_DEUTERIUM_MB < 1) {
+				MINING_LASER_MINE_SILKTOUCH_DEUTERIUM_MB = 0;
 			}
-			MINING_LASER_FORTUNE_ENERGY_FACTOR = Commons.clamp(0.01D, 1000.0D,
-					config.get("mining_laser", "fortune_energy_factor", MINING_LASER_FORTUNE_ENERGY_FACTOR, "Energy cost multiplier per fortune level").getDouble(2.5D));
+			MINING_LASER_MINE_FORTUNE_ENERGY_FACTOR = Commons.clamp(0.01D, 1000.0D,
+					config.get("mining_laser", "fortune_energy_factor", MINING_LASER_MINE_FORTUNE_ENERGY_FACTOR, "Energy cost multiplier per fortune level").getDouble(MINING_LASER_MINE_FORTUNE_ENERGY_FACTOR));
 		}
 		
 		// Tree Farm

@@ -8,6 +8,7 @@ import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockStatePos;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumLaserTreeFarmMode;
 import cr0s.warpdrive.data.EnumTaskResult;
@@ -75,6 +76,12 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 	private AxisAlignedBB axisAlignedBBSoil = null;
 	private AxisAlignedBB axisAlignedBBScan = null;
 	private int maxDistance = 0;
+	private int energyScanning;
+	private int energyTappingWetSpot;
+	private int energyTappingRubberLog;
+	private int energyHarvestingLog;
+	private int energyHarvestingLeaf;
+	private int energyPlanting;
 	
 	private boolean isPowered = false;
 	
@@ -193,8 +200,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 			}
 			
 			// consume energy
-			final int energyCost = getEnergyRequired()[0];
-			isPowered = laserMedium_consumeExactly(energyCost, false);
+			isPowered = laserMedium_consumeExactly(energyScanning, false);
 			if (!isPowered) {
 				currentState = STATE_WARMING_UP;
 				tickCurrentTask = WarpDriveConfig.TREE_FARM_WARM_UP_DELAY_TICKS;
@@ -436,8 +442,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 		}
 		
 		// consume power
-		final int energyCost = getEnergyRequired()[5];
-		isPowered = laserMedium_consumeExactly(energyCost, false);
+		isPowered = laserMedium_consumeExactly(energyPlanting, false);
 		if (!isPowered) {
 			return EnumTaskResult.RETRY;
 		}
@@ -478,8 +483,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 					}
 					
 					// consume power
-					final int energyCost = getEnergyRequired()[1];
-					isPowered = laserMedium_consumeExactly(energyCost, false);
+					isPowered = laserMedium_consumeExactly(energyTappingWetSpot, false);
 					if (!isPowered) {
 						return EnumTaskResult.RETRY;
 					}
@@ -515,8 +519,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 				}
 				
 				// consume power
-				final int energyRequired = getEnergyRequired()[2];
-				isPowered = laserMedium_consumeExactly(energyRequired, false);
+				isPowered = laserMedium_consumeExactly(energyTappingRubberLog, false);
 				if (!isPowered) {
 					return EnumTaskResult.RETRY;
 				}
@@ -542,7 +545,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 		final boolean isLeaf = Dictionary.isLeaf(blockStateValuable.getBlock());
 		if (isLog || (breakLeaves && isLeaf)) {
 			// consume power
-			final int energyCost = getEnergyRequired()[isLog ? 3 : 4];
+			final int energyCost = isLog ? energyHarvestingLog : energyHarvestingLeaf;
 			isPowered = laserMedium_consumeExactly(energyCost, false);
 			if (!isPowered) {
 				return EnumTaskResult.RETRY;
@@ -586,6 +589,13 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 		
 		maxDistance = WarpDriveConfig.TREE_FARM_MAX_DISTANCE_NO_LASER_MEDIUM
 		            + (int) Math.floor(cache_laserMedium_factor * WarpDriveConfig.TREE_FARM_MAX_DISTANCE_PER_MEDIUM);
+		
+		energyScanning = WarpDriveConfig.TREE_FARM_SCAN_ENERGY_PER_SURFACE * (1 + 2 * radiusX_actual) * (1 + 2 * radiusZ_actual);
+		energyTappingWetSpot = WarpDriveConfig.TREE_FARM_TAP_WET_SPOT_ENERGY_PER_BLOCK;
+		energyTappingRubberLog = WarpDriveConfig.TREE_FARM_TAP_RUBBER_LOG_ENERGY_PER_BLOCK;
+		energyHarvestingLog = (enableSilktouch ? WarpDriveConfig.TREE_FARM_SILKTOUCH_LOG_ENERGY_PER_BLOCK : WarpDriveConfig.TREE_FARM_HARVEST_LOG_ENERGY_PER_BLOCK );
+		energyHarvestingLeaf = (enableSilktouch ? WarpDriveConfig.TREE_FARM_SILKTOUCH_LEAF_ENERGY_PER_BLOCK : WarpDriveConfig.TREE_FARM_HARVEST_LEAF_ENERGY_PER_BLOCK);
+		energyPlanting = WarpDriveConfig.TREE_FARM_PLANT_ENERGY_PER_BLOCK;
 	}
 	
 	@Override
@@ -813,15 +823,16 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 	}
 	
 	// Returns scan, wet tap, jungle tap, harvest log, harvest leaf, plant energy costs
-	public int[] getEnergyRequired() {
-		return new int[] {
-				WarpDriveConfig.TREE_FARM_SCAN_ENERGY_PER_SURFACE * (1 + 2 * radiusX_actual) * (1 + 2 * radiusZ_actual),
-				WarpDriveConfig.TREE_FARM_TAP_WET_SPOT_ENERGY_PER_BLOCK,
-				WarpDriveConfig.TREE_FARM_TAP_RUBBER_LOG_ENERGY_PER_BLOCK,
-				(enableSilktouch ? WarpDriveConfig.TREE_FARM_SILKTOUCH_LOG_ENERGY_PER_BLOCK : WarpDriveConfig.TREE_FARM_HARVEST_LOG_ENERGY_PER_BLOCK ),
-				(enableSilktouch ? WarpDriveConfig.TREE_FARM_SILKTOUCH_LEAF_ENERGY_PER_BLOCK : WarpDriveConfig.TREE_FARM_HARVEST_LEAF_ENERGY_PER_BLOCK),
-				WarpDriveConfig.TREE_FARM_PLANT_ENERGY_PER_BLOCK
-		};
+	@Override
+	public Object[] getEnergyRequired() {
+		final String units = energy_getDisplayUnits();
+		return new Object[] { true,
+		                      EnergyWrapper.convert(energyScanning, units),
+		                      EnergyWrapper.convert(energyTappingWetSpot, units),
+		                      EnergyWrapper.convert(energyTappingRubberLog, units),
+		                      EnergyWrapper.convert(energyHarvestingLog, units),
+		                      EnergyWrapper.convert(energyHarvestingLeaf, units),
+		                      EnergyWrapper.convert(energyPlanting, units) };
 	}
 	
 	// Common OC/CC methods

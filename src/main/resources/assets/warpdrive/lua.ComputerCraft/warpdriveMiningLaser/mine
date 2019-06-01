@@ -74,7 +74,6 @@ else
   label = "" .. os.getComputerID()
 end
 
-term.setTextColor(colors.blue)
 if noExit then
   local areActive
   repeat
@@ -82,8 +81,10 @@ if noExit then
     for key,mininglaser in pairs(mininglasers) do
       local energyUnits = mininglaser.energyDisplayUnits()
       local status, isActive, energy, currentLayer, mined, total = mininglaser.state()
+      local _, energyPerLayer, energyPerBlock = mininglaser.getEnergyRequired()
       
       term.setBackgroundColor(colors.black)
+      term.setTextColor(colors.blue)
       term.clear()
       term.setBackgroundColor(colors.lime)
       term.setCursorPos(1, 1)
@@ -91,11 +92,16 @@ if noExit then
       term.setBackgroundColor(colors.black)
       term.setCursorPos(1, 3)
       term.write("Status: " .. status .. "   ")
-      term.setBackgroundColor(colors.black)
       term.setCursorPos(1, 5)
       term.write("Energy level is " .. energy .. " " .. energyUnits)
+      term.setTextColor(colors.white)
       term.setCursorPos(1, 7)
       term.write("Mined " .. mined .. " out of " .. total .. " blocks at layer " .. currentLayer .. "   ")
+      term.setTextColor(colors.gray)
+      term.setCursorPos(1, 9)
+      term.write("Scanning requires " .. energyPerLayer .. " " .. energyUnits .. " per layer")
+      term.setCursorPos(1, 10)
+      term.write("Mining requires " .. energyPerBlock .. " " .. energyUnits .. " per block")
       
       if isActive then
         areActive = true

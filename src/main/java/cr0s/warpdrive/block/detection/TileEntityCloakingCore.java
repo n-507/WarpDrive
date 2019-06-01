@@ -467,11 +467,12 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyConsumer {
 	// Common OC/CC methods
 	@Override
 	public Object[] getEnergyRequired() {
+		final String units = energy_getDisplayUnits();
 		final double updateRate = ((!isFullyTransparent) ? 20 : 10) * WarpDriveConfig.CLOAKING_FIELD_REFRESH_INTERVAL_SECONDS;
 		final double energyRate = energyRequired / updateRate;
 		return new Object[] {
 				true,
-				EnergyWrapper.convert((long) Math.ceil(energyRate), null) };
+				EnergyWrapper.convert((long) Math.ceil(energyRate), units) };
 	}
 	
 	@Override

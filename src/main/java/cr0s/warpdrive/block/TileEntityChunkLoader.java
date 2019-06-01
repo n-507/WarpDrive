@@ -196,9 +196,10 @@ public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
 	
 	@Override
 	public Object[] getEnergyRequired() {
+		final String units = energy_getDisplayUnits();
 		return new Object[] {
 				true,
-				EnergyWrapper.convert(calculateEnergyRequired(), null) };
+				EnergyWrapper.convert(calculateEnergyRequired(), units) };
 	}
 	
 	// OpenComputers callback methods

@@ -41,7 +41,9 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractEnergyBa
 	public TileEntityAbstractLaser() {
 		super();
 		
+		// (abstract) peripheralName = "xxx";
 		addMethods(new String[] {
+				"getEnergyRequired",
 				"laserMediumDirection",
 				"laserMediumCount"
 		});
@@ -214,7 +216,10 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractEnergyBa
 				units };
 	}
 	
-	// IAbstractLaser overrides
+	// Common OC/CC methods / IAbstractLaser overrides
+	@Override
+	public abstract Object[] getEnergyRequired();
+	
 	@Override
 	public Object[] laserMediumDirection() {
 		return new Object[] {
@@ -250,6 +255,13 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractEnergyBa
 	// OpenComputers callback methods
 	@Callback
 	@Optional.Method(modid = "opencomputers")
+	public Object[] getEnergyRequired(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
+		return getEnergyRequired();
+	}
+	
+	@Callback
+	@Optional.Method(modid = "opencomputers")
 	public Object[] laserMediumDirection(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);
 		return laserMediumDirection();
@@ -267,6 +279,9 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractEnergyBa
 	@Optional.Method(modid = "computercraft")
 	protected Object[] CC_callMethod(@Nonnull final String methodName, @Nonnull final Object[] arguments) {
 		switch (methodName) {
+		case "getEnergyRequired":
+			return getEnergyRequired();
+			
 		case "laserMediumDirection":
 			return laserMediumDirection();
 			

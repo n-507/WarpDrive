@@ -5,6 +5,7 @@ import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.TileEntityAbstractLaser;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.item.ItemIC2reactorLaserFocus;
 import cr0s.warpdrive.network.PacketHandler;
@@ -194,5 +195,15 @@ public class TileEntityIC2reactorLaserMonitor extends TileEntityAbstractLaser {
 			return super.getStatus()
 					.append(Commons.styleWarning, "warpdrive.ic2_reactor_laser_cooler.no_reactor");
 		}
+	}
+	
+	@Override
+	public Object[] getEnergyRequired() {
+		final String units = energy_getDisplayUnits();
+		final long energyPerTick = (long) Math.ceil( WarpDriveConfig.IC2_REACTOR_COOLING_PER_INTERVAL
+		                                           * WarpDriveConfig.IC2_REACTOR_ENERGY_PER_HEAT
+		                                           / WarpDriveConfig.IC2_REACTOR_COOLING_INTERVAL_TICKS );
+		return new Object[] { true,
+		                      EnergyWrapper.convert(energyPerTick, units) };
 	}
 }

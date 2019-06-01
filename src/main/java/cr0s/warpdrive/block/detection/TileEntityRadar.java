@@ -168,9 +168,10 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	
 	@Override
 	public Object[] getEnergyRequired() {
+		final String units = energy_getDisplayUnits();
 		return new Object[] {
 				true,
-				EnergyWrapper.convert(calculateEnergyRequired(radius), null) };
+				EnergyWrapper.convert(calculateEnergyRequired(radius), units) };
 	}
 	
 	private Object[] getScanDuration(final Object[] arguments) {

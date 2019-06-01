@@ -6,6 +6,7 @@ import cr0s.warpdrive.api.computer.IEnanReactorLaser;
 import cr0s.warpdrive.block.TileEntityAbstractLaser;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.ReactorFace;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.network.PacketHandler;
@@ -250,6 +251,13 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 			return new Object[] { false, "No reactor detected" };
 		}
 		return super.isAssemblyValid();
+	}
+	
+	@Override
+	public Object[] getEnergyRequired() {
+		final String units = energy_getDisplayUnits();
+		return new Object[] { true,
+		                      EnergyWrapper.convert(energyStabilizationRequest, units) };
 	}
 	
 	@Override

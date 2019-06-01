@@ -1268,7 +1268,8 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		if (energyRequired < 0) {
 			return new Object[] { false, reason.getUnformattedComponentText() };
 		}
-		return new Object[] { true, EnergyWrapper.convert(energyRequired, null) };
+		final String units = energy_getDisplayUnits();
+		return new Object[] { true, EnergyWrapper.convert(energyRequired, units) };
 	}
 	
 	@Override
