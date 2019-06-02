@@ -732,16 +732,6 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 		return tagCompound;
 	}
 	
-	@Override
-	public void invalidate() {
-		super.invalidate();
-	}
-	
-	@Override
-	public void onChunkUnload() {
-		super.onChunkUnload();
-	}
-	
 	// Common OC/CC methods
 	@Override
 	public Object[] getEnergyRequired() {

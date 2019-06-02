@@ -275,7 +275,7 @@ public class ChunkData {
 			                                    time - timeUnloaded));
 		}
 		
-		// mark as loaded
+		// mark as unloaded
 		timeUnloaded = time;
 		isLoaded = false;
 	}

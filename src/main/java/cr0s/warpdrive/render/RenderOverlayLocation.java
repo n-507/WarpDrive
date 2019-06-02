@@ -20,7 +20,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 @SideOnly(Side.CLIENT)
 public class RenderOverlayLocation {
 	
-	private static Minecraft minecraft = Minecraft.getMinecraft();
+	private static final Minecraft minecraft = Minecraft.getMinecraft();
 	
 	private void renderLocation(final int widthScreen, final int heightScreen) {
 		// get player
