@@ -145,9 +145,9 @@
 		<filler block="techguns:basicore" metadata="3" ratio=".008" mods="techguns,!libvulpes" /><!-- Titanium -->
 		
 		<filler block="ic2:resource"             metadata="4" ratio=".001" mods="ic2" /><!-- Uranium -->
-		<filler block="nuclearcraft:ore"         metadata="4" ratio=".002" mods="nuclearcraft,!ic2" /><!-- Uranium -->
-		<filler block="immersiveengineering:ore" metadata="5" ratio=".001" mods="immersiveengineering,!ic2,!nuclearcraft" /><!-- Uranium -->
-		<filler block="bigreactors:brore"        metadata="0" ratio=".001" mods="bigreactors,!ic2,!nuclearcraft,!immersiveengineering" /><!-- Uranium -->
+		<filler block="immersiveengineering:ore" metadata="5" ratio=".001" mods="immersiveengineering,!ic2" /><!-- Uranium -->
+		<filler block="nuclearcraft:ore"         metadata="4" ratio=".002" mods="nuclearcraft,!ic2,!immersiveengineering" /><!-- Uranium -->
+		<filler block="bigreactors:brore"        metadata="0" ratio=".001" mods="bigreactors,!ic2,!immersiveengineering,!nuclearcraft" /><!-- Uranium/Yellorite -->
 	</fillerSet>
 	
 	
@@ -216,10 +216,10 @@
 		<filler block="libvulpes:ore0"    metadata="8" ratio=".006" mods="libvulpes" /><!-- Titanium/Rutile -->
 		<filler block="techguns:basicore" metadata="3" ratio=".006" mods="techguns,!libvulpes" /><!-- Titanium -->
 		
-		<filler block="ic2:resource"             metadata="4" ratio=".015" mods="off,ic2" /><!-- Uranium -->
-		<filler block="nuclearcraft:ore"         metadata="4" ratio=".015" mods="nuclearcraft,!ic2" /><!-- Uranium -->
-		<filler block="immersiveengineering:ore" metadata="5" ratio=".015" mods="immersiveengineering,!ic2,!nuclearcraft" /><!-- Uranium -->
-		<filler block="bigreactors:brore"        metadata="0" ratio=".015" mods="bigreactors,!ic2,!nuclearcraft,!immersiveengineering" /><!-- Uranium/Yellorite -->
+		<filler block="ic2:resource"             metadata="4" ratio=".015" mods="ic2" /><!-- Uranium -->
+		<filler block="immersiveengineering:ore" metadata="5" ratio=".015" mods="immersiveengineering,!ic2" /><!-- Uranium -->
+		<filler block="nuclearcraft:ore"         metadata="4" ratio=".015" mods="nuclearcraft,!ic2,!immersiveengineering" /><!-- Uranium -->
+		<filler block="bigreactors:brore"        metadata="0" ratio=".015" mods="bigreactors,!ic2,!immersiveengineering,!nuclearcraft" /><!-- Uranium/Yellorite -->
 	</fillerSet>
 	
 	

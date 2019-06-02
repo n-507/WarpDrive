@@ -109,9 +109,9 @@
 				<filler block="techguns:basicore"                              metadata="3" ratio=".008" mods="techguns,!libvulpes" /><!-- Titanium -->
 				
 				<filler block="undergroundbiomes:%type%_stone_ic2.resource.uranium_ore"      metadata="%metadata%" ratio=".001" mods="ic2" /><!-- Uranium -->
-				<filler block="undergroundbiomes:%type%_stone_tile.nuclearcraft.ore.uranium" metadata="%metadata%" ratio=".002" mods="nuclearcraft,!ic2" /><!-- Uranium -->
-				<filler block="undergroundbiomes:%type%_stone_immersiveengineering_ore_5"    metadata="%metadata%" ratio=".001" mods="immersiveengineering,!ic2,!nuclearcraft" /><!-- Uranium -->
-				<filler block="undergroundbiomes:%type%_stone_bigreactors_brore"             metadata="%metadata%" ratio=".001" mods="bigreactors,!ic2,!nuclearcraft,!immersiveengineering" /><!-- Uranium -->
+				<filler block="undergroundbiomes:%type%_stone_immersiveengineering_ore_5"    metadata="%metadata%" ratio=".001" mods="immersiveengineering,!ic2" /><!-- Uranium -->
+				<filler block="undergroundbiomes:%type%_stone_tile.nuclearcraft.ore.uranium" metadata="%metadata%" ratio=".002" mods="nuclearcraft,!ic2,!immersiveengineering" /><!-- Uranium -->
+				<filler block="undergroundbiomes:%type%_stone_bigreactors_brore"             metadata="%metadata%" ratio=".001" mods="bigreactors,!ic2,!immersiveengineering,!nuclearcraft" /><!-- Uranium/Yellorite -->
 			</fillerSet>
 
 			<!-- rare overworld ores with various base blocks -->
@@ -172,9 +172,9 @@
 				<filler block="techguns:basicore" metadata="3" ratio=".006" mods="techguns,!libvulpes" /><!-- Titanium -->
 				
 				<filler block="undergroundbiomes:%type%_stone_ic2.resource.uranium_ore"      metadata="%metadata%" ratio=".005" mods="ic2" /><!-- Uranium -->
-				<filler block="undergroundbiomes:%type%_stone_tile.nuclearcraft.ore.uranium" metadata="%metadata%" ratio=".005" mods="nuclearcraft,!ic2" /><!-- Uranium -->
-				<filler block="undergroundbiomes:%type%_stone_immersiveengineering_ore_5"    metadata="%metadata%" ratio=".005" mods="immersiveengineering,!ic2,!nuclearcraft" /><!-- Uranium -->
-				<filler block="undergroundbiomes:%type%_stone_bigreactors_brore"             metadata="%metadata%" ratio=".005" mods="bigreactors,!ic2,!nuclearcraft,!immersiveengineering" /><!-- Uranium/Yellorite -->
+				<filler block="undergroundbiomes:%type%_stone_immersiveengineering_ore_5"    metadata="%metadata%" ratio=".005" mods="immersiveengineering,!ic2" /><!-- Uranium -->
+				<filler block="undergroundbiomes:%type%_stone_tile.nuclearcraft.ore.uranium" metadata="%metadata%" ratio=".005" mods="nuclearcraft,!ic2,!immersiveengineering" /><!-- Uranium -->
+				<filler block="undergroundbiomes:%type%_stone_bigreactors_brore"             metadata="%metadata%" ratio=".005" mods="bigreactors,!ic2,!immersiveengineering,!nuclearcraft" /><!-- Uranium/Yellorite -->
 			</fillerSet>
 
 			<!-- assorted overworld surface blocks -->

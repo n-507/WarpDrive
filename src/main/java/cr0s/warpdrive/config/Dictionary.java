@@ -410,6 +410,7 @@ public class Dictionary {
 			config.get("item_tags", "pneumaticcraft:pneumatic_helmet"              , "BreathingHelmet").getString();
 			config.get("item_tags", "psi:psimetal_exosuit_helmet"                  , "BreathingHelmet").getString();
 			config.get("item_tags", "redstonearsenal:armor.helmet_flux"            , "BreathingHelmet").getString();
+			config.get("item_tags", "techguns:t3_combat_helmet"                    , "BreathingHelmet").getString();
 			config.get("item_tags", "techguns:t3_exo_helmet"                       , "BreathingHelmet").getString();
 			config.get("item_tags", "techguns:t3_miner_helmet"                     , "BreathingHelmet").getString();
 			config.get("item_tags", "techguns:t3_power_helmet"                     , "BreathingHelmet").getString();
