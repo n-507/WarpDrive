@@ -42,12 +42,11 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 	public static final String PROVIDER_OTHER      = "other";
 	public static final String PROVIDER_NONE       = "";
 	
+	// persistent properties
 	// unique name so children can refer to parent
 	public String id;
 	
 	public String parentId;
-	public CelestialObject parent;
-	private boolean isParentResolved;
 	protected int parentCenterX, parentCenterZ;
 	
 	public int borderRadiusX, borderRadiusZ;
@@ -62,7 +61,6 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 	private double gravity;
 	private boolean isBreathable;
 	protected String provider;
-	private boolean isHyperspace;
 	
 	private final RandomCollection<StructureGroup> randomStructures = new RandomCollection<>();
 	
@@ -75,6 +73,15 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 	
 	public LinkedHashSet<RenderData> setRenderData;
 	
+	// computed properties
+	private boolean isParentResolved;
+	public CelestialObject parent;
+	private boolean isHyperspace;
+	
+	private AxisAlignedBB cache_aabbWorldBorder;
+	private AxisAlignedBB cache_aabbAreaToReachParent;
+	private AxisAlignedBB cache_aabbAreaInParent;
+	
 	public CelestialObject(final String location, final String parentId, final Element elementCelestialObject) throws InvalidXmlException {
 		loadFromXmlElement(location, parentId, elementCelestialObject);
 	}
@@ -83,7 +90,6 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 	                       final int parBorderRadiusX, final int parBorderRadiusZ,
 	                       final String parParentId, final int parParentCenterX, final int parParentCenterZ) {
 		isVirtual = false;
-		isParentResolved = false;
 		dimensionId = parDimensionId;
 		dimensionCenterX = parDimensionCenterX;
 		dimensionCenterZ = parDimensionCenterZ;
@@ -92,6 +98,11 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 		parentId = parParentId;
 		parentCenterX = parParentCenterX;
 		parentCenterZ = parParentCenterZ;
+		
+		isParentResolved = false;
+		cache_aabbWorldBorder = null;
+		cache_aabbAreaToReachParent = null;
+		cache_aabbAreaInParent = null;
 	}
 	
 	public CelestialObject(final NBTTagCompound tagCompound) {
@@ -307,6 +318,11 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 			}
 		}
 		
+		isParentResolved = false;
+		cache_aabbWorldBorder = null;
+		cache_aabbAreaToReachParent = null;
+		cache_aabbAreaInParent = null;
+		
 		if (WarpDriveConfig.LOGGING_WORLD_GENERATION) {
 			WarpDrive.logger.info(String.format("  loaded %s", this));
 		}
@@ -467,23 +483,32 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 	
 	@Override
 	public AxisAlignedBB getWorldBorderArea() {
-		return new AxisAlignedBB(
-			(dimensionCenterX - borderRadiusX),   0, (dimensionCenterZ - borderRadiusZ),
-			(dimensionCenterX + borderRadiusX), 255, (dimensionCenterZ + borderRadiusZ) );
+		if (cache_aabbWorldBorder == null) {
+			cache_aabbWorldBorder = new AxisAlignedBB(
+					(dimensionCenterX - borderRadiusX), 0, (dimensionCenterZ - borderRadiusZ),
+					(dimensionCenterX + borderRadiusX), 255, (dimensionCenterZ + borderRadiusZ));
+		}
+		return cache_aabbWorldBorder;
 	}
 	
 	@Override
 	public AxisAlignedBB getAreaToReachParent() {
-		return new AxisAlignedBB(
-			(dimensionCenterX - borderRadiusX), 250, (dimensionCenterZ - borderRadiusZ),
-			(dimensionCenterX + borderRadiusX), 255, (dimensionCenterZ + borderRadiusZ) );
+		if (cache_aabbAreaToReachParent == null) {
+			cache_aabbAreaToReachParent = new AxisAlignedBB(
+					(dimensionCenterX - borderRadiusX), 250, (dimensionCenterZ - borderRadiusZ),
+					(dimensionCenterX + borderRadiusX), 255, (dimensionCenterZ + borderRadiusZ));
+		}
+		return cache_aabbAreaToReachParent;
 	}
 	
 	@Override
 	public AxisAlignedBB getAreaInParent() {
-		return new AxisAlignedBB(
-			(parentCenterX - borderRadiusX), 0, (parentCenterZ - borderRadiusZ),
-			(parentCenterX + borderRadiusX), 8, (parentCenterZ + borderRadiusZ) );
+		if (cache_aabbAreaInParent == null) {
+			cache_aabbAreaInParent = new AxisAlignedBB(
+					(parentCenterX - borderRadiusX), 0, (parentCenterZ - borderRadiusZ),
+					(parentCenterX + borderRadiusX), 8, (parentCenterZ + borderRadiusZ));
+		}
+		return cache_aabbAreaInParent;
 	}
 	
 	/**
@@ -587,8 +612,6 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 	}
 	
 	public void readFromNBT(final NBTTagCompound tagCompound) {
-		isParentResolved = false;
-		
 		id = tagCompound.getString("id");
 		
 		parentId = tagCompound.getString("parentId");
@@ -636,6 +659,11 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 			final NBTTagCompound tagCompoundRenderData = tagListRenderData.getCompoundTagAt(indexRenderData);
 			setRenderData.add(new RenderData(tagCompoundRenderData));
 		}
+		
+		isParentResolved = false;
+		cache_aabbWorldBorder = null;
+		cache_aabbAreaToReachParent = null;
+		cache_aabbAreaInParent = null;
 	}
 	
 	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {

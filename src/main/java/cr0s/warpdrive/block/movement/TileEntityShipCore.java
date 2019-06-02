@@ -78,6 +78,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	// computed properties
 	public int maxX, maxY, maxZ;
 	public int minX, minY, minZ;
+	private AxisAlignedBB cache_aabbArea;
 	protected boolean showBoundingBox = false;
 	private int ticksBoundingBoxUpdate = 0;
 	
@@ -778,6 +779,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		
 		minY = pos.getY() - getDown();
 		maxY = pos.getY() + getUp();
+		cache_aabbArea = null;
 		
 		// update dimensions to client
 		markDirty();
@@ -1181,6 +1183,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		maxY = tagCompound.getInteger("maxY");
 		minZ = tagCompound.getInteger("minZ");
 		maxZ = tagCompound.getInteger("maxZ");
+		cache_aabbArea = null;
 	}
 	
 	@Override
@@ -1217,7 +1220,10 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	
 	@Override
 	public AxisAlignedBB getStarMapArea() {
-		return new AxisAlignedBB(minX, minY, minZ, maxX + 1.0D, maxY + 1.0D, maxZ + 1.0D);
+		if (cache_aabbArea == null) {
+			cache_aabbArea = new AxisAlignedBB(minX, minY, minZ, maxX + 1.0D, maxY + 1.0D, maxZ + 1.0D);
+		}
+		return cache_aabbArea;
 	}
 	
 	@Override

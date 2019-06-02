@@ -450,7 +450,7 @@ public class StarMapRegistry {
 			                                     shipCore1));
 			return null;
 		}
-		final AxisAlignedBB aabb1 = new AxisAlignedBB(shipCore1.minX, shipCore1.minY, shipCore1.minZ, shipCore1.maxX, shipCore1.maxY, shipCore1.maxZ);
+		final AxisAlignedBB aabb1 = shipCore1.getStarMapArea();		
 		
 		final CopyOnWriteArraySet<StarMapRegistryItem> setRegistryItems = registry.get(shipCore1.getWorld().provider.getDimension());
 		if (setRegistryItems == null) {
@@ -472,8 +472,7 @@ public class StarMapRegistry {
 			}
 			
 			// Compare areas for intersection
-			final AxisAlignedBB aabb2 = new AxisAlignedBB(registryItem.minX, registryItem.minY, registryItem.minZ,
-			                                              registryItem.maxX, registryItem.maxY, registryItem.maxZ);
+			final AxisAlignedBB aabb2 = registryItem.getArea();
 			if (!aabb1.intersects(aabb2)) {
 				continue;
 			}

@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class StarMapRegistryItem extends GlobalPosition {
 	
+	// persistent properties
 	public final EnumStarMapEntryType type;
 	public final UUID uuid;
 	public int maxX, maxY, maxZ;
@@ -21,6 +22,9 @@ public class StarMapRegistryItem extends GlobalPosition {
 	public int mass;
 	public double isolationRate;
 	public String name;
+	
+	// computed properties
+	private AxisAlignedBB cache_aabbArea;
 	
 	public StarMapRegistryItem(
 	                          final EnumStarMapEntryType type, final UUID uuid,
@@ -32,23 +36,25 @@ public class StarMapRegistryItem extends GlobalPosition {
 		this.type = type;
 		this.uuid = uuid;
 		if (aabbArea == null) {
-			this.maxX = x;
-			this.maxY = y;
-			this.maxZ = z;
 			this.minX = x;
 			this.minY = y;
 			this.minZ = z;
+			this.maxX = x;
+			this.maxY = y;
+			this.maxZ = z;
 		} else {
-			this.maxX = (int) aabbArea.maxX;
-			this.maxY = (int) aabbArea.maxY;
-			this.maxZ = (int) aabbArea.maxZ;
 			this.minX = (int) aabbArea.minX;
 			this.minY = (int) aabbArea.minY;
 			this.minZ = (int) aabbArea.minZ;
+			this.maxX = (int) aabbArea.maxX - 1;
+			this.maxY = (int) aabbArea.maxY - 1;
+			this.maxZ = (int) aabbArea.maxZ - 1;
 		}
 		this.mass = mass;
 		this.isolationRate = isolationRate;
 		this.name = name;
+		
+		this.cache_aabbArea = null;
 	}
 	
 	public StarMapRegistryItem(final IStarMapRegistryTileEntity tileEntity) {
@@ -75,14 +81,15 @@ public class StarMapRegistryItem extends GlobalPosition {
 			assert type == tileEntity.getStarMapType();
 			assert uuid.equals(tileEntity.getSignatureUUID());
 		}
-		final AxisAlignedBB aabbArea = tileEntity.getStarMapArea();
-		if (aabbArea != null) {
-			maxX = (int) aabbArea.maxX;
-			maxY = (int) aabbArea.maxY;
-			maxZ = (int) aabbArea.maxZ;
-			minX = (int) aabbArea.minX;
-			minY = (int) aabbArea.minY;
-			minZ = (int) aabbArea.minZ;
+		final AxisAlignedBB aabbAreaUpdated = tileEntity.getStarMapArea();
+		if (aabbAreaUpdated != null) {
+			minX = (int) aabbAreaUpdated.minX;
+			minY = (int) aabbAreaUpdated.minY;
+			minZ = (int) aabbAreaUpdated.minZ;
+			maxX = (int) aabbAreaUpdated.maxX - 1;
+			maxY = (int) aabbAreaUpdated.maxY - 1;
+			maxZ = (int) aabbAreaUpdated.maxZ - 1;
+			cache_aabbArea = null;
 		}
 		mass = tileEntity.getMass();
 		isolationRate = tileEntity.getIsolationRate();
@@ -96,7 +103,10 @@ public class StarMapRegistryItem extends GlobalPosition {
 	}
 	
 	public AxisAlignedBB getArea() {
-		return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+		if (cache_aabbArea == null) {
+			cache_aabbArea = new AxisAlignedBB(minX, minY, minZ, maxX + 1.0D, maxY + 1.0D, maxZ + 1.0D);
+		}
+		return cache_aabbArea;
 	}
 	
 	public StarMapRegistryItem(final NBTTagCompound tagCompound) {
@@ -116,6 +126,8 @@ public class StarMapRegistryItem extends GlobalPosition {
 		minZ = tagCompound.getInteger("minZ");
 		mass = tagCompound.getInteger("mass");
 		isolationRate = tagCompound.getDouble("isolationRate");
+		
+		cache_aabbArea = null;
 	}
 	
 	@Override
