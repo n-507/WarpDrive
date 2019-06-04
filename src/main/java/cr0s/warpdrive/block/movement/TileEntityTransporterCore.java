@@ -337,12 +337,12 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	}
 	
 	@Override
-	public void invalidate() {
+	public void onBlockBroken(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
 		if (!world.isRemote) {
 			rebootTransporter();
 			WarpDrive.starMap.removeFromRegistry(this);
 		}
-		super.invalidate();
+		super.onBlockBroken(world, blockPos, blockState);
 	}
 	
 	private void rebootTransporter() {

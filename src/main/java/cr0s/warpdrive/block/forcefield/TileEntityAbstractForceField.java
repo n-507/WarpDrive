@@ -12,9 +12,12 @@ import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import net.minecraftforge.fml.common.Optional;
 
@@ -62,9 +65,9 @@ public abstract class TileEntityAbstractForceField extends TileEntityAbstractEne
 	}
 	
 	@Override
-	public void invalidate() {
+	public void onBlockBroken(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
 		ForceFieldRegistry.removeFromRegistry(this);
-		super.invalidate();
+		super.onBlockBroken(world, blockPos, blockState);
 	}
 	
 	@Override

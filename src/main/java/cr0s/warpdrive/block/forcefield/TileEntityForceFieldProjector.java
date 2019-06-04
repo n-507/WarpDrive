@@ -50,6 +50,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.Fluid;
@@ -285,14 +286,14 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	}
 	
 	@Override
-	public void invalidate() {
+	public void onBlockBroken(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
 		destroyForceField();
 		try {
 			doScheduledForceFieldRemoval();
 		} catch (final Exception exception) {
 			exception.printStackTrace();
 		}
-		super.invalidate();
+		super.onBlockBroken(world, blockPos, blockState);
 	}
 	
 	public boolean isValid() {

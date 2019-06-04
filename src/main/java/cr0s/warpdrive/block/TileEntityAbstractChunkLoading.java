@@ -8,8 +8,11 @@ import cr0s.warpdrive.event.ChunkLoadingHandler;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
@@ -145,12 +148,12 @@ public abstract class TileEntityAbstractChunkLoading extends TileEntityAbstractE
 	}
 	
 	@Override
-	public void invalidate() {
-		super.invalidate();
+	public void onBlockBroken(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
 		if (ticket != null) {
 			ChunkLoadingHandler.forgeTicket_release(ticket);
 			ticket = null;
 		}
+		super.onBlockBroken(world, blockPos, blockState);
 	}
 	
 	public ArrayList<ChunkPos> getChunksToLoad() {

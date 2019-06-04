@@ -1,0 +1,226 @@
+@startuml
+actor "Player" as player
+'participant PlayerControllerMP #cyan
+'participant EntityPlayer #cyan
+'participant ItemStack #cyan
+'participant ItemBlock #cyan
+participant World #cyan
+participant Chunk #cyan
+participant IBlockState #cyan
+participant Block #cyan
+participant TileEntity #cyan
+'participant WarpDrive
+
+player -> World: ...
+activate World
+...
+
+World -[#blue]> World: setBlockState()
+activate World
+
+	alt world.isOutsideBuildHeight()
+		break #red return false
+		end
+	end
+	alt !world.isRemote \n&& world.getWorldInfo().getTerrainType() == WorldType.DEBUG_ALL_BLOCK_STATES
+		break #red return false
+		end
+	end
+	
+	World -[#blue]> World: getChunk(blockPosPassed)
+	activate World
+	World <-[#blue]- World
+	deactivate World
+	
+	World -[#blue]> World: blockPos = blockPosPassed.toImmutable()
+	note right: Forge - prevent mutable BlockPos leaks
+	
+	alt world.captureBlockSnapshots && !world.isRemote
+		World -[#blue]> World: capturedBlockSnapshots.add(new BlockSnapshot(...))
+	end
+	
+	World -[#blue]> World: blockStateOld = world.getBlockState(blockPos)
+	
+	World -[#blue]> IBlockState: lightOld = blockStateOld.getLightValue(world, blockPos)
+	activate IBlockState
+	World <-[#blue]- IBlockState
+	deactivate IBlockState
+	
+	World -[#blue]> IBlockState: opacityOld = blockStateOld.getLightOpacity(world, blockPos)
+	activate IBlockState
+	World <-[#blue]- IBlockState
+	deactivate IBlockState
+	
+	World -[#blue]> Chunk: blockStateEffective = chunk.setBlockState(blockPos, blockStateNew)
+	activate Chunk
+		Chunk -[#blue]> Chunk: i = pos.getX() & 15\n\
+j = pos.getY()\n\
+k = pos.getZ() & 15\n\
+l = k << 4 | i
+		
+		alt j >= this.precipitationHeightMap[l] - 1
+			Chunk -[#blue]> Chunk: precipitationHeightMap[l] = -999
+		end
+		
+		Chunk -[#blue]> Chunk: i1 = this.heightMap[l]
+		Chunk -[#blue]> Chunk: iblockstate = getBlockState(pos)
+		
+		alt iblockstate == state
+			break #red return null
+			end
+		end
+        Chunk -[#blue]> Chunk: block = state.getBlock()
+        Chunk -[#blue]> IBlockState: block1 = iblockstate.getBlock()
+        activate IBlockState
+        Chunk <[#blue]- IBlockState
+        deactivate IBlockState
+        Chunk -[#blue]> IBlockState: k1 = iblockstate.getLightOpacity(this.world, pos)
+        activate IBlockState
+        Chunk <[#blue]- IBlockState
+        deactivate IBlockState
+        Chunk -[#blue]> Chunk: extendedblockstorage = storageArrays[j >> 4]\n\
+boolean flag = false
+        
+        alt extendedblockstorage == NULL_BLOCK_STORAGE
+            alt block == Blocks.AIR
+                break #red return null
+                end
+            end
+            
+            Chunk -[#blue]> World: world.provider.hasSkyLight())
+            activate World
+            Chunk <[#blue]- World
+            deactivate World
+            Chunk -[#blue]> Chunk: extendedblockstorage = new ExtendedBlockStorage(j >> 4 << 4, world.provider.hasSkyLight())\n\
+storageArrays[j >> 4] = extendedblockstorage\n\
+flag = j >= i1
+        end
+        
+        Chunk -[#blue]> Chunk: extendedblockstorage.set(i, j & 15, k, state)
+        
+        ' //if (block1 != block)
+        alt !this.world.isRemote
+            alt block1 != block
+                Chunk -[#blue]> Block: block1.breakBlock(this.world, pos, iblockstate)
+                activate Block
+                Chunk <[#blue]- Block
+                deactivate Block
+            end
+            note right: Only fire block breaks when the block changes.
+            
+            Chunk -[#blue]> Chunk: te = getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
+            Chunk -[#blue]> TileEntity: te.shouldRefresh(this.world, pos, iblockstate, state)
+            activate TileEntity
+            Chunk <[#blue]- TileEntity
+            deactivate TileEntity
+            alt te != null && shouldRefresh
+                Chunk -[#blue]> World: world.removeTileEntity(pos)
+                activate World
+                Chunk <[#blue]- World
+                deactivate World
+            end
+            
+        else block1.hasTileEntity(iblockstate)
+            Chunk -[#blue]> Chunk: te = getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK)
+            alt te != null && te.shouldRefresh(this.world, pos, iblockstate, state)
+                Chunk -[#blue]> World: world.removeTileEntity(pos)
+                activate World
+                Chunk <[#blue]- World
+                deactivate World
+            end
+        end
+        
+        alt extendedblockstorage.get(i, j & 15, k).getBlock() != block
+            break #red return null
+            end
+        end
+        alt flag
+            Chunk -[#blue]> Chunk: generateSkylightMap()
+        else
+            Chunk -[#blue]> IBlockState: int j1 = state.getLightOpacity(this.world, pos)
+            activate IBlockState
+            Chunk <[#blue]- IBlockState
+            deactivate IBlockState
+            
+            alt j1 > 0
+                alt j >= i1
+                    Chunk -[#blue]> Chunk: relightBlock(i, j + 1, k);
+                end
+            else j == i1 - 1
+                Chunk -[#blue]> Chunk: relightBlock(i, j, k);
+            end
+            
+            alt j1 != k1\n\
+&& ( j1 < k1\n\
+|| this.getLightFor(EnumSkyBlock.SKY, pos) > 0\n\
+|| this.getLightFor(EnumSkyBlock.BLOCK, pos) > 0 )
+                Chunk -[#blue]> Chunk: propagateSkylightOcclusion(i, k)
+            end
+        end
+        ...
+        note right: If capturing blocks, only run block physics for TE's.\n\
+Non-TE's are handled in ForgeHooks.onPlaceItemIntoWorld
+        alt !this.world.isRemote\n\
+&& block1 != block\n\
+&& ( !this.world.captureBlockSnapshots\n\
+|| block.hasTileEntity(state) )
+            Chunk -[#blue]> Block: block.onBlockAdded(this.world, pos, state)
+        end
+        
+        alt block.hasTileEntity(state)
+            Chunk -[#blue]> Chunk: tileentity1 = getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
+            
+            alt tileentity1 == null
+                Chunk -[#blue]> Block: tileentity1 = block.createTileEntity(this.world, state)
+                activate Block
+                Chunk <[#blue]- Block
+                deactivate Block
+                Chunk -[#blue]> World: world.setTileEntity(pos, tileentity1)
+                activate World
+                Chunk <[#blue]- World
+                deactivate World
+            end
+            
+            alt tileentity1 != null)
+                Chunk -[#blue]> TileEntity: tileentity1.updateContainingBlockInfo()
+                activate TileEntity
+                Chunk <[#blue]- TileEntity
+                deactivate TileEntity
+            end
+        end
+        
+        Chunk -[#blue]> Chunk: dirty = true
+        break #lime iblockstate
+        end
+	World <-[#blue]- Chunk
+	deactivate Chunk
+	
+	
+	alt blockStateEffective == null
+		alt blockSnapshot != null
+			World -[#blue]> World: world.capturedBlockSnapshots.remove(blockSnapshot)
+		end
+		
+		break #red return false
+		end
+	else
+		alt blockStateNew.getLightOpacity(world, blockPos) != opacityOld\n\
+		  || blockStateNew.getLightValue(world, blockPos) != lightOld
+			World -[#blue]> World: profiler.startSection("checkLight")
+			World -[#blue]> World: checkLight(blockPos)
+			World -[#blue]> World: profiler.endSection()
+		end
+		alt blockSnapshot == null
+			World -[#blue]> World: markAndNotifyBlock(blockPos, chunk, blockStateEffective, blockStateNew, flags)
+		end
+		note right: Don't notify clients or update physics while capturing blockstates
+		
+		break #lime return false
+		end
+	end
+	
+
+World <-[#blue]- World
+deactivate World
+
+@enduml
