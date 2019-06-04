@@ -367,7 +367,13 @@ public class Commons {
 		// world.getProviderName() is MultiplayerChunkCache on client, ServerChunkCache on local server, (undefined method) on dedicated server
 		
 		// world.provider.getSaveFolder() is null for the Overworld, other dimensions shall define it
-		final String saveFolder = world.provider.getSaveFolder();
+		String saveFolder;
+		try {
+			saveFolder = world.provider.getSaveFolder();
+		} catch (final Exception exception) {
+			exception.printStackTrace();
+			saveFolder = "<Exception DIM" + world.provider.getDimension() + ">";
+		}
 		if (saveFolder == null || saveFolder.isEmpty()) {
 			final int dimension = world.provider.getDimension();
 			if (dimension != 0) {
