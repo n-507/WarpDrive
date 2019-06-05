@@ -562,16 +562,21 @@ public class Recipes {
 		                                       'R', rubber,
 		                                       'r', Items.REDSTONE ));
 		
-		// Superconductor is 1 Ender crystal, 4 Power interface, 4 Cryotheum dust/Lapis block/10k Coolant cell
+		// Superconductor is 1 Ender crystal, 2 Power interface, 2 Cryotheum dust/Lapis block/10k Coolant cell
 		final Object coolant = WarpDriveConfig.getOreOrItemStack(
 				"ore:dustCryotheum", 0,          // comes with ThermalFoundation
 				"ic2:heat_storage", 0,           // IC2 Experimental 10k Coolant Cell
 				"ore:blockLapis", 0 );
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
-		                                       ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR), false, "pcp", "cec", "pcp",
+		                                       ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR), false, " c ", "pep", " c ",
 		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
 		                                       'e', ItemComponent.getItemStack(EnumComponentType.ENDER_COIL),
-		                                       'c', coolant ));
+		                                       'c', coolant ), "_direct");
+		WarpDrive.register(new ShapedOreRecipe(groupComponents,
+		                                       ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR), false, " p ", "cec", " p ",
+		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
+		                                       'e', ItemComponent.getItemStack(EnumComponentType.ENDER_COIL),
+		                                       'c', coolant ), "_rotated");
 		
 		// *** crafting components
 		// Laser medium (empty) is 3 Glass tanks, 1 Power interface, 1 Computer interface, 1 MV Machine casing
@@ -619,17 +624,14 @@ public class Recipes {
 				0 );
 		
 		// *** composite materials
-		// Biopulp is some mycelium, fiber (bamboo, sugar cane) and lots of leaves
+		// Biopulp is some mycelium and lots of leaves
 		// silktouch recipe
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       ItemComponent.getItemStackNoCache(EnumComponentType.BIOPULP, 9), false, "lll", "lml", "lll",
 		                                       'l', leaves,
-		                                       'm', "blockMushroom" ), "block");
+		                                       'm', "blockMushroom" ), "_block");
 		
-		// easier but more expensive from bamboo/sugar cane
-		final Object bambooOrSugarCane = WarpDriveConfig.getOreOrItemStack(
-				"biomesoplenty:bamboo", 0,
-				"minecraft:reeds", 0 );
+		// easier but more expensive from fiber (sugar cane)
 		final Object oreOrBrownMushroom = WarpDriveConfig.getOreOrItemStack(
 				"ore:listAllmushroom", 0,
 				"minecraft:brown_mushroom", 0 );
@@ -638,10 +640,10 @@ public class Recipes {
 				"minecraft:red_mushroom", 0 );
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       ItemComponent.getItemStackNoCache(EnumComponentType.BIOPULP, 2), false, "lll", "mbM", "lll",
-		                                       'b', bambooOrSugarCane,
+		                                       'b', "minecraft:reeds",
 		                                       'l', leaves,
 		                                       'm', oreOrBrownMushroom,
-		                                       'M', oreOrRedMushroom ), "bamboo");
+		                                       'M', oreOrRedMushroom ), "_sugarcane");
 		
 		// Biofiber is the product of washing/filtering/drying Biopulp
 		GameRegistry.addSmelting(
@@ -1389,39 +1391,43 @@ public class Recipes {
 		                                       'g', "paneGlassColorless",
 		                                       'h', "blockHull2_plain"));
 		
-		// Basic subspace capacitor is 1 Capacitive crystal, 1 Power interface, 3 Paper, 4 Iron bars
+		// Basic subspace capacitor is 1 Capacitive crystal, 1 Gold ingot, 3 Bio fiber, 4 Iron bars
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       WarpDrive.blockCapacitor[EnumTier.BASIC.getIndex()], false, "iPi", "pcp", "ipi",
 		                                       'c', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL),
 		                                       'i', barsIron,
-		                                       'p', Items.PAPER,
+		                                       'p', "itemBiofiber",
 		                                       'P', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE) ));
 		
-		// Advanced subspace capacitor is 4 Basic subspace capacitor, 1 Power interface
+		// Advanced subspace capacitor is 2 Capacitive crystal, 1 Power interface, 4 Rubber, 2 Gold ingot
+		// Advanced subspace capacitor is 2 Basic subspace capacitor, 1 Power interface
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       WarpDrive.blockCapacitor[EnumTier.ADVANCED.getIndex()], false, " c ", "cpc", " c ",
-		                                       'c', new ItemStack(WarpDrive.blockCapacitor[EnumTier.BASIC.getIndex()]),
-		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE) ), "_upgrade");
-		// or 4 Capacitive crystal, 1 Gold ingot, 4 Power interface
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       WarpDrive.blockCapacitor[EnumTier.ADVANCED.getIndex()], false, "pcp", "cgc", "pcp",
+		                                       WarpDrive.blockCapacitor[EnumTier.ADVANCED.getIndex()], false, "rir", "cpc", "rir",
 		                                       'c', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL),
-		                                       'g', "ingotGold",
+		                                       'i', "ingotIron",
+		                                       'r', "itemRubber",
 		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE) ), "_direct");
-		
-		// Superior subspace capacitor is 4 Advanced subspace capacitor, 1 Ender tuned crystal, 4 Iron ingot
+		// or 2 Basic subspace capacitor, 1 Power interface
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       WarpDrive.blockCapacitor[EnumTier.SUPERIOR.getIndex()], false, "ici", "cec", "ici",
+		                                       WarpDrive.blockCapacitor[EnumTier.ADVANCED.getIndex()], false, "r r", "cpc", "r r",
+		                                       'c', new ItemStack(WarpDrive.blockCapacitor[EnumTier.BASIC.getIndex()]),
+		                                       'r', "itemRubber",
+		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE) ), "_upgrade");
+		
+		// Superior subspace capacitor is 1 Capacitive cluster, 4 Carbon fiber, 2 Power interface, 1 Gold ingot, 1 Superconductor
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       WarpDrive.blockCapacitor[EnumTier.SUPERIOR.getIndex()], false, "psp", "ici", "pgp",
+		                                       'c', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CLUSTER),
+		                                       'p', ItemComponent.getItemStack(EnumComponentType.CARBON_FIBER),
+		                                       'i', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
+		                                       'g', "ingotGold",
+		                                       's', ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR) ), "_direct");
+		// or 2 Advanced subspace capacitor, 4 Carbon fiber, 1 Superconductor
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       WarpDrive.blockCapacitor[EnumTier.SUPERIOR.getIndex()], false, "p p", "csc", "p p",
 		                                       'c', new ItemStack(WarpDrive.blockCapacitor[EnumTier.ADVANCED.getIndex()]),
-		                                       'i', "ingotIron",
-		                                       'e', ItemComponent.getItemStack(EnumComponentType.ENDER_COIL) ));
-		// or 4 Capacitive crystal block, 1 Superconductor, 4 Iron ingot
-		/*
-		WarpDrive.register(new ShapedOreRecipe(WarpDrive.blockCapacitor[EnumTier.SUPERIOR.getIndex()], false, "ici", "csc", "ici",
-		                                       'c', @TODO MC1.10 Capacitive crystal block,
-		                                       'i', "ingotIron",
-		                                       's', ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR) ));
-		/**/
+		                                       'p', ItemComponent.getItemStack(EnumComponentType.CARBON_FIBER),
+		                                       's', ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR) ), "_upgrade");
 	}
 	
 	private static void initForceField() {
