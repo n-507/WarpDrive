@@ -96,11 +96,31 @@ public class ItemElectromagneticCell extends ItemAbstractBase implements IPartic
 			return;
 		}
 		list.add(getItemStackNoCache(null, 0));
-		list.add(getItemStackNoCache(ParticleRegistry.ION, 1000));
-		list.add(getItemStackNoCache(ParticleRegistry.PROTON, 1000));
-		list.add(getItemStackNoCache(ParticleRegistry.ANTIMATTER, 1000));
-		list.add(getItemStackNoCache(ParticleRegistry.STRANGE_MATTER, 1000));
-		// list.add(getItemStackNoCache(ParticleRegistry.TACHYONS, 1000));
+		final int capacity10PC = WarpDriveConfig.ELECTROMAGNETIC_CELL_CAPACITY_BY_TIER[enumTier.getIndex()] / 10;
+		list.add(getItemStackNoCache(ParticleRegistry.ION, capacity10PC));
+		list.add(getItemStackNoCache(ParticleRegistry.ION, capacity10PC * 3));
+		list.add(getItemStackNoCache(ParticleRegistry.ION, capacity10PC * 5));
+		list.add(getItemStackNoCache(ParticleRegistry.ION, capacity10PC * 7));
+		list.add(getItemStackNoCache(ParticleRegistry.ION, capacity10PC * 9));
+		list.add(getItemStackNoCache(ParticleRegistry.ION, capacity10PC * 10));
+		list.add(getItemStackNoCache(ParticleRegistry.PROTON, capacity10PC));
+		list.add(getItemStackNoCache(ParticleRegistry.PROTON, capacity10PC * 3));
+		list.add(getItemStackNoCache(ParticleRegistry.PROTON, capacity10PC * 5));
+		list.add(getItemStackNoCache(ParticleRegistry.PROTON, capacity10PC * 7));
+		list.add(getItemStackNoCache(ParticleRegistry.PROTON, capacity10PC * 9));
+		list.add(getItemStackNoCache(ParticleRegistry.PROTON, capacity10PC * 10));
+		list.add(getItemStackNoCache(ParticleRegistry.ANTIMATTER, capacity10PC));
+		list.add(getItemStackNoCache(ParticleRegistry.ANTIMATTER, capacity10PC * 3));
+		list.add(getItemStackNoCache(ParticleRegistry.ANTIMATTER, capacity10PC * 5));
+		list.add(getItemStackNoCache(ParticleRegistry.ANTIMATTER, capacity10PC * 7));
+		list.add(getItemStackNoCache(ParticleRegistry.ANTIMATTER, capacity10PC * 9));
+		list.add(getItemStackNoCache(ParticleRegistry.ANTIMATTER, capacity10PC * 10));
+		list.add(getItemStackNoCache(ParticleRegistry.STRANGE_MATTER, capacity10PC));
+		list.add(getItemStackNoCache(ParticleRegistry.STRANGE_MATTER, capacity10PC * 3));
+		list.add(getItemStackNoCache(ParticleRegistry.STRANGE_MATTER, capacity10PC * 5));
+		list.add(getItemStackNoCache(ParticleRegistry.STRANGE_MATTER, capacity10PC * 7));
+		list.add(getItemStackNoCache(ParticleRegistry.STRANGE_MATTER, capacity10PC * 9));
+		list.add(getItemStackNoCache(ParticleRegistry.STRANGE_MATTER, capacity10PC * 10));
 	}
 	
 	@Override
