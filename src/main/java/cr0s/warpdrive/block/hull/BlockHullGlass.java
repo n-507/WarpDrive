@@ -33,7 +33,7 @@ public class BlockHullGlass extends BlockColored implements IBlockBase, IDamageR
 	
 	private final EnumTier enumTier;
 	
-	public BlockHullGlass(final String registryName, final EnumTier enumTier) {
+	public BlockHullGlass(@Nonnull final String registryName, @Nonnull final EnumTier enumTier) {
 		super(Material.GLASS);
 		
 		this.enumTier = enumTier;

@@ -73,7 +73,7 @@ public abstract class BlockAbstractAir extends BlockAbstractBase {
 	@Nullable
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
-		return null;
+		return NULL_AABB;
 	}
 	
 	@Override
@@ -130,7 +130,7 @@ public abstract class BlockAbstractAir extends BlockAbstractBase {
 	@SuppressWarnings("deprecation")
 	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean shouldSideBeRendered(final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, final EnumFacing facing) {
+	public boolean shouldSideBeRendered(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing) {
 		if (WarpDriveConfig.BREATHING_AIR_BLOCK_DEBUG) {
 			return facing == EnumFacing.DOWN || facing == EnumFacing.UP;
 		}

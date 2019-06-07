@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 public final class EntityCamera extends EntityLivingBase {
+	
 	// entity coordinates (x, y, z) are dynamically changed by player
 	
 	// camera block coordinates are fixed
@@ -33,7 +34,7 @@ public final class EntityCamera extends EntityLivingBase {
 	
 	private EntityPlayer player;
 	
-	private Minecraft mc = Minecraft.getMinecraft();
+	private final Minecraft mc = Minecraft.getMinecraft();
 	
 	private int dx = 0, dy = 0, dz = 0;
 	
@@ -71,6 +72,7 @@ public final class EntityCamera extends EntityLivingBase {
 	}
 	
 	// set viewpoint inside camera
+	@Override
 	public float getEyeHeight() {
 		return 1.62F;
 	}
@@ -208,7 +210,7 @@ public final class EntityCamera extends EntityLivingBase {
 	
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox() {
-		return null;
+		return Block.NULL_AABB;
 	}
 	/*
 	@Override

@@ -284,6 +284,7 @@ public class JumpBlock {
 		}
 	}
 	
+	@Nullable
 	public BlockPos deploy(final World worldSource, final World worldTarget, final ITransformation transformation) {
 		try {
 			final NBTTagCompound nbtToDeploy = getBlockNBT(worldSource);
@@ -317,7 +318,8 @@ public class JumpBlock {
 					if ( nbtScreenData.hasKey("minX") && nbtScreenData.hasKey("minY") && nbtScreenData.hasKey("minZ")
 					  && nbtScreenData.hasKey("maxX") && nbtScreenData.hasKey("maxY") && nbtScreenData.hasKey("maxZ") ) {
 						if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
-							WarpDrive.logger.info(String.format("%s deploy: TileEntity has screenData.min/maxXYZ", this));
+							WarpDrive.logger.info(String.format("%s deploy: TileEntity has screenData.min/maxXYZ",
+							                                    this ));
 						}
 						final BlockPos minTarget = transformation.apply(nbtScreenData.getInteger("minX"), nbtScreenData.getInteger("minY"), nbtScreenData.getInteger("minZ"));
 						nbtScreenData.setInteger("minX", minTarget.getX());
@@ -344,9 +346,9 @@ public class JumpBlock {
 					newTileEntity = TileEntity.create(worldTarget, nbtToDeploy);
 					if (newTileEntity == null) {
 						WarpDrive.logger.error(String.format("%s deploy failed to create new tile entity %s block %s:%d",
-						                                     this, Commons.format(worldTarget, x, y, z), block, blockMeta));
+						                                     this, Commons.format(worldTarget, x, y, z), block, blockMeta ));
 						WarpDrive.logger.error(String.format("NBT data was %s",
-						                                     nbtToDeploy));
+						                                     nbtToDeploy ));
 					}
 				}
 				

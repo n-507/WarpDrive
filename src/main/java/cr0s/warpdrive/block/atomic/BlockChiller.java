@@ -68,7 +68,7 @@ public class BlockChiller extends BlockAbstractAccelerator {
 	}
 	
 	@Override
-	public void onEntityCollision(final World world, final BlockPos blockPos, final IBlockState blockState, final Entity entity) {
+	public void onEntityCollision(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState, @Nonnull final Entity entity) {
 		super.onEntityCollision(world, blockPos, blockState, entity);
 		if (world.isRemote) {
 			return;
@@ -78,7 +78,7 @@ public class BlockChiller extends BlockAbstractAccelerator {
 	}
 	
 	@Override
-	public void onEntityWalk(World world, BlockPos blockPos, Entity entity) {
+	public void onEntityWalk(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final Entity entity) {
 		super.onEntityWalk(world, blockPos, entity);
 		if (world.isRemote) {
 			return;
@@ -88,7 +88,7 @@ public class BlockChiller extends BlockAbstractAccelerator {
 	}
 	
 	@Override
-	public void onBlockClicked(final World world, final BlockPos blockPos, final EntityPlayer entityPlayer) {
+	public void onBlockClicked(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final EntityPlayer entityPlayer) {
 		super.onBlockClicked(world, blockPos, entityPlayer);
 		if (world.isRemote) {
 			return;
@@ -97,7 +97,7 @@ public class BlockChiller extends BlockAbstractAccelerator {
 		onEntityEffect(world, blockPos, entityPlayer);
 	}
 	
-	private void onEntityEffect(final World world, final BlockPos blockPos, final Entity entity) {
+	private void onEntityEffect(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final Entity entity) {
 		if (entity.isDead || !(entity instanceof EntityLivingBase)) {
 			return;
 		}
@@ -124,7 +124,7 @@ public class BlockChiller extends BlockAbstractAccelerator {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(final IBlockState blockState, final World world, final BlockPos blockPos, final Random random) {
+	public void randomDisplayTick(@Nonnull final IBlockState blockState, @Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final Random random) {
 		if (!blockState.getValue(BlockProperties.ACTIVE)) {
 			return;
 		}

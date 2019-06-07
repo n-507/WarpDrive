@@ -97,7 +97,7 @@ public class BlockDecorative extends BlockAbstractBase {
 	@SuppressWarnings("deprecation")
 	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean shouldSideBeRendered(final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, final EnumFacing facing) {
+	public boolean shouldSideBeRendered(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing) {
 		final BlockPos blockPosSide = blockPos.offset(facing);
 		final IBlockState blockStateSide = blockAccess.getBlockState(blockPosSide);
 		if (blockStateSide.getBlock().isAir(blockStateSide, blockAccess, blockPosSide)) {

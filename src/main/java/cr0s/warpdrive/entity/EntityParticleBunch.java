@@ -22,9 +22,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-/*
- * Created by LemADEC on 02/02/2017.
- */
 public class EntityParticleBunch extends Entity {
 	
 	private static final int ACCELERATION_SOUND_UPDATE_TICKS = 10;
@@ -74,7 +71,7 @@ public class EntityParticleBunch extends Entity {
 	}
 	
 	@Override
-	public boolean isEntityInvulnerable(@Nonnull DamageSource source) {
+	public boolean isEntityInvulnerable(@Nonnull final DamageSource source) {
 		return true;
 	}
 	
@@ -114,7 +111,7 @@ public class EntityParticleBunch extends Entity {
 			final float pitch = 0.6F + 0.4F * (float) (factor - indexSound);
 			
 			soundTicks = (int) Math.floor(ACCELERATION_SOUND_UPDATE_TICKS * pitch);
-			world.playSound((EntityPlayer) null, posX, posY, posZ, soundEvent, SoundCategory.HOSTILE, 1.0F, pitch);
+			world.playSound(null, posX, posY, posZ, soundEvent, SoundCategory.HOSTILE, 1.0F, pitch);
 		}
 	}
 	
@@ -171,7 +168,7 @@ public class EntityParticleBunch extends Entity {
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+	public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound compound) {
 		return super.writeToNBT(compound);
 	}
 	

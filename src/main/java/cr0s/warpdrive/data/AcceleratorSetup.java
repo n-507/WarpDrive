@@ -119,7 +119,7 @@ public class AcceleratorSetup extends GlobalPosition {
 	}
 	
 	// add the vector with it's surrounding block so we can catch 'added' blocks
-	private void addToBoundingBox(final VectorI vector, final int range) {
+	private void addToBoundingBox(@Nonnull final VectorI vector, final int range) {
 		vMin.x = Math.min(vMin.x, vector.x - range);
 		vMin.y = Math.min(vMin.y, vector.y - range);
 		vMin.z = Math.min(vMin.z, vector.z - range);

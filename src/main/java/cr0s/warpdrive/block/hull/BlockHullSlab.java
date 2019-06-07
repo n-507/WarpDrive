@@ -257,10 +257,10 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 	@SuppressWarnings("deprecation")
 	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean shouldSideBeRendered(final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, final EnumFacing side) {
+	public boolean shouldSideBeRendered(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing) {
 		if (isDouble()) {
-			return super.shouldSideBeRendered(blockState, blockAccess, blockPos, side);
-		} else if (side != EnumFacing.DOWN && side != EnumFacing.UP && !super.shouldSideBeRendered(blockState, blockAccess, blockPos, side)) {
+			return super.shouldSideBeRendered(blockState, blockAccess, blockPos, facing);
+		} else if (facing != EnumFacing.DOWN && facing != EnumFacing.UP && !super.shouldSideBeRendered(blockState, blockAccess, blockPos, facing)) {
 			return false;
 		} else {
 			return true;

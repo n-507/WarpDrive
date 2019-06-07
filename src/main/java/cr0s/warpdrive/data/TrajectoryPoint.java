@@ -157,7 +157,7 @@ public class TrajectoryPoint extends VectorI {
 				
 				if ( block instanceof BlockAcceleratorControlPoint
 				  && !(block instanceof BlockParticlesInjector) ) {
-					TileEntity tileEntity = world.getTileEntity(blockPosOffset);
+					final TileEntity tileEntity = world.getTileEntity(blockPosOffset);
 					
 					if ( tileEntity instanceof TileEntityAcceleratorControlPoint
 					  && ((TileEntityAcceleratorControlPoint) tileEntity).getIsEnabled()) {

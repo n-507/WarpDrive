@@ -35,7 +35,7 @@ public class RenderEntityParticleBunch extends RenderEntity {
 	public static final double[]  PARTICLE_BUNCH_ENERGY_TO_GREEN_OUTSIDE_Y = { 0.80,  1.00,  0.90,  0.80,  0.60,  0.75,  1.00 };
 	public static final double[]  PARTICLE_BUNCH_ENERGY_TO_BLUE_OUTSIDE_Y  = { 0.20,  0.30,  0.50,  0.60,  0.60,  0.80,  0.90 };
 	
-	public RenderEntityParticleBunch(RenderManager renderManagerIn) {
+	public RenderEntityParticleBunch(final RenderManager renderManagerIn) {
 		super(renderManagerIn);
 	}
 	
@@ -143,8 +143,8 @@ public class RenderEntityParticleBunch extends RenderEntity {
 			GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
 			GL11.glRotatef(random.nextFloat() * 360.0F + cycleRotation * 90F, 0.0F, 0.0F, 1.0F);
 			vertexBuffer.begin(6, DefaultVertexFormats.POSITION_COLOR);
-			float rayLength = random.nextFloat() * 15.0F + 5.0F + boost *  5.0F;
-			float rayWidth  = random.nextFloat() *  2.0F + 1.0F + boost *  1.0F;
+			final float rayLength = random.nextFloat() * 15.0F + 5.0F + boost *  5.0F;
+			final float rayWidth  = random.nextFloat() *  2.0F + 1.0F + boost *  1.0F;
 			vertexBuffer.pos( 0.0D             ,      0.0D,  0.0D           ).color(redIn, greenIn, blueIn, (int) (255F * (1.0F - boost))).endVertex();
 			vertexBuffer.pos(-0.866D * rayWidth, rayLength, -0.5D * rayWidth).color(redOut, greenOut, blueOut, 0).endVertex();
 			vertexBuffer.pos( 0.866D * rayWidth, rayLength, -0.5D * rayWidth).color(redOut, greenOut, blueOut, 0).endVertex();

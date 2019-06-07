@@ -1060,7 +1060,7 @@ public class JumpSequencer extends AbstractSequencer {
 		LocalProfiler.stop();
 	}
 	
-	protected void doBlockEffect(final JumpBlock jumpBlock, final BlockPos target) {
+	protected void doBlockEffect(@Nonnull final JumpBlock jumpBlock, @Nonnull final BlockPos target) {
 		switch (shipMovementType) {
 		case HYPERSPACE_ENTERING:
 		case PLANET_TAKEOFF:

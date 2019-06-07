@@ -217,7 +217,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	@SuppressWarnings("deprecation")
 	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean shouldSideBeRendered(final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, final EnumFacing facing) {
+	public boolean shouldSideBeRendered(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing) {
 		final BlockPos blockPosSide = blockPos.offset(facing);
 		if (blockAccess.isAirBlock(blockPosSide)) {
 			return true;

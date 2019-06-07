@@ -276,7 +276,7 @@ public abstract class BlockAbstractOmnipanel extends BlockAbstractBase {
 	@SuppressWarnings("deprecation")
 	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean shouldSideBeRendered(final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, final EnumFacing facing) {
+	public boolean shouldSideBeRendered(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing) {
 		return blockAccess.getBlockState(blockPos).getBlock() != this && super.shouldSideBeRendered(blockState, blockAccess, blockPos, facing);
 	}
 	

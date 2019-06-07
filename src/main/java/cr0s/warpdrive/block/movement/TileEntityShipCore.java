@@ -709,7 +709,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	private static final VectorI[] SUMMON_OFFSETS = { new VectorI(2, 0, 0), new VectorI(-1, 0, 0),
 		new VectorI(2, 0, 1), new VectorI(2, 0, -1), new VectorI(-1, 0, 1), new VectorI(-1, 0, -1),
 		new VectorI(1, 0, 1), new VectorI(1, 0, -1), new VectorI( 0, 0, 1), new VectorI( 0, 0, -1) };
-	private void summonPlayer(final EntityPlayerMP entityPlayer) {
+	private void summonPlayer(@Nonnull final EntityPlayerMP entityPlayer) {
 		// find a free spot
 		final BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(pos);
 		for (final VectorI vOffset : SUMMON_OFFSETS) {
@@ -745,7 +745,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		Commons.addChatMessage(entityPlayer, message);
 	}
 	
-	private void summonPlayer(final EntityPlayerMP player, final BlockPos blockPos) {
+	private void summonPlayer(@Nonnull final EntityPlayerMP player, @Nonnull final BlockPos blockPos) {
 		Commons.moveEntity(player, world, new Vector3(blockPos.getX() + 0.5D, blockPos.getY(), blockPos.getZ() + 0.5D));
 	}
 	
@@ -842,7 +842,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	}
 	
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	private boolean isShipInJumpgate(final StarMapRegistryItem jumpGate, final WarpDriveText reason) {
+	private boolean isShipInJumpgate(@Nonnull final StarMapRegistryItem jumpGate, @Nonnull final WarpDriveText reason) {
 		assert jumpGate.type == EnumStarMapEntryType.JUMP_GATE;
 		final AxisAlignedBB aabb = jumpGate.getArea();
 		if (WarpDriveConfig.LOGGING_JUMP) {
@@ -1107,7 +1107,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		jump.enable();
 	}
 	
-	private static boolean isOutsideBB(final AxisAlignedBB axisalignedbb, final int x, final int y, final int z) {
+	private static boolean isOutsideBB(@Nonnull final AxisAlignedBB axisalignedbb, final int x, final int y, final int z) {
 		return axisalignedbb.minX > x || axisalignedbb.maxX < x
 		    || axisalignedbb.minY > y || axisalignedbb.maxY < y
 		    || axisalignedbb.minZ > z || axisalignedbb.maxZ < z;
@@ -1175,7 +1175,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	}
 	
 	@Override
-	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
+	public void onDataPacket(final NetworkManager networkManager, @Nonnull final SPacketUpdateTileEntity packet) {
 		final NBTTagCompound tagCompound = packet.getNbtCompound();
 		readFromNBT(tagCompound);
 		minX = tagCompound.getInteger("minX");

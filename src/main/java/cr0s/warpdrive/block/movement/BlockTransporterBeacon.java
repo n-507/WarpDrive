@@ -134,7 +134,7 @@ public class BlockTransporterBeacon extends BlockAbstractContainer {
 	@Nullable
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
-		return null;
+		return NULL_AABB;
 	}
 	
 	@Override
