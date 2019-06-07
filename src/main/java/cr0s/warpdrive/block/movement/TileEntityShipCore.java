@@ -366,7 +366,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				// compute distance
 				distanceSquared = getMovement().getMagnitudeSquared();
 				// rescan ship mass/volume if it's too old
-				if (timeLastShipScanDone + WarpDriveConfig.SHIP_VOLUME_SCAN_AGE_TOLERANCE_SECONDS < world.getTotalWorldTime()) {
+				if (timeLastShipScanDone + WarpDriveConfig.SHIP_VOLUME_SCAN_AGE_TOLERANCE_SECONDS * 20 < world.getTotalWorldTime()) {
 					timeLastShipScanDone = -1;
 					break;
 				}
