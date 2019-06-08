@@ -4,6 +4,7 @@ import cr0s.warpdrive.data.EnumTier;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -18,6 +19,19 @@ public class BlockVoidShellGlass extends BlockVoidShellPlain {
 		super(registryName, enumTier);
 		
 		setTranslationKey("warpdrive.atomic.void_shell_glass");
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isOpaqueCube(final IBlockState blockState) {
+		return false;
+	}
+	
+	@Nonnull
+	@SideOnly(Side.CLIENT)
+	@Override
+	public BlockRenderLayer getRenderLayer() {
+		return BlockRenderLayer.TRANSLUCENT;
 	}
 	
 	@SuppressWarnings("deprecation")

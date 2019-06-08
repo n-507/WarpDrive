@@ -28,6 +28,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BlockChiller extends BlockAbstractAccelerator {
 	
 	private static final float BOUNDING_TOLERANCE = 0.05F;
+	private static final AxisAlignedBB CHILLER_COLLISION_AABB = new AxisAlignedBB(BOUNDING_TOLERANCE, 0.0D, BOUNDING_TOLERANCE,
+	                                                                              1.0D - BOUNDING_TOLERANCE, 1.0D, 1.0D - BOUNDING_TOLERANCE );
 	
 	public BlockChiller(final String registryName, final EnumTier enumTier) {
 		super(registryName, enumTier);
@@ -61,10 +63,8 @@ public class BlockChiller extends BlockAbstractAccelerator {
 	@SuppressWarnings("deprecation")
 	@Nullable
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
-		return new AxisAlignedBB(
-			blockPos.getX() + BOUNDING_TOLERANCE, blockPos.getY() + BOUNDING_TOLERANCE, blockPos.getZ() + BOUNDING_TOLERANCE,
-			blockPos.getX() + 1 - BOUNDING_TOLERANCE, blockPos.getY() + 1 - BOUNDING_TOLERANCE, blockPos.getZ() + 1 - BOUNDING_TOLERANCE);
+	public AxisAlignedBB getCollisionBoundingBox(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+		return CHILLER_COLLISION_AABB;
 	}
 	
 	@Override
