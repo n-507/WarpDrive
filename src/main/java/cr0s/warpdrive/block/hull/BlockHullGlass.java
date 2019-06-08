@@ -61,6 +61,27 @@ public class BlockHullGlass extends BlockColored implements IBlockBase, IDamageR
 		return false;
 	}
 	
+	// return true to support pressure plates, etc. since it's glass material
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isTopSolid(final IBlockState blockState) {
+		return true;
+	}
+	
+	// return false to give full rendering transparency (but loose vertical redstone wire)
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isBlockNormalCube(final IBlockState blockState) {
+		return false;
+	}
+	
+	// return true to give proper door placement since it's glass material
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isNormalCube(final IBlockState blockState) {
+		return true;
+	}
+	
 	@Nonnull
 	@Override
 	public EnumTier getTier(final ItemStack itemStack) {
@@ -85,12 +106,6 @@ public class BlockHullGlass extends BlockColored implements IBlockBase, IDamageR
 		// no operation
 	}
 	
-	@SuppressWarnings("deprecation")
-	@Override
-	public boolean isTranslucent(final IBlockState blockState) {
-		return true;
-	}
-	
 	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -101,13 +116,13 @@ public class BlockHullGlass extends BlockColored implements IBlockBase, IDamageR
 	@SuppressWarnings("deprecation")
 	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean shouldSideBeRendered(final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, final EnumFacing facing) {
+	public boolean shouldSideBeRendered(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing) {
 		final BlockPos blockPosSide = blockPos.offset(facing);
-		if (blockAccess.isAirBlock(blockPosSide)) {
+		final IBlockState blockStateSide = blockAccess.getBlockState(blockPosSide);
+		if (blockStateSide.getBlock().isAir(blockStateSide, blockAccess, blockPosSide)) {
 			return true;
 		}
 		final EnumFacing opposite = facing.getOpposite();
-		final IBlockState blockStateSide = blockAccess.getBlockState(blockPosSide);
 		if ( blockStateSide.getBlock() instanceof BlockGlass
 		  || blockStateSide.getBlock() instanceof BlockHullGlass ) {
 			return blockState.getBlock().getMetaFromState(blockState)
