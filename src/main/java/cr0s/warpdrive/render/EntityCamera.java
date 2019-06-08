@@ -21,7 +21,7 @@ import org.lwjgl.input.Mouse;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
+import java.util.Collections;
 
 public final class EntityCamera extends EntityLivingBase {
 	
@@ -254,9 +254,10 @@ public final class EntityCamera extends EntityLivingBase {
 		nbttagcompound.setInteger("z", cameraZ);
 	}
 	
+	@Nonnull
 	@Override
 	public Iterable<ItemStack> getArmorInventoryList() {
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 	
 	@Nonnull
