@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -21,6 +22,7 @@ public class BlockTransporterContainment extends BlockAbstractBase {
 		super(registryName, enumTier, Material.IRON);
 		
 		setTranslationKey("warpdrive.movement.transporter_containment");
+		setLightOpacity(255);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -29,9 +31,17 @@ public class BlockTransporterContainment extends BlockAbstractBase {
 		return false;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isNormalCube(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
+	public boolean isFullCube(final IBlockState blockState) {
 		return false;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Nonnull
+	@Override
+	public BlockFaceShape getBlockFaceShape(final IBlockAccess worldIn, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+		return face == EnumFacing.DOWN ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
 	}
 	
 	@SuppressWarnings("deprecation")

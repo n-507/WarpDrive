@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -84,20 +85,6 @@ public class BlockTransporterBeacon extends BlockAbstractContainer {
 		super.modelInitialisation();
 	}
 	
-	@Override
-	public boolean isNormalCube(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
-		return false;
-	}
-	
-	@SuppressWarnings("deprecation")
-	@Override
-	public boolean isBlockNormalCube(final IBlockState blockState) {
-		// not supposed to be called, upstream should use isNormalCube(IBlockState, IBlockAccess, BlockPos) instead
-		// practically, Forge still use it in WorldEntitySpawner.isValidEmptySpawnBlock(), Block.getAmbientOcclusionLightValue(), BlockRedstoneWire.getAttachPosition()
-		// calling BlockStateContainer$StateImplementation.isBlockNormalCube()
-		return false;
-	}
-	
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isOpaqueCube(final IBlockState blockState) {
@@ -111,9 +98,10 @@ public class BlockTransporterBeacon extends BlockAbstractContainer {
 	}
 	
 	@SuppressWarnings("deprecation")
+	@Nonnull
 	@Override
-	public boolean isFullBlock(final IBlockState blockState) {
-		return false;
+	public BlockFaceShape getBlockFaceShape(final IBlockAccess worldIn, final IBlockState state, final BlockPos pos, final EnumFacing face) {
+		return face == EnumFacing.DOWN ? BlockFaceShape.CENTER : BlockFaceShape.UNDEFINED;
 	}
 	
 	@Nonnull
