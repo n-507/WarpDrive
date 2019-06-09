@@ -255,8 +255,8 @@ tile.warpdrive.machines.laser_medium.superior.name=Superior Lasermedium
 
 tile.warpdrive.machines.security_station.name=Security Station
 
-tile.warpdrive.atomic.accelerator_controller.name=Beschleunigungsregler
-tile.warpdrive.atomic.accelerator_controller.tooltip=Regelt einen oder mehrere Teilchenbeschleuniger.\nSollte neben einem Elektromagnet platziert werden.
+tile.warpdrive.atomic.accelerator_core.name=Beschleunigungsregler
+tile.warpdrive.atomic.accelerator_core.tooltip=Regelt einen oder mehrere Teilchenbeschleuniger.\nSollte neben einem Elektromagnet platziert werden.
 tile.warpdrive.atomic.accelerator_control_point.name=Beschleuniger Kontrollpunkt
 tile.warpdrive.atomic.accelerator_control_point.tooltip=Regele Beschleuniger Knotenpunkte wie Collider, Input und Output.\nSollte genau einen Block neben einer Void Shell platziert werden.\nSpeichere Erzeugnisse in jedem direkt verbundenen Speicher.
 tile.warpdrive.atomic.chiller.basic.name=Standard Kühler

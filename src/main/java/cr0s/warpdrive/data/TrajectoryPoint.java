@@ -110,7 +110,7 @@ public class TrajectoryPoint extends VectorI {
 		
 		// get main blocks
 		final EnumFacing directionLeft  = directionMain.rotateY();
-		final EnumFacing directionRight = directionLeft.rotateYCCW();
+		final EnumFacing directionRight = directionMain.rotateYCCW();
 		final Block blockForward   = world.getBlockState(blockPos.offset(directionMain)).getBlock();
 		final Block blockUp        = world.getBlockState(blockPos.up()).getBlock();
 		final Block blockDown      = world.getBlockState(blockPos.down()).getBlock();

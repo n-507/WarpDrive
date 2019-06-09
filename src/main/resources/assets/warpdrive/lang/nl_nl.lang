@@ -255,8 +255,8 @@ tile.warpdrive.machines.laser_medium.superior.name=Superieure Deeltjesversneller
 
 tile.warpdrive.machines.security_station.name=Security Station
 
-tile.warpdrive.atomic.accelerator_controller.name=Versnellers-regelaar
-tile.warpdrive.atomic.accelerator_controller.tooltip=Regelt één of meer deeltjesversnellers.\nMoet naast een elektromagneet worden geplaats.
+tile.warpdrive.atomic.accelerator_core.name=Versnellers-regelaar
+tile.warpdrive.atomic.accelerator_core.tooltip=Regelt één of meer deeltjesversnellers.\nMoet naast een elektromagneet worden geplaats.
 tile.warpdrive.atomic.accelerator_control_point.name=Versnellings-regelaars punt
 tile.warpdrive.atomic.accelerator_control_point.tooltip=Reguleer versnellingsknooppunten zoals de deeltjesbotser, input en output.\nSMoet exact op een afstand van 1 blok van een void shell staan.\nSlaat de resultaten op naar een direct aangesloten opslag.
 tile.warpdrive.atomic.chiller.basic.name=Normale Koeler

@@ -572,7 +572,7 @@ public class StarMapRegistry {
 					case WARP_ECHO:
 						break;
 					case ACCELERATOR:
-						isValid = block == WarpDrive.blockAcceleratorController && tileEntity != null && !tileEntity.isInvalid();
+						isValid = block == WarpDrive.blockAcceleratorCore && tileEntity != null && !tileEntity.isInvalid();
 						break;
 					case TRANSPORTER:
 						isValid = block == WarpDrive.blockTransporterCore && tileEntity != null && !tileEntity.isInvalid();

@@ -901,7 +901,7 @@ public class Recipes {
 		
 		// Accelerator controller
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockAcceleratorController), "MmM", "mcm", "MmM",
+		                                       new ItemStack(WarpDrive.blockAcceleratorCore), "MmM", "mcm", "MmM",
 		                                       'M', ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL),
 		                                       'm', "blockElectromagnet1",
 		                                       'c', WarpDrive.blockAcceleratorControlPoint));

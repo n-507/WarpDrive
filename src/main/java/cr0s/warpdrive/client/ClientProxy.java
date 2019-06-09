@@ -5,6 +5,7 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBlockBase;
 import cr0s.warpdrive.api.IItemBase;
 import cr0s.warpdrive.block.breathing.BlockColorAirShield;
+import cr0s.warpdrive.entity.EntityParticleBunch;
 import cr0s.warpdrive.event.ClientHandler;
 import cr0s.warpdrive.event.ModelBakeEventHandler;
 import cr0s.warpdrive.event.TooltipHandler;
@@ -19,6 +20,9 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -28,6 +32,8 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 public class ClientProxy extends CommonProxy {
 	
@@ -40,6 +46,15 @@ public class ClientProxy extends CommonProxy {
 		ModelLoaderRegistry.registerLoader(CustomModelLoaderProjector.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(ModelBakeEventHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(SpriteManager.INSTANCE);
+		
+		// entity rendering
+		RenderingRegistry.registerEntityRenderingHandler(EntityParticleBunch.class, new IRenderFactory<EntityParticleBunch>() {
+			@Nonnull
+			@Override
+			public Render<Entity> createRenderFor(final RenderManager manager) {
+				return new RenderEntityParticleBunch(manager);
+			}
+		});
 	}
 	
 	@Override
@@ -62,10 +77,6 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new RenderOverlayLocation());
 		
 		MinecraftForge.EVENT_BUS.register(new ClientCameraHandler());
-		
-		// entity rendering
-		// RenderingRegistry.registerEntityRenderingHandler(EntityParticleBunch.class, new RenderEntityParticleBunch());
-		// @TODO MC1.10 force field rendering
 	}
 	
 	@Override

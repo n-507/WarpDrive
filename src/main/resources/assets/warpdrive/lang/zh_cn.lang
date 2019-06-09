@@ -260,8 +260,8 @@ tile.warpdrive.machines.laser_medium.superior.name=Superior 激光介质
 
 tile.warpdrive.machines.security_station.name=Security Station
 
-tile.warpdrive.atomic.accelerator_controller.name=加速器操纵仪
-tile.warpdrive.atomic.accelerator_controller.tooltip=操纵一或多个粒子加速器.\n需要连接电磁体.
+tile.warpdrive.atomic.accelerator_core.name=加速器操纵仪
+tile.warpdrive.atomic.accelerator_core.tooltip=操纵一或多个粒子加速器.\n需要连接电磁体.
 tile.warpdrive.atomic.accelerator_control_point.name=加速器控制点
 tile.warpdrive.atomic.accelerator_control_point.tooltip=控制加速器上的对撞机、输入、输出等节点.\n需要贴真空腔放置.\n会将产物存入任何相连存储设施.
 tile.warpdrive.atomic.chiller.basic.name=基础冷却器

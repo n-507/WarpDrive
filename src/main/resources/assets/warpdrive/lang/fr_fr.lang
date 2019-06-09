@@ -255,8 +255,8 @@ tile.warpdrive.machines.laser_medium.superior.name=Milieu amplificateur supérie
 
 tile.warpdrive.machines.security_station.name=Station de sécurité
 
-tile.warpdrive.atomic.accelerator_controller.name=Controlleur d'accélérateurs
-tile.warpdrive.atomic.accelerator_controller.tooltip=Contrôle un ou plusieurs accélérateurs de particules.\nDoit être placé à coté d'un électroaimant.
+tile.warpdrive.atomic.accelerator_core.name=Noyau d'accélérateurs
+tile.warpdrive.atomic.accelerator_core.tooltip=Contrôle un ou plusieurs accélérateurs de particules.\nDoit être placé à coté d'un électroaimant.
 tile.warpdrive.atomic.accelerator_control_point.name=Point de contrôle d'accélérateur
 tile.warpdrive.atomic.accelerator_control_point.tooltip=Contrôle un noeud de l'accélérateur tel que collisionneur, entrée et sortie.\nDoit être placé à exactement 1 block de distance d'une coquille sous vide.\nStocke les résultats dans tout conteneur directement connecté.
 tile.warpdrive.atomic.chiller.basic.name=Refroidisseur élémentaire

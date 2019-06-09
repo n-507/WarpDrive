@@ -17,6 +17,7 @@ import cr0s.warpdrive.block.energy.BlockCapacitor;
 import cr0s.warpdrive.block.energy.TileEntityCapacitor;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -77,10 +78,11 @@ public class AcceleratorSetup extends GlobalPosition {
 	public double[] temperatures_sustainEnergyCost_perTick = new double[3];
 	public double   particleEnergy_energyCost_perTick;
 	
-	public AcceleratorSetup(final int dimensionId, final int x, final int y, final int z) {
-		super(dimensionId, x, y, z);
+	public AcceleratorSetup(final int dimensionId, @Nonnull final BlockPos blockPos) {
+		super(dimensionId, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 		
-		LocalProfiler.start(String.format("[AcceleratorSetup] Scanning @ DIM%d (%d %d %d)", dimensionId, x, y, z));
+		LocalProfiler.start(String.format("[AcceleratorSetup] Scanning @ DIM%d (%d %d %d)",
+		                                  dimensionId, x, y, z));
 		
 		refresh();
 		
@@ -172,12 +174,12 @@ public class AcceleratorSetup extends GlobalPosition {
 	private void fillTrajectoryPoints(final WorldServer world) {
 		// find closest connected VoidShell
 		Set<Block> whitelist = ImmutableSet.of(
-			WarpDrive.blockElectromagnets_plain[0],
-			WarpDrive.blockElectromagnets_glass[0],
 			WarpDrive.blockElectromagnets_plain[1],
 			WarpDrive.blockElectromagnets_glass[1],
 			WarpDrive.blockElectromagnets_plain[2],
 			WarpDrive.blockElectromagnets_glass[2],
+			WarpDrive.blockElectromagnets_plain[3],
+			WarpDrive.blockElectromagnets_glass[3],
 			WarpDrive.blockVoidShellPlain,
 			WarpDrive.blockVoidShellGlass);
 		final Set<BlockPos> connections = Commons.getConnectedBlocks(world, new BlockPos(x, y, z), Commons.DIRECTIONS_ANY, whitelist, 3);
@@ -321,7 +323,9 @@ public class AcceleratorSetup extends GlobalPosition {
 		for (final TrajectoryPoint trajectoryPoint : trajectoryAccelerator.values()) {
 			// check for invalid setup
 			if (trajectoryPoint.isJammed()) {
-				setJammed.add(trajectoryPoint);
+ 				setJammed.add(trajectoryPoint);
+				WarpDrive.logger.info(String.format("Jammed point %s",
+				                                    trajectoryPoint ));
 			}
 			
 			// check for injectors

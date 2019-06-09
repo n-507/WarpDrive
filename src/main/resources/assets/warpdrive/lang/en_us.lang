@@ -255,8 +255,8 @@ tile.warpdrive.machines.laser_medium.superior.name=Superior Laser Medium
 
 tile.warpdrive.machines.security_station.name=Security Station
 
-tile.warpdrive.atomic.accelerator_controller.name=Accelerator Controller
-tile.warpdrive.atomic.accelerator_controller.tooltip=Controls one or more particle accelerators.\nShall be placed next to an electromagnet.
+tile.warpdrive.atomic.accelerator_core.name=Accelerator Core
+tile.warpdrive.atomic.accelerator_core.tooltip=Controls one or more particle accelerators.\nShall be placed next to an electromagnet.
 tile.warpdrive.atomic.accelerator_control_point.name=Accelerator control point
 tile.warpdrive.atomic.accelerator_control_point.tooltip=Control accelerator nodes like collider, input and output.\nShall be placed exactly 1 block away from a void shell.\nStore results in any directly connected storage.
 tile.warpdrive.atomic.chiller.basic.name=Basic Chiller

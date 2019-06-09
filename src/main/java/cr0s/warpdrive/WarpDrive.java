@@ -10,7 +10,7 @@ import cr0s.warpdrive.block.TileEntityLaser;
 import cr0s.warpdrive.block.TileEntityLaserMedium;
 import cr0s.warpdrive.block.TileEntitySecurityStation;
 import cr0s.warpdrive.block.atomic.BlockAcceleratorControlPoint;
-import cr0s.warpdrive.block.atomic.BlockAcceleratorController;
+import cr0s.warpdrive.block.atomic.BlockAcceleratorCore;
 import cr0s.warpdrive.block.atomic.BlockChiller;
 import cr0s.warpdrive.block.atomic.BlockElectromagnetGlass;
 import cr0s.warpdrive.block.atomic.BlockElectromagnetPlain;
@@ -226,7 +226,7 @@ public class WarpDrive {
 	public static ItemComponent itemComponent;
 	
 	// atomic blocks and items
-	public static Block blockAcceleratorController;
+	public static Block blockAcceleratorCore;
 	public static Block blockAcceleratorControlPoint;
 	public static Block blockParticlesCollider;
 	public static Block blockParticlesInjector;
@@ -395,7 +395,7 @@ public class WarpDrive {
 		
 		// atomic blocks and items
 		if (WarpDriveConfig.ACCELERATOR_ENABLE) {
-			blockAcceleratorController = new BlockAcceleratorController("accelerator_core", EnumTier.BASIC);
+			blockAcceleratorCore = new BlockAcceleratorCore("accelerator_core", EnumTier.BASIC);
 			blockAcceleratorControlPoint = new BlockAcceleratorControlPoint("accelerator_control_point", EnumTier.BASIC, false);
 			blockParticlesCollider = new BlockParticlesCollider("particles_collider", EnumTier.BASIC);
 			blockParticlesInjector = new BlockParticlesInjector("particles_injector", EnumTier.BASIC);
@@ -1006,7 +1006,7 @@ public class WarpDrive {
 			event.getRegistry().register(block);
 		}
 		
-		GameRegistry.registerTileEntity(TileEntityAcceleratorController.class, new ResourceLocation(WarpDrive.MODID, "accelerator_controller"));
+		GameRegistry.registerTileEntity(TileEntityAcceleratorController.class, new ResourceLocation(WarpDrive.MODID, "accelerator_core"));
 		GameRegistry.registerTileEntity(TileEntityAcceleratorControlPoint.class, new ResourceLocation(WarpDrive.MODID, "accelerator_control_point"));
 		GameRegistry.registerTileEntity(TileEntityAirGeneratorTiered.class, new ResourceLocation(WarpDrive.MODID, "air_generator"));
 		GameRegistry.registerTileEntity(TileEntityCamera.class, new ResourceLocation(WarpDrive.MODID, "camera"));

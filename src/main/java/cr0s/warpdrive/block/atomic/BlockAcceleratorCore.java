@@ -12,12 +12,12 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class BlockAcceleratorController extends BlockAbstractContainer {
+public class BlockAcceleratorCore extends BlockAbstractContainer {
 	
-	public BlockAcceleratorController(final String registryName, final EnumTier enumTier) {
+	public BlockAcceleratorCore(final String registryName, final EnumTier enumTier) {
 		super(registryName, enumTier, Material.IRON);
 		
-		setTranslationKey("warpdrive.atomic.accelerator_controller");
+		setTranslationKey("warpdrive.atomic.accelerator_core");
 		
 		setDefaultState(getDefaultState()
 				                .withProperty(BlockProperties.ACTIVE, false)

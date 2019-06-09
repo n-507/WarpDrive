@@ -1,22 +1,1136 @@
 package cr0s.warpdrive.block.atomic;
 
+import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.api.IControlChannel;
+import cr0s.warpdrive.api.IParticleContainerItem;
 import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
+import cr0s.warpdrive.api.Particle;
+import cr0s.warpdrive.api.ParticleRegistry;
+import cr0s.warpdrive.api.ParticleStack;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.TileEntityAbstractEnergyCoreOrController;
+import cr0s.warpdrive.block.energy.BlockCapacitor;
+import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.AcceleratorControlParameter;
+import cr0s.warpdrive.data.AcceleratorSetup;
+import cr0s.warpdrive.data.BlockProperties;
+import cr0s.warpdrive.data.EnergyWrapper;
+import cr0s.warpdrive.data.InventoryWrapper;
+import cr0s.warpdrive.data.ParticleBunch;
 import cr0s.warpdrive.data.EnumStarMapEntryType;
+import cr0s.warpdrive.data.SoundEvents;
+import cr0s.warpdrive.data.TrajectoryPoint;
+import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
+import cr0s.warpdrive.network.PacketHandler;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
 
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.common.Optional;
 
 public class TileEntityAcceleratorController extends TileEntityAbstractEnergyCoreOrController implements IStarMapRegistryTileEntity {
 	
+	private static final int      ACCELERATOR_COOLDOWN_TICKS = 300;
+	private static final int      ACCELERATOR_GUIDE_UPDATE_TICKS = 300;
+	private static final double   ACCELERATOR_AMBIENT_TEMPERATURE_K = 300.0;
+	private static final double   ACCELERATOR_AMBIENT_WARMING_RATE = 0.01;
+	private static final double   ACCELERATOR_TEMPERATURE_TOLERANCE_K = 0.05;
+	public static final double[]  PARTICLE_BUNCH_ENERGY_MINIMUM = { 0.1D,  0.8D,   8.0D };    // 20% overlap tolerance between tiers
+	public static final double[]  PARTICLE_BUNCH_ENERGY_MAXIMUM = { 1.0D, 10.0D, 100.0D };
+	
+	// Linear length = 48, 192, 2048
+	// Energy factor per magnet = ((Energy max / Energy min) ^ (1 / Linear length) - 1) / 2
+	public static final double[]  PARTICLE_BUNCH_ENERGY_FACTOR_PER_MAGNET = { 0.024570, 0.0060324, 0.0005625 };
+	
+	// Ring radius min = 7, 15, 31
+	// Turn coefficient max is < (Energy max / Energy min) ^ (- min radius / Linear length)
+	// Turn coefficient min is > (Energy max / Energy min) ^ (- (min radius - 1) / Linear length)
+	public static final double[]  PARTICLE_BUNCH_TURN_COEFFICIENTS_AT_MIN_ENERGY = { 0.7866, 0.8555, 0.9678 }; 
+	public static final double[]  PARTICLE_BUNCH_TURN_COEFFICIENTS_AT_MAX_ENERGY = { 0.7504, 0.8455, 0.9677 }; 
+	
+	public static final double[]  PARTICLE_BUNCH_ENERGY_TO_SPEEDS_X = { 0.1D, 1.0, 10.0, 100.0 };
+	public static final double[]  PARTICLE_BUNCH_ENERGY_TO_SPEEDS_Y = { 0.01, 0.6,  1.5,   3.0 };
+	
+	public static final double[]  PARTICLE_BUNCH_ENERGY_TO_EXPLOSION_STRENGTH_X = {
+		0.0D,
+		PARTICLE_BUNCH_ENERGY_MAXIMUM[0],
+		PARTICLE_BUNCH_ENERGY_MAXIMUM[1],
+		PARTICLE_BUNCH_ENERGY_MAXIMUM[2],
+		PARTICLE_BUNCH_ENERGY_MAXIMUM[2] * 2.0D
+	};
+	public static final double[]  PARTICLE_BUNCH_ENERGY_TO_EXPLOSION_STRENGTH_Y = { 0.0D, 1.5D, 3.0D, 6.0D, 10.0D };
+	
+	private static final double[] ACCELERATOR_COLLISION_ENERGY_TO_PARTICLE_INDEX_X = {
+		0.0D,
+		PARTICLE_BUNCH_ENERGY_MAXIMUM[0] * 0.4D,
+		PARTICLE_BUNCH_ENERGY_MAXIMUM[1] * 0.5D,
+		PARTICLE_BUNCH_ENERGY_MAXIMUM[2] * 0.5D,
+		PARTICLE_BUNCH_ENERGY_MAXIMUM[2] * 1.5D,
+		PARTICLE_BUNCH_ENERGY_MAXIMUM[2] * 2.0D
+	};
+	private static final double[] ACCELERATOR_COLLISION_ENERGY_TO_PARTICLE_INDEX_Y = { 0.0D, 1.0D, 2.0D, 3.0D, 4.0D, 5.0D };
+	private static final Particle[] ACCELERATOR_COLLISION_PARTICLES = { null, ParticleRegistry.ION, ParticleRegistry.PROTON, ParticleRegistry.ANTIMATTER, ParticleRegistry.STRANGE_MATTER };
+	
+	// persistent properties
+	private boolean isEnabled = true;
+	private final Collection<ParticleBunch> setParticleBunches = new CopyOnWriteArraySet<>();
+	private double temperatureCurrent_K = ACCELERATOR_AMBIENT_TEMPERATURE_K;
+	private Map<Integer, AcceleratorControlParameter> mapControlParameters = new HashMap<>();
+	private int injectionPeriodTicks = 60;
+	private int injectionTicks = 0;
+	private int indexNextInjector = 0;
+	private boolean legacy_isOn = false;
+	
+	public UUID uuid = null;
+	
+	// computed properties
+	private final int registryUpdateInterval_ticks = 20 * WarpDriveConfig.STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS;
+	private int registryUpdateTicks = 0;
+	
+	private int cooldownTicks;
+	private int guideTicks;
+	protected boolean isPowered = true;
+	private AcceleratorSetup cache_acceleratorSetup;
+	private boolean isBlockUpdated = false;
+	
+	
 	public TileEntityAcceleratorController() {
 		super();
+		
+		peripheralName = "warpdriveAccelerator";
+		addMethods(new String[] {
+			"enable",
+			"getControlPoints",
+			"getControlPointsCount",
+			"getControlPoint",
+			"getParameters",
+			"getParametersControlChannels",
+			"parameter",
+			"injectionPeriod",
+			"state"
+		});
+		CC_scripts = Collections.singletonList("startup");
+	}
+	
+	@Override
+	protected void onFirstUpdateTick() {
+		super.onFirstUpdateTick();
+		cooldownTicks = 0;
+		guideTicks = ACCELERATOR_GUIDE_UPDATE_TICKS;
 	}
 	
 	@Override
 	public void update() {
 		super.update();
+		
+		if (world.isRemote) {
+			return;
+		}
+		
+		// update counters
+		if (cooldownTicks > 0) {
+			cooldownTicks--;
+		}
+		if (guideTicks > 0) {
+			guideTicks--;
+		}
+		
+		// Update starmap registry
+		registryUpdateTicks--;
+		if (registryUpdateTicks <= 0) {
+			registryUpdateTicks = registryUpdateInterval_ticks;
+			if (uuid == null || (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0)) {
+				uuid = UUID.randomUUID();
+			}
+			// recover registration, shouldn't be needed, in theory...
+			WarpDrive.starMap.updateInRegistry(this);
+		}
+		
+		// Evaluate current state
+		final int tierCurrentTemperature;
+		if (temperatureCurrent_K <= WarpDriveConfig.ACCELERATOR_TEMPERATURES_K[1]) {
+			tierCurrentTemperature = 3;
+		} else if (temperatureCurrent_K <= WarpDriveConfig.ACCELERATOR_TEMPERATURES_K[0]) {
+			tierCurrentTemperature = 2;
+		} else {
+			tierCurrentTemperature = 1;
+		}
+		
+		// Powered ?
+		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
+		reportJammed(acceleratorSetup);
+		
+		int energyRequired;
+		final boolean needsCooling = acceleratorSetup.temperatureTarget_K < temperatureCurrent_K;
+		// compute cooling energy
+		if (needsCooling) {
+			energyRequired = (int)Math.round(acceleratorSetup.temperature_coolingEnergyCost_perTick);
+		} else {
+			energyRequired = (int)Math.round(acceleratorSetup.temperatures_sustainEnergyCost_perTick[tierCurrentTemperature - 1]);
+		}
+		// add acceleration energy
+		energyRequired += acceleratorSetup.particleEnergy_energyCost_perTick * (0.1D + 1.0D * setParticleBunches.size());
+		final int energyPotential = acceleratorSetup.energy_getPotentialOutput();
+		isPowered = energyRequired > 0 && energyPotential >= energyRequired;
+		
+		final boolean isEnabledAndValid = isEnabled && isValid();
+		final boolean isOn = isEnabledAndValid && cooldownTicks <= 0 && isPowered;
+		updateBlockState(null, BlockProperties.ACTIVE, isOn);
+		if (isOn) {
+			// power on transition
+			if (!legacy_isOn) {
+				updateChillers(acceleratorSetup, true, needsCooling, false);
+				if (WarpDriveConfig.LOGGING_ACCELERATOR) {
+					WarpDrive.logger.info(this + " starting up...");
+				}
+				legacy_isOn = true;
+				
+			} else if ((world.getTotalWorldTime() + Math.abs(pos.getX() - pos.getZ())) % 20 == 0) {
+				// intermittent update to recover block states
+				updateChillers(acceleratorSetup, true, needsCooling, false);
+			}
+			cooldownTicks = 0;
+			
+			// consume energy
+			acceleratorSetup.energy_consume(energyRequired);
+			
+			// update temperature
+			if (acceleratorSetup.temperatureTarget_K <= temperatureCurrent_K) {
+				temperatureCurrent_K = updateTemperature(
+					temperatureCurrent_K,
+					acceleratorSetup.temperatures_cooling_K_perTick[tierCurrentTemperature - 1],
+					acceleratorSetup.temperatureTarget_K);
+			} else {
+				temperatureCurrent_K = updateTemperature(
+					temperatureCurrent_K,
+					ACCELERATOR_AMBIENT_WARMING_RATE,
+					acceleratorSetup.temperatureTarget_K);
+			}
+			if (needsCooling && temperatureCurrent_K <= acceleratorSetup.temperatureTarget_K) {
+				sendEvent("acceleratorCoolingDone");
+			}
+			
+			// inject new particles
+			injectionTicks--;
+			if ( injectionTicks <= 0
+			  && !needsCooling && setParticleBunches.size() < WarpDriveConfig.ACCELERATOR_MAX_PARTICLE_BUNCHES
+			  && !acceleratorSetup.mapInjectors.isEmpty() ) {
+				injectionTicks = injectionPeriodTicks;
+				final int countInjectors = acceleratorSetup.keyInjectors.length;
+				if (indexNextInjector < countInjectors) {
+					onInject(acceleratorSetup.keyInjectors[indexNextInjector]);
+				} else {
+					// invalid setup => force a reset
+					rebootAccelerator(acceleratorSetup,false, true);	
+				}
+				indexNextInjector = (indexNextInjector + 1) % countInjectors;
+			}
+			
+			// run simulation
+			doSimulate(needsCooling ? null : acceleratorSetup);
+			
+		} else {
+			// update blocks during power off transition or intermittently
+			if (legacy_isOn) {
+				rebootAccelerator(acceleratorSetup,false, false);
+				if (WarpDriveConfig.LOGGING_ACCELERATOR) {
+					WarpDrive.logger.info(this + " shutting down...");
+				}
+				legacy_isOn = false;
+				cooldownTicks = ACCELERATOR_COOLDOWN_TICKS;
+				guideTicks = 0;
+				
+			} else if ((world.getWorldTime() + Math.abs(pos.getX() - pos.getZ())) % 20 == 0) {
+				// intermittent update to recover block states
+				updateChillers(acceleratorSetup, false, false, false);
+			}
+			
+			// update temperature
+			temperatureCurrent_K = updateTemperature(
+					temperatureCurrent_K,
+					ACCELERATOR_AMBIENT_WARMING_RATE,
+					ACCELERATOR_AMBIENT_TEMPERATURE_K);
+			
+			if (isEnabledAndValid) {
+				if (guideTicks <= 0) {
+					guideTicks = ACCELERATOR_GUIDE_UPDATE_TICKS;
+					
+					final WarpDriveText text = getStatusPrefix();
+					if (energyRequired > acceleratorSetup.energy_getMaxStorage()) {
+						text.append(Commons.styleWarning, "warpdrive.accelerator.guide.low_power.not_enough_storage",
+						            energyRequired, acceleratorSetup.energy_getMaxStorage() );
+					} else if (acceleratorSetup.setChillers.isEmpty()) {
+						text.append(Commons.styleWarning, "warpdrive.accelerator.guide.no_chiller");
+					} else if (setParticleBunches.isEmpty()) {
+						text.append(Commons.styleWarning, "warpdrive.accelerator.guide.low_power.no_particles",
+						            energyRequired, energyPotential);
+					} else {
+						text.append(Commons.styleWarning, "warpdrive.accelerator.guide.low_power.accelerating",
+						            energyRequired, energyPotential);
+					}
+					
+					final AxisAlignedBB axisalignedbb = new AxisAlignedBB(pos.getX() - 10, pos.getY() - 10, pos.getZ() - 10,
+					                                                      pos.getX() + 10, pos.getY() + 10, pos.getZ() + 10 );
+					final List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(null, axisalignedbb);
+					
+					for (final Entity entity : list) {
+						if ( !(entity instanceof EntityPlayer)
+						  || entity instanceof FakePlayer ) {
+							continue;
+						}
+						
+						Commons.addChatMessage(entity, text);
+					}
+				}
+			}
+			
+			// simulate all particles
+			doSimulate(null);
+		}
+	}
+	
+	private static double updateTemperature(final double actual_K, final double rate, final double target_K) {
+		final double delta_K = target_K - actual_K;
+		if (Math.abs(delta_K) < ACCELERATOR_TEMPERATURE_TOLERANCE_K) {
+			return target_K;
+		} else {
+			//noinspection StatementWithEmptyBody
+			if (WarpDriveConfig.LOGGING_ACCELERATOR && WarpDrive.isDev) {
+				// WarpDrive.logger.info("Accelerator temperature current " + actual_K + " rate " + rate + " target " + target_K);
+			}
+			return actual_K + rate * Math.signum(delta_K) * Math.sqrt(Math.abs(delta_K) / ACCELERATOR_AMBIENT_TEMPERATURE_K);
+		}
+	}
+	
+	public boolean isValid() {
+		return true;
+	}
+	
+	boolean isOn() {
+		return legacy_isOn;
+	}
+	
+	private void reportJammed(final AcceleratorSetup acceleratorSetup) {
+		if ( world == null
+		  || world.isRemote
+		  || acceleratorSetup == null ) {
+			return;
+		}
+		
+		if (acceleratorSetup.setJammed.isEmpty()) {
+			return;
+		}
+		
+		for (final VectorI vector : acceleratorSetup.setJammed) {
+			PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5,
+			                                      new Vector3(vector.x + 0.5D, vector.y + 0.5D, vector.z + 0.5D),
+			                                      new Vector3(0.0D, 0.0D, 0.0D),
+			                                      1.0F, 1.0F, 1.0F,
+			                                      1.0F, 1.0F, 1.0F,
+			                                      32);
+		}
+	}
+	
+	private void updateChillers(final AcceleratorSetup acceleratorSetup, final boolean isOn, final boolean needsCooling, final boolean isChunkLoading) {
+		if ( world == null
+		  || world.isRemote
+		  || acceleratorSetup == null ) {
+			return;
+		}
+		
+		if (!acceleratorSetup.setChillers.isEmpty()) {
+			for (final VectorI vector : acceleratorSetup.setChillers) {
+				final BlockPos blockPos = vector.getBlockPos();
+				if (!isChunkLoading) {
+					if (!(world.isBlockLoaded(blockPos))) {// chunk is not loaded, skip it
+						continue;
+					}
+					if (!world.getChunk(vector.x >> 4, vector.z >> 4).isLoaded()) {// chunk is unloading, skip it
+						continue;
+					}
+				}
+				final IBlockState blockState = vector.getBlockState(world);
+				
+				if (blockState.getBlock() instanceof BlockChiller) {
+					if (!blockState.getProperties().containsKey(BlockProperties.ACTIVE)) {
+						WarpDrive.logger.error(String.format("Invalid blockstate property for BlockChiller %s %s %s, please report to mod author",
+						                                     blockState, blockState.getBlock(), Commons.format(world, blockPos) ));
+					}
+					if (isOn && needsCooling) {
+						if (!blockState.getValue(BlockProperties.ACTIVE)) {
+							world.setBlockState(blockPos, blockState.withProperty(BlockProperties.ACTIVE, true));
+						}
+					} else {
+						if (blockState.getValue(BlockProperties.ACTIVE)) {
+							world.setBlockState(blockPos, blockState.withProperty(BlockProperties.ACTIVE, false));
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	// inject a particle bunch
+	private boolean onInject(final int controlChannel) {
+		final VectorI vInjector = getAcceleratorSetup().mapInjectors.get(controlChannel);
+		if (vInjector == null) {
+			return false;
+		}
+		
+		if (setParticleBunches.size() >= WarpDriveConfig.ACCELERATOR_MAX_PARTICLE_BUNCHES) {
+			return false;
+		}
+		
+		final TileEntity tileEntity = vInjector.getTileEntity(world);
+		if ( !(tileEntity instanceof TileEntityParticlesInjector)
+		  || !((TileEntityParticlesInjector) tileEntity).getIsEnabled() ) {
+			return false;
+		}
+		
+		// find consumable
+		final Collection<Object> inventories = InventoryWrapper.getConnectedInventories(tileEntity.getWorld(), tileEntity.getPos());
+		if (inventories.isEmpty()) {
+			return false;
+		}
+		
+		int slotIndex = 0;
+		boolean found = false;
+		ItemStack itemStack;
+		Object inventory = null;
+		for (final Object inventoryLoop : inventories) {
+			if (!found) {
+				slotIndex = 0;
+			}
+			final int sizeInventory = InventoryWrapper.getSize(inventoryLoop);
+			while (slotIndex < sizeInventory && !found) {
+				itemStack = InventoryWrapper.getStackInSlot(inventoryLoop, slotIndex);
+				if (itemStack.isEmpty()) {
+					slotIndex++;
+					continue;
+				}
+				final Block blockFromItem = Block.getBlockFromItem(itemStack.getItem());
+				if (blockFromItem == Blocks.AIR) {
+					slotIndex++;
+					continue;
+				}
+				
+				found = true;
+				inventory = inventoryLoop;
+			}
+		}
+		
+		// no valid item found, moving on...
+		if (inventory == null) {
+			if (WarpDriveConfig.LOGGING_ACCELERATOR) {
+				WarpDrive.logger.debug(this + " No valid item found to inject");
+			}
+			return false;
+		}
+		//noinspection ConstantConditions
+		assert(found);
+		
+		// find a connected void shell
+		EnumFacing directionStart = EnumFacing.NORTH;
+		VectorI vPosition = vInjector;
+		for (final EnumFacing forgeDirection : EnumFacing.HORIZONTALS) {
+			vPosition = vInjector.clone(forgeDirection);
+			final Block block = vPosition.getBlock(world);
+			if (block instanceof BlockVoidShellPlain) {
+				directionStart = forgeDirection;
+				break;
+			}
+		}
+		
+		// consume item
+		InventoryWrapper.decrStackSize(inventory, slotIndex, 1);
+		
+		// add particle bunch
+		final Vector3 v3Start = new Vector3(directionStart);
+		setParticleBunches.add(new ParticleBunch(vPosition.x, vPosition.y, vPosition.z, directionStart, v3Start));
+		
+		// visual effect
+		if (WarpDriveConfig.LOGGING_ACCELERATOR) {
+			WarpDrive.logger.info(this + " injecting from " + vInjector);
+		}
+		final Vector3 v3Speed = v3Start.clone().invert();
+		PacketHandler.sendSpawnParticlePacket(world, "mobSpell", (byte) 10,
+			new Vector3(vInjector.x + 0.5D * (1 + v3Speed.x + world.rand.nextGaussian()),
+			            vInjector.y + 0.5D * (1 + v3Speed.y + world.rand.nextGaussian()),
+			            vInjector.z + 0.5D * (1 + v3Speed.z + world.rand.nextGaussian())),
+			v3Speed,
+			0.70F, 0.70F, 0.90F,
+			// 0.20F + 0.10F * world.rand.nextFloat(), 0.90F + 0.10F * world.rand.nextFloat(), 0.40F + 0.15F * world.rand.nextFloat(),
+			0.0F, 0.0F, 0.0F, 32);
+		sendEvent("particleBunchInjected");
+		return true;
+	}
+	
+	// simulate a particle bunch
+	private void doSimulate(final AcceleratorSetup acceleratorSetup) {
+		if (setParticleBunches.isEmpty()) {
+			return;
+		}
+		for (final ParticleBunch particleBunch : setParticleBunches) {
+			final boolean isAlive = particleBunch.onUpdate(world, mapControlParameters, acceleratorSetup);
+			if (!isAlive) {
+				setParticleBunches.remove(particleBunch);
+			}
+		}
+		
+		// skip colliders simulation if setup is invalid
+		if (acceleratorSetup == null) {
+			return;
+		}
+		
+		final Collection<ParticleBunch> setInRange = new ArrayList<>(setParticleBunches.size());
+		boolean hasCollided;
+		for (final TrajectoryPoint trajectoryPointCollider : acceleratorSetup.listColliders) {
+			final AcceleratorControlParameter acceleratorControlParameter = mapControlParameters.get(trajectoryPointCollider.controlChannel);
+			if (acceleratorControlParameter != null && !acceleratorControlParameter.isEnabled) {
+				continue;
+			}
+			final double threshold = acceleratorControlParameter == null ? WarpDriveConfig.ACCELERATOR_THRESHOLD_DEFAULT : acceleratorControlParameter.threshold;
+			final double energyThreshold = threshold * PARTICLE_BUNCH_ENERGY_MAXIMUM[trajectoryPointCollider.getTier() - 1];
+			final AxisAlignedBB axisAlignedBB = new AxisAlignedBB(
+				trajectoryPointCollider.x + 0.5F - 2.0F, trajectoryPointCollider.y + 0.5F - 2.0F, trajectoryPointCollider.z + 0.5F - 2.0F,
+				trajectoryPointCollider.x + 0.5F + 2.0F, trajectoryPointCollider.y + 0.5F + 2.0F, trajectoryPointCollider.z + 0.5F + 2.0F );
+			setInRange.clear();
+			hasCollided = false;
+			for (final ParticleBunch particleBunch : setParticleBunches) {
+				if (hasCollided) {
+					break;
+				}
+				if ( axisAlignedBB.minX <= particleBunch.x && particleBunch.x <= axisAlignedBB.maxX 
+				  && axisAlignedBB.minY <= particleBunch.y && particleBunch.y <= axisAlignedBB.maxY
+				  && axisAlignedBB.minZ <= particleBunch.z && particleBunch.z <= axisAlignedBB.maxZ ) {
+					// particle bunch is in collider range
+					if (particleBunch.energy >= energyThreshold) {
+						// enough energy with one particle => stop here
+						doCollision(world.rand, trajectoryPointCollider, particleBunch, null);
+						setParticleBunches.remove(particleBunch);
+						particleBunch.onCollided(world, trajectoryPointCollider);
+						hasCollided = true;
+					} else {
+						setInRange.add(particleBunch);
+					}
+				}
+			}
+			
+			// look for head to head collisions
+			if (!hasCollided && setInRange.size() > 1) {
+				for (final ParticleBunch particleBunch1 : setInRange) {
+					if (hasCollided) {
+						break;
+					}
+					for (final ParticleBunch particleBunch2 : setInRange) {
+						if (hasCollided) {
+							break;
+						}
+						// check that we have enough energy for head to head collision, and both are moving in opposing direction
+						// (we don't care if they pass each others this tick or next one)
+						if ( (particleBunch1.energy + particleBunch2.energy >= energyThreshold)
+						  && (particleBunch1.directionCurrentMotion.getOpposite() == particleBunch2.directionCurrentMotion) ) {
+							doCollision(world.rand, trajectoryPointCollider, particleBunch1, particleBunch2);
+							setParticleBunches.remove(particleBunch1);
+							particleBunch1.onCollided(world, trajectoryPointCollider);
+							setParticleBunches.remove(particleBunch2);
+							particleBunch2.onCollided(world, trajectoryPointCollider);
+							hasCollided = true;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private void doCollision(final Random random, final TrajectoryPoint trajectoryPointCollider, @Nonnull final ParticleBunch particleBunch1, final ParticleBunch particleBunch2) {
+		final double energyTotal = particleBunch1.energy + (particleBunch2 != null ? particleBunch2.energy : 0.0D);
+		final int tier = trajectoryPointCollider.getTier();
+		
+		final double indexParticle = Commons.interpolate(ACCELERATOR_COLLISION_ENERGY_TO_PARTICLE_INDEX_X, ACCELERATOR_COLLISION_ENERGY_TO_PARTICLE_INDEX_Y, energyTotal);
+		final Particle particle = ACCELERATOR_COLLISION_PARTICLES[(int) Math.floor(indexParticle)];
+		final double energyExtra = indexParticle - Math.floor(indexParticle);
+		final int quantityGenerated = Math.max(0, (int) Math.round((10.0D + 5.0D * random.nextGaussian()) * (1.0 - 0.2 * tier) * (0.5D + 2 * energyExtra)));
+		
+		// store results
+		int overflow = quantityGenerated;
+		if (particle != null) {
+			final Collection<Object> inventories = InventoryWrapper.getConnectedInventories(world, trajectoryPointCollider.vControlPoint.getBlockPos());
+			final ParticleStack particleStack = addParticleToInventories(new ParticleStack(particle, quantityGenerated), inventories);
+			overflow = particleStack == null || particleStack.isEmpty() ? 0 : particleStack.getAmount();
+		}
+		
+		// sound & visual effects
+		final SoundEvent soundEvent = tier == 1 ? SoundEvents.COLLISION_LOW : tier == 2 ? SoundEvents.COLLISION_MEDIUM : SoundEvents.COLLISION_HIGH;
+		world.playSound(null, trajectoryPointCollider.getBlockPos(), soundEvent, SoundCategory.BLOCKS,
+		                0.5F + (float) energyExtra, 0.85F + 0.50F * (float) energyExtra + 0.10F * world.rand.nextFloat());
+		if (overflow > 0) {
+			final float strength = 3.0F + tier;
+			world.newExplosion(null,
+				trajectoryPointCollider.x + 0.5D, trajectoryPointCollider.y + 0.5D, trajectoryPointCollider.z + 0.5D,
+				strength, true, true);
+			
+		} else {
+			for (int countParticles = 0; countParticles < 5; countParticles++) {
+				PacketHandler.sendSpawnParticlePacket(world, "explode", (byte) 5,
+					new Vector3(trajectoryPointCollider.x + 0.5D + 2.5D * world.rand.nextGaussian(),
+					            trajectoryPointCollider.y + 0.5D + 2.5D * world.rand.nextGaussian(),
+					            trajectoryPointCollider.z + 0.5D + 2.5D * world.rand.nextGaussian()),
+					new Vector3(0.15D * world.rand.nextGaussian(),
+					            0.15D * world.rand.nextGaussian(),
+					            0.15D * world.rand.nextGaussian()),
+					0.70F, 0.70F, 0.90F,
+					0.0F, 0.0F, 0.0F, 32);
+			}
+		}
+		
+		sendEvent("particleBunchCollided");
+	}
+	
+	protected ParticleStack addParticleToInventories(final ParticleStack particleStack, final Collection<Object> inventories) {
+		if (particleStack == null || particleStack.isEmpty()) {
+			return null;
+		}
+		ParticleStack particleStackLeft = particleStack.copy();
+		for (final Object inventory : inventories) {
+			particleStackLeft = addParticleToInventory(particleStackLeft, inventory);
+			if (particleStackLeft == null || particleStackLeft.isEmpty()) {
+				return null;
+			}
+		}
+		if (WarpDriveConfig.LOGGING_COLLECTION) {
+			WarpDrive.logger.info(this + " Overflow detected");
+		}
+		return particleStackLeft;
+	}
+	
+	private static ParticleStack addParticleToInventory(final ParticleStack particleStack, final Object inventory) {
+		if (particleStack == null || particleStack.isEmpty()) {
+			return null;
+		}
+		
+		final ParticleStack particleStackLeft = particleStack.copy();
+		int transfer;
+		
+		if (inventory != null) {
+			final int sizeInventory = InventoryWrapper.getSize(inventory);
+			// fill existing containers first
+			for (int i = 0; i < sizeInventory; i++) {
+				final ItemStack itemStack = InventoryWrapper.getStackInSlot(inventory, i);
+				if (itemStack == null || !(itemStack.getItem() instanceof IParticleContainerItem)) {
+					continue;
+				}
+				final IParticleContainerItem particleContainerItem = (IParticleContainerItem) itemStack.getItem();
+				if (particleContainerItem.isEmpty(itemStack)) {
+					continue;
+				}
+				transfer = particleContainerItem.fill(itemStack, particleStackLeft, true);
+				particleStackLeft.fill(-transfer);
+				if (particleStackLeft.isEmpty()) {
+					return null;
+				}
+			}
+			
+			// put remaining in empty containers
+			for (int i = 0; i < sizeInventory; i++) {
+				final ItemStack itemStack = InventoryWrapper.getStackInSlot(inventory, i);
+				if (itemStack == null || !(itemStack.getItem() instanceof IParticleContainerItem)) {
+					continue;
+				}
+				final IParticleContainerItem particleContainerItem = (IParticleContainerItem) itemStack.getItem();
+				if (!particleContainerItem.isEmpty(itemStack)) {
+					continue;
+				}
+				transfer = particleContainerItem.fill(itemStack, particleStackLeft, true);
+				particleStackLeft.fill(-transfer);
+				if (particleStackLeft.isEmpty()) {
+					return null;
+				}
+			}
+		}
+		
+		return particleStackLeft;
+	}
+	
+	private void rebootAccelerator(final AcceleratorSetup acceleratorSetup, final boolean isChunkLoading, final boolean isLeaking) {
+		if (world == null || world.isRemote) {
+			return;
+		}
+		
+		// WarpDrive.logger.info(this + " rebootAccelerator");
+		
+		registryUpdateTicks = 1;
+		updateChillers(acceleratorSetup, false, false, isChunkLoading);
+		legacy_isOn = false;
+		if (isLeaking) {
+			temperatureCurrent_K = ACCELERATOR_AMBIENT_TEMPERATURE_K;
+			sendEvent("acceleratorCoolingReset");
+		}
+	}
+	
+	@Override
+	public WarpDriveText getStatusHeader() {
+		return super.getStatusHeader(); // @TODO
+	}
+	
+	@Override
+	public void readFromNBT(final NBTTagCompound tagCompound) {
+		super.readFromNBT(tagCompound);
+		
+		isEnabled = tagCompound.getBoolean("isEnabled");
+		
+		uuid = new UUID(tagCompound.getLong("uuidMost"), tagCompound.getLong("uuidLeast"));
+		if (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0) {
+			uuid = UUID.randomUUID();
+		}
+		
+		final NBTTagList tagListParticleBunches = tagCompound.getTagList("particleBunches", Constants.NBT.TAG_COMPOUND);
+		setParticleBunches.clear();
+		for (int index = 0; index < tagListParticleBunches.tagCount(); index++) {
+			final ParticleBunch particleBunch = new ParticleBunch(tagListParticleBunches.getCompoundTagAt(index));
+			setParticleBunches.add(particleBunch);
+		}
+		
+		if (tagCompound.hasKey("temperatureCurrent")) {
+			temperatureCurrent_K = tagCompound.getDouble("temperatureCurrent");
+		}
+		
+		final NBTTagList tagListControlParameters = tagCompound.getTagList("controlParameters", Constants.NBT.TAG_COMPOUND);
+		mapControlParameters.clear();
+		for (int index = 0; index < tagListControlParameters.tagCount(); index++) {
+			final AcceleratorControlParameter acceleratorControlParameter = new AcceleratorControlParameter(tagListControlParameters.getCompoundTagAt(index));
+			mapControlParameters.put(acceleratorControlParameter.controlChannel, acceleratorControlParameter);
+		}
+		
+		injectionPeriodTicks = tagCompound.getInteger("injectionPeriod");
+		if (tagCompound.hasKey("injectionTicks")) {
+			injectionTicks = tagCompound.getInteger("injectionTicks");
+		}
+		if (tagCompound.hasKey("nextInjector")) {
+			indexNextInjector = tagCompound.getInteger("nextInjector");
+		}
+		if (tagCompound.hasKey("isOn")) {
+			legacy_isOn = tagCompound.getBoolean("isOn");
+		}
+	}
+	
+	@Nonnull
+	@Override
+	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+		super.writeToNBT(tagCompound);
+		
+		tagCompound.setBoolean("isEnabled", isEnabled);
+		
+		if (uuid != null) {
+			tagCompound.setLong("uuidMost", uuid.getMostSignificantBits());
+			tagCompound.setLong("uuidLeast", uuid.getLeastSignificantBits());
+		}
+		
+		final NBTTagList tagListParticleBunches = new NBTTagList();
+		for (final ParticleBunch particleBunch : setParticleBunches) {
+			final NBTTagCompound tagCompoundParticleBunch = new NBTTagCompound();
+			particleBunch.writeToNBT(tagCompoundParticleBunch);
+			tagListParticleBunches.appendTag(tagCompoundParticleBunch);
+		}
+		tagCompound.setTag("particleBunches", tagListParticleBunches);
+		
+		tagCompound.setDouble("temperatureCurrent", temperatureCurrent_K);
+		
+		final NBTTagList tagListControlParameters = new NBTTagList();
+		for (final AcceleratorControlParameter acceleratorControlParameter : mapControlParameters.values()) {
+			final NBTTagCompound tagCompoundControlParameter = new NBTTagCompound();
+			acceleratorControlParameter.writeToNBT(tagCompoundControlParameter);
+			tagListControlParameters.appendTag(tagCompoundControlParameter);
+		}
+		tagCompound.setTag("controlParameters", tagListControlParameters);
+		
+		tagCompound.setInteger("injectionPeriod", injectionPeriodTicks);
+		tagCompound.setInteger("injectionTicks", injectionTicks);
+		tagCompound.setInteger("nextInjector", indexNextInjector);
+		tagCompound.setBoolean("isOn", legacy_isOn);
+		
+		return tagCompound;
+	}
+	
+	@Override
+	public NBTTagCompound writeItemDropNBT(final NBTTagCompound tagCompound) {
+		super.writeItemDropNBT(tagCompound);
+		tagCompound.removeTag("temperatureCurrent");
+		tagCompound.removeTag("injectionTicks");
+		tagCompound.removeTag("nextInjector");
+		tagCompound.removeTag("isOn");
+		return tagCompound;
+	}
+	
+	@Nonnull
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		final NBTTagCompound tagCompound = new NBTTagCompound();
+		writeToNBT(tagCompound);
+		tagCompound.setBoolean("isPowered", isPowered);
+		return tagCompound;
+	}
+	
+	@Override
+	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
+		final NBTTagCompound tagCompound = packet.getNbtCompound();
+		readFromNBT(tagCompound);
+		isPowered = tagCompound.getBoolean("isPowered");
+	}
+	
+	@Override
+	public void validate() {
+		super.validate();
+		
+		if (world.isRemote) {
+			return;
+		}
+		
+		WarpDrive.starMap.updateInRegistry(this);
+	}
+	
+	@Override
+	public void invalidate() {
+		if (!world.isRemote) {
+			rebootAccelerator(cache_acceleratorSetup != null ? cache_acceleratorSetup : getAcceleratorSetup(), true, true);
+			WarpDrive.starMap.removeFromRegistry(this);
+		}
+		super.invalidate();
+	}
+	
+	public AcceleratorSetup getAcceleratorSetup() {
+		final AcceleratorSetup legacy_acceleratorSetup = cache_acceleratorSetup;
+		if ( isBlockUpdated
+		  || cache_acceleratorSetup == null
+		  || (!cache_acceleratorSetup.isValid() && cooldownTicks <= 0) ) {
+			cache_acceleratorSetup = new AcceleratorSetup(world.provider.getDimension(), pos);
+			if (!cache_acceleratorSetup.isValid()) {
+				cooldownTicks = ACCELERATOR_COOLDOWN_TICKS;
+			}
+		}
+		
+		// reset accelerator in case of major changes
+		if (isBlockUpdated) {
+			isBlockUpdated = false;
+			if (cache_acceleratorSetup.isMajorChange(legacy_acceleratorSetup)) {
+				if (WarpDriveConfig.LOGGING_ACCELERATOR) {
+					WarpDrive.logger.info(this + " rebooting due to major change...");
+				}
+				rebootAccelerator(legacy_acceleratorSetup != null ? legacy_acceleratorSetup : cache_acceleratorSetup, true, true);
+			}
+			sendEvent("acceleratorUpdated");
+		}
+		return cache_acceleratorSetup;
+	}
+	
+	@Override
+	public long energy_getEnergyStored() {
+		if (!hasWorld()) {
+			return 0;
+		}
+		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
+		return acceleratorSetup.energy_getEnergyStored();
+	}
+	
+	@Override
+	public long energy_getMaxStorage() {
+		if (!hasWorld()) {
+			return 0;
+		}
+		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
+		return acceleratorSetup.energy_getMaxStorage();
+	}
+	
+	// OpenComputer callback methods
+	@Callback
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] getControlPoints(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
+		return getControlPoints();
+	}
+	
+	@Callback
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] getControlPointsCount(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
+		return getControlPointsCount();
+	}
+	
+	@Callback
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] injectionPeriod(final Context context, final Arguments arguments) {
+		return injectionPeriod(OC_convertArgumentsAndLogCall(context, arguments));
+	}
+	
+	@Callback
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] getParameters(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
+		return getParameters();
+	}
+	
+	@Callback
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] getParametersControlChannels(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
+		return getParametersControlChannels();
+	}
+	
+	@Callback
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] parameter(final Context context, final Arguments arguments) {
+		return parameter(OC_convertArgumentsAndLogCall(context, arguments));
+	}
+	
+	@Callback
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] getControlPoint(final Context context, final Arguments arguments) {
+		return getControlPoint(OC_convertArgumentsAndLogCall(context, arguments));
+	}
+	
+	@Callback
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] state(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
+		return state();
+	}
+	
+	// Common OC/CC methods
+	@Override
+	public Object[] getEnergyRequired() {
+		final String units = energy_getDisplayUnits();
+		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
+		
+		final long energyCoolingCost_perTick = EnergyWrapper.convert(Math.round( acceleratorSetup.temperature_coolingEnergyCost_perTick
+		                                                                       + acceleratorSetup.particleEnergy_energyCost_perTick * 0.1D ), units);
+		
+		// Evaluate current state
+		final int tierTargetTemperature;
+		if (acceleratorSetup.temperatureTarget_K <= WarpDriveConfig.ACCELERATOR_TEMPERATURES_K[1]) {
+			tierTargetTemperature = 3;
+		} else if (acceleratorSetup.temperatureTarget_K <= WarpDriveConfig.ACCELERATOR_TEMPERATURES_K[0]) {
+			tierTargetTemperature = 2;
+		} else {
+			tierTargetTemperature = 1;
+		}
+		
+		final long energySustainCost_perTick = EnergyWrapper.convert(Math.round( acceleratorSetup.temperatures_sustainEnergyCost_perTick[tierTargetTemperature - 1]
+		                                                                       + acceleratorSetup.particleEnergy_energyCost_perTick
+		                                                                       * 0.1D ), units);
+		final long energySingleCost_perTick = EnergyWrapper.convert(Math.round( acceleratorSetup.temperatures_sustainEnergyCost_perTick[tierTargetTemperature - 1]
+		                                                                      + acceleratorSetup.particleEnergy_energyCost_perTick
+		                                                                      * 1.1D ), units);
+		final long energyMaxCost_perTick = EnergyWrapper.convert(Math.round( acceleratorSetup.temperatures_sustainEnergyCost_perTick[tierTargetTemperature - 1]
+		                                                                   + acceleratorSetup.particleEnergy_energyCost_perTick
+		                                                                   * (0.1D + WarpDriveConfig.ACCELERATOR_MAX_PARTICLE_BUNCHES) ), units);
+		
+		return new Object[] { energyCoolingCost_perTick, energySustainCost_perTick, energySingleCost_perTick, energyMaxCost_perTick };
+	}
+	
+	private Object[] getControlPoints() {
+		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
+		if (acceleratorSetup != null) {
+			return acceleratorSetup.getControlPoints(world);
+		}
+		return new Object[] { };
+	}
+	
+	private Object[] getControlPointsCount() {
+		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
+		if (acceleratorSetup != null) {
+			final Object[] controlPoints = acceleratorSetup.getControlPoints(world);
+			return new Integer[] { controlPoints.length };
+		}
+		return new Integer[] { -1 };
+	}
+	
+	@Nonnull
+	private Object[] getControlPoint(@Nonnull final Object[] arguments) {
+		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
+		if (acceleratorSetup == null) {
+			return new Object[] { false, "No accelerator setup" };
+		}
+		if (arguments.length != 1 || arguments[0] == null) {
+			return new Object[] { false, "Expecting 1 argument: Integer index" };
+		}
+		
+		final int index;
+		try {
+			index = Commons.toInt(arguments[0]);
+		} catch (final Exception exception) {
+			return new Object[] { false, "Integer expected for 1st argument" };
+		}
+		final Object[][] controlPoints = acceleratorSetup.getControlPoints(world);
+		if (index < 0 || index >= controlPoints.length) {
+			return new Object[] { false, "Index out of range" };
+		}
+		assert(controlPoints[index].length == 7);
+		return new Object[] { true,
+				controlPoints[index][0], controlPoints[index][1], controlPoints[index][2],
+				controlPoints[index][3], controlPoints[index][4], controlPoints[index][5], controlPoints[index][6] };
+	}
+	
+	private Object[] getParameters() {
+		final Object[] results = new Object[mapControlParameters.size()];
+		int index = 0;
+		for (final AcceleratorControlParameter acceleratorControlParameter : mapControlParameters.values()) {
+			results[index++] = new Object[] { acceleratorControlParameter.controlChannel, acceleratorControlParameter.isEnabled, acceleratorControlParameter.threshold, acceleratorControlParameter.description };
+		}
+		return results;
+	}
+	
+	@Nonnull
+	private Object[] getParametersControlChannels() {
+		return mapControlParameters.keySet().toArray();
+	}
+	
+	@Nonnull
+	private Object[] parameter(@Nonnull final Object[] arguments) {
+		if (arguments.length == 0 || arguments.length > 4) {
+			return new Object[] { false, "Expecting 1 to 4 arguments: Integer controlChannel, Boolean isEnabled, Double threshold, String description" };
+		}
+		
+		final int controlChannel;
+		try {
+			controlChannel = Commons.clamp(IControlChannel.CONTROL_CHANNEL_MIN, IControlChannel.CONTROL_CHANNEL_MAX, Commons.toInt(arguments[0]));
+		} catch(final Exception exception) {
+			return new Object[] { false, "Integer expected for 1st argument" };
+		}
+		AcceleratorControlParameter acceleratorControlParameter = mapControlParameters.get(controlChannel);
+		if (acceleratorControlParameter == null) {
+			acceleratorControlParameter = new AcceleratorControlParameter(controlChannel);
+		}
+		
+		if (arguments.length == 1) {// reading value
+			return new Object[] { true, controlChannel, acceleratorControlParameter.isEnabled, acceleratorControlParameter.threshold, acceleratorControlParameter.description };
+		}
+		
+		// isEnabled
+		if (arguments[1] != null) {
+			final boolean isEnabled_new;
+			try {
+				isEnabled_new = Commons.toBool(arguments[1]);
+			} catch (final Exception exception) {
+				return new Object[] { false, "Boolean expected for 2nd argument" };
+			}
+			acceleratorControlParameter.isEnabled = isEnabled_new;
+		}
+		
+		// threshold
+		if (arguments.length >= 3 && arguments[2] != null) {
+			final double threshold_new;
+			try {
+				threshold_new = Commons.clamp(0.0D, 2.0D, Commons.toDouble(arguments[2]));
+			} catch (final Exception exception) {
+				return new Object[] { false, "Double expected for 3rd argument" };
+			}
+			acceleratorControlParameter.threshold = threshold_new;
+		}
+		
+		// description
+		if (arguments.length >= 4 && arguments[3] != null) {
+			final String description_new;
+			try {
+				description_new = (String) arguments[3];
+			} catch (final Exception exception) {
+				return new Object[] { false, "String expected for 4th argument" };
+			}
+			acceleratorControlParameter.description = description_new;
+		}
+		
+		mapControlParameters.put(controlChannel, acceleratorControlParameter);
+		
+		return new Object[] { true, controlChannel, acceleratorControlParameter.isEnabled, acceleratorControlParameter.threshold, acceleratorControlParameter.description };
+	}
+	
+	@Nonnull
+	private Object[] injectionPeriod(@Nonnull final Object[] arguments) {
+		if (arguments.length == 1 && arguments[0] != null) {
+			final double injectionPeriod_new;
+			try {
+				injectionPeriod_new = Commons.toDouble(arguments[0]);
+			} catch (final Exception exception) {
+				return new Double[] { injectionPeriodTicks / 20.0D };
+			}
+			injectionPeriodTicks = Commons.clamp(1, 18000, (int) Math.round(injectionPeriod_new * 20.0D) );
+		}
+		return new Double[] { injectionPeriodTicks / 20.0D };
+	}
+	
+	private Object[] state() {
+		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
+		final String units = energy_getDisplayUnits();
+		final long energy = EnergyWrapper.convert(acceleratorSetup.energy_getEnergyStored(), units);
+		final String status = getStatusHeaderInPureText();
+		return new Object[] { status, isEnabled, isPowered, energy, temperatureCurrent_K, acceleratorSetup.temperatureTarget_K };
+	}
+	
+	// ComputerCraft IPeripheral methods implementation
+	@Override
+	@Optional.Method(modid = "computercraft")
+	protected Object[] CC_callMethod(@Nonnull final String methodName, @Nonnull final Object[] arguments) {
+		switch (methodName) {
+		case "enable":
+			return enable(arguments);
+		
+		case "getControlPoints":
+			return getControlPoints();
+		
+		case "getControlPointsCount":
+			return getControlPointsCount();
+		
+		case "getControlPoint":
+			return getControlPoint(arguments);
+		
+		case "getParameters":
+			return getParameters();
+		
+		case "getParametersControlChannels":
+			return getParametersControlChannels();
+		
+		case "parameter":
+			return parameter(arguments);
+		
+		case "injectionPeriod":
+			return injectionPeriod(arguments);
+		
+		case "state":
+			return state();
+		}
+		
+		return super.CC_callMethod(methodName, arguments);
 	}
 	
 	// IStarMapRegistryTileEntity overrides
@@ -26,12 +1140,25 @@ public class TileEntityAcceleratorController extends TileEntityAbstractEnergyCor
 	}
 	
 	@Override
+	public UUID getSignatureUUID() {
+		return uuid;
+	}
+	
+	@Override
 	public AxisAlignedBB getStarMapArea() {
-		return null;
+		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
+		if (acceleratorSetup == null) {
+			return null;
+		}
+		return acceleratorSetup.getBoundingBox();
 	}
 	
 	@Override
 	public int getMass() {
+		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
+		if (acceleratorSetup != null) {
+			return acceleratorSetup.getMass();
+		}
 		return 0;
 	}
 	
@@ -41,12 +1168,27 @@ public class TileEntityAcceleratorController extends TileEntityAbstractEnergyCor
 	}
 	
 	@Override
-	public void onBlockUpdatedInArea(final VectorI vector, final IBlockState blockState) {
-		
+	public String getSignatureName() {
+		return null;
 	}
 	
 	@Override
-	public Object[] getEnergyRequired() {
-		return new Object[0];
+	public void onBlockUpdatedInArea(final VectorI vector, final IBlockState blockState) {
+		// skip in case of explosion, etc.
+		if (isBlockUpdated) {
+			return;
+		}
+		
+		// check for significant change
+		// (we don't check the controller itself: it'll be triggered in invalidate() and we don't want to reevaluate the setup at that point)
+		if ( blockState.getBlock() instanceof BlockAbstractAccelerator
+		  || blockState.getBlock() instanceof BlockCapacitor ) {
+			isBlockUpdated = true;
+			return;
+		}
+		if (WarpDriveConfig.LOGGING_ACCELERATOR) {
+			WarpDrive.logger.info(String.format("onBlockUpdatedInArea block %s",
+			                                    blockState ));
+		}
 	}
 }
