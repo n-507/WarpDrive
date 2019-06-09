@@ -223,6 +223,20 @@ public class TooltipHandler {
 			try {
 				Commons.addTooltip(event.getToolTip(), String.format("§8Light opacity is %d",
 				                                                     block.getLightOpacity(blockState)));
+				if (WarpDrive.isDev) {
+					Commons.addTooltip(event.getToolTip(), String.format("§8isFullBlock is %s",
+					                                                     block.isFullBlock(blockState)));
+					Commons.addTooltip(event.getToolTip(), String.format("§8isFullCube is %s",
+					                                                     block.isFullCube(blockState)));
+					Commons.addTooltip(event.getToolTip(), String.format("§8isTopSolid is %s",
+					                                                     block.isTopSolid(blockState)));
+					Commons.addTooltip(event.getToolTip(), String.format("§8isBlockNormalCube is %s",
+					                                                     block.isBlockNormalCube(blockState)));
+					Commons.addTooltip(event.getToolTip(), String.format("§8isNormalCube is %s",
+					                                                     block.isNormalCube(blockState)));
+					Commons.addTooltip(event.getToolTip(), String.format("§8causesSuffocation is %s",
+					                                                     block.causesSuffocation(blockState)));
+				}
 			} catch (final Exception exception) {
 				// no operation
 			}
