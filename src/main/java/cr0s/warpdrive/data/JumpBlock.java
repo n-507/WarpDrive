@@ -339,6 +339,10 @@ public class JumpBlock {
 				  && nbtToDeploy.hasKey("id")
 				  && nbtToDeploy.getString("id").equals("savedMultipart") ) {
 					isForgeMultipart = true;
+					if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
+						WarpDrive.logger.info(String.format("%s deploy: TileEntity is ForgeMultipart",
+						                                    this ));
+					}
 					newTileEntity = (TileEntity) CompatForgeMultipart.methodMultipartHelper_createTileFromNBT.invoke(null, worldTarget, nbtToDeploy);
 				}
 				
