@@ -1,5 +1,6 @@
 package cr0s.warpdrive.block;
 
+import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.api.computer.IAbstractLaser;
 import cr0s.warpdrive.config.WarpDriveConfig;
@@ -14,6 +15,7 @@ import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
@@ -87,32 +89,39 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractEnergyBa
 			if (tileEntity instanceof TileEntityLaserMedium) {
 				// at least one found
 				final EnumTier enumTier = ((TileEntityLaserMedium) tileEntity).enumTier;
-				long energyStored = 0;
-				long maxStorage = 0;
-				int count = 0;
-				while ( (tileEntity instanceof TileEntityLaserMedium)
-				     && count <= laserMedium_maxCount) {
-					// check tier
-					if (enumTier != ((TileEntityLaserMedium) tileEntity).enumTier) {
-						break;
+				if (enumTier == null) {
+					WarpDrive.logger.error(String.format("Invalid NULL tier for %s, isFirstTick %s",
+					                                     tileEntity, ((TileEntityLaserMedium) tileEntity).isFirstTick() ));
+					WarpDrive.logger.error(String.format("NBT is %s",
+					                                     tileEntity.writeToNBT(new NBTTagCompound()) ));
+				} else {
+					long energyStored = 0;
+					long maxStorage = 0;
+					int count = 0;
+					while ((tileEntity instanceof TileEntityLaserMedium)
+					       && count <= laserMedium_maxCount) {
+						// check tier
+						if (enumTier != ((TileEntityLaserMedium) tileEntity).enumTier) {
+							break;
+						}
+						
+						// add current one
+						energyStored += ((TileEntityLaserMedium) tileEntity).energy_getEnergyStored();
+						maxStorage += ((TileEntityLaserMedium) tileEntity).energy_getMaxStorage();
+						count++;
+						
+						// check next one
+						tileEntity = world.getTileEntity(pos.offset(facing, count + 1));
 					}
 					
-					// add current one
-					energyStored += ((TileEntityLaserMedium) tileEntity).energy_getEnergyStored();
-					maxStorage += ((TileEntityLaserMedium) tileEntity).energy_getMaxStorage();
-					count++;
-					
-					// check next one
-					tileEntity = world.getTileEntity(pos.offset(facing, count + 1));
+					// save results
+					laserMedium_direction = facing;
+					cache_laserMedium_count = count;
+					cache_laserMedium_factor = Math.max(1.0D, count * WarpDriveConfig.LASER_MEDIUM_FACTOR_BY_TIER[enumTier.getIndex()]);
+					cache_laserMedium_energyStored = energyStored;
+					cache_laserMedium_maxStorage = maxStorage;
+					return;
 				}
-				
-				// save results
-				laserMedium_direction = facing;
-				cache_laserMedium_count = count;
-				cache_laserMedium_factor = Math.max(1.0D, count * WarpDriveConfig.LASER_MEDIUM_FACTOR_BY_TIER[enumTier.getIndex()]);
-				cache_laserMedium_energyStored = energyStored;
-				cache_laserMedium_maxStorage = maxStorage;
-				return;
 			}
 		}
 		
