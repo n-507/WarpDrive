@@ -1051,7 +1051,9 @@ public class JumpSequencer extends AbstractSequencer {
 				indexEffect--;
 				if (indexEffect <= 0) {
 					indexEffect = periodEffect;
-					doBlockEffect(jumpBlock, target);
+					if (target != null) {
+						doBlockEffect(jumpBlock, target);
+					}
 				}
 			}
 			actualIndexInShip++;
