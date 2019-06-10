@@ -89,6 +89,7 @@ public class TileEntityShipController extends TileEntityAbstractShipController {
 		// validate existing link
 		TileEntityShipCore tileEntityShipCore = tileEntityShipCoreWeakReference != null ? tileEntityShipCoreWeakReference.get() : null; 
 		if ( tileEntityShipCore == null
+		  || tileEntityShipCore.isInvalid()
 		  || !tileEntityShipCore.getSignatureUUID().equals(uuid) ) {
 			tileEntityShipCore = null;
 			tileEntityShipCoreWeakReference = null;
