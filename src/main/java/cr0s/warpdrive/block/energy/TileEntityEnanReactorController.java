@@ -11,8 +11,6 @@ import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 
-import net.minecraft.tileentity.TileEntity;
-
 import net.minecraftforge.fml.common.Optional;
 
 public class TileEntityEnanReactorController extends TileEntityAbstractEnergyCoreOrController implements IEnanReactorController {
@@ -39,31 +37,10 @@ public class TileEntityEnanReactorController extends TileEntityAbstractEnergyCor
 		});
 		CC_scripts = Collections.singletonList("startup");
 	}
- 
-	private TileEntityEnanReactorCore findCoreBlock() {
-		TileEntity tileEntity;
-		
-		tileEntity = world.getTileEntity(pos.add(1, 0, 0));
-		if (tileEntity instanceof TileEntityEnanReactorCore) {
-			return (TileEntityEnanReactorCore) tileEntity;
-		}
-		
-		tileEntity = world.getTileEntity(pos.add(-1, 0, 0));
-		if (tileEntity instanceof TileEntityEnanReactorCore) {
-			return (TileEntityEnanReactorCore) tileEntity;
-		}
-		
-		tileEntity = world.getTileEntity(pos.add(0, 0, 1));
-		if (tileEntity instanceof TileEntityEnanReactorCore) {
-			return (TileEntityEnanReactorCore) tileEntity;
-		}
-		
-		tileEntity = world.getTileEntity(pos.add(0, 0, -1));
-		if (tileEntity instanceof TileEntityEnanReactorCore) {
-			return (TileEntityEnanReactorCore) tileEntity;
-		}
-		
-		return null;
+	
+	@Override
+	protected void doUpdateParameters(final boolean isDirty) {
+		// no operation
 	}
 	
 	// Common OC/CC methods
@@ -82,12 +59,12 @@ public class TileEntityEnanReactorController extends TileEntityAbstractEnergyCor
 	}
 	
 	@Override
-	public Object[] isAssemblyValid() {
+	public Object[] getAssemblyStatus() {
 		final TileEntityEnanReactorCore tileEntityEnanReactorCore = tileEntityEnanReactorCoreWeakReference == null ? null : tileEntityEnanReactorCoreWeakReference.get();
 		if (tileEntityEnanReactorCore == null) {
 			return new Object[] { false, "No core detected" };
 		}
-		return tileEntityEnanReactorCore.isAssemblyValid();
+		return tileEntityEnanReactorCore.getAssemblyStatus();
 	}
 	
 	@Override

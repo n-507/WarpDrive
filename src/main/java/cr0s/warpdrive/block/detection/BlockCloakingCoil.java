@@ -33,6 +33,7 @@ public class BlockCloakingCoil extends BlockAbstractBase {
 		setTranslationKey("warpdrive.detection.cloaking_coil");
 		
 		setDefaultState(getDefaultState()
+				                .withProperty(BlockProperties.CONNECTED, false)
 				                .withProperty(BlockProperties.ACTIVE, false)
 				                .withProperty(OUTER, false)
 				                .withProperty(BlockProperties.FACING, EnumFacing.DOWN)
@@ -42,37 +43,48 @@ public class BlockCloakingCoil extends BlockAbstractBase {
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, BlockProperties.ACTIVE, OUTER, BlockProperties.FACING);
+		return new BlockStateContainer(this, BlockProperties.CONNECTED, BlockProperties.ACTIVE, OUTER, BlockProperties.FACING);
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(final int metadata) {
-		// 15 = not used
-		// 9-14 = active, outer facing
-		// 8 = active, inner
-		// 7 = not used
-		// 1-6 = outer facing
-		// 0 = inner
+		// 10-15 = connected, active, outer (facing)
+		//     9 = connected, active, inner, down
+		//     8 = not used (disconnected, active, down)
+		//   2-7 = connected, outer, (facing)
+		//     1 = connected, inner, down
+		//     0 = idle (disconnected, inactive, down)
 		final boolean isActive = (metadata & 0x8) != 0;
-		final boolean isOuter = (metadata & 0x7) > 0;
+		final boolean isConnected = (metadata & 0x7) > 0;
+		final boolean isOuter = (metadata & 0x7) > 1;
 		return getDefaultState()
-				.withProperty(BlockProperties.ACTIVE, isActive)
-				.withProperty(OUTER, isOuter)
-				.withProperty(BlockProperties.FACING, isOuter ? EnumFacing.byIndex((metadata & 0x7) - 1) : EnumFacing.DOWN);
+				       .withProperty(BlockProperties.CONNECTED, isConnected)
+				       .withProperty(BlockProperties.ACTIVE, isActive)
+				       .withProperty(OUTER, isOuter)
+				       .withProperty(BlockProperties.FACING, isOuter ? EnumFacing.byIndex((metadata & 0x7) - 2) : EnumFacing.DOWN);
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public int getMetaFromState(@Nonnull final IBlockState blockState) {
-		return (blockState.getValue(BlockProperties.ACTIVE) ? 8 : 0)
-		     + (blockState.getValue(OUTER) ? 1 + blockState.getValue(BlockProperties.FACING).ordinal() : 0);
+		if (blockState.getValue(BlockProperties.CONNECTED)) {
+			return (blockState.getValue(BlockProperties.ACTIVE) ? 8 : 0)
+			       + (blockState.getValue(OUTER) ? 2 + blockState.getValue(BlockProperties.FACING).ordinal() : 1);
+		} else if ( !blockState.getValue(OUTER)
+		         && blockState.getValue(BlockProperties.FACING) == EnumFacing.DOWN ) {
+			return 0;
+		} else {
+			return 8;
+		}
 	}
 	
-	public static void setBlockState(@Nonnull final World world, @Nonnull final BlockPos blockPos, final boolean isActive, final boolean isOuter, final EnumFacing enumFacing) {
+	public static void setBlockState(@Nonnull final World world, @Nonnull final BlockPos blockPos,
+	                                 final boolean isConnected, final boolean isActive, final boolean isOuter, final EnumFacing enumFacing) {
 		final IBlockState blockStateActual = world.getBlockState(blockPos);
-		IBlockState blockStateNew = blockStateActual.withProperty(BlockProperties.ACTIVE, isActive).withProperty(OUTER, isOuter);
+		IBlockState blockStateNew = blockStateActual.withProperty(BlockProperties.CONNECTED, isConnected)
+		                                            .withProperty(BlockProperties.ACTIVE, isActive)
+		                                            .withProperty(OUTER, isOuter);
 		if (enumFacing != null) {
 			blockStateNew = blockStateNew.withProperty(BlockProperties.FACING, enumFacing);
 		}

@@ -447,7 +447,7 @@ public class StarMapRegistry {
 	public TileEntityShipCore getIntersectingShipCore(@Nonnull final TileEntityShipCore shipCore1) {
 		cleanup();
 		
-		if (!shipCore1.isValid()) {
+		if (!shipCore1.isAssemblyValid()) {
 			WarpDrive.logger.error(String.format("isShipCoreIntersectingWithOthers() with invalid ship %s, assuming intersection",
 			                                     shipCore1));
 			return null;
@@ -487,7 +487,7 @@ public class StarMapRegistry {
 			final TileEntityShipCore shipCore2 = (TileEntityShipCore) tileEntity;
 			
 			// Skip invalid ships
-			if (!shipCore2.isValid()) {
+			if (!shipCore2.isAssemblyValid()) {
 				continue;
 			}
 			

@@ -2,7 +2,9 @@
 	"forge_marker": 1,
 	"variants": {
 		"normal": [{}],
-		"inventory": [{ "model": "minecraft:cube", "textures": {
+		"inventory": [{
+			"model": "minecraft:cube",
+			"textures": {
 				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
@@ -12,127 +14,202 @@
 				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active"
 			} }],
 		
-		"active=false,facing=down,outer=false": { "model": "minecraft:cube", "textures": {
-				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"north"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"south"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+		"active=false,connected=false,facing=down,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
-		"active=false,facing=up,outer=false": { "model": "minecraft:cube", "textures": {
-				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"north"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"south"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+		"active=false,connected=false,facing=up,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
-		"active=false,facing=north,outer=false": { "model": "minecraft:cube", "textures": {
-				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"north"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"south"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+		"active=false,connected=false,facing=north,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
-		"active=false,facing=south,outer=false": { "model": "minecraft:cube", "textures": {
-				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"north"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"south"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+		"active=false,connected=false,facing=south,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
-		"active=false,facing=west,outer=false": { "model": "minecraft:cube", "textures": {
-				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"north"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"south"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+		"active=false,connected=false,facing=west,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
-		"active=false,facing=east,outer=false": { "model": "minecraft:cube", "textures": {
-				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"north"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"south"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+		"active=false,connected=false,facing=east,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
 		
-		"active=true,facing=down,outer=false": { "model": "minecraft:cube", "textures": {
-				"particle": "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"down"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"up"      : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"north"   : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"south"   : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"west"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"east"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active"
+		"active=true,connected=false,facing=down,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
-		"active=true,facing=up,outer=false": { "model": "minecraft:cube", "textures": {
-				"particle": "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"down"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"up"      : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"north"   : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"south"   : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"west"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"east"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active"
+		"active=true,connected=false,facing=up,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
-		"active=true,facing=north,outer=false": { "model": "minecraft:cube", "textures": {
-				"particle": "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"down"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"up"      : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"north"   : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"south"   : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"west"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"east"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active"
+		"active=true,connected=false,facing=north,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
-		"active=true,facing=south,outer=false": { "model": "minecraft:cube", "textures": {
-				"particle": "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"down"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"up"      : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"north"   : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"south"   : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"west"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"east"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active"
+		"active=true,connected=false,facing=south,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
-		"active=true,facing=west,outer=false": { "model": "minecraft:cube", "textures": {
-				"particle": "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"down"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"up"      : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"north"   : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"south"   : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"west"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"east"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active"
+		"active=true,connected=false,facing=west,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
-		"active=true,facing=east,outer=false": { "model": "minecraft:cube", "textures": {
-				"particle": "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"down"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"up"      : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"north"   : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"south"   : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"west"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
-				"east"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active"
+		"active=true,connected=false,facing=east,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
 		
 		
-		"active=false,facing=down,outer=true": { "model": "minecraft:cube", "textures": {
-				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"down"    : "warpdrive:blocks/detection/cloaking_coil-channeling_inactive",
-				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"north"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"south"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+		"active=false,connected=false,facing=down,outer=true": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
-		"active=false,facing=up,outer=true": { "model": "minecraft:cube", "textures": {
+		"active=false,connected=false,facing=up,outer=true": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+			} },
+		"active=false,connected=false,facing=north,outer=true": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+			} },
+		"active=false,connected=false,facing=south,outer=true": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+			} },
+		"active=false,connected=false,facing=west,outer=true": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+			} },
+		"active=false,connected=false,facing=east,outer=true": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+			} },
+		
+		"active=true,connected=false,facing=down,outer=true": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+			} },
+		"active=true,connected=false,facing=up,outer=true": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+			} },
+		"active=true,connected=false,facing=north,outer=true": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+			} },
+		"active=true,connected=false,facing=south,outer=true": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+			} },
+		"active=true,connected=false,facing=west,outer=true": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+			} },
+		"active=true,connected=false,facing=east,outer=true": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+			} },
+
+
+
+
+
+
+		"active=false,connected=true,facing=down,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-channeling_inactive"
+			} },
+		"active=false,connected=true,facing=up,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-channeling_inactive"
+			} },
+		"active=false,connected=true,facing=north,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-channeling_inactive"
+			} },
+		"active=false,connected=true,facing=south,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-channeling_inactive"
+			} },
+		"active=false,connected=true,facing=west,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-channeling_inactive"
+			} },
+		"active=false,connected=true,facing=east,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-channeling_inactive"
+			} },
+
+		"active=true,connected=true,facing=down,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-channeling_active"
+			} },
+		"active=true,connected=true,facing=up,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-channeling_active"
+			} },
+		"active=true,connected=true,facing=north,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-channeling_active"
+			} },
+		"active=true,connected=true,facing=south,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-channeling_active"
+			} },
+		"active=true,connected=true,facing=west,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-channeling_active"
+			} },
+		"active=true,connected=true,facing=east,outer=false": {
+			"model": "minecraft:cube_all",
+			"textures": {
+				"all": "warpdrive:blocks/detection/cloaking_coil-channeling_active"
+			} },
+
+
+		"active=false,connected=true,facing=down,outer=true": {
+			"model": "minecraft:cube",
+			"textures": {
 				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
 				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
 				"up"      : "warpdrive:blocks/detection/cloaking_coil-channeling_inactive",
@@ -141,16 +218,20 @@
 				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
 				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
-		"active=false,facing=north,outer=true": { "model": "minecraft:cube", "textures": {
+		"active=false,connected=true,facing=up,outer=true": {
+			"model": "minecraft:cube",
+			"textures": {
 				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
+				"down"    : "warpdrive:blocks/detection/cloaking_coil-channeling_inactive",
 				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"north"   : "warpdrive:blocks/detection/cloaking_coil-channeling_inactive",
+				"north"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
 				"south"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
 				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
 				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
-		"active=false,facing=south,outer=true": { "model": "minecraft:cube", "textures": {
+		"active=false,connected=true,facing=north,outer=true": {
+			"model": "minecraft:cube",
+			"textures": {
 				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
 				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
 				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
@@ -159,16 +240,20 @@
 				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
 				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
-		"active=false,facing=west,outer=true": { "model": "minecraft:cube", "textures": {
+		"active=false,connected=true,facing=south,outer=true": {
+			"model": "minecraft:cube",
+			"textures": {
 				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
 				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
 				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"north"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
+				"north"   : "warpdrive:blocks/detection/cloaking_coil-channeling_inactive",
 				"south"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
-				"west"    : "warpdrive:blocks/detection/cloaking_coil-channeling_inactive",
+				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
 				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
 			} },
-		"active=false,facing=east,outer=true": { "model": "minecraft:cube", "textures": {
+		"active=false,connected=true,facing=west,outer=true": {
+			"model": "minecraft:cube",
+			"textures": {
 				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
 				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
 				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
@@ -177,8 +262,21 @@
 				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
 				"east"    : "warpdrive:blocks/detection/cloaking_coil-channeling_inactive"
 			} },
-		
-		"active=true,facing=down,outer=true": { "model": "minecraft:cube", "textures": {
+		"active=false,connected=true,facing=east,outer=true": {
+			"model": "minecraft:cube",
+			"textures": {
+				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
+				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
+				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
+				"north"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
+				"south"   : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive",
+				"west"    : "warpdrive:blocks/detection/cloaking_coil-channeling_inactive",
+				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_inactive"
+			} },
+
+		"active=true,connected=true,facing=down,outer=true": {
+			"model": "minecraft:cube",
+			"textures": {
 				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"up"      : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
@@ -187,7 +285,9 @@
 				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active"
 			} },
-		"active=true,facing=up,outer=true": { "model": "minecraft:cube", "textures": {
+		"active=true,connected=true,facing=up,outer=true": {
+			"model": "minecraft:cube",
+			"textures": {
 				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"down"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active",
 				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
@@ -196,7 +296,9 @@
 				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active"
 			} },
-		"active=true,facing=north,outer=true": { "model": "minecraft:cube", "textures": {
+		"active=true,connected=true,facing=north,outer=true": {
+			"model": "minecraft:cube",
+			"textures": {
 				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
@@ -205,7 +307,9 @@
 				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active"
 			} },
-		"active=true,facing=south,outer=true": { "model": "minecraft:cube", "textures": {
+		"active=true,connected=true,facing=south,outer=true": {
+			"model": "minecraft:cube",
+			"textures": {
 				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
@@ -214,7 +318,9 @@
 				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"east"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active"
 			} },
-		"active=true,facing=west,outer=true": { "model": "minecraft:cube", "textures": {
+		"active=true,connected=true,facing=west,outer=true": {
+			"model": "minecraft:cube",
+			"textures": {
 				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
@@ -223,7 +329,9 @@
 				"west"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"east"    : "warpdrive:blocks/detection/cloaking_coil-channeling_active"
 			} },
-		"active=true,facing=east,outer=true": { "model": "minecraft:cube", "textures": {
+		"active=true,connected=true,facing=east,outer=true": {
+			"model": "minecraft:cube",
+			"textures": {
 				"particle": "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"down"    : "warpdrive:blocks/detection/cloaking_coil-projecting_active",
 				"up"      : "warpdrive:blocks/detection/cloaking_coil-projecting_active",

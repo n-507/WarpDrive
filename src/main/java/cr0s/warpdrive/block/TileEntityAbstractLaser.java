@@ -1,5 +1,6 @@
 package cr0s.warpdrive.block;
 
+import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.api.computer.IAbstractLaser;
@@ -35,11 +36,6 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractEnergyBa
 	protected long cache_laserMedium_energyStored = 0L;
 	protected long cache_laserMedium_maxStorage = 0L;
 	
-	private final int updateInterval_slow_ticks = 20 * WarpDriveConfig.SHIP_CONTROLLER_UPDATE_INTERVAL_SECONDS;
-	protected int updateInterval_ticks = updateInterval_slow_ticks;
-	private int updateTicks = updateInterval_ticks;
-	private int bootTicks = 20;
-	
 	public TileEntityAbstractLaser() {
 		super();
 		
@@ -52,35 +48,9 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractEnergyBa
 	}
 	
 	@Override
-	protected void onFirstUpdateTick() {
-		super.onFirstUpdateTick();
-		updateLaserMediumDirection();
-	}
-	
-	@Override
-	public void update() {
-		super.update();
+	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
+		final boolean isValid = super.doScanAssembly(isDirty, textReason);
 		
-		if (world.isRemote) {
-			return;
-		}
-		
-		// accelerate update ticks during boot
-		if (bootTicks > 0) {
-			bootTicks--;
-			if (laserMedium_direction == null) {
-				updateTicks = 1;
-			}
-		}
-		updateTicks--;
-		if (updateTicks <= 0) {
-			updateTicks = updateInterval_ticks;
-			
-			updateLaserMediumDirection();
-		}
-	}
-	
-	private void updateLaserMediumDirection() {
 		assert laserMedium_maxCount != 0;
 		
 		for (final EnumFacing facing : laserMedium_directionsValid) {
@@ -120,7 +90,7 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractEnergyBa
 					cache_laserMedium_factor = Math.max(1.0D, count * WarpDriveConfig.LASER_MEDIUM_FACTOR_BY_TIER[enumTier.getIndex()]);
 					cache_laserMedium_energyStored = energyStored;
 					cache_laserMedium_maxStorage = maxStorage;
-					return;
+					return isValid;
 				}
 			}
 		}
@@ -131,6 +101,9 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractEnergyBa
 		cache_laserMedium_factor = 0.0D;
 		cache_laserMedium_energyStored = 0;
 		cache_laserMedium_maxStorage = 0;
+		textReason.append(Commons.styleWarning, "warpdrive.laser.status_line.missing_laser_medium",
+		                  Commons.format(laserMedium_directionsValid) );
+		return false;
 	}
 	
 	public int laserMedium_getEnergyStored(final boolean isCached) {
@@ -241,14 +214,6 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractEnergyBa
 	@Override
 	public Object[] laserMediumCount() {
 		return new Object[] { cache_laserMedium_count };
-	}
-	
-	@Override
-	public Object[] isAssemblyValid() {
-		if (laserMedium_direction == null) {
-			return new Object[] { false, "No laser medium detected" };
-		}
-		return super.isAssemblyValid();
 	}
 	
 	@Override

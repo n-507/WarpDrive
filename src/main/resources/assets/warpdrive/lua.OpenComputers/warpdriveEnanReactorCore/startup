@@ -153,7 +153,7 @@ function reactor_page()
           energyStored = -1
         end
         local energy_k = math.floor(energyStored / 100) / 10.0
-        if not reactorlaser.wrap.isAssemblyValid() then
+        if not reactorlaser.wrap.getAssemblyStatus() then
           w.setColorDisabled()
         elseif energyStored > 3 * reactor_laserAmount then
           w.setColorSuccess()
@@ -293,7 +293,7 @@ function reactor_pulse(output)
             energyStored = -1
           end
           local energy_k = math.floor(energyStored / 100) / 10.0
-          if not reactorlaser.wrap.isAssemblyValid() then
+          if not reactorlaser.wrap.getAssemblyStatus() then
             w.setColorDisabled()
           elseif energyStored > 3 * reactor_laserAmount then
             w.setColorSuccess()

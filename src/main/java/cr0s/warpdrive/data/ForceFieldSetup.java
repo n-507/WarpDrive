@@ -172,7 +172,7 @@ public class ForceFieldSetup extends GlobalPosition {
 				} else {
 					if ( ((TileEntityForceFieldProjector) tileEntity).getIsEnabled()
 					  && ((TileEntityForceFieldProjector) tileEntity).isCalculated()
-					  && ((TileEntityForceFieldProjector) tileEntity).isValid() ) {
+					  && ((TileEntityForceFieldProjector) tileEntity).isAssemblyValid() ) {
 						projectors.add((TileEntityForceFieldProjector) tileEntity);
 					}
 				}

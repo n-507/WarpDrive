@@ -59,7 +59,7 @@ function ship_boot()
   local timeout = 10
   local isValid, message
   repeat
-    isValid, message = ship.isAssemblyValid()
+    isValid, message = ship.getAssemblyStatus()
     w.sleep(0.05)
     timeout = timeout - 1
   until isValid == true or timeout < 0
@@ -412,7 +412,7 @@ function ship_page_controls()
   if ship == nil or ship.isInterfaced() == nil then
     w.status_showWarning("No ship controller detected")
   else
-    local isValid, message = ship.isAssemblyValid()
+    local isValid, message = ship.getAssemblyStatus()
     if isValid ~= true then
       w.status_showWarning(message)
     else
@@ -542,7 +542,7 @@ function ship_page_crew()
   if ship == nil or ship.isInterfaced() == nil then
     w.status_showWarning("No ship controller detected")
   else
-    local isValid, message = ship.isAssemblyValid()
+    local isValid, message = ship.getAssemblyStatus()
     if isValid ~= true then
       w.status_showWarning(message)
     else
@@ -590,7 +590,7 @@ function ship_page_navigation()
   if ship == nil or ship.isInterfaced() == nil then
     w.status_showWarning("No ship controller detected")
   else
-    local isValid, message = ship.isAssemblyValid()
+    local isValid, message = ship.getAssemblyStatus()
     if isValid ~= true then
       w.status_showWarning(message)
     else

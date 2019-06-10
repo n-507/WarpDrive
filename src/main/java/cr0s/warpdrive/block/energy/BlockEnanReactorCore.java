@@ -1,7 +1,6 @@
 package cr0s.warpdrive.block.energy;
 
 import cr0s.warpdrive.block.BlockAbstractContainer;
-import cr0s.warpdrive.data.ReactorFace;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.render.TileEntityEnanReactorCoreRenderer;
 
@@ -10,7 +9,6 @@ import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -69,24 +67,6 @@ public class BlockEnanReactorCore extends BlockAbstractContainer {
 		if (enumTier != EnumTier.BASIC) {
 			// Bind our TESR to our tile entity
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnanReactorCore.class, new TileEntityEnanReactorCoreRenderer());
-		}
-	}
-	
-	@Override
-	public void breakBlock(final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
-		super.breakBlock(world, blockPos, blockState);
-		
-		for (final ReactorFace reactorFace : ReactorFace.getLasers(enumTier)) {
-			if (reactorFace.indexStability < 0) {
-				continue;
-			}
-			
-			final TileEntity tileEntity = world.getTileEntity(blockPos.add(reactorFace.x, reactorFace.y, reactorFace.z));
-			if (tileEntity instanceof TileEntityEnanReactorLaser) {
-				if (((TileEntityEnanReactorLaser) tileEntity).getReactorFace() == reactorFace) {
-					((TileEntityEnanReactorLaser) tileEntity).setReactorFace(ReactorFace.UNKNOWN, null);
-				}
-			}
 		}
 	}
 }

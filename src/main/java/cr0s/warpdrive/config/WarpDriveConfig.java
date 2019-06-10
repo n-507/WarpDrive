@@ -170,9 +170,14 @@ public class WarpDriveConfig {
 	public static final int            LUA_SCRIPTS_ALL = 2;
 	public static int                  G_LUA_SCRIPTS = LUA_SCRIPTS_ALL;
 	public static String               G_SCHEMATICS_LOCATION = "warpDrive_schematics";
+	
+	private static int                 G_ASSEMBLY_SCAN_INTERVAL_SECONDS = 10;
+	public static int                  G_ASSEMBLY_SCAN_INTERVAL_TICKS = 20 * WarpDriveConfig.G_ASSEMBLY_SCAN_INTERVAL_SECONDS;
+	public static int                  G_PARAMETERS_UPDATE_INTERVAL_TICKS = 20;
 	public static int                  G_BLOCKS_PER_TICK = 3500;
 	public static boolean              G_ENABLE_FAST_SET_BLOCKSTATE = false;
 	public static boolean              G_ENABLE_PROTECTION_CHECKS = true;
+	
 	public static float                G_BLAST_RESISTANCE_CAP = 60.0F;
 	
 	// Client
@@ -253,7 +258,8 @@ public class WarpDriveConfig {
 	public static int              ENERGY_SCAN_INTERVAL_TICKS = 20;
 	
 	// Starmap
-	public static int              STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS = 10;
+	private static int             STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS = 10;
+	public static int              STARMAP_REGISTRY_UPDATE_INTERVAL_TICKS = 20 * WarpDriveConfig.STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS;
 	public static boolean          STARMAP_ALLOW_OVERLAPPING_CELESTIAL_OBJECTS = false;
 	
 	// Space generator
@@ -274,8 +280,6 @@ public class WarpDriveConfig {
 	public static int[]            SHIP_SIZE_MAX_PER_SIDE_BY_TIER = { 127, 24, 48, 96 };
 	public static int              SHIP_COLLISION_TOLERANCE_BLOCKS = 3;
 	public static int              SHIP_WARMUP_RANDOM_TICKS = 60;
-	public static int              SHIP_CONTROLLER_UPDATE_INTERVAL_SECONDS = 2;
-	public static int              SHIP_CORE_ISOLATION_UPDATE_INTERVAL_SECONDS = 10;
 	public static int              SHIP_VOLUME_SCAN_BLOCKS_PER_TICK = 1000;
 	public static int              SHIP_VOLUME_SCAN_AGE_TOLERANCE_SECONDS = 120;
 	public static String[]         SHIP_MASS_UNLIMITED_PLAYER_NAMES = { "notch", "someone" };
@@ -762,6 +766,12 @@ public class WarpDriveConfig {
 				config.get("general", "lua_scripts", G_LUA_SCRIPTS,
 						"LUA scripts to load when connecting machines: 0 = none, 1 = templates in a subfolder, 2 = ready to roll (templates are still provided)").getInt());
 		G_SCHEMATICS_LOCATION = config.get("general", "schematics_location", G_SCHEMATICS_LOCATION, "Root folder where to load and save ship schematics").getString();
+		
+		G_ASSEMBLY_SCAN_INTERVAL_SECONDS = Commons.clamp(0, 300,
+		                                                 config.get("general", "assembly_scanning_interval", G_ASSEMBLY_SCAN_INTERVAL_SECONDS, "(measured in seconds)").getInt());
+		G_ASSEMBLY_SCAN_INTERVAL_TICKS = 20 * WarpDriveConfig.G_ASSEMBLY_SCAN_INTERVAL_SECONDS;
+		G_PARAMETERS_UPDATE_INTERVAL_TICKS = Commons.clamp(0, 300,
+		                                                   config.get("general", "parameters_update_interval", G_PARAMETERS_UPDATE_INTERVAL_TICKS, "(measured in ticks)").getInt());
 		G_BLOCKS_PER_TICK = Commons.clamp(100, 100000,
 				config.get("general", "blocks_per_tick", G_BLOCKS_PER_TICK,
 						"Number of blocks to move per ticks, too high will cause lag spikes on ship jumping or deployment, too low may break the ship wirings").getInt());
@@ -769,6 +779,7 @@ public class WarpDriveConfig {
 		                                          "Enable fast blockstate placement, skipping light computation. Disable if you have world implementations conflicts").getBoolean(G_ENABLE_FAST_SET_BLOCKSTATE);
 		G_ENABLE_PROTECTION_CHECKS = config.get("general", "enable_protection_checks", G_ENABLE_PROTECTION_CHECKS,
 		                                        "Enable area protection checks from other mods or plugins, disable if you use the event system exclusively").getBoolean(G_ENABLE_PROTECTION_CHECKS);
+		
 		G_BLAST_RESISTANCE_CAP = Commons.clamp(10.0F, 6000.0F,
 				(float) config.get("general", "blast_resistance_cap", G_BLAST_RESISTANCE_CAP,
 				           "Maximum allowed blast resistance for non-hull, breakable blocks from other mods. Required to fix non-sense scaling in modded fluids, etc. Default is basic hull resistance (60).").getDouble(G_BLAST_RESISTANCE_CAP));
@@ -900,6 +911,7 @@ public class WarpDriveConfig {
 		// Starmap registry
 		STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS = Commons.clamp(0, 300,
 			config.get("starmap", "registry_update_interval", STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS, "(measured in seconds)").getInt());
+		STARMAP_REGISTRY_UPDATE_INTERVAL_TICKS = 20 * WarpDriveConfig.STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS;
 		STARMAP_ALLOW_OVERLAPPING_CELESTIAL_OBJECTS = 
 			config.get("starmap", "allow_overlapping_celestial_objects", STARMAP_ALLOW_OVERLAPPING_CELESTIAL_OBJECTS, "Enable to bypass the check at boot. Use at your own risk!").getBoolean();
 		
@@ -947,14 +959,10 @@ public class WarpDriveConfig {
 		SHIP_WARMUP_RANDOM_TICKS = Commons.clamp(10, 200,
 				config.get("ship", "warmup_random_ticks", SHIP_WARMUP_RANDOM_TICKS, "Random variation added to warm-up (measured in ticks)").getInt());
 		
-		SHIP_CORE_ISOLATION_UPDATE_INTERVAL_SECONDS = Commons.clamp(0, 300,
-				config.get("ship", "core_isolation_update_interval", SHIP_CORE_ISOLATION_UPDATE_INTERVAL_SECONDS, "(measured in seconds)").getInt());
 		SHIP_VOLUME_SCAN_BLOCKS_PER_TICK = Commons.clamp(100, 100000,
 		        config.get("ship", "volume_scan_blocks_per_tick", SHIP_VOLUME_SCAN_BLOCKS_PER_TICK, "Number of blocks to scan per tick when getting ship bounds, too high will cause lag spikes when resizing a ship").getInt());
 		SHIP_VOLUME_SCAN_AGE_TOLERANCE_SECONDS = Commons.clamp(0, 300,
                 config.get("ship", "volume_scan_age_tolerance", SHIP_VOLUME_SCAN_AGE_TOLERANCE_SECONDS, "Ship volume won't be refreshed unless it's older than that many seconds").getInt());
-		SHIP_CONTROLLER_UPDATE_INTERVAL_SECONDS = Commons.clamp(0, 300,
-				config.get("ship", "controller_update_interval", SHIP_CONTROLLER_UPDATE_INTERVAL_SECONDS, "(measured in seconds)").getInt());
 		
 		// Jump gate
 		JUMP_GATE_SIZE_MAX_PER_SIDE_BY_TIER =

@@ -2,6 +2,7 @@ package cr0s.warpdrive.block.energy;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumTier;
@@ -24,14 +25,14 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.world.World;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
-	
-	private static final int ENAN_REACTOR_SETUP_TICKS = 1200;
 	
 	// generation & instability is 'per tick'
 	private static final double INSTABILITY_MIN = 0.004D;
@@ -68,7 +69,6 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	private int generation_range;
 	
 	private int updateTicks = 0;
-	private int setupTicks = 0;
 	
 	private float lasersReceived = 0;
 	private int lastGenerationRate = 0;
@@ -217,16 +217,10 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		}
 		
 		if (WarpDriveConfig.LOGGING_ENERGY) {
-			WarpDrive.logger.info(String.format("updateTicks %d setupTicks %d releasedThisTick %6d lasersReceived %.5f releasedThisCycle %6d containedEnergy %8d",
-			                                    updateTicks, setupTicks, releasedThisTick, lasersReceived, releasedThisCycle, containedEnergy));
+			WarpDrive.logger.info(String.format("updateTicks %d releasedThisTick %6d lasersReceived %.5f releasedThisCycle %6d containedEnergy %8d",
+			                                    updateTicks, releasedThisTick, lasersReceived, releasedThisCycle, containedEnergy));
 		}
 		releasedThisTick = 0;
-		
-		setupTicks--;
-		if (setupTicks <= 0) {
-			setupTicks = ENAN_REACTOR_SETUP_TICKS;
-			scanSetup();
-		}
 		
 		lasersReceived = Math.max(0.0F, lasersReceived - 0.05F);
 		updateTicks--;
@@ -502,14 +496,38 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	public void onBlockUpdateDetected() {
 		super.onBlockUpdateDetected();
 		
-		setupTicks = 0;
+		markDirtyAssembly();
 	}
 	
-	private void scanSetup() {
-		final MutableBlockPos mutableBlockPos = new MutableBlockPos(pos);
+	@Override
+	public void onBlockBroken(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
+		final MutableBlockPos mutableBlockPos = new MutableBlockPos();
+		for (final ReactorFace reactorFace : ReactorFace.getLasers(enumTier)) {
+			if (reactorFace.indexStability < 0) {
+				continue;
+			}
+			
+			mutableBlockPos.setPos(blockPos.getX() + reactorFace.x,
+			                       blockPos.getY() + reactorFace.y,
+			                       blockPos.getZ() + reactorFace.z );
+			final TileEntity tileEntity = world.getTileEntity(mutableBlockPos);
+			if (tileEntity instanceof TileEntityEnanReactorLaser) {
+				if (((TileEntityEnanReactorLaser) tileEntity).getReactorFace() == reactorFace) {
+					((TileEntityEnanReactorLaser) tileEntity).setReactorFace(ReactorFace.UNKNOWN, null);
+				}
+			}
+		}
+		
+		super.onBlockBroken(world, blockPos, blockState);
+	}
+	
+	@Override
+	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
+		boolean isValid = super.doScanAssembly(isDirty, textReason);
+		
+		final MutableBlockPos mutableBlockPos = new MutableBlockPos();
 		
 		// first check if we have the required 'air' blocks
-		boolean isValid = true;
 		for (final ReactorFace reactorFace : ReactorFace.get(enumTier)) {
 			assert reactorFace.enumTier == enumTier;
 			if (reactorFace.indexStability < 0) {
@@ -519,6 +537,8 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 				final IBlockState blockState = world.getBlockState(mutableBlockPos);
 				final boolean isAir = blockState.getBlock().isAir(blockState, world, mutableBlockPos);
 				if (!isAir) {
+					textReason.append(Commons.styleWarning, "warpdrive.enan_reactor.status_line.non_air_block",
+					                  Commons.format(world, mutableBlockPos) );
 					isValid = false;
 					final Vector3 vPosition = new Vector3(mutableBlockPos).translate(0.5D);
 					PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5, vPosition,
@@ -537,12 +557,11 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 			                       pos.getZ() + reactorFace.z);
 			final TileEntity tileEntity = world.getTileEntity(mutableBlockPos);
 			if (tileEntity instanceof TileEntityEnanReactorLaser) {
-				if (isValid) {
-					((TileEntityEnanReactorLaser) tileEntity).setReactorFace(reactorFace, this);
-				} else {
-					((TileEntityEnanReactorLaser) tileEntity).setReactorFace(ReactorFace.UNKNOWN, null);
-				}
+				((TileEntityEnanReactorLaser) tileEntity).setReactorFace(reactorFace, this);
 			} else {
+				textReason.append(Commons.styleWarning, "warpdrive.enan_reactor.status_line.missing_stabilization_laser",
+				                  Commons.format(world, mutableBlockPos) );
+				isValid = false;
 				final Vector3 vPosition = new Vector3(mutableBlockPos).translate(0.5D);
 				PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5, vPosition,
 				                                      new Vector3(0.0D, 0.0D, 0.0D),
@@ -551,6 +570,8 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 				                                      32);
 			}
 		}
+		
+		return isValid;
 	}
 	
 	// Common OC/CC methods
@@ -563,11 +584,6 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 				energy_getDisplayUnits(),
 				0,
 				EnergyWrapper.convert(energyReleasedLastCycle, units) / WarpDriveConfig.ENAN_REACTOR_UPDATE_INTERVAL_TICKS };
-	}
-	
-	@Override
-	public Object[] isAssemblyValid() {
-		return null; // @TODO isAssemblyValid()
 	}
 	
 	@Override

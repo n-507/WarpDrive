@@ -96,9 +96,6 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	// computed properties
 	private ArrayList<BlockPos> vLocalContainments = null;
 	private AxisAlignedBB aabbLocalScanners = null;
-	private boolean isBlockUpdated = false;
-	private int tickUpdateRegistry = 0;
-	private int tickUpdateParameters = 0;
 	private int tickComputerPulse = 0;
 	private boolean isConnected = false;
 	private GlobalPosition globalPositionBeacon = null;
@@ -147,7 +144,6 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	protected void onFirstUpdateTick() {
 		super.onFirstUpdateTick();
 		
-		tickUpdateParameters = 0;
 		globalPositionLocal = new GlobalPosition(this);
 	}
 	
@@ -205,24 +201,6 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 			// WarpDrive.logger.info(String.format("Transporter strength %.5f -> %.5f", lockStrengthPrevious, lockStrengthActual));
 		}
 		
-		// periodically update starmap registry & scanners location
-		if (isBlockUpdated) {
-			tickUpdateRegistry = Math.min(10, tickUpdateRegistry);
-		}
-		tickUpdateRegistry--;
-		if (tickUpdateRegistry <= 0) {
-			tickUpdateRegistry = 20 * WarpDriveConfig.STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS;
-			isBlockUpdated = false;
-			
-			updateScanners();
-			
-			if (uuid == null || (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0)) {
-				uuid = UUID.randomUUID();
-			}
-			// recover registration, shouldn't be needed, in theory...
-			WarpDrive.starMap.updateInRegistry(this);
-		}
-		
 		// state feedback
 		updateBlockState(null, BlockTransporterCore.VARIANT, !isConnected ? EnumTransporterState.DISABLED
 		                                                               : !isEnabled ? EnumTransporterState.IDLE
@@ -253,13 +231,6 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 			}
 		}
 		
-		// periodically update parameters from main thread
-		tickUpdateParameters--;
-		if (tickUpdateParameters <= 0) {
-			tickUpdateParameters = WarpDriveConfig.TRANSPORTER_SETUP_UPDATE_PARAMETERS_TICKS;
-			updateParameters();
-		}
-		
 		// execute state transitions
 		switch (transporterState) {
 		case DISABLED:
@@ -276,7 +247,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 			if ( isLockRequested
 			  && tickCooldown == 0 ) {
 				// force parameters validation for next tick
-				tickUpdateParameters = 0;
+				markDirtyParameters();
 				transporterState = EnumTransporterState.ACQUIRING;
 			} else {
 				releaseChunks();
@@ -299,7 +270,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 					
 				} else if (isEnergizeRequested) {
 					// force parameters validation for next tick
-					tickUpdateParameters = 0;
+					markDirtyParameters();
 					
 					tickEnergizing = WarpDriveConfig.TRANSPORTER_ENERGIZING_CHARGING_TICKS;
 					transporterState = EnumTransporterState.ENERGIZING;
@@ -340,7 +311,6 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	public void onBlockBroken(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
 		if (!world.isRemote) {
 			rebootTransporter();
-			WarpDrive.starMap.removeFromRegistry(this);
 		}
 		super.onBlockBroken(world, blockPos, blockState);
 	}
@@ -350,7 +320,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		if (vLocalScanners != null) {
 			for (final BlockPos vScanner : vLocalScanners) {
 				final IBlockState blockState = world.getBlockState(vScanner);
-				if (blockState.getBlock() == WarpDrive.blockTransporterScanner) {
+				if (blockState.getBlock() instanceof BlockTransporterScanner) {
 					world.setBlockState(vScanner, blockState.withProperty(BlockProperties.ACTIVE, false), 2);
 				}
 			}
@@ -407,7 +377,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		
 		// clear entities, cancel transfer, cool down, loose a bit of strength
 		isEnergizeRequested = false;
-		tickUpdateParameters = 0;
+		markDirtyParameters();
 		tickCooldown += WarpDriveConfig.TRANSPORTER_ENERGIZING_COOLDOWN_TICKS;
 		lockStrengthActual = Math.max(0.0D, lockStrengthActual - WarpDriveConfig.TRANSPORTER_ENERGIZING_LOCKING_LOST);
 		transporterState = EnumTransporterState.ACQUIRING;
@@ -521,7 +491,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 				ForceFieldRegistry.removeFromRegistry(this);
 			}
 			this.beamFrequency = beamFrequency;
-			tickUpdateParameters = 0;
+			markDirtyParameters();
 		}
 		markDirty();
 	}
@@ -556,7 +526,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	@Override
 	public void onBlockUpdatedInArea(final VectorI vector, final IBlockState blockState) {
 		// skip in case of explosion, etc.
-		if (isBlockUpdated) {
+		if (isDirtyAssembly()) {
 			return;
 		}
 		
@@ -564,7 +534,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		final Block block = blockState.getBlock();
 		if ( block instanceof BlockTransporterScanner
 		  || block instanceof BlockTransporterContainment) {
-			isBlockUpdated = true;
+			markDirtyAssembly();
 			return;
 		}
 		if ( aabbLocalScanners != null
@@ -574,7 +544,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		  && vector.x <  aabbLocalScanners.maxX
 		  && vector.y <  aabbLocalScanners.maxY
 		  && vector.z <  aabbLocalScanners.maxZ ) {
-			isBlockUpdated = true;
+			markDirtyAssembly();
 		}
 		
 		if (WarpDriveConfig.LOGGING_TRANSPORTER) {
@@ -582,7 +552,10 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		}
 	}
 	
-	private void updateScanners() {
+	@Override
+	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
+		final boolean isValid = super.doScanAssembly(isDirty, textReason);
+		
 		// scan the whole area for scanners
 		final int xMin = pos.getX() - WarpDriveConfig.TRANSPORTER_SETUP_SCANNER_RANGE_XZ_BLOCKS;
 		final int xMax = pos.getX() + WarpDriveConfig.TRANSPORTER_SETUP_SCANNER_RANGE_XZ_BLOCKS;
@@ -609,6 +582,8 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 						// only accept valid ones, spawn particles on others
 						final Collection<BlockPos> vValidContainments = ((BlockTransporterScanner) block).getValidContainment(world, mutableBlockPos);
 						if (vValidContainments == null || vValidContainments.isEmpty()) {
+							textReason.append(Commons.styleWarning, "warpdrive.transporter.status_line.missing_containment",
+							                  Commons.format(world, mutableBlockPos) );
 							world.setBlockState(mutableBlockPos, blockState.withProperty(BlockProperties.ACTIVE, false), 2);
 							PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5,
 							                                      new Vector3(x + 0.5D, y + 1.5D, z + 0.5D),
@@ -626,6 +601,12 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 			}
 		}
 		setLocalScanners(vScanners, vContainments);
+		
+		// cascade updates
+		markDirtyParameters();
+		markDirtyStarMapEntry();
+		
+		return isValid;
 	}
 	
 	private void setLocalScanners(final ArrayList<BlockPos> vScanners, final Collection<BlockPos> vContainments) {
@@ -697,7 +678,8 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		}
 	}
 	
-	private void updateParameters() {
+	@Override
+	protected void doUpdateParameters(final boolean isDirty) {
 		isJammed = false;
 		reasonJammed = "";
 		
@@ -1688,14 +1670,14 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 				final VectorI vNew = computer_getVectorI((VectorI) remoteLocationRequested, arguments);
 				if (!vNew.equals(remoteLocationRequested)) {
 					remoteLocationRequested = vNew;
-					tickUpdateParameters = 0;
+					markDirtyParameters();
 				}
 				
 			} else {
 				final VectorI vNew = computer_getVectorI(null, arguments);
 				if (vNew != null) {
 					remoteLocationRequested = vNew;
-					tickUpdateParameters = 0;
+					markDirtyParameters();
 				}
 			}
 		} else if (arguments.length == 1 && arguments[0] != null) {
@@ -1705,18 +1687,18 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 				if (remoteLocationRequested instanceof UUID) {
 					if (!uuidNew.equals(remoteLocationRequested)) {// replacing existing UUID
 						remoteLocationRequested = uuidNew;
-						tickUpdateParameters = 0;
+						markDirtyParameters();
 					}
 				} else {
 					remoteLocationRequested = uuidNew;
-					tickUpdateParameters = 0;
+					markDirtyParameters();
 				}
 			} else {// new player name
 				final String playerNameNew = (String) arguments[0];
 				if ( playerNameNew != null
 				  && !playerNameNew.equals(remoteLocationRequested) ) {
 					remoteLocationRequested = playerNameNew;
-					tickUpdateParameters = 0;
+					markDirtyParameters();
 				}
 			}
 		}

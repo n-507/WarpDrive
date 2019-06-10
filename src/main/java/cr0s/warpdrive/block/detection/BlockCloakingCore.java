@@ -11,7 +11,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class BlockCloakingCore extends BlockAbstractContainer {
@@ -49,17 +48,5 @@ public class BlockCloakingCore extends BlockAbstractContainer {
 	@Override
 	public TileEntity createNewTileEntity(@Nonnull final World world, final int metadata) {
 		return new TileEntityCloakingCore();
-	}
-	
-	@Override
-	public void breakBlock(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
-		final TileEntity tileEntity = world.getTileEntity(blockPos);
-		
-		if (tileEntity instanceof TileEntityCloakingCore) {
-			((TileEntityCloakingCore) tileEntity).setIsEnabled(false);
-			((TileEntityCloakingCore) tileEntity).disableCloakingField();
-		}
-		
-		super.breakBlock(world, blockPos, blockState);
 	}
 }

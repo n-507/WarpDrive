@@ -12,7 +12,6 @@ import cr0s.warpdrive.render.EntityFXBoundingBox;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.UUID;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,8 +19,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -32,7 +29,6 @@ public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrContro
 	private static final int BOUNDING_BOX_INTERVAL_TICKS = 60;
 	
 	// persistent properties
-	private UUID uuid = null;
 	private int maxX, maxY, maxZ;
 	private int minX, minY, minZ;
 	
@@ -44,8 +40,6 @@ public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrContro
 	private JumpGateScanner jumpGateScanner = null;
 	public int volume;
 	public double occupancy;
-	
-	private int registryUpdateTicks = 0;
 	
 	
 	public TileEntityJumpGateCore() {
@@ -85,17 +79,6 @@ public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrContro
 			return;
 		}
 		
-		// periodically update starmap registry
-		registryUpdateTicks--;
-		if (registryUpdateTicks <= 0) {
-			registryUpdateTicks = 20 * WarpDriveConfig.STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS;
-			if (uuid == null || (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0)) {
-				uuid = UUID.randomUUID();
-			}
-			// recover registration, shouldn't be needed, in theory...
-			WarpDrive.starMap.updateInRegistry(this);
-		}
-		
 		// scan ship content progressively
 		if (timeLastScanDone <= 0L) {
 			timeLastScanDone = world.getTotalWorldTime();
@@ -119,6 +102,11 @@ public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrContro
 				                                    this, volume, occupancy));
 			}
 		}
+	}
+	
+	@Override
+	protected void doUpdateParameters(final boolean isDirty) {
+		// no operation
 	}
 	
 	public boolean isBusy() {
@@ -187,25 +175,6 @@ public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrContro
 	public void onDataPacket(@Nonnull final NetworkManager networkManager, @Nonnull final SPacketUpdateTileEntity packet) {
 		final NBTTagCompound tagCompound = packet.getNbtCompound();
 		readFromNBT(tagCompound);
-	}
-	
-	@Override
-	public void validate() {
-		super.validate();
-		
-		if (world.isRemote) {
-			return;
-		}
-		
-		WarpDrive.starMap.updateInRegistry(this);
-	}
-	
-	@Override
-	public void onBlockBroken(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
-		if (!world.isRemote) {
-			WarpDrive.starMap.removeFromRegistry(this);
-		}
-		super.onBlockBroken(world, blockPos, blockState);
 	}
 	
 	// IStarMapRegistryTileEntity overrides

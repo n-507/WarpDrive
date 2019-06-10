@@ -2,6 +2,7 @@ package cr0s.warpdrive.block.energy;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.api.computer.IEnanReactorLaser;
 import cr0s.warpdrive.block.TileEntityAbstractLaser;
 import cr0s.warpdrive.config.WarpDriveConfig;
@@ -51,7 +52,6 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		peripheralName = "warpdriveEnanReactorLaser";
 		laserMedium_maxCount = 1;
 		laserMedium_directionsValid = new EnumFacing[] { EnumFacing.UP, EnumFacing.DOWN };
-		updateInterval_ticks = WarpDriveConfig.ENAN_REACTOR_UPDATE_INTERVAL_TICKS;
 	}
 	
 	@Override
@@ -59,23 +59,8 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		super.onFirstUpdateTick();
 		
 		if (reactorFace == ReactorFace.UNKNOWN) {
-			final MutableBlockPos mutableBlockPos = new MutableBlockPos(pos);
 			// laser isn't linked yet, let's try to update nearby reactors
-			for (final ReactorFace reactorFace : ReactorFace.getLasers()) {
-				if (reactorFace.indexStability < 0) {
-					continue;
-				}
-				
-				mutableBlockPos.setPos(pos.getX() - reactorFace.x,
-				                       pos.getY() - reactorFace.y,
-				                       pos.getZ() - reactorFace.z);
-				if (world.isBlockLoaded(mutableBlockPos, true)) {
-					final TileEntity tileEntity = world.getTileEntity(mutableBlockPos);
-					if (tileEntity instanceof TileEntityEnanReactorCore) {
-						((TileEntityEnanReactorCore) tileEntity).onBlockUpdateDetected();
-					}
-				}
-			}
+			onBlockUpdateDetected();
 		}
 		
 		vLaser = new Vector3(this).translate(0.5);
@@ -97,6 +82,12 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	}
 	
 	public void setReactorFace(@Nonnull final ReactorFace reactorFace, final TileEntityEnanReactorCore reactorCore) {
+		// skip if it's already set to another reactor
+		if ( this.reactorFace != reactorFace
+		  && this.reactorFace != ReactorFace.UNKNOWN ) {
+			return;
+		}
+		
 		// always update cached signature name
 		reactorSignatureName = reactorCore != null ? reactorCore.getSignatureName() : "";
 		
@@ -157,7 +148,36 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		final TileEntityEnanReactorCore reactorCore = getReactorCore();
 		if (reactorCore != null) {
 			reactorCore.onBlockUpdateDetected();
+		} else {
+			final MutableBlockPos mutableBlockPos = new MutableBlockPos(pos);
+			for (final ReactorFace reactorFace : ReactorFace.getLasers()) {
+				if (reactorFace.indexStability < 0) {
+					continue;
+				}
+				
+				mutableBlockPos.setPos(pos.getX() - reactorFace.x,
+				                       pos.getY() - reactorFace.y,
+				                       pos.getZ() - reactorFace.z);
+				if (world.isBlockLoaded(mutableBlockPos, true)) {
+					final TileEntity tileEntity = world.getTileEntity(mutableBlockPos);
+					if (tileEntity instanceof TileEntityEnanReactorCore) {
+						((TileEntityEnanReactorCore) tileEntity).onBlockUpdateDetected();
+					}
+				}
+			}
 		}
+	}
+	
+	@Override
+	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
+		final boolean isValid = super.doScanAssembly(isDirty, textReason);
+		
+		if (reactorFace == ReactorFace.UNKNOWN) {
+			textReason.append(Commons.styleWarning, "warpdrive.enan_reactor.status_line.missing_reactor_core");
+			return false;
+		}
+		
+		return isValid;
 	}
 	
 	protected int stabilize(final int energy) {
@@ -244,14 +264,6 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	
 	
 	// Common OC/CC methods
-	@Override
-	public Object[] isAssemblyValid() {
-		if (reactorFace == ReactorFace.UNKNOWN) {
-			return new Object[] { false, "No reactor detected" };
-		}
-		return super.isAssemblyValid();
-	}
-	
 	@Override
 	public Object[] getEnergyRequired() {
 		final String units = energy_getDisplayUnits();

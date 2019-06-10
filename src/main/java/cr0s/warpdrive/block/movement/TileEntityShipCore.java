@@ -8,6 +8,7 @@ import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.api.computer.IMultiBlockCoreOrController;
 import cr0s.warpdrive.api.computer.IMultiBlockCore;
+import cr0s.warpdrive.block.detection.BlockWarpIsolation;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.ShipMovementCosts;
 import cr0s.warpdrive.config.WarpDriveConfig;
@@ -29,7 +30,6 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import net.minecraft.block.Block;
@@ -49,12 +49,12 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.World;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -73,8 +73,6 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	private int ticksCooldown = 0;
 	private int warmupTime_ticks = 0;
 	protected int jumpCount = 0;
-	private boolean isValid = false;
-	private WarpDriveText reasonInvalid = new WarpDriveText();
 	
 	// computed properties
 	public int maxX, maxY, maxZ;
@@ -102,11 +100,9 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	private boolean isWarmupReported = false;
 	protected int randomWarmupAddition_ticks = 0;
 	
-	private int registryUpdateTicks = 0;
 	private int logTicks = 120;
 	
 	private int isolationBlocksCount = 0;
-	private int isolationUpdateTicks = 0;
 	
 	
 	public TileEntityShipCore() {
@@ -191,17 +187,6 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			stateCurrent = EnumShipCoreState.IDLE;
 		}
 		
-		// periodically update starmap registry
-		registryUpdateTicks--;
-		if (registryUpdateTicks <= 0) {
-			registryUpdateTicks = 20 * WarpDriveConfig.STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS;
-			if (uuid == null || (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0)) {
-				uuid = UUID.randomUUID();
-			}
-			// recover registration, shouldn't be needed, in theory...
-			WarpDrive.starMap.updateInRegistry(this);
-		}
-		
 		// periodically log the ship state
 		logTicks--;
 		if (logTicks <= 0) {
@@ -217,13 +202,6 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			}
 		}
 		
-		// periodically check isolation blocks
-		isolationUpdateTicks--;
-		if (isolationUpdateTicks <= 0) {
-			isolationUpdateTicks = WarpDriveConfig.SHIP_CORE_ISOLATION_UPDATE_INTERVAL_SECONDS * 20;
-			updateIsolationState();
-		}
-		
 		// refresh rendering
 		final boolean isActive = commandCurrent != EnumShipCommand.OFFLINE;
 		updateBlockState(null, BlockProperties.ACTIVE, isActive);
@@ -236,16 +214,16 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			if ( getBack() == 0 && getFront() == 0
 			  && getLeft() == 0 && getRight() == 0
 			  && getDown() == 0 && getUp() == 0 ) {
-				reasonInvalid = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.no_dimension_set");
-				isValid = false;
+				textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.no_dimension_set");
+				isAssemblyValid = false;
 				return;
 			}
 			if ( (getBack() + getFront()) > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]
 			     || (getLeft() + getRight()) > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]
 			     || (getDown() + getUp()   ) > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()] ) {
-				reasonInvalid = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.too_large_side_for_tier",
-				                                  WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]);
-				isValid = false;
+				textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.too_large_side_for_tier",
+				                                       WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]);
+				isAssemblyValid = false;
 				return;
 			}
 			
@@ -287,45 +265,45 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			if (!isUnlimited) {
 				if ( shipMass > WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE
 				  && CelestialObjectManager.isPlanet(world, pos.getX(), pos.getZ()) ) {
-					reasonInvalid = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.too_much_mass_for_planet",
+					textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.too_much_mass_for_planet",
 					                                  WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE, shipMass);
-					isValid = false;
+					isAssemblyValid = false;
 					if (isEnabled) {
-						commandDone(false, reasonInvalid);
+						commandDone(false, textValidityIssues);
 					}
 					return;
 				}
 				if ( shipMass < WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE
 				  && CelestialObjectManager.isInHyperspace(world, pos.getX(), pos.getZ()) ) {
-					reasonInvalid = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.insufficient_mass_for_hyperspace",
-					                                  WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE, shipMass);
-					isValid = false;
+					textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.insufficient_mass_for_hyperspace",
+					                                       WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE, shipMass);
+					isAssemblyValid = false;
 					if (isEnabled) {
-						commandDone(false, reasonInvalid);
+						commandDone(false, textValidityIssues);
 					}
 					return;
 				}
 				if (shipMass < WarpDriveConfig.SHIP_MASS_MIN_BY_TIER[enumTier.getIndex()]) {
-					reasonInvalid = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.insufficient_mass_for_tier",
-					                                  WarpDriveConfig.SHIP_MASS_MIN_BY_TIER[enumTier.getIndex()], shipMass);
-					isValid = false;
+					textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.insufficient_mass_for_tier",
+					                                       WarpDriveConfig.SHIP_MASS_MIN_BY_TIER[enumTier.getIndex()], shipMass);
+					isAssemblyValid = false;
 					if (isEnabled) {
-						commandDone(false, reasonInvalid);
+						commandDone(false, textValidityIssues);
 					}
 					return;
 				}
 				if (shipMass > WarpDriveConfig.SHIP_MASS_MAX_BY_TIER[enumTier.getIndex()]) {
-					reasonInvalid = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.too_much_mass_for_tier",
-					                                  WarpDriveConfig.SHIP_MASS_MAX_BY_TIER[enumTier.getIndex()], shipMass);
-					isValid = false;
+					textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.too_much_mass_for_tier",
+					                                       WarpDriveConfig.SHIP_MASS_MAX_BY_TIER[enumTier.getIndex()], shipMass);
+					isAssemblyValid = false;
 					if (isEnabled) {
-						commandDone(false, reasonInvalid);
+						commandDone(false, textValidityIssues);
 					}
 					return;
 				}
 			}
-			reasonInvalid = new WarpDriveText();
-			isValid = true;
+			textValidityIssues = new WarpDriveText();
+			isAssemblyValid = true;
 		}
 		
 		// skip state handling while cooling down
@@ -374,8 +352,8 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				Commons.messageToAllPlayersInArea(this, new WarpDriveText(null, "warpdrive.ship.guide.pre_jumping"));
 				
 				// update ship spatial parameters
-				if (!isValid) {
-					commandDone(false, reasonInvalid);
+				if (!isAssemblyValid) {
+					commandDone(false, textValidityIssues);
 					return;
 				}
 				
@@ -462,8 +440,8 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			isSoundPlayed = false;
 			isWarmupReported = false;
 			
-			if (!isValid) {
-				commandDone(false, reasonInvalid);
+			if (!isAssemblyValid) {
+				commandDone(false, textValidityIssues);
 				return;
 			}
 			
@@ -490,10 +468,6 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		default:
 			break;
 		}
-	}
-	
-	public boolean isValid() {
-		return isValid;
 	}
 	
 	public boolean isOffline() {
@@ -618,7 +592,10 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		return ((TileEntitySecurityStation) tileEntity).getFirstOnlinePlayer();
 	}
 	
-	private void updateIsolationState() {
+	@Override
+	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
+		final boolean isValid = super.doScanAssembly(isDirty, textReason);
+		
 		// Search block in cube around core
 		final int xMin = pos.getX() - WarpDriveConfig.RADAR_MAX_ISOLATION_RANGE;
 		final int xMax = pos.getX() + WarpDriveConfig.RADAR_MAX_ISOLATION_RANGE;
@@ -634,10 +611,12 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		int newCount = 0;
 		
 		// Search for warp isolation blocks
+		final MutableBlockPos mutableBlockPos = new MutableBlockPos();
 		for (int y = yMin; y <= yMax; y++) {
 			for (int x = xMin; x <= xMax; x++) {
 				for (int z = zMin; z <= zMax; z++) {
-					if (world.getBlockState(new BlockPos(x, y, z)).getBlock() == WarpDrive.blockWarpIsolation) {
+					mutableBlockPos.setPos(x, y, z);
+					if (world.getBlockState(mutableBlockPos).getBlock() instanceof BlockWarpIsolation) {
 						newCount++;
 					}
 				}
@@ -653,10 +632,20 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		} else {
 			isolationRate = 0.0D;
 		}
-		if (WarpDriveConfig.LOGGING_RADAR && (WarpDrive.isDev || legacy_isolationRate != isolationRate)) {
-			WarpDrive.logger.info(String.format("%s Isolation updated to %d (%.1f%%)",
-			                                    this, isolationBlocksCount , isolationRate * 100.0));
+		if (legacy_isolationRate != isolationRate) {
+			markDirtyStarMapEntry();
+			if (WarpDriveConfig.LOGGING_RADAR && WarpDrive.isDev) {
+				WarpDrive.logger.info(String.format("%s Isolation updated to %d (%.1f%%)",
+				                                    this, isolationBlocksCount , isolationRate * 100.0));
+			}
 		}
+		
+		return isValid;
+	}
+	
+	@Override
+	protected void doUpdateParameters(final boolean isDirty) {
+		// no operation
 	}
 	
 	private void makePlayersOnShipDrunk(final int tickDuration) {
@@ -684,9 +673,9 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			return false;
 		}
 		updateAfterResize();
-		if (!isValid) {
+		if (!isAssemblyValid) {
 			Commons.addChatMessage(entityPlayerMP, new TextComponentString(!name.isEmpty() ? name : "ShipCore").setStyle(Commons.styleHeader)
-			                                       .appendSibling(reasonInvalid));
+			                                       .appendSibling(textValidityIssues));
 			return false;
 		}
 		
@@ -1115,13 +1104,13 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	
 	@Override
 	public WarpDriveText getStatus() {
-		final String strIsolationRate = String.format("%.1f", isolationRate * 100.0D);
 		final WarpDriveText textStatus = super.getStatus();
 		if (ticksCooldown > 0) {
 			textStatus.append(null, "warpdrive.ship.status_line.cooling",
 			                  ticksCooldown / 20);
 		}
 		if (isolationBlocksCount > 0) {
+			final String strIsolationRate = String.format("%.1f", isolationRate * 100.0D);
 			textStatus.append(null, "warpdrive.ship.status_line.isolation",
 			                  isolationBlocksCount, strIsolationRate);
 		}
@@ -1188,27 +1177,6 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	}
 	
 	@Override
-	public void validate() {
-		super.validate();
-		
-		if (world.isRemote) {
-			return;
-		}
-		
-		if (uuid != null) {
-			WarpDrive.starMap.updateInRegistry(this);
-		}
-	}
-	
-	@Override
-	public void onBlockBroken(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
-		if (!world.isRemote) {
-			WarpDrive.starMap.removeFromRegistry(this);
-		}
-		super.onBlockBroken(world, blockPos, blockState);
-	}
-	
-	@Override
 	public String getSignatureName() {
 		return name;
 	}
@@ -1243,14 +1211,6 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	}
 	
 	// Common OC/CC methods
-	@Override
-	public Object[] isAssemblyValid() {
-		if (!isValid) {
-			return new Object[] { false, Commons.removeFormatting( reasonInvalid.getUnformattedText() ) };
-		}
-		return super.isAssemblyValid();
-	}
-	
 	@Override
 	public Object[] getOrientation() {
 		return new Object[] { facing.getXOffset(), 0, facing.getZOffset() };

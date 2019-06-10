@@ -2,6 +2,7 @@ package cr0s.warpdrive.block;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.api.computer.ICoreSignature;
 import cr0s.warpdrive.api.computer.IMachine;
 import cr0s.warpdrive.config.WarpDriveConfig;
@@ -27,6 +28,12 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	public String name = "";
 	protected boolean isEnabled = true;
 	
+	// computed properties
+	private boolean isDirtyAssembly = true;
+	private int tickScanAssembly = 0;
+	protected boolean isAssemblyValid = true;
+	protected WarpDriveText textValidityIssues = new WarpDriveText(Commons.styleWarning, "unknown"); 
+	
 	// allow only one computation at a time
 	protected static final AtomicBoolean isGlobalThreadRunning = new AtomicBoolean(false);
 	// computation is ongoing for this specific tile
@@ -41,8 +48,74 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 		addMethods(new String[] {
 				"name",
 				"enable",
-				"isAssemblyValid"
+				"getAssemblyStatus"
 				});
+	}
+	
+	@Override
+	protected void onFirstUpdateTick() {
+		super.onFirstUpdateTick();
+		doScanAssembly(true);
+	}
+	
+	@Override
+	public void update() {
+		super.update();
+		
+		if (world.isRemote) {
+			return;
+		}
+		
+		// scan the assembly after a block update was detected or periodically to recover whatever may have desynchronized it
+		if (isDirtyAssembly) {
+			tickScanAssembly = Math.min(10, tickScanAssembly);
+		}
+		tickScanAssembly--;
+		if (tickScanAssembly <= 0) {
+			tickScanAssembly = WarpDriveConfig.G_ASSEMBLY_SCAN_INTERVAL_TICKS;
+			final boolean isDirty = isDirtyAssembly;
+			isDirtyAssembly = false;
+			
+			doScanAssembly(isDirty);
+		}
+	}
+	
+	public boolean isDirtyAssembly() {
+		return isDirtyAssembly;
+	}
+	
+	public void markDirtyAssembly() {
+		isDirtyAssembly = true;
+	}
+	
+	private void doScanAssembly(final boolean isDirty) {
+		if (world.isRemote) {
+			return;
+		}
+		
+		final WarpDriveText textReason = new WarpDriveText();
+		final boolean isValid = doScanAssembly(isDirty, textReason);
+		if (!isValid && textReason.isEmpty()) {
+			textReason.append(Commons.styleWarning, "unknown");
+			WarpDrive.logger.warn(String.format("Unknown assembly status %s %s, please report to mod author",
+			                                    this, Commons.format(world, pos) ));
+		}
+		isAssemblyValid = isValid;
+		textValidityIssues = textReason;
+	}
+	
+	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
+		return true;
+	}
+	
+	@Override
+	public WarpDriveText getStatus() {
+		final WarpDriveText textStatus = super.getStatus();
+		if ( world != null
+		  && !textValidityIssues.isEmpty() ) {
+			textStatus.append(textValidityIssues);
+		}
+		return textStatus;
 	}
 	
 	public boolean isCalculated() {
@@ -50,7 +123,8 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	}
 	
 	protected boolean calculation_start() {
-		if ((!world.isRemote) && (boolean) isAssemblyValid()[0]) {
+		assert !world.isRemote;
+		if (isAssemblyValid) {
 			if (!isGlobalThreadRunning.getAndSet(true)) {
 				isThreadRunning.set(true);
 				isDirty.set(false);
@@ -169,8 +243,16 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	}
 	
 	@Override
-	public Object[] isAssemblyValid() {
-		return new Object[] { true, "ok" };
+	public Object[] getAssemblyStatus() {
+		if (isAssemblyValid && textValidityIssues.isEmpty()) {
+			return new Object[] { isAssemblyValid, "ok" };
+		}
+		return new Object[] { isAssemblyValid, Commons.removeFormatting( textValidityIssues.getUnformattedText() ) };
+	}
+	
+	@Override
+	public boolean isAssemblyValid() {
+		return isAssemblyValid;
 	}
 	
 	// OpenComputers callback methods
@@ -188,9 +270,9 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	
 	@Callback
 	@Optional.Method(modid = "opencomputers")
-	public Object[] isAssemblyValid(final Context context, final Arguments arguments) {
+	public Object[] getAssemblyStatus(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);
-		return isAssemblyValid();
+		return getAssemblyStatus();
 	}
 	
 	// ComputerCraft IPeripheral methods
@@ -204,8 +286,8 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 		case "enable":
 			return enable(arguments);
 			
-		case "isAssemblyValid":
-			return isAssemblyValid();
+		case "getAssemblyStatus":
+			return getAssemblyStatus();
 		}
 		
 		return super.CC_callMethod(methodName, arguments);

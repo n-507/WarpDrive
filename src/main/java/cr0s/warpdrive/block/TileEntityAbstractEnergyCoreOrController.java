@@ -1,14 +1,21 @@
 package cr0s.warpdrive.block;
 
 import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
 import cr0s.warpdrive.api.computer.ICoreSignature;
 import cr0s.warpdrive.api.computer.IEnergyConsumer;
 import cr0s.warpdrive.api.computer.IMultiBlockCoreOrController;
 import cr0s.warpdrive.api.computer.IMultiBlockCore;
+import cr0s.warpdrive.config.WarpDriveConfig;
+
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntityAbstractEnergyConsumer implements IMultiBlockCoreOrController, IEnergyConsumer {
 	
@@ -16,7 +23,10 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 	public UUID uuid = null;
 	
 	// computed properties
-	// (none)
+	private boolean isDirtyParameters = true;
+	private int tickUpdateParameters = 0;
+	private boolean isDirtyStarMapEntry = true;
+	private int tickUpdateStarMapEntry = 0;
 	
 	public TileEntityAbstractEnergyCoreOrController() {
 		super();
@@ -24,6 +34,80 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 		// (abstract) peripheralName = "xxx";
 		// addMethods(new String[] {
 		// 		});
+	}
+	
+	@Override
+	public void update() {
+		super.update();
+		
+		if (world.isRemote) {
+			return;
+		}
+		
+		// update operational parameters when dirty or periodically to recover whatever may have desynchronized them
+		if (isDirtyParameters) {
+			tickUpdateParameters = 0;
+		}
+		tickUpdateParameters--;
+		if (tickUpdateParameters <= 0) {
+			tickUpdateParameters = WarpDriveConfig.G_PARAMETERS_UPDATE_INTERVAL_TICKS;
+			final boolean isDirty = isDirtyParameters;
+			isDirtyParameters = false;
+			
+			doUpdateParameters(isDirty);
+		}
+		
+		// update starmap registry upon request or periodically to recover whatever may have desynchronized it
+		if (this instanceof IStarMapRegistryTileEntity) {
+			if (isDirtyStarMapEntry) {
+				tickUpdateStarMapEntry = 0;
+			}
+			tickUpdateStarMapEntry--;
+			if (tickUpdateStarMapEntry <= 0) {
+				tickUpdateStarMapEntry = WarpDriveConfig.STARMAP_REGISTRY_UPDATE_INTERVAL_TICKS;
+				final boolean isDirty = isDirtyStarMapEntry;
+				isDirtyStarMapEntry = false;
+				
+				doRegisterStarMapEntry(isDirty);
+			}
+		}
+	}
+	
+	public boolean isDirtyParameters() {
+		return isDirtyParameters;
+	}
+	
+	protected void markDirtyParameters() {
+		isDirtyParameters = true;
+	}
+	
+	protected abstract void doUpdateParameters(final boolean isDirty);
+	
+	public boolean isDirtyStarMapEntry() {
+		return isDirtyStarMapEntry;
+	}
+	
+	protected void markDirtyStarMapEntry() {
+		assert this instanceof IStarMapRegistryTileEntity;
+		isDirtyStarMapEntry = true;
+	}
+	
+	protected void doRegisterStarMapEntry(final boolean isDirty) {
+		if (uuid == null || (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0)) {
+			uuid = UUID.randomUUID();
+		}
+		
+		WarpDrive.starMap.updateInRegistry((IStarMapRegistryTileEntity) this);
+	}
+	
+	@Override
+	public void onBlockBroken(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
+		if ( !world.isRemote
+		  && this instanceof IStarMapRegistryTileEntity ) {
+			WarpDrive.starMap.removeFromRegistry((IStarMapRegistryTileEntity) this);
+		}
+		
+		super.onBlockBroken(world, blockPos, blockState);
 	}
 	
 	@Override

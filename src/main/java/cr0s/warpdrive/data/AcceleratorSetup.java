@@ -5,6 +5,7 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.LocalProfiler;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IControlChannel;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.atomic.BlockAcceleratorControlPoint;
 import cr0s.warpdrive.block.atomic.BlockChiller;
 import cr0s.warpdrive.block.atomic.BlockElectromagnetPlain;
@@ -78,6 +79,9 @@ public class AcceleratorSetup extends GlobalPosition {
 	public double[] temperatures_sustainEnergyCost_perTick = new double[3];
 	public double   particleEnergy_energyCost_perTick;
 	
+	protected boolean isAssemblyValid = true;
+	protected WarpDriveText textValidityIssues = new WarpDriveText(Commons.styleWarning, "-undefined accelerator setup-");
+	
 	public AcceleratorSetup(final int dimensionId, @Nonnull final BlockPos blockPos) {
 		super(dimensionId, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 		
@@ -146,6 +150,7 @@ public class AcceleratorSetup extends GlobalPosition {
 		// get all accelerator and transfer trajectory points
 		fillTrajectoryPoints(world);
 		if (trajectoryAccelerator == null) {
+			assert !isAssemblyValid;
 			return;
 		}
 		
@@ -195,7 +200,8 @@ public class AcceleratorSetup extends GlobalPosition {
 		WarpDrive.logger.info(String.format("First void shell is %s", firstVoidShell));
 		}
 		if (firstVoidShell == null) {
-			WarpDrive.logger.warn("No void shell connection found");
+			isAssemblyValid = false;
+			textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_void_shell_connection");
 			return;
 		}
 		
@@ -219,6 +225,8 @@ public class AcceleratorSetup extends GlobalPosition {
 			WarpDrive.logger.info(String.format("First one is %s", trajectoryPoint));
 		}
 		if (trajectoryPoint == null) {
+			isAssemblyValid = false;
+			textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_void_shell_connection");
 			return;
 		}
 		
@@ -320,14 +328,15 @@ public class AcceleratorSetup extends GlobalPosition {
 		}
 	}
 	
-	private void computeVectorArrays(final WorldServer world) {
+	private void computeVectorArrays(@Nonnull final WorldServer world) {
+		final WarpDriveText textReason = new WarpDriveText();
+		boolean isValid = true; 
 		// check for chillers, injectors and colliders blocks
 		for (final TrajectoryPoint trajectoryPoint : trajectoryAccelerator.values()) {
 			// check for invalid setup
-			if (trajectoryPoint.isJammed()) {
+			if (!trajectoryPoint.getStatus(textReason)) {
  				setJammed.add(trajectoryPoint);
-				WarpDrive.logger.info(String.format("Jammed point %s",
-				                                    trajectoryPoint ));
+ 				isValid = false;
 			}
 			
 			// check for injectors
@@ -364,6 +373,30 @@ public class AcceleratorSetup extends GlobalPosition {
 				}
 			}
 		}
+		
+		// check counts
+		if (mapInjectors.isEmpty()) {
+			isValid = false;
+			textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_injector");
+		}
+		if (listColliders.isEmpty()) {
+			isValid = false;
+			textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_collider_node");
+		}
+		if (countMagnets[2] > 0 && countChillers[2] == 0) {
+			isValid = false;
+			textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_superior_chiller");
+		} else if (countMagnets[1] > 0 && countChillers[1] == 0) {
+			isValid = false;
+			textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_advanced_chiller");
+		} else if (countMagnets[0] > 0 && countChillers[0] == 0) {
+			isValid = false;
+			textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_basic_chiller");
+		}
+		
+		// update validity status
+		isAssemblyValid = isValid;
+		textValidityIssues = textReason;
 	}
 	
 	private void scanCorners(@Nonnull final WorldServer world, @Nonnull final VectorI vCenter, @Nonnull final EnumFacing forgeDirection) {
@@ -509,7 +542,7 @@ public class AcceleratorSetup extends GlobalPosition {
 	}
 	
 	// sanity check
-	public boolean isValid() {
+	public boolean isDirty() {
 		if (trajectoryAccelerator == null) {
 			return false;
 		}
@@ -519,6 +552,11 @@ public class AcceleratorSetup extends GlobalPosition {
 			}
 		}
 		return true;
+	}
+	
+	public boolean getAssemblyStatus(@Nonnull final WarpDriveText textReason) {
+		textReason.append(textValidityIssues);
+		return isAssemblyValid;
 	}
 	
 	// Pseudo-API for energy

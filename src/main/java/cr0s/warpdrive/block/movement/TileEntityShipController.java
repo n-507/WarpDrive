@@ -3,13 +3,11 @@ package cr0s.warpdrive.block.movement;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.WarpDriveText;
-import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.EnumStarMapEntryType;
 import cr0s.warpdrive.data.StarMapRegistryItem;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 
@@ -23,10 +21,7 @@ public class TileEntityShipController extends TileEntityAbstractShipController {
 	// (none)
 	
 	// computed properties
-	private final int updateInterval_ticks = 20 * WarpDriveConfig.SHIP_CONTROLLER_UPDATE_INTERVAL_SECONDS;
-	private int updateTicks = updateInterval_ticks;
-	private int bootTicks = 20;
-	private WarpDriveText reason = new WarpDriveText();
+	private int tickBooting = 20;
 	
 	private WeakReference<TileEntityShipCore> tileEntityShipCoreWeakReference = null;
 	
@@ -47,21 +42,70 @@ public class TileEntityShipController extends TileEntityAbstractShipController {
 		}
 		
 		// accelerate update ticks during boot
-		if (bootTicks > 0) {
-			bootTicks--;
+		if (tickBooting > 0) {
+			tickBooting--;
 			if (tileEntityShipCoreWeakReference == null) {
-				updateTicks = 1;
+				markDirtyAssembly();
 			}
 		}
-		updateTicks--;
-		if (updateTicks <= 0) {
-			updateTicks = updateInterval_ticks;
-			
-			reason = new WarpDriveText();
-			final TileEntityShipCore tileEntityShipCore = updateLink(reason);
-			
-			updateBlockState(null, BlockShipController.COMMAND, enumShipCommand);
+	}
+	
+	@Override
+	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
+		final boolean isValid = super.doScanAssembly(isDirty, textReason);
+		
+		// validate existing link
+		TileEntityShipCore tileEntityShipCore = tileEntityShipCoreWeakReference != null ? tileEntityShipCoreWeakReference.get() : null;
+		if ( tileEntityShipCore == null
+		  || tileEntityShipCore.isInvalid()
+		  || !tileEntityShipCore.getSignatureUUID().equals(uuid) ) {
+			tileEntityShipCore = null;
+			tileEntityShipCoreWeakReference = null;
 		}
+		
+		// refresh as needed
+		// note: it's up to players to break the link, so if the world is partially restored we won't lose the link
+		if (tileEntityShipCore == null) {
+			final StarMapRegistryItem starMapRegistryItem = WarpDrive.starMap.getByUUID(EnumStarMapEntryType.SHIP, uuid);
+			if (starMapRegistryItem == null) {
+				textReason.append(Commons.styleWarning, "warpdrive.core_signature.status_line.unknown_core_signature");
+				return false;
+			}
+			final WorldServer worldServer = starMapRegistryItem.getWorldServerIfLoaded();
+			if (worldServer == null) {
+				textReason.append(Commons.styleWarning, "warpdrive.core_signature.status_line.world_not_loaded");
+				return false;
+			}
+			final TileEntity tileEntity = worldServer.getTileEntity(starMapRegistryItem.getBlockPos());
+			if ( !(tileEntity instanceof TileEntityShipCore)
+			  || tileEntity.isInvalid()
+			  || !((TileEntityShipCore) tileEntity).getSignatureUUID().equals(uuid) ) {
+				textReason.append(Commons.styleWarning, "warpdrive.core_signature.status_line.unknown_core_signature");
+				return false;
+			}
+			tileEntityShipCore = (TileEntityShipCore) tileEntity;
+			tileEntityShipCoreWeakReference = new WeakReference<>(tileEntityShipCore);
+		}
+		// (tileEntityShipCore is defined and valid)
+		
+		final boolean isSynchronized = tileEntityShipCore.refreshLink(this);
+		if (isSynchronized) {
+			onCoreUpdated(tileEntityShipCore);
+			// send command as soon as link is re-established
+			if ( !tileEntityShipCore.isCommandConfirmed
+			  && isCommandConfirmed ) {
+				tileEntityShipCore.command(new Object[] { enumShipCommand.getName(), true });
+			}
+		}
+		
+		updateBlockState(null, BlockShipController.COMMAND, enumShipCommand);
+		
+		return isValid;
+	}
+	
+	@Override
+	protected void doUpdateParameters(final boolean isDirty) {
+		// no operation
 	}
 	
 	@Override
@@ -84,55 +128,6 @@ public class TileEntityShipController extends TileEntityAbstractShipController {
 		return tagCompound;
 	}
 	
-	@Nullable
-	private TileEntityShipCore updateLink(final WarpDriveText reason) {
-		// validate existing link
-		TileEntityShipCore tileEntityShipCore = tileEntityShipCoreWeakReference != null ? tileEntityShipCoreWeakReference.get() : null;
-		if ( tileEntityShipCore == null
-		  || tileEntityShipCore.isInvalid()
-		  || !tileEntityShipCore.getSignatureUUID().equals(uuid) ) {
-			tileEntityShipCore = null;
-			tileEntityShipCoreWeakReference = null;
-		}
-		
-		// refresh as needed
-		// note: it's up to players to break the link, so if the world is partially restored we won't lose the link
-		if (tileEntityShipCore == null) {
-			final StarMapRegistryItem starMapRegistryItem = WarpDrive.starMap.getByUUID(EnumStarMapEntryType.SHIP, uuid);
-			if (starMapRegistryItem == null) {
-				reason.append(Commons.styleWarning, "warpdrive.core_signature.status_line.unknown_core_signature");
-				return null;
-			}
-			final WorldServer worldServer = starMapRegistryItem.getWorldServerIfLoaded();
-			if (worldServer == null) {
-				reason.append(Commons.styleWarning, "warpdrive.core_signature.status_line.world_not_loaded");
-				return null;
-			}
-			final TileEntity tileEntity = worldServer.getTileEntity(starMapRegistryItem.getBlockPos());
-			if ( !(tileEntity instanceof TileEntityShipCore)
-			  || tileEntity.isInvalid()
-			  || !((TileEntityShipCore) tileEntity).getSignatureUUID().equals(uuid) ) {
-				reason.append(Commons.styleWarning, "warpdrive.core_signature.status_line.unknown_core_signature");
-				return null;
-			}
-			tileEntityShipCore = (TileEntityShipCore) tileEntity;
-			tileEntityShipCoreWeakReference = new WeakReference<>(tileEntityShipCore);
-		}
-		// (tileEntityShipCore is defined and valid)
-		
-		final boolean isSynchronized = tileEntityShipCore.refreshLink(this);
-		if (isSynchronized) {
-			onCoreUpdated(tileEntityShipCore);
-			// send command as soon as link is re-established
-			if ( !tileEntityShipCore.isCommandConfirmed
-			  && isCommandConfirmed ) {
-				tileEntityShipCore.command(new Object[] { enumShipCommand.getName(), true });
-			}
-		}
-		
-		return tileEntityShipCore;
-	}
-	
 	@Nonnull
 	@Override
 	protected WarpDriveText getCoreSignatureStatus(final String nameSignature) {
@@ -140,15 +135,6 @@ public class TileEntityShipController extends TileEntityAbstractShipController {
 			return new WarpDriveText(Commons.styleWarning, "warpdrive.core_signature.status_line.undefined");
 		}
 		return super.getCoreSignatureStatus(nameSignature);
-	}
-	
-	@Override
-	public WarpDriveText getStatus() {
-		if (reason.getUnformattedText().isEmpty()) {
-			return super.getStatus();
-		} else {
-			return super.getStatus().append(reason);
-		}
 	}
 	
 	// Common OC/CC methods
@@ -162,12 +148,12 @@ public class TileEntityShipController extends TileEntityAbstractShipController {
 	}
 	
 	@Override
-	public Object[] isAssemblyValid() {
+	public Object[] getAssemblyStatus() {
 		final TileEntityShipCore tileEntityShipCore = tileEntityShipCoreWeakReference == null ? null : tileEntityShipCoreWeakReference.get();
 		if (tileEntityShipCore == null) {
 			return new Object[] { false, "No core detected" };
 		}
-		return tileEntityShipCore.isAssemblyValid();
+		return tileEntityShipCore.getAssemblyStatus();
 	}
 	
 	@Override

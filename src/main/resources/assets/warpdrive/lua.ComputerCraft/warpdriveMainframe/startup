@@ -474,7 +474,7 @@ function cloaking_page()
   else
     SetColorDefault()
     Write("Cloaking core " .. cloaking_currentKey .. " of " .. #cloakingcores)
-    local isAssemblyValid = cloakingcore.isAssemblyValid()
+    local isAssemblyValid = cloakingcore.getAssemblyStatus()
     local energyStored, energyMax, energyUnits = cloakingcore.getEnergyStatus()
     local isEnabled = cloakingcore.enable()
     
@@ -1280,7 +1280,7 @@ function reactor_page()
         Write("Side " .. side .. ":")
         SetCursorPos(30, 3 + side)
         local energyStored, _, _ = reactorlaser.wrap.getEnergyStatus()
-        if not reactorlaser.wrap.isAssemblyValid() then
+        if not reactorlaser.wrap.getAssemblyStatus() then
           SetColorDisabled()
         elseif energyStored > 3 * data.reactor_laserAmount then
           SetColorSuccess()
@@ -1421,7 +1421,7 @@ function reactor_pulse(output)
           side = side % 4
           SetCursorPos(30, 3 + side)
           local energyStored, _, _ = reactorlaser.wrap.getEnergyStatus()
-          if not reactorlaser.wrap.isAssemblyValid() then
+          if not reactorlaser.wrap.getAssemblyStatus() then
             SetColorDisabled()
           elseif energyStored > 3 * data.reactor_laserAmount then
             SetColorSuccess()

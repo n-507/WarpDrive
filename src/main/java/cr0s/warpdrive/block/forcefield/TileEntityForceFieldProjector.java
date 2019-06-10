@@ -205,7 +205,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			markDirty();
 		}
 		
-		final boolean isEnabledAndValid = isEnabled && isValid();
+		final boolean isEnabledAndValid = isEnabled && isAssemblyValid;
 		final boolean isOn = isEnabledAndValid && cooldownTicks <= 0 && isPowered;
 		if (isOn) {
 			if (!legacy_isOn) {
@@ -296,8 +296,16 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		super.onBlockBroken(world, blockPos, blockState);
 	}
 	
-	public boolean isValid() {
-		return getShape() != EnumForceFieldShape.NONE;
+	@Override
+	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
+		final boolean isValid = super.doScanAssembly(isDirty, textReason);
+		
+		if (getShape() != EnumForceFieldShape.NONE) {
+			textReason.append(Commons.styleWarning, "warpdrive.force_field.shape.status_line.none");
+			return false;
+		}
+		
+		return isValid;
 	}
 	
 	@Override
@@ -338,7 +346,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	}
 	
 	boolean isPartOfForceField(final VectorI vector) {
-		if (!isEnabled || !isValid()) {
+		if (!isEnabled || !isAssemblyValid) {
 			return false;
 		}
 		if (!isCalculated()) {
@@ -349,7 +357,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	}
 	
 	private boolean isPartOfInterior(final VectorI vector) {
-		if (!isEnabled || !isValid()) {
+		if (!isEnabled || !isAssemblyValid) {
 			return false;
 		}
 		if (!isCalculated()) {
@@ -946,7 +954,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	
 	public EnumForceFieldState getState() {
 		EnumForceFieldState forceFieldState = EnumForceFieldState.NOT_CONNECTED;
-		if (isConnected && isValid()) {
+		if (isConnected && isAssemblyValid) {
 			if (isPowered) {
 				if (isOn()) {
 					forceFieldState = EnumForceFieldState.CONNECTED_POWERED;
@@ -1282,7 +1290,9 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			try {
 				projector = weakProjector.get();
 				if ( projector != null
-				  && projector.isValid() ) {
+				  && !projector.isInvalid()
+				  && projector.isEnabled
+				  && projector.isAssemblyValid ) {
 					// collect what we need, then release the object
 					final ForceFieldSetup forceFieldSetup = projector.getForceFieldSetup();
 					final int heightWorld = projector.world.getHeight();

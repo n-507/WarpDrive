@@ -15,7 +15,7 @@ else
   else
     cloakingCore.enable(true)
     os.sleep(1)
-    local isValid, message = cloakingCore.isAssemblyValid()
+    local isValid, message = cloakingCore.getAssemblyStatus()
     if isValid then
       print("Tier 1 cloaking is enabled")
     else

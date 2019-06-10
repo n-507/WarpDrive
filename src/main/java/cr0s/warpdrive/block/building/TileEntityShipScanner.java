@@ -274,7 +274,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 				tileEntityShipCore = (TileEntityShipCore) world.getTileEntity(mutableBlockPos);
 				
 				if (tileEntityShipCore != null) {
-					if (!tileEntityShipCore.isValid()) { // If we can't refresh ship's spatial parameters
+					if (!tileEntityShipCore.isAssemblyValid()) { // If we can't refresh ship's spatial parameters
 						tileEntityShipCore = null;
 					} else {
 						break;
@@ -287,7 +287,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 	}
 	
 	private boolean saveShipToSchematic(final String fileName, final WarpDriveText reason) {
-		if (!shipCore.isValid()) {
+		if (!shipCore.isAssemblyValid()) {
 			return false;
 		}
 		final short width = (short) (shipCore.maxX - shipCore.minX + 1);

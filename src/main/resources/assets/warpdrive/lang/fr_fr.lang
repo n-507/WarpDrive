@@ -741,6 +741,21 @@ warpdrive.accelerator.guide.low_power.not_enough_storage=La capacité de stockag
 warpdrive.accelerator.guide.low_power.accelerating=Nous sommes à court d'énergie chef (%1$s > %2$s %3$s), les bunches de particules s'échappent, préparez-vous à une irradiation de masse!
 warpdrive.accelerator.guide.low_power.no_particles=Il nous faut plus d'énergie pour démarrer l'accélérateur!
 warpdrive.accelerator.guide.no_chiller=Cet accélérateur n'a aucun refroidisseur!
+warpdrive.accelerator.status_line.missing_void_shell_connection=Connection manquante avec coquille sous vide.
+warpdrive.accelerator.status_line.invalid_double_junction=Coquille sous vide invalide avec double jonction à %1$s.
+warpdrive.accelerator.status_line.invalid_vertical_junction=Coquille sous vide invalide avec mouvement vertical à %1$s.
+warpdrive.accelerator.status_line.missing_turning_magnet=Electroaimant principal manquant au point de rotation %1$s.
+warpdrive.accelerator.status_line.missing_main_magnets=Electroaimant principal manquant au point de contrôle %1$s.
+warpdrive.accelerator.status_line.missing_corner_magnets=Electroaimant d'angle manquant au point de contrôle %1$s.
+warpdrive.accelerator.status_line.missing_collider_block=Bloc Collisionneur de particules manquant à %1$s.
+warpdrive.accelerator.status_line.missing_void_shell=Coquille sous vide manquante à %1$s.
+warpdrive.accelerator.status_line.too_many_void_shells=Trop de coquilles sous vide à %1$s.
+warpdrive.accelerator.status_line.invalid_error_code=Invalid accelerator error code %1$d at %2$s, please report to mod author.
+warpdrive.accelerator.status_line.missing_basic_chiller=Refroidisseur élémentaire manquant.
+warpdrive.accelerator.status_line.missing_advanced_chiller=Refroidisseur avancé manquant.
+warpdrive.accelerator.status_line.missing_superior_chiller=Refroidisseur supérieur manquant.
+warpdrive.accelerator.status_line.missing_injector=Noeud injecteur d'accélérateur manquant.
+warpdrive.accelerator.status_line.missing_collider_node=Noeud collisionneur d'accélérateur manquant.
 
 warpdrive.breathing.alarm=Alarme de respiration
 warpdrive.breathing.invalid_setup=Pas de casque respiratoire\nou armure incomplète
@@ -780,6 +795,10 @@ warpdrive.compat.guide.block_detected_on_board=%1$s détecté à bord!
 warpdrive.compat.guide.quantum_field_interference=Interférence de champ quantique détecté!
 warpdrive.compat.guide.draconic_evolution_portal=Portail détecté!
 warpdrive.compat.guide.stargate_is_active=Porte des étoiles active (%1$s)!
+
+warpdrive.enan_reactor.status_line.missing_reactor_core=Noyau de réacteur Enantiomorphic manquant.
+warpdrive.enan_reactor.status_line.missing_stabilization_laser=Laser de stabilisation manquant %1$d.
+warpdrive.enan_reactor.status_line.non_air_block=Bloc non-aérien détecté %1$d.
 
 warpdrive.energy.status_line.charge=Chargé à
 warpdrive.energy.status_line.input_rate=Entrée à
@@ -822,6 +841,8 @@ warpdrive.force_field.upgrade.status_line.translation=translation
 
 warpdrive.ic2_reactor_laser_cooler.no_reactor=Pas de réacteur IC2 trouvé!
 warpdrive.ic2_reactor_laser_cooler.reactor_found=Réacteur connecté au %1$s.
+
+warpdrive.laser.status_line.missing_laser_medium=Aucun milieu amplificateur détecté, les côtés valides sont %1$d.
 
 warpdrive.laser_tree_farm.status_line.idle=IDLE (not farming)
 warpdrive.laser_tree_farm.status_line.warming_up=Warming up...
@@ -932,6 +953,7 @@ warpdrive.ship.status_line.isolation=Les %1$d blocs d'isolations actifs fourniss
 warpdrive.teleportation.guide.no_safe_spot=No safe spot found to summon player %1$s
 
 warpdrive.transporter.status_line.from_to=De (%1$.0f %2$.0f %3$.0f) à (%4$.0f %5$.0f %6$.0f)
+warpdrive.transporter.status_line.missing_containment=Confinement manquant ou invalide pour le scanneur %1$s.
 warpdrive.transporter_signature.status_line.invalid=No transporter room linked
 warpdrive.transporter_signature.status_line.valid=Linked to transporter room %1$s\n§8%2$s
 warpdrive.transporter_signature.get_missing=Transporter room has no signature yet!

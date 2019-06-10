@@ -6,5 +6,7 @@ public interface IMachine extends IInterfaced {
 	
 	Object[] enable(final Object[] arguments);
 	
-	Object[] isAssemblyValid();
+	Object[] getAssemblyStatus();
+	
+	boolean isAssemblyValid();
 }

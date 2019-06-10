@@ -8,6 +8,7 @@ public class BlockProperties {
 	// Common block properties
 	public static final PropertyBool                   ACTIVE        = PropertyBool.create("active");
 	public static final UnlistedPropertyBlockState     CAMOUFLAGE    = new UnlistedPropertyBlockState("camouflage");
+	public static final PropertyBool                   CONNECTED     = PropertyBool.create("connected");
 	public static final PropertyDirection              FACING        = PropertyDirection.create("facing");
 	
 }

@@ -55,6 +55,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.FakePlayer;
@@ -115,14 +116,10 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	public UUID uuid = null;
 	
 	// computed properties
-	private final int registryUpdateInterval_ticks = 20 * WarpDriveConfig.STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS;
-	private int registryUpdateTicks = 0;
-	
 	private int cooldownTicks;
 	private int guideTicks;
 	protected boolean isPowered = true;
-	private AcceleratorSetup cache_acceleratorSetup;
-	private boolean isBlockUpdated = false;
+	private AcceleratorSetup acceleratorSetup;
 	
 	
 	public TileEntityAcceleratorCore() {
@@ -158,23 +155,14 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 			return;
 		}
 		
+		assert acceleratorSetup != null;
+		
 		// update counters
 		if (cooldownTicks > 0) {
 			cooldownTicks--;
 		}
 		if (guideTicks > 0) {
 			guideTicks--;
-		}
-		
-		// Update starmap registry
-		registryUpdateTicks--;
-		if (registryUpdateTicks <= 0) {
-			registryUpdateTicks = registryUpdateInterval_ticks;
-			if (uuid == null || (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0)) {
-				uuid = UUID.randomUUID();
-			}
-			// recover registration, shouldn't be needed, in theory...
-			WarpDrive.starMap.updateInRegistry(this);
 		}
 		
 		// Evaluate current state
@@ -188,7 +176,6 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		}
 		
 		// Powered ?
-		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
 		reportJammed(acceleratorSetup);
 		
 		int energyRequired;
@@ -204,7 +191,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		final int energyPotential = acceleratorSetup.energy_getPotentialOutput();
 		isPowered = energyRequired > 0 && energyPotential >= energyRequired;
 		
-		final boolean isEnabledAndValid = isEnabled && isValid();
+		final boolean isEnabledAndValid = isEnabled && isAssemblyValid;
 		final boolean isOn = isEnabledAndValid && cooldownTicks <= 0 && isPowered;
 		updateBlockState(null, BlockProperties.ACTIVE, isOn);
 		if (isOn) {
@@ -249,7 +236,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 				injectionTicks = injectionPeriodTicks;
 				final int countInjectors = acceleratorSetup.keyInjectors.length;
 				if (indexNextInjector < countInjectors) {
-					onInject(acceleratorSetup.keyInjectors[indexNextInjector]);
+					onInject(acceleratorSetup.mapInjectors.get(acceleratorSetup.keyInjectors[indexNextInjector]));
 				} else {
 					// invalid setup => force a reset
 					rebootAccelerator(acceleratorSetup,false, true);
@@ -333,10 +320,6 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		}
 	}
 	
-	public boolean isValid() {
-		return true;
-	}
-	
 	boolean isOn() {
 		return legacy_isOn;
 	}
@@ -398,26 +381,32 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	}
 	
 	// inject a particle bunch
-	private boolean onInject(final int controlChannel) {
-		final VectorI vInjector = getAcceleratorSetup().mapInjectors.get(controlChannel);
-		if (vInjector == null) {
-			return false;
-		}
-		
-		if (setParticleBunches.size() >= WarpDriveConfig.ACCELERATOR_MAX_PARTICLE_BUNCHES) {
-			return false;
-		}
+	private void onInject(@Nonnull final VectorI vInjector) {
+		assert setParticleBunches.size() < WarpDriveConfig.ACCELERATOR_MAX_PARTICLE_BUNCHES;
 		
 		final TileEntity tileEntity = vInjector.getTileEntity(world);
-		if ( !(tileEntity instanceof TileEntityParticlesInjector)
-		  || !((TileEntityParticlesInjector) tileEntity).getIsEnabled() ) {
-			return false;
+		if (!(tileEntity instanceof TileEntityParticlesInjector)) {
+			if (WarpDriveConfig.LOGGING_ACCELERATOR) {
+				WarpDrive.logger.info(String.format("%s Unable to inject with missing injector %s %s",
+				                                    this, tileEntity, Commons.format(world, pos) ));
+			}
+			markDirtyAssembly();
+			return;
+		}
+		if (!((TileEntityParticlesInjector) tileEntity).getIsEnabled()) {
+			return;
 		}
 		
 		// find consumable
 		final Collection<Object> inventories = InventoryWrapper.getConnectedInventories(tileEntity.getWorld(), tileEntity.getPos());
 		if (inventories.isEmpty()) {
-			return false;
+			PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5,
+			                                      new Vector3(pos),
+			                                      new Vector3(0.0D, 0.0D, 0.0D),
+			                                      1.0F, 1.0F, 1.0F,
+			                                      1.0F, 1.0F, 1.0F,
+			                                      32);
+			return;
 		}
 		
 		int slotIndex = 0;
@@ -451,7 +440,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 			if (WarpDriveConfig.LOGGING_ACCELERATOR) {
 				WarpDrive.logger.debug(this + " No valid item found to inject");
 			}
-			return false;
+			return;
 		}
 		//noinspection ConstantConditions
 		assert(found);
@@ -489,7 +478,6 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 			// 0.20F + 0.10F * world.rand.nextFloat(), 0.90F + 0.10F * world.rand.nextFloat(), 0.40F + 0.15F * world.rand.nextFloat(),
 			0.0F, 0.0F, 0.0F, 32);
 		sendEvent("particleBunchInjected");
-		return true;
 	}
 	
 	// simulate a particle bunch
@@ -687,7 +675,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		
 		// WarpDrive.logger.info(this + " rebootAccelerator");
 		
-		registryUpdateTicks = 1;
+		markDirtyStarMapEntry();
 		updateChillers(acceleratorSetup, false, false, isChunkLoading);
 		legacy_isOn = false;
 		if (isLeaking) {
@@ -805,48 +793,59 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	}
 	
 	@Override
-	public void validate() {
-		super.validate();
-		
-		if (world.isRemote) {
-			return;
+	public void onBlockBroken(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
+		if (!world.isRemote) {
+			if (acceleratorSetup == null) {
+				final WarpDriveText textAssemblyValid = new WarpDriveText();
+				doScanAssembly(true, textAssemblyValid);
+			}
+			rebootAccelerator(acceleratorSetup, true, true);
 		}
-		
-		WarpDrive.starMap.updateInRegistry(this);
+		super.onBlockBroken(world, blockPos, blockState);
 	}
 	
 	@Override
-	public void invalidate() {
-		if (!world.isRemote) {
-			rebootAccelerator(cache_acceleratorSetup != null ? cache_acceleratorSetup : getAcceleratorSetup(), true, true);
-			WarpDrive.starMap.removeFromRegistry(this);
-		}
-		super.invalidate();
-	}
-	
-	public AcceleratorSetup getAcceleratorSetup() {
-		final AcceleratorSetup legacy_acceleratorSetup = cache_acceleratorSetup;
-		if ( isBlockUpdated
-		  || cache_acceleratorSetup == null
-		  || (!cache_acceleratorSetup.isValid() && cooldownTicks <= 0) ) {
-			cache_acceleratorSetup = new AcceleratorSetup(world.provider.getDimension(), pos);
-			if (!cache_acceleratorSetup.isValid()) {
-				cooldownTicks = ACCELERATOR_COOLDOWN_TICKS;
+	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
+		final boolean isValid = super.doScanAssembly(isDirty, textReason);
+		
+		final AcceleratorSetup legacy_acceleratorSetup = acceleratorSetup;
+		if ( isDirty
+		  || acceleratorSetup == null
+		  || acceleratorSetup.isDirty() ) {
+			acceleratorSetup = new AcceleratorSetup(world.provider.getDimension(), pos);
+			if (!acceleratorSetup.getAssemblyStatus(textReason)) {
+				if (WarpDriveConfig.LOGGING_ACCELERATOR) {
+					WarpDrive.logger.info(String.format("%s invalid accelerator setup: %s",
+					                                    this, textReason.getUnformattedText() ));
+				}
+				// don't return false, so the player can still enable the accelerator "at their own risk"
+			} else {
+				if (WarpDriveConfig.LOGGING_ACCELERATOR) {
+					WarpDrive.logger.info(String.format("%s valid accelerator setup",
+					                                    this ));
+				}
 			}
+		} else {
+			acceleratorSetup.getAssemblyStatus(textReason);
 		}
 		
 		// reset accelerator in case of major changes
-		if (isBlockUpdated) {
-			isBlockUpdated = false;
-			if (cache_acceleratorSetup.isMajorChange(legacy_acceleratorSetup)) {
+		if (isDirty) {
+			if (acceleratorSetup.isMajorChange(legacy_acceleratorSetup)) {
 				if (WarpDriveConfig.LOGGING_ACCELERATOR) {
 					WarpDrive.logger.info(this + " rebooting due to major change...");
 				}
-				rebootAccelerator(legacy_acceleratorSetup != null ? legacy_acceleratorSetup : cache_acceleratorSetup, true, true);
+				rebootAccelerator(legacy_acceleratorSetup != null ? legacy_acceleratorSetup : acceleratorSetup, true, true);
 			}
 			sendEvent("acceleratorUpdated");
 		}
-		return cache_acceleratorSetup;
+		
+		return isValid;
+	}
+	
+	@Override
+	protected void doUpdateParameters(final boolean isDirty) {
+		// no operation
 	}
 	
 	@Override
@@ -854,7 +853,9 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		if (!hasWorld()) {
 			return 0;
 		}
-		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
+		if (acceleratorSetup == null) {
+			return 0;
+		}
 		return acceleratorSetup.energy_getEnergyStored();
 	}
 	
@@ -863,7 +864,9 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		if (!hasWorld()) {
 			return 0;
 		}
-		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
+		if (acceleratorSetup == null) {
+			return 0;
+		}
 		return acceleratorSetup.energy_getMaxStorage();
 	}
 	
@@ -924,8 +927,11 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	// Common OC/CC methods
 	@Override
 	public Object[] getEnergyRequired() {
+		if (acceleratorSetup == null) {
+			return new Object[] { 0, 0, 0, 0 };
+		}
+		
 		final String units = energy_getDisplayUnits();
-		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
 		
 		final long energyCoolingCost_perTick = EnergyWrapper.convert(Math.round( acceleratorSetup.temperature_coolingEnergyCost_perTick
 		                                                                       + acceleratorSetup.particleEnergy_energyCost_perTick * 0.1D ), units);
@@ -954,7 +960,6 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	}
 	
 	private Object[] getControlPoints() {
-		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
 		if (acceleratorSetup != null) {
 			return acceleratorSetup.getControlPoints(world);
 		}
@@ -962,7 +967,6 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	}
 	
 	private Object[] getControlPointsCount() {
-		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
 		if (acceleratorSetup != null) {
 			final Object[] controlPoints = acceleratorSetup.getControlPoints(world);
 			return new Integer[] { controlPoints.length };
@@ -972,7 +976,6 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	
 	@Nonnull
 	private Object[] getControlPoint(@Nonnull final Object[] arguments) {
-		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
 		if (acceleratorSetup == null) {
 			return new Object[] { false, "No accelerator setup" };
 		}
@@ -1084,7 +1087,6 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	}
 	
 	private Object[] state() {
-		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
 		final String units = energy_getDisplayUnits();
 		final long energy = EnergyWrapper.convert(acceleratorSetup.energy_getEnergyStored(), units);
 		final String status = getStatusHeaderInPureText();
@@ -1140,7 +1142,6 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	
 	@Override
 	public AxisAlignedBB getStarMapArea() {
-		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
 		if (acceleratorSetup == null) {
 			return null;
 		}
@@ -1149,7 +1150,6 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	
 	@Override
 	public int getMass() {
-		final AcceleratorSetup acceleratorSetup = getAcceleratorSetup();
 		if (acceleratorSetup != null) {
 			return acceleratorSetup.getMass();
 		}
@@ -1169,7 +1169,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	@Override
 	public void onBlockUpdatedInArea(final VectorI vector, final IBlockState blockState) {
 		// skip in case of explosion, etc.
-		if (isBlockUpdated) {
+		if (isDirtyAssembly()) {
 			return;
 		}
 		
@@ -1177,7 +1177,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		// (we don't check the controller itself: it'll be triggered in invalidate() and we don't want to reevaluate the setup at that point)
 		if ( blockState.getBlock() instanceof BlockAbstractAccelerator
 		  || blockState.getBlock() instanceof BlockCapacitor ) {
-			isBlockUpdated = true;
+			markDirtyAssembly();
 			return;
 		}
 		if (WarpDriveConfig.LOGGING_ACCELERATOR) {

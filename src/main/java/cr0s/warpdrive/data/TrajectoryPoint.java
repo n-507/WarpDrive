@@ -1,5 +1,7 @@
 package cr0s.warpdrive.data;
 
+import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.atomic.BlockAcceleratorControlPoint;
 import cr0s.warpdrive.block.atomic.BlockElectromagnetPlain;
 import cr0s.warpdrive.block.atomic.BlockParticlesCollider;
@@ -408,8 +410,51 @@ public class TrajectoryPoint extends VectorI {
 		return isCollider(type);
 	}
 	
-	public boolean isJammed() {
-		return (type & MASK_ERRORS) != ERROR_NONE;
+	public boolean getStatus(final WarpDriveText textReason) {
+		final int errorCode = type & MASK_ERRORS;
+		if (errorCode != ERROR_NONE) {
+			final String strReasonBefore = textReason.getUnformattedText();
+			final String strPosition = String.format("(%d %d %d)",
+			                                         x, y, z );
+			if ((errorCode & ERROR_DOUBLE_JUNCTION) != 0) {
+				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.invalid_double_junction",
+				                  strPosition );
+			}
+			if ((errorCode & ERROR_VERTICAL_JUNCTION) != 0) {
+				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.invalid_vertical_junction",
+				                  strPosition );
+			}
+			if ((errorCode & ERROR_MISSING_TURNING_MAGNET) != 0) {
+				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_turning_magnet",
+				                  strPosition );
+			}
+			if ((errorCode & ERROR_MISSING_MAIN_MAGNET) != 0) {
+				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_main_magnets",
+				                  strPosition );
+			}
+			if ((errorCode & ERROR_MISSING_CORNER_MAGNET) != 0) {
+				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_corner_magnets",
+				                  strPosition );
+			}
+			if ((errorCode & ERROR_MISSING_COLLIDER) != 0) {
+				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_collider_block",
+				                  strPosition );
+			}
+			if ((errorCode & ERROR_MISSING_VOID_SHELL) != 0) {
+					textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_void_shell",
+					                  strPosition);
+			}
+			if ((errorCode & ERROR_TOO_MANY_VOID_SHELLS) != 0) {
+				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.too_many_void_shells",
+				                  strPosition );
+			}
+			if (strReasonBefore.equals(textReason.getUnformattedText())) {
+				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.invalid_error_code",
+				                  errorCode, strPosition);
+			}
+			return false;
+		}
+		return true;
 	}
 	
 	public static boolean isCollider(final int type) {
@@ -581,8 +626,10 @@ public class TrajectoryPoint extends VectorI {
 					isCollider = true;
 				}
 			}
-			if (countLowerMagnet > 8 || countHigherMagnet > 8) {
-				if (countLowerMagnet < 12 && countHigherMagnet < 12) {// need at least 12 corner magnets
+			if (tierMain != 0 && (countLowerMagnet > 8 || countHigherMagnet > 8)) {
+				if (countMainMagnet < 9) {// at least 9 main magnets
+					typeNew |= ERROR_MISSING_MAIN_MAGNET;
+				} else if (countLowerMagnet < 12 && countHigherMagnet < 12) {// need at least 12 corner magnets
 					typeNew |= ERROR_MISSING_CORNER_MAGNET;
 				} else if (countLowerMagnet != 0 && countHigherMagnet != 0) {// only one type of corner magnets
 					typeNew |= ERROR_MISSING_CORNER_MAGNET;
@@ -594,14 +641,11 @@ public class TrajectoryPoint extends VectorI {
 					typeNew |= ERROR_MISSING_VOID_SHELL;
 				} else if ((!isTurning) && countVoidShell > 6) {// a straight junction requires at most 6 void shells
 					typeNew |= ERROR_TOO_MANY_VOID_SHELLS;
-				} else if (countMainMagnet < 9) {// at 9 main magnets
-					typeNew |= ERROR_MISSING_MAIN_MAGNET;
 				} else if (countVoidShell + countMainMagnet != 15) {// exactly 15 void shells + main magnets
 					typeNew |= ERROR_MISSING_MAIN_MAGNET;
 				} else {
 					isInput = countLowerMagnet > 0;
 					isOutput = countHigherMagnet > 0;
-					assert isInput || isOutput;
 				}
 			}
 		}

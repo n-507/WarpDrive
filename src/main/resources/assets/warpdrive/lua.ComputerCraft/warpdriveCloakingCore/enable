@@ -20,7 +20,7 @@ if cloakingCore == nil or cloakingCore.isInterfaced() ~= true then
 else
   cloakingCore.enable(true)
   os.sleep(1)
-  local isValid, message = cloakingCore.isAssemblyValid()
+  local isValid, message = cloakingCore.getAssemblyStatus()
   if isValid then
     term.setBackgroundColor(colors.lime)
     term.setTextColor(colors.blue)

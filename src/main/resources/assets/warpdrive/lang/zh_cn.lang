@@ -746,6 +746,21 @@ warpdrive.accelerator.guide.low_power.not_enough_storage=能量不足;我们需�
 warpdrive.accelerator.guide.low_power.accelerating=我们的主能量储备耗尽 (%1$s > %2$s %3$s), 粒子正在泄漏,准备承受巨量辐射!
 warpdrive.accelerator.guide.low_power.no_particles=需要更多能量以启动加速器!
 warpdrive.accelerator.guide.no_chiller=这台加速器没有冷却设备!
+warpdrive.accelerator.status_line.missing_void_shell_connection=Missing void shell connection.
+warpdrive.accelerator.status_line.invalid_double_junction=Invalid void shell with double junction at %1$s.
+warpdrive.accelerator.status_line.invalid_vertical_junction=Invalid void shell with vertical movement at %1$s.
+warpdrive.accelerator.status_line.missing_turning_magnet=Missing main magnets at turning point %1$s.
+warpdrive.accelerator.status_line.missing_main_magnets=Missing main magnets at control point %1$s.
+warpdrive.accelerator.status_line.missing_corner_magnets=Missing corner magnets at control point %1$s.
+warpdrive.accelerator.status_line.missing_collider_block=Missing Particles collider block at %1$s.
+warpdrive.accelerator.status_line.missing_void_shell=Missing void shell at %1$s.
+warpdrive.accelerator.status_line.too_many_void_shells=Too many void shells at %1$s.
+warpdrive.accelerator.status_line.invalid_error_code=Invalid accelerator error code %1$d at %2$s, please report to mod author.
+warpdrive.accelerator.status_line.missing_basic_chiller=Missing basic chiller.
+warpdrive.accelerator.status_line.missing_advanced_chiller=Missing advanced chiller.
+warpdrive.accelerator.status_line.missing_superior_chiller=Missing superior chiller.
+warpdrive.accelerator.status_line.missing_injector=Missing accelerator injector node.
+warpdrive.accelerator.status_line.missing_collider_node=Missing accelerator collider node.
 
 warpdrive.breathing.alarm=呼吸警报
 warpdrive.breathing.invalid_setup=无呼吸头盔\未完成盔甲
@@ -785,6 +800,10 @@ warpdrive.compat.guide.block_detected_on_board=%1$s detected on board!
 warpdrive.compat.guide.quantum_field_interference=Quantum field interference detected!
 warpdrive.compat.guide.draconic_evolution_portal=Portal detected!
 warpdrive.compat.guide.stargate_is_active=Stargate is active (%1$s)!
+
+warpdrive.enan_reactor.status_line.missing_reactor_core=Missing Enantiomorphic reactor core.
+warpdrive.enan_reactor.status_line.missing_stabilization_laser=Missing stabilization laser %1$d.
+warpdrive.enan_reactor.status_line.non_air_block=Non-air block detected %1$d.
 
 warpdrive.energy.status_line.charge=能量水平
 warpdrive.energy.status_line.input_rate=Input rate is
@@ -827,6 +846,8 @@ warpdrive.force_field.upgrade.status_line.translation=转化
 
 warpdrive.ic2_reactor_laser_cooler.no_reactor=未发现反应堆!
 warpdrive.ic2_reactor_laser_cooler.reactor_found=Reactor connected on %1$s.
+
+warpdrive.laser.status_line.missing_laser_medium=No laser medium detected, valid sides are %1$d.
 
 warpdrive.laser_tree_farm.status_line.idle=IDLE (not farming)
 warpdrive.laser_tree_farm.status_line.warming_up=Warming up...
@@ -937,6 +958,7 @@ warpdrive.ship.status_line.isolation=%1$d有效的隔离方块提供%2$s%%吸收
 warpdrive.teleportation.guide.no_safe_spot=No safe spot found to summon player %1$s
 
 warpdrive.transporter.status_line.from_to=从 (%1$.0f %2$.0f %3$.0f) 到 (%4$.0f %5$.0f %6$.0f)
+warpdrive.transporter.status_line.missing_containment=Missing or invalid containment for scanner %1$s.
 warpdrive.transporter_signature.status_line.invalid=No transporter room linked
 warpdrive.transporter_signature.status_line.valid=Linked to transporter room %1$s\n§8%2$s
 warpdrive.transporter_signature.get_missing=Transporter room has no signature yet!
