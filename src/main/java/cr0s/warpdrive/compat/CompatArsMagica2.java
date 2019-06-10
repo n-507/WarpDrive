@@ -178,7 +178,7 @@ public class CompatArsMagica2 implements IBlockTransformer {
 		}
 		
 		final World targetWorld = transformation.getTargetWorld();
-		final BlockPos target = transformation.apply(tileEntity);
+		final BlockPos target = transformation.apply(tileEntity.getPos());
 		final TileEntity tileEntityTarget = targetWorld.getTileEntity(target);
 		if (tileEntityTarget == null) {
 			WarpDrive.logger.error(String.format("ArsMagica2 compat: No tile entity found at target location %s. We might loose mana network %s.", target, nbtBase));
