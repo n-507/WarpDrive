@@ -4,7 +4,7 @@ import cr0s.warpdrive.CommonProxy;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.atomic.BlockVoidShellPlain;
-import cr0s.warpdrive.block.atomic.TileEntityAcceleratorController;
+import cr0s.warpdrive.block.atomic.TileEntityAcceleratorCore;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.entity.EntityParticleBunch;
 
@@ -32,7 +32,7 @@ public class ParticleBunch extends Vector3 {
 	
 	// persistent properties
 	public int id;
-	public double energy = TileEntityAcceleratorController.PARTICLE_BUNCH_ENERGY_MINIMUM[0];
+	public double energy = TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MINIMUM[0];
 	public EnumFacing directionCurrentMotion = null;
 	public Vector3 vectorCurrentMotion = new Vector3(0.0D, 0.0D, 0.0D);
 	public Vector3 vectorTurningPoint = null;
@@ -145,13 +145,13 @@ public class ParticleBunch extends Vector3 {
 		  && trajectoryPointCurrent.hasNoMissingVoidShells()
 		  && isNewBlock ) {
 			// validate energy level
-			if ( energy >= TileEntityAcceleratorController.PARTICLE_BUNCH_ENERGY_MINIMUM[tier - 1]
-			  && energy <= TileEntityAcceleratorController.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1]) {
+			if ( energy >= TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MINIMUM[tier - 1]
+			  && energy <= TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1] ) {
 				// linear accelerate
 				final int countMagnets = trajectoryPointCurrent.getMagnetsCount();
 				final double energy_before = energy;
-				energy *= 1.0D + countMagnets * TileEntityAcceleratorController.PARTICLE_BUNCH_ENERGY_FACTOR_PER_MAGNET[tier - 1];
-				energy = Math.min(energy, TileEntityAcceleratorController.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1]);
+				energy *= 1.0D + countMagnets * TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_FACTOR_PER_MAGNET[tier - 1];
+				energy = Math.min(energy, TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1]);
 				if (WarpDriveConfig.LOGGING_ACCELERATOR && WarpDrive.isDev) {
 					WarpDrive.logger.info(String.format(this + " accelerating by %d magnets energy %.5f -> %.5f at [%d %d %d]",
 							countMagnets, energy_before, energy, vCurrentBlock.x, vCurrentBlock.y, vCurrentBlock.z));
@@ -166,7 +166,7 @@ public class ParticleBunch extends Vector3 {
 			final AcceleratorControlParameter acceleratorControlParameter = mapParameters.get(controlChannel); 
 			final double threshold =  (acceleratorControlParameter  == null ? WarpDriveConfig.ACCELERATOR_THRESHOLD_DEFAULT : acceleratorControlParameter.threshold);
 			enableControlPoint = energy > threshold
-			                            * TileEntityAcceleratorController.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1];
+			                            * TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1];
 			if (enableControlPoint && WarpDriveConfig.LOGGING_ACCELERATOR) {
 				WarpDrive.logger.info(String.format(this + " control point enabled at [%d %d %d]",
 					vCurrentBlock.x, vCurrentBlock.y, vCurrentBlock.z));
@@ -283,13 +283,13 @@ public class ParticleBunch extends Vector3 {
 					if (isTurning) {
 						// @TODO
 						final double energy_before = energy;
-						// final double energyMin = TileEntityAcceleratorController.PARTICLE_BUNCH_ENERGY_MINIMUM[tier - 1];
-						// energy = energyMin + (energy - energyMin) * TileEntityAcceleratorController.ACCELERATOR_PARTICLE_ENERGY_TURN_COEFFICIENTS[tier - 1];
-						final double energyMin = TileEntityAcceleratorController.PARTICLE_BUNCH_ENERGY_MINIMUM[tier - 1];
-						final double energyMax = TileEntityAcceleratorController.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1];
+						// final double energyMin = TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MINIMUM[tier - 1];
+						// energy = energyMin + (energy - energyMin) * TileEntityAcceleratorCore.ACCELERATOR_PARTICLE_ENERGY_TURN_COEFFICIENTS[tier - 1];
+						final double energyMin = TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MINIMUM[tier - 1];
+						final double energyMax = TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1];
 						energy = Commons.clamp(energyMin, energyMax, energy * Commons.interpolate(
 							new double[] { energyMin, energyMax },
-							new double[] { TileEntityAcceleratorController.PARTICLE_BUNCH_TURN_COEFFICIENTS_AT_MIN_ENERGY[tier - 1], TileEntityAcceleratorController.PARTICLE_BUNCH_TURN_COEFFICIENTS_AT_MAX_ENERGY[tier - 1] },
+							new double[] { TileEntityAcceleratorCore.PARTICLE_BUNCH_TURN_COEFFICIENTS_AT_MIN_ENERGY[tier - 1], TileEntityAcceleratorCore.PARTICLE_BUNCH_TURN_COEFFICIENTS_AT_MAX_ENERGY[tier - 1] },
 							energy));
 						if (WarpDriveConfig.LOGGING_ACCELERATOR) {
 							WarpDrive.logger.info(String.format(this + " turning energy %.5f -> %.5f at [%d %d %d]",
@@ -336,9 +336,9 @@ public class ParticleBunch extends Vector3 {
 	
 	private static double getSpeedFromEnergy(final double energy) {
 		return Commons.interpolate(
-			TileEntityAcceleratorController.PARTICLE_BUNCH_ENERGY_TO_SPEEDS_X,
-			TileEntityAcceleratorController.PARTICLE_BUNCH_ENERGY_TO_SPEEDS_Y,
-			energy);
+				TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_TO_SPEEDS_X,
+				TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_TO_SPEEDS_Y,
+				energy);
 	}
 	
 	private void doIrradiation(final World world, final double radius, final float strength) {
@@ -356,9 +356,9 @@ public class ParticleBunch extends Vector3 {
 		                                    reason, Commons.format(world, x, y, z) ));
 		if (world instanceof WorldServer) {
 			final double explosionStrength = Commons.interpolate(
-				TileEntityAcceleratorController.PARTICLE_BUNCH_ENERGY_TO_EXPLOSION_STRENGTH_X,
-				TileEntityAcceleratorController.PARTICLE_BUNCH_ENERGY_TO_EXPLOSION_STRENGTH_Y,
-				energy); 
+					TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_TO_EXPLOSION_STRENGTH_X,
+					TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_TO_EXPLOSION_STRENGTH_Y,
+					energy); 
 			final EntityPlayer entityPlayer = CommonProxy.getFakePlayer(null, (WorldServer) world, getBlockPos());
 			world.newExplosion(entityPlayer, x, y, z, (float) explosionStrength, true, true);
 			doIrradiation(world, explosionStrength, (float) explosionStrength);

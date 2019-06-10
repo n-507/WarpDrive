@@ -46,6 +46,6 @@ public class BlockAcceleratorCore extends BlockAbstractContainer {
 	@Nonnull
 	@Override
 	public TileEntity createNewTileEntity(@Nonnull final World world, final int metadata) {
-		return new TileEntityAcceleratorController();
+		return new TileEntityAcceleratorCore();
 	}
 }

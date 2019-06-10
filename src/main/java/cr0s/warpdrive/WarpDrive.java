@@ -19,7 +19,7 @@ import cr0s.warpdrive.block.atomic.BlockParticlesInjector;
 import cr0s.warpdrive.block.atomic.BlockVoidShellGlass;
 import cr0s.warpdrive.block.atomic.BlockVoidShellPlain;
 import cr0s.warpdrive.block.atomic.TileEntityAcceleratorControlPoint;
-import cr0s.warpdrive.block.atomic.TileEntityAcceleratorController;
+import cr0s.warpdrive.block.atomic.TileEntityAcceleratorCore;
 import cr0s.warpdrive.block.atomic.TileEntityParticlesInjector;
 import cr0s.warpdrive.block.breathing.BlockAirFlow;
 import cr0s.warpdrive.block.breathing.BlockAirGeneratorTiered;
@@ -1006,7 +1006,7 @@ public class WarpDrive {
 			event.getRegistry().register(block);
 		}
 		
-		GameRegistry.registerTileEntity(TileEntityAcceleratorController.class, new ResourceLocation(WarpDrive.MODID, "accelerator_core"));
+		GameRegistry.registerTileEntity(TileEntityAcceleratorCore.class, new ResourceLocation(WarpDrive.MODID, "accelerator_core"));
 		GameRegistry.registerTileEntity(TileEntityAcceleratorControlPoint.class, new ResourceLocation(WarpDrive.MODID, "accelerator_control_point"));
 		GameRegistry.registerTileEntity(TileEntityAirGeneratorTiered.class, new ResourceLocation(WarpDrive.MODID, "air_generator"));
 		GameRegistry.registerTileEntity(TileEntityCamera.class, new ResourceLocation(WarpDrive.MODID, "camera"));

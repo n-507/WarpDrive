@@ -60,7 +60,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.Optional;
 
-public class TileEntityAcceleratorController extends TileEntityAbstractEnergyCoreOrController implements IStarMapRegistryTileEntity {
+public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrController implements IStarMapRegistryTileEntity {
 	
 	private static final int      ACCELERATOR_COOLDOWN_TICKS = 300;
 	private static final int      ACCELERATOR_GUIDE_UPDATE_TICKS = 300;
@@ -104,7 +104,6 @@ public class TileEntityAcceleratorController extends TileEntityAbstractEnergyCor
 	private static final Particle[] ACCELERATOR_COLLISION_PARTICLES = { null, ParticleRegistry.ION, ParticleRegistry.PROTON, ParticleRegistry.ANTIMATTER, ParticleRegistry.STRANGE_MATTER };
 	
 	// persistent properties
-	private boolean isEnabled = true;
 	private final Collection<ParticleBunch> setParticleBunches = new CopyOnWriteArraySet<>();
 	private double temperatureCurrent_K = ACCELERATOR_AMBIENT_TEMPERATURE_K;
 	private Map<Integer, AcceleratorControlParameter> mapControlParameters = new HashMap<>();
@@ -126,7 +125,7 @@ public class TileEntityAcceleratorController extends TileEntityAbstractEnergyCor
 	private boolean isBlockUpdated = false;
 	
 	
-	public TileEntityAcceleratorController() {
+	public TileEntityAcceleratorCore() {
 		super();
 		
 		peripheralName = "warpdriveAccelerator";
@@ -708,9 +707,7 @@ public class TileEntityAcceleratorController extends TileEntityAbstractEnergyCor
 	@Override
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
-		
-		isEnabled = tagCompound.getBoolean("isEnabled");
-		
+				
 		uuid = new UUID(tagCompound.getLong("uuidMost"), tagCompound.getLong("uuidLeast"));
 		if (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0) {
 			uuid = UUID.randomUUID();
@@ -750,8 +747,6 @@ public class TileEntityAcceleratorController extends TileEntityAbstractEnergyCor
 	@Override
 	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
-		
-		tagCompound.setBoolean("isEnabled", isEnabled);
 		
 		if (uuid != null) {
 			tagCompound.setLong("uuidMost", uuid.getMostSignificantBits());
