@@ -337,6 +337,7 @@ public class Dictionary {
 			config.get("entity_tags", "ic2:dynamite"                           , "NoMass NonLivingTarget").getString();
 			
 			// undead and dummies
+			config.get("entity_tags", "minecraft:armor_stand"                  , "LivingWithoutAir").getString();
 			config.get("entity_tags", "minecraft:creeper"                      , "LivingWithoutAir").getString();
 			config.get("entity_tags", "minecraft:elder_guardian"               , "LivingWithoutAir").getString();
 			config.get("entity_tags", "minecraft:guardian"                     , "LivingWithoutAir").getString();
