@@ -186,7 +186,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 					                                    optimumSpeed, blockToDeployPerTick));
 				}
 				sequencer.setBlocksPerTick(blockToDeployPerTick);
-				sequencer.setCaptain(playerName);
+				sequencer.setRequester(playerName, isShipToken);
 				sequencer.setEffectSource(new Vector3(this).translate(0.5D));
 				sequencer.setCallback(this);
 				sequencer.enable();
@@ -718,15 +718,13 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		final boolean isSuccess = deployShip(fileName, x, y, z, rotationSteps, false, reason);
 		
 		// don't force captain when deploying from LUA
-		playerName = null;
-		/*
-		final EntityPlayer entityPlayer = world.getClosestPlayer(pos, 8);
+		final EntityPlayer entityPlayer = world.getClosestPlayer(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 8.0D, false);
 		if (entityPlayer != null) {
-			playerName = entityPlayer.getCommandSenderName();
+			playerName = entityPlayer.getName();
 		} else {
 			playerName = "";
 		}
-		/**/
+		
 		return new Object[] { isSuccess, Commons.removeFormatting( reason.getUnformattedText() ) };
 	}
 	

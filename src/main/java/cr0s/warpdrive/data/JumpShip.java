@@ -355,11 +355,14 @@ public class JumpShip {
 		return isSuccess;
 	}
 	
-	public void setCaptain(final String playerName) {
-		entitiesOnShip = new ArrayList<>();
+	public void addPlayerToEntities(final String playerName) {
+		if (entitiesOnShip == null) {
+			entitiesOnShip = new ArrayList<>();
+		}
 		final EntityPlayerMP entityPlayerMP = Commons.getOnlinePlayerByName(playerName);
 		if (entityPlayerMP == null) {
-			WarpDrive.logger.error(String.format("%s setCaptain: captain is missing", this));
+			WarpDrive.logger.error(String.format("%s Unable to add offline/missing player %s",
+			                                     this, playerName ));
 			return;
 		}
 		final MovingEntity movingEntity = new MovingEntity(entityPlayerMP);

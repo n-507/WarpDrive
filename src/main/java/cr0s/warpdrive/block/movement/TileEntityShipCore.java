@@ -694,9 +694,6 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		if (tileEntitySecurityStation != null) {
 			tileEntitySecurityStation.players.clear();
 			tileEntitySecurityStation.players.add(entityPlayerMP.getName());
-		} else {
-			WarpDrive.logger.warn(this + " Failed to find controller block");
-			return false;
 		}
 		
 		final AxisAlignedBB aabb = new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
@@ -706,9 +703,12 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		return true;
 	}
 	
-	private static final VectorI[] SUMMON_OFFSETS = { new VectorI(2, 0, 0), new VectorI(-1, 0, 0),
-		new VectorI(2, 0, 1), new VectorI(2, 0, -1), new VectorI(-1, 0, 1), new VectorI(-1, 0, -1),
-		new VectorI(1, 0, 1), new VectorI(1, 0, -1), new VectorI( 0, 0, 1), new VectorI( 0, 0, -1) };
+	private static final VectorI[] SUMMON_OFFSETS = {
+			new VectorI(-1, 0,  0), new VectorI( 1, 0,  0),
+			new VectorI(-1, 0,  1), new VectorI(-1, 0, -1),
+			new VectorI( 1, 0,  1), new VectorI( 1, 0, -1),
+			new VectorI( 0, 0,  1), new VectorI( 0, 0, -1),
+			new VectorI(-2, 0,  0), new VectorI( 2, 0,  0) };
 	private void summonPlayer(@Nonnull final EntityPlayerMP entityPlayer) {
 		// find a free spot
 		final BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(pos);

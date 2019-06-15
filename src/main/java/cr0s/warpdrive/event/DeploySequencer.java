@@ -15,7 +15,8 @@ import net.minecraft.world.World;
 
 public class DeploySequencer extends JumpSequencer {
 	
-	private String playerName;
+	private String playerNameRequester;
+	private boolean isRequesterCaptain = false;
 	private ISequencerCallbacks callback;
 	
 	/*
@@ -31,9 +32,10 @@ public class DeploySequencer extends JumpSequencer {
 		super(jumpShip, world, isInstantiated ? EnumShipMovementType.INSTANTIATE : EnumShipMovementType.RESTORE, destX, destY, destZ, rotationSteps);
 	}
 	
-	public void setCaptain(final String playerName) {
-		this.playerName = playerName;
-		ship.setCaptain(playerName);
+	public void setRequester(final String playerName, final boolean isCaptain) {
+		this.playerNameRequester = playerName;
+		this.isRequesterCaptain = isCaptain;
+		addPlayerToEntities(playerName);
 	}
 	
 	public void setCallback(final ISequencerCallbacks object) {
@@ -56,9 +58,9 @@ public class DeploySequencer extends JumpSequencer {
 	protected void state_chunkReleasing() {
 		super.state_chunkReleasing();
 		
-		if (playerName != null) {
+		if (playerNameRequester != null) {
 			// Warn owner if deployment done but wait next tick for teleportation
-			final EntityPlayerMP entityPlayerMP = Commons.getOnlinePlayerByName(playerName);
+			final EntityPlayerMP entityPlayerMP = Commons.getOnlinePlayerByName(playerNameRequester);
 			if (entityPlayerMP != null) {
 				Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.styleCorrect, "warpdrive.builder.guide.ship_deployed"));
 			}
@@ -67,8 +69,9 @@ public class DeploySequencer extends JumpSequencer {
 	
 	@Override
 	protected void state_finishing() {
-		if (playerName != null && !playerName.isEmpty()) {
-			final EntityPlayerMP entityPlayerMP = Commons.getOnlinePlayerByName(playerName);
+		if ( playerNameRequester != null && !playerNameRequester.isEmpty()
+		  && isRequesterCaptain ) {
+			final EntityPlayerMP entityPlayerMP = Commons.getOnlinePlayerByName(playerNameRequester);
 			if (entityPlayerMP != null) {
 				final TileEntity tileEntity = targetWorld.getTileEntity(new BlockPos(destX, destY, destZ));
 				if (tileEntity instanceof TileEntityShipCore) {
@@ -77,7 +80,7 @@ public class DeploySequencer extends JumpSequencer {
 						Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.styleCorrect, "warpdrive.builder.guide.welcome_aboard"));
 					} else {
 						WarpDrive.logger.warn(String.format("Failed to assign new captain %s",
-						                                    playerName));
+						                                    playerNameRequester));
 					}
 				} else {
 					WarpDrive.logger.warn(String.format("Unable to detect ship core after deployment, found %s",

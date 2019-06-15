@@ -167,6 +167,10 @@ public class JumpSequencer extends AbstractSequencer {
 		this.v3Source = v3Source;
 	}
 	
+	public void addPlayerToEntities(final String playerName) {
+		ship.addPlayerToEntities(playerName);
+	}
+	
 	public void enable() {
 		isEnabled = true;
 		register();
