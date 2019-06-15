@@ -378,9 +378,9 @@ public class CompatDraconicEvolution implements IBlockTransformer {
 					final int z = blockPosOld.getZ() - byteLink[2];
 					if (transformation.isInside(x, y, z)) {
 						final BlockPos targetLink = transformation.apply(x, y, z);
-						byteLink[0] = (byte) (targetLink.getX() - blockPosNew.getX());
-						byteLink[1] = (byte) (targetLink.getY() - blockPosNew.getY());
-						byteLink[2] = (byte) (targetLink.getZ() - blockPosNew.getZ());
+						byteLink[0] = (byte) (blockPosNew.getX() - targetLink.getX());
+						byteLink[1] = (byte) (blockPosNew.getY() - targetLink.getY());
+						byteLink[2] = (byte) (blockPosNew.getZ() - targetLink.getZ());
 						tagListNewLinkedCrystals.appendTag(listLinkedCrystal);
 					} else {// (outside ship)
 						// remove the link
@@ -403,9 +403,9 @@ public class CompatDraconicEvolution implements IBlockTransformer {
 				final int z = blockPosOld.getZ() - tagListOffset.getIntAt(2);
 				if (transformation.isInside(x, y, z)) {
 					final BlockPos targetStabilizer = transformation.apply(x, y, z);
-					tagListOffset.set(0, new NBTTagInt(targetStabilizer.getX() - blockPosNew.getX()));
-					tagListOffset.set(1, new NBTTagInt(targetStabilizer.getY() - blockPosNew.getY()));
-					tagListOffset.set(2, new NBTTagInt(targetStabilizer.getZ() - blockPosNew.getZ()));
+					tagListOffset.set(0, new NBTTagInt(blockPosNew.getX() - targetStabilizer.getX()));
+					tagListOffset.set(1, new NBTTagInt(blockPosNew.getY() - targetStabilizer.getY()));
+					tagListOffset.set(2, new NBTTagInt(blockPosNew.getZ() - targetStabilizer.getZ()));
 				} else {// (outside ship)
 					// remove the link
 					tagListOffset.set(0, new NBTTagInt(0));
@@ -427,9 +427,9 @@ public class CompatDraconicEvolution implements IBlockTransformer {
 				final int z = blockPosOld.getZ() - tagListOffset.getIntAt(2);
 				if (transformation.isInside(x, y, z)) {
 					final BlockPos targetStabilizer = transformation.apply(x, y, z);
-					tagListOffset.set(0, new NBTTagInt(targetStabilizer.getX() - blockPosNew.getX()));
-					tagListOffset.set(1, new NBTTagInt(targetStabilizer.getY() - blockPosNew.getY()));
-					tagListOffset.set(2, new NBTTagInt(targetStabilizer.getZ() - blockPosNew.getZ()));
+					tagListOffset.set(0, new NBTTagInt(blockPosNew.getX() - targetStabilizer.getX()));
+					tagListOffset.set(1, new NBTTagInt(blockPosNew.getY() - targetStabilizer.getY()));
+					tagListOffset.set(2, new NBTTagInt(blockPosNew.getZ() - targetStabilizer.getZ()));
 				} else {// (outside ship)
 					// remove the link
 					tagListOffset.set(0, new NBTTagInt(0));
@@ -479,9 +479,9 @@ public class CompatDraconicEvolution implements IBlockTransformer {
 					final int z = blockPosOld.getZ() - tagListOffset.getIntAt(2);
 					if (transformation.isInside(x, y, z)) {
 						final BlockPos targetComponent = transformation.apply(x, y, z);
-						tagListOffset.set(0, new NBTTagInt(targetComponent.getX() - blockPosNew.getX()));
-						tagListOffset.set(1, new NBTTagInt(targetComponent.getY() - blockPosNew.getY()));
-						tagListOffset.set(2, new NBTTagInt(targetComponent.getZ() - blockPosNew.getZ()));
+						tagListOffset.set(0, new NBTTagInt(blockPosNew.getX() - targetComponent.getX()));
+						tagListOffset.set(1, new NBTTagInt(blockPosNew.getY() - targetComponent.getY()));
+						tagListOffset.set(2, new NBTTagInt(blockPosNew.getZ() - targetComponent.getZ()));
 					} else {// (outside ship)
 						// remove the link
 						tagListOffset.set(0, new NBTTagInt(0));
