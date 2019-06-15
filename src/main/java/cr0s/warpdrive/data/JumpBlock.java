@@ -458,7 +458,7 @@ public class JumpBlock {
 		final String blockName = tagCompound.getString("block");
 		blockMeta = tagCompound.getByte("blockMeta");
 		final String stringBlockState = String.format("%s@%d", blockName, blockMeta);
-		final IBlockState blockState = WarpDriveDataFixer.getFixedBlockState(stringBlockState);
+		final IBlockState blockState = WarpDriveDataFixer.getBlockState(stringBlockState);
 		if (blockState == null) {
 			if (WarpDriveConfig.LOGGING_BUILDING) {
 				WarpDrive.logger.warn(String.format("Ignoring unknown blockstate %s from tag %s, consider updating your warpdrive/dataFixer.yml",
