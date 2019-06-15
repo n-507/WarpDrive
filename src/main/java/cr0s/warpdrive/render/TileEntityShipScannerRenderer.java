@@ -68,4 +68,9 @@ public class TileEntityShipScannerRenderer extends TileEntitySpecialRenderer<Til
 		GlStateManager.popMatrix();
 		GlStateManager.popAttrib();
 	}
+	
+	@Override
+	public boolean isGlobalRenderer(final TileEntityShipScanner tileEntityShipScanner) {
+		return true;
+	}
 }

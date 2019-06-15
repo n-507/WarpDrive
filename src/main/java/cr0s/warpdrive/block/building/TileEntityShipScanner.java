@@ -50,6 +50,8 @@ import net.minecraft.util.text.TextComponentString;
 
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
@@ -65,6 +67,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 	protected int lightCamouflage;
 	
 	// computed properties
+	private AxisAlignedBB aabbRender = null;
 	private boolean isShipToken;
 	private EnumShipScannerState enumShipScannerState = EnumShipScannerState.IDLE;
 	private TileEntityShipCore shipCore = null;
@@ -90,6 +93,18 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 				"deploy",
 				"state"
 		});
+	}
+	
+	@Nonnull
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getRenderBoundingBox() {
+		if (aabbRender == null) {
+			aabbRender = new AxisAlignedBB(
+					pos.getX() - 1.0D, pos.getY()       , pos.getZ() - 1.0D,
+					pos.getX() + 2.0D, pos.getY() + 2.0D, pos.getZ() + 2.0D);
+		}
+		return aabbRender;
 	}
 	
 	@Override

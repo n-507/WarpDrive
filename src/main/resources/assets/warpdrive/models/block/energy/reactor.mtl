@@ -1,5 +1,5 @@
 # Blender MTL File: 'None'
-# Material Count: 2
+# Material Count: 5
 
 newmtl m_crystal
 # Ns 96.078431
@@ -22,3 +22,30 @@ newmtl m_grip
 d 1.000000
 # illum 2
 map_Kd warpdrive:blocks/energy/reactor_core-grip
+
+newmtl m_matter
+# Ns 0
+# Ka 0.000000 0.000000 0.000000
+# Kd 0.8 0.8 0.8
+# Ks 0.8 0.8 0.8
+d 1
+# illum 2
+map_Kd warpdrive:blocks/energy/reactor_matter
+
+newmtl m_surface
+# Ns 0
+# Ka 0.000000 0.000000 0.000000
+# Kd 0.8 0.8 0.8
+# Ks 0.8 0.8 0.8
+d 1
+# illum 2
+map_Kd warpdrive:blocks/energy/reactor_surface
+
+newmtl m_shield
+# Ns 0
+# Ka 0.000000 0.000000 0.000000
+# Kd 0.8 0.8 0.8
+# Ks 0.8 0.8 0.8
+d 1
+# illum 2
+map_Kd warpdrive:blocks/energy/reactor_shield

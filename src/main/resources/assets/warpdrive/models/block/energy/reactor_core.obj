@@ -1,7 +1,7 @@
 # Blender v2.79 (sub 0) OBJ File: ''
 # www.blender.org
-mtllib reactor_crystal.mtl
-o crystal
+mtllib reactor.mtl
+o core
 v 0.044966 -0.508000 -0.153414
 v -0.000951 -0.508000 -0.053779
 v -0.050220 -0.508000 -0.151799

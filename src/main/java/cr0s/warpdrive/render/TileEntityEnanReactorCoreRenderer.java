@@ -27,38 +27,53 @@ import net.minecraftforge.common.model.TRSRTransformation;
 
 public class TileEntityEnanReactorCoreRenderer extends TileEntitySpecialRenderer<TileEntityEnanReactorCore> {
 	
-	private IBakedModel bakedModelCrystal;
+	private IBakedModel bakedModelCore;
 	private IBakedModel bakedModelMatter;
-	private static List<BakedQuad> quadsCrystal;
+	private IBakedModel bakedModelSurface;
+	private IBakedModel bakedModelShield;
+	private static List<BakedQuad> quadsCore;
 	private static List<BakedQuad> quadsMatter;
+	private static List<BakedQuad> quadsSurface;
+	private static List<BakedQuad> quadsShield;
 	
 	public TileEntityEnanReactorCoreRenderer() {
 		super();
 		SpriteManager.add(new ResourceLocation("warpdrive:blocks/energy/reactor_core-crystal"));
 		SpriteManager.add(new ResourceLocation("warpdrive:blocks/energy/reactor_core-grip"));
 		SpriteManager.add(new ResourceLocation("warpdrive:blocks/energy/reactor_matter"));
+		SpriteManager.add(new ResourceLocation("warpdrive:blocks/energy/reactor_surface"));
+		SpriteManager.add(new ResourceLocation("warpdrive:blocks/energy/reactor_shield"));
 	}
 	
-	private List<BakedQuad> getCrystalQuads() {
-		// Since we cannot bake in preInit() we do lazy baking of the model as soon as we need it for rendering
-		if (bakedModelCrystal == null) {
-			final ResourceLocation resourceLocation = new ResourceLocation(WarpDrive.MODID, "block/energy/reactor_crystal.obj");
+	private void updateQuads() {
+		// Since we cannot bake in preInit() we do lazy baking of the models as soon as we need it for rendering
+		if (bakedModelCore == null) {
+			final ResourceLocation resourceLocation = new ResourceLocation(WarpDrive.MODID, "block/energy/reactor_core.obj");
 			final IModel model = RenderCommons.getModel(resourceLocation);
-			bakedModelCrystal = model.bake(TRSRTransformation.identity(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
+			bakedModelCore = model.bake(TRSRTransformation.identity(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
 		}
-		quadsCrystal = bakedModelCrystal.getQuads(null, null, 0L);
-		return quadsCrystal;
-	}
-	
-	private List<BakedQuad> getMatterQuads() {
-		// Since we cannot bake in preInit() we do lazy baking of the model as soon as we need it for rendering
+		quadsCore = bakedModelCore.getQuads(null, null, 0L);
+		
 		if (bakedModelMatter == null) {
 			final ResourceLocation resourceLocation = new ResourceLocation(WarpDrive.MODID, "block/energy/reactor_matter.obj");
 			final IModel model = RenderCommons.getModel(resourceLocation);
 			bakedModelMatter = model.bake(TRSRTransformation.identity(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
 		}
 		quadsMatter = bakedModelMatter.getQuads(null, null, 0L);
-		return quadsMatter;
+		
+		if (bakedModelSurface == null) {
+			final ResourceLocation resourceLocation = new ResourceLocation(WarpDrive.MODID, "block/energy/reactor_surface.obj");
+			final IModel model = RenderCommons.getModel(resourceLocation);
+			bakedModelSurface = model.bake(TRSRTransformation.identity(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
+		}
+		quadsSurface = bakedModelSurface.getQuads(null, null, 0L);
+		
+		if (bakedModelShield == null) {
+			final ResourceLocation resourceLocation = new ResourceLocation(WarpDrive.MODID, "block/energy/reactor_shield.obj");
+			final IModel model = RenderCommons.getModel(resourceLocation);
+			bakedModelShield = model.bake(TRSRTransformation.identity(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
+		}
+		quadsShield = bakedModelShield.getQuads(null, null, 0L);
 	}
 	
 	@Override
@@ -67,11 +82,8 @@ public class TileEntityEnanReactorCoreRenderer extends TileEntitySpecialRenderer
 		if (!tileEntityEnanReactorCore.getWorld().isBlockLoaded(tileEntityEnanReactorCore.getPos(), false)) {
 			return;
 		}
-		if (quadsCrystal == null) {
-			quadsCrystal = getCrystalQuads();
-		}
-		if (quadsMatter == null) {
-			quadsMatter = getMatterQuads();
+		if (quadsCore == null) {
+			updateQuads();
 		}
 		final Tessellator tessellator = Tessellator.getInstance();
 		GlStateManager.pushAttrib();
@@ -85,51 +97,66 @@ public class TileEntityEnanReactorCoreRenderer extends TileEntitySpecialRenderer
 		// GlStateManager.disableCull();
 		RenderHelper.disableStandardItemLighting();
 		
-		// render the crystal
+		// render the core
 		GlStateManager.enableLighting();
 		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		final BufferBuilder worldRenderer = tessellator.getBuffer();
 		
-		final float rotationCrystal = tileEntityEnanReactorCore.client_rotationCore_deg + partialTicks * tileEntityEnanReactorCore.client_rotationSpeedCore_degPerTick;
-		GlStateManager.rotate(rotationCrystal, 0.0F, 1.0F, 0.0F);
+		GlStateManager.pushMatrix();
+		
+		final float rotationCore = tileEntityEnanReactorCore.client_rotationCore_deg + partialTicks * tileEntityEnanReactorCore.client_rotationSpeedCore_degPerTick;
+		GlStateManager.rotate(rotationCore, 0.0F, 1.0F, 0.0F);
 		
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		RenderCommons.renderModelTESR(quadsCrystal, worldRenderer, tileEntityEnanReactorCore.getWorld().getCombinedLight(tileEntityEnanReactorCore.getPos(), 15));
+		RenderCommons.renderModelTESR(quadsCore, worldRenderer, tileEntityEnanReactorCore.getWorld().getCombinedLight(tileEntityEnanReactorCore.getPos(), 15));
 		tessellator.draw();
 		
-		// render the matter cloud
+		GlStateManager.popMatrix();
+		
+		GlStateManager.disableLighting();
+		
+		// render the matter plasma
 		if (tileEntityEnanReactorCore.client_radiusMatter_m > 0.0F) {
-			GlStateManager.disableLighting();
-			
-			// main model
 			final float radiusMatter = tileEntityEnanReactorCore.client_radiusMatter_m + partialTicks * tileEntityEnanReactorCore.client_radiusSpeedMatter_mPerTick;
-			final float heightMatter = Math.max(0.75F, radiusMatter / 2.0F);
-			GlStateManager.scale(radiusMatter, heightMatter, radiusMatter);
+			final float heightMatter = Math.max(1.0F, radiusMatter * 1.70F);
 			
-			final float rotationMatter = tileEntityEnanReactorCore.client_rotationMatter_deg + partialTicks * tileEntityEnanReactorCore.client_rotationSpeedMatter_degPerTick
-			                             - rotationCrystal;
+			// matter model, slightly smaller
+			GlStateManager.pushMatrix();
+			
+			GlStateManager.scale(radiusMatter * 0.95F, heightMatter * 0.90F, radiusMatter * 0.95F);
+			final float rotationMatter = tileEntityEnanReactorCore.client_rotationMatter_deg + (partialTicks - 0.75F) * tileEntityEnanReactorCore.client_rotationSpeedMatter_degPerTick;
 			GlStateManager.rotate(rotationMatter, 0.0F, 1.0F, 0.0F);
 			
 			worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 			RenderCommons.renderModelTESR(quadsMatter, worldRenderer, tileEntityEnanReactorCore.getWorld().getCombinedLight(tileEntityEnanReactorCore.getPos(), 15));
 			tessellator.draw();
 			
-			// surface model, slightly bigger
-			GlStateManager.scale(1.1F, 1.05F, 1.1F);
-			final float rotationSurface = 0.5F * tileEntityEnanReactorCore.client_rotationSpeedMatter_degPerTick;
+			GlStateManager.popMatrix();
+			
+			// surface model (transparent surface)
+			GlStateManager.pushMatrix();
+			
+			GlStateManager.scale(radiusMatter, heightMatter, radiusMatter);
+			final float rotationSurface = tileEntityEnanReactorCore.client_rotationSurface_deg + partialTicks * tileEntityEnanReactorCore.client_rotationSpeedSurface_degPerTick;
 			GlStateManager.rotate(rotationSurface, 0.0F, 1.0F, 0.0F);
 			
 			worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-			RenderCommons.renderModelTESR(quadsMatter, worldRenderer, tileEntityEnanReactorCore.getWorld().getCombinedLight(tileEntityEnanReactorCore.getPos(), 15));
+			RenderCommons.renderModelTESR(quadsSurface, worldRenderer, tileEntityEnanReactorCore.getWorld().getCombinedLight(tileEntityEnanReactorCore.getPos(), 15));
 			tessellator.draw();
 			
-			// core model, slightly smaller
-			GlStateManager.scale(1.1F, 1.05F, 1.1F);
-			final float rotationCore = -0.75F * tileEntityEnanReactorCore.client_rotationSpeedMatter_degPerTick;
+			GlStateManager.popMatrix();
+		}
+		
+		// render the shield
+		if (tileEntityEnanReactorCore.client_radiusShield_m > 0.0F) {
+			// shield model, slightly bigger
+			final float radiusShield = tileEntityEnanReactorCore.client_radiusShield_m + partialTicks * tileEntityEnanReactorCore.client_radiusSpeedShield_mPerTick;
+			final float heightShield = Math.max(0.75F, radiusShield * 0.70F);
+			GlStateManager.scale(radiusShield, heightShield, radiusShield);
 			GlStateManager.rotate(rotationCore, 0.0F, 1.0F, 0.0F);
 			
 			worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-			RenderCommons.renderModelTESR(quadsMatter, worldRenderer, tileEntityEnanReactorCore.getWorld().getCombinedLight(tileEntityEnanReactorCore.getPos(), 15));
+			RenderCommons.renderModelTESR(quadsShield, worldRenderer, tileEntityEnanReactorCore.getWorld().getCombinedLight(tileEntityEnanReactorCore.getPos(), 15));
 			tessellator.draw();
 		}
 		
@@ -140,5 +167,10 @@ public class TileEntityEnanReactorCoreRenderer extends TileEntitySpecialRenderer
 		// GlStateManager.enableCull();
 		GlStateManager.popMatrix();
 		GlStateManager.popAttrib();
+	}
+	
+	@Override
+	public boolean isGlobalRenderer(final TileEntityEnanReactorCore tileEntityEnanReactorCore) {
+		return true;
 	}
 }

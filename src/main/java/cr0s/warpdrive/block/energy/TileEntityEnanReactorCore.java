@@ -23,7 +23,11 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	
@@ -40,7 +44,10 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	private static final double PR_MAX_LASER_ENERGY = 200000.0D;
 	private static final double PR_MAX_LASER_EFFECT = INSTABILITY_MAX * 20 / 0.33D;
 	
-	private boolean hold = true; // hold updates and power output until reactor is controlled (i.e. don't explode on chunk-loading while computer is booting)
+	// radius scaling so the model doesn't 'eat' the stabilization lasers
+	private static final float MATTER_SURFACE_MIN = 0.25F;
+	private static final float MATTER_SURFACE_FACTOR = 1.15F;
+	
 	
 	// persistent properties
 	private EnumReactorOutputMode enumReactorOutputMode = EnumReactorOutputMode.OFF;
@@ -52,6 +59,8 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	private final double[] instabilityValues = new double[ReactorFace.maxInstabilities]; // no instability  = 0, explosion = 100
 	
 	// computed properties
+	private boolean hold = true; // hold updates and power output until reactor is controlled (i.e. don't explode on chunk-loading while computer is booting)
+	private AxisAlignedBB aabbRender = null;
 	private Vector3 vCenter = null;
 	private boolean isFirstException = true;
 	private int energyStored_max;
@@ -68,14 +77,18 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	private long energyReleasedLastCycle = 0;
 	
 	// client properties
+	public float client_yCore = 0.0F;
+	public float client_yCoreSpeed_mPerTick = 0.0F;
 	public float client_rotationCore_deg = 0.0F;
 	public float client_rotationSpeedCore_degPerTick = 2.0F;
 	public float client_rotationMatter_deg = 0.0F;
 	public float client_rotationSpeedMatter_degPerTick = 2.0F;
+	public float client_rotationSurface_deg = 0.0F;
+	public float client_rotationSpeedSurface_degPerTick = 2.0F;
 	public float client_radiusMatter_m = 0.0F;
 	public float client_radiusSpeedMatter_mPerTick = 0.0F;
-	public float client_yCore = 0.0F;
-	public float client_yCoreSpeed_mPerTick = 0.0F;
+	public float client_radiusShield_m = 0.0F;
+	public float client_radiusSpeedShield_mPerTick = 0.0F;
 	
 	@SuppressWarnings("unchecked")
 	private final WeakReference<TileEntityEnanReactorLaser>[] weakTileEntityLasers = (WeakReference<TileEntityEnanReactorLaser>[]) Array.newInstance(WeakReference.class, ReactorFace.maxInstabilities);
@@ -115,22 +128,44 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		}
 	}
 	
+	@Nonnull
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getRenderBoundingBox() {
+		if (aabbRender == null) {
+			final double radiusMatterMax = isFirstTick() ? 3.0D : vCenter.y - pos.getY();
+			aabbRender = new AxisAlignedBB(
+					pos.getX() - radiusMatterMax       , pos.getY()                      , pos.getZ() - radiusMatterMax       ,
+					pos.getX() + radiusMatterMax + 1.0D, pos.getY() + 2 * radiusMatterMax, pos.getZ() + radiusMatterMax + 1.0D );
+		}
+		return aabbRender;
+	}
+	
 	@Override
 	protected void onFirstUpdateTick() {
 		super.onFirstUpdateTick();
 		
+		// we start at 0.5F to have a small animation on block placement
+		client_yCore = containedEnergy == 0 ? 0.5F : (float) vCenter.y - pos.getY();
+		client_yCoreSpeed_mPerTick = 0.0F;
+		
 		client_rotationCore_deg = world.rand.nextFloat() * 360.0F;
-		client_rotationSpeedCore_degPerTick = 2.0F * (float) instabilityValues[0];
+		client_rotationSpeedCore_degPerTick = 0.05F * (float) instabilityValues[0];
 		
 		client_rotationMatter_deg = world.rand.nextFloat() * 360.0F;
 		client_rotationSpeedMatter_degPerTick = client_rotationSpeedCore_degPerTick * 0.98F;
 		
+		client_rotationSurface_deg = world.rand.nextFloat() * 360.0F;
+		client_rotationSpeedSurface_degPerTick = client_rotationSpeedMatter_degPerTick;
+		
 		client_radiusMatter_m = 0.0F;
 		client_radiusSpeedMatter_mPerTick = 0.0F;
 		
-		// we start at 0.5F to have a small animation on block placement
-		client_yCore = containedEnergy == 0 ? 0.5F : (float) vCenter.y - pos.getY();
-		client_yCoreSpeed_mPerTick = 0.0F;
+		client_radiusShield_m = containedEnergy <= 10000 ? 0.0F : (float) (vCenter.y - pos.getY() - 1.0F);
+		client_radiusSpeedShield_mPerTick = 0.0F;
+		
+		// force a new render bounding box in case render happened too soon
+		aabbRender = null;
 	}
 	
 	@Override
@@ -138,29 +173,41 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		super.update();
 		
 		if (world.isRemote) {
-			float stabilityAverage = 0.0F;
+			float instabilityAverage = 0.0F;
 			final ReactorFace[] reactorFaces = ReactorFace.getLasers(enumTier);
 			for (final ReactorFace reactorFace : reactorFaces) {
-				stabilityAverage += (float) instabilityValues[reactorFace.indexStability];
+				instabilityAverage += (float) instabilityValues[reactorFace.indexStability];
 			}
-			stabilityAverage /= reactorFaces.length;
-			final float radiusMatterMax = (float) vCenter.y - pos.getY();
-			final float rotationTarget_degPerTick = 0.5F * stabilityAverage;
-			final float radiusMatterTarget = containedEnergy <= 10000 ? 0.0F : radiusMatterMax * (containedEnergy / (float) energyStored_max);
-			final float yCoreTarget = containedEnergy == 0 ? 1.0F : radiusMatterMax;
+			instabilityAverage /= reactorFaces.length;
+			
+			final float radiusArea = (float) (vCenter.y - pos.getY() - 1.0F);
+			final float yCoreTarget = containedEnergy == 0 ? 1.0F : (radiusArea + 1.0F);
+			final float rotationSpeedTarget_degPerTick = 0.05F * instabilityAverage;
+			final float radiusMatterMax = radiusArea - 0.10F;
+			final float radiusMatterTarget = containedEnergy <= 10000 ? 0.0F : MATTER_SURFACE_MIN + (radiusMatterMax - MATTER_SURFACE_MIN) / MATTER_SURFACE_FACTOR
+			                                                                                      * (float) Math.pow(containedEnergy / (float) energyStored_max, 0.3333D);
+			final float radiusShieldTarget = containedEnergy <= 1000 ? 0.0F : Math.min(radiusArea - 0.05F, (float) Math.ceil(radiusMatterTarget * 3.0F + 0.8F) / 3.0F);
+			
+			// linear shield growth
+			client_radiusShield_m += client_radiusSpeedShield_mPerTick;
+			final float radiusShieldDelta = radiusShieldTarget - client_radiusShield_m;
+			client_radiusSpeedShield_mPerTick = Math.signum(radiusShieldDelta) * Math.min(0.015F, Math.abs(radiusShieldDelta));
 			
 			// elastic rotation
-			client_rotationCore_deg += client_rotationSpeedCore_degPerTick;
+			client_rotationCore_deg = (client_rotationCore_deg + client_rotationSpeedCore_degPerTick) % 360.0F;
 			client_rotationSpeedCore_degPerTick = 0.975F * client_rotationSpeedCore_degPerTick
-			                                    + 0.025F * rotationTarget_degPerTick;
-			client_rotationMatter_deg += client_rotationSpeedMatter_degPerTick;
+			                                    + 0.025F * rotationSpeedTarget_degPerTick;
+			client_rotationMatter_deg = (client_rotationMatter_deg + client_rotationSpeedMatter_degPerTick) % 360.0F;
 			client_rotationSpeedMatter_degPerTick = 0.985F * client_rotationSpeedMatter_degPerTick
-			                                      + 0.015F * rotationTarget_degPerTick;
+			                                      + 0.015F * rotationSpeedTarget_degPerTick;
+			client_rotationSurface_deg = (client_rotationSurface_deg + client_rotationSpeedSurface_degPerTick) % 360.0F;
+			client_rotationSpeedSurface_degPerTick = 0.990F * client_rotationSpeedSurface_degPerTick
+			                                       + 0.010F * rotationSpeedTarget_degPerTick;
 			
 			// linear radius
 			client_radiusMatter_m += client_radiusSpeedMatter_mPerTick;
-			final float radiusDelta = radiusMatterTarget - client_radiusMatter_m;
-			client_radiusSpeedMatter_mPerTick = Math.signum(radiusDelta) * Math.min(0.05F, Math.abs(radiusDelta));
+			final float radiusMatterDelta = radiusMatterTarget - client_radiusMatter_m;
+			client_radiusSpeedMatter_mPerTick = Math.signum(radiusMatterDelta) * Math.min(0.05F, Math.abs(radiusMatterDelta));
 			
 			// linear position
 			client_yCore += client_yCoreSpeed_mPerTick;
@@ -447,6 +494,8 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		                                                .withProperty(BlockEnanReactorCore.ENERGY, energyNibble)
 		                                                .withProperty(BlockEnanReactorCore.INSTABILITY, instabilityNibble);
 		updateBlockState(null, blockStateNew);
+		
+		world.notifyBlockUpdate(pos, blockStateNew, blockStateNew, 3);
 	}
 	
 	@Override
