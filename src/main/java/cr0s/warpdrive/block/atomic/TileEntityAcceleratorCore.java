@@ -695,7 +695,9 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		legacy_isOn = false;
 		if (isLeaking) {
 			temperatureCurrent_K = ACCELERATOR_AMBIENT_TEMPERATURE_K;
-			sendEvent("acceleratorCoolingReset");
+			if (isEnabled) {
+				sendEvent("acceleratorCoolingReset");
+			}
 		}
 	}
 	
