@@ -48,6 +48,11 @@ import java.util.Random;
 public abstract class BlockAbstractContainer extends BlockContainer implements IBlockBase, defense.api.IEMPBlock {
 	
 	private static boolean isInvalidEMPreported = false;
+	private static long timeUpdated = -1L;
+	private static int dimensionIdUpdated = Integer.MAX_VALUE;
+	private static int xUpdated = Integer.MAX_VALUE;
+	private static int yUpdated = Integer.MAX_VALUE;
+	private static int zUpdated = Integer.MAX_VALUE;
 	
 	protected EnumTier enumTier;
 	protected boolean hasSubBlocks = false;
@@ -213,25 +218,62 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 		return super.rotateBlock(world, blockPos, axis);
 	}
 	
+	@SuppressWarnings("deprecation")
+	@Override
+	public void neighborChanged(final IBlockState blockState, final World world, final BlockPos blockPos, final Block block, final BlockPos blockPosFrom) {
+		super.neighborChanged(blockState, world, blockPos, block, blockPosFrom);
+		onBlockUpdateDetected(world, blockPos, blockPosFrom);
+	}
+	
 	// Triggers on server side when placing a comparator compatible block
 	// May trigger twice for the same placement action (placing a vanilla chest)
 	// Triggers on server side when removing a comparator compatible block
 	// Triggers on both sides when removing a TileEntity
-	// (by extension, it'll trigger twice for the same removal of a TileEntity with comparator output)
+	// (by extension, it'll trigger twice for the same placement of a TileEntity with comparator output)
 	@Override
 	public void onNeighborChange(final IBlockAccess blockAccess, final BlockPos blockPos, final BlockPos blockPosNeighbor) {
 		super.onNeighborChange(blockAccess, blockPos, blockPosNeighbor);
+		onBlockUpdateDetected(blockAccess, blockPos, blockPosNeighbor);
+	}
+	
+	@Override
+	public void observedNeighborChange(final IBlockState observerState, final World world, final BlockPos blockPosObserver, final Block blockChanged, final BlockPos blockPosChanged) {
+		super.observedNeighborChange(observerState, world, blockPosObserver, blockChanged, blockPosChanged);
+		onBlockUpdateDetected(world, blockPosObserver, blockPosChanged);
+	}
+	
+	// due to our redirection, this may trigger up to 6 times for the same event (for example, when placing a chest)
+	protected void onBlockUpdateDetected(@Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final BlockPos blockPosUpdated) {
 		if (!Commons.isSafeThread()) {
 			if (WarpDriveConfig.LOGGING_PROFILING_THREAD_SAFETY) {
-				final Block blockNeighbor = blockAccess.getBlockState(blockPosNeighbor).getBlock();
+				final Block blockNeighbor = blockAccess.getBlockState(blockPosUpdated).getBlock();
 				final ResourceLocation registryName = blockNeighbor.getRegistryName();
 				WarpDrive.logger.error(String.format("Bad multithreading detected from mod %s %s, please report to mod author",
 				                                     registryName == null ? blockNeighbor : registryName.getNamespace(),
-				                                     Commons.format(blockAccess, blockPosNeighbor)));
+				                                     Commons.format(blockAccess, blockPosUpdated)));
 				new ConcurrentModificationException().printStackTrace();
 			}
 			return;
 		}
+		
+		// try reducing duplicated events
+		// note: this is just a fast check, notably, this won't cover placing a block in between 2 of ours
+		if (blockAccess instanceof World) {
+			final World world = (World) blockAccess;
+			if ( timeUpdated == world.getTotalWorldTime()
+			  && dimensionIdUpdated == world.provider.getDimension()
+			  && xUpdated == blockPos.getX()
+			  && yUpdated == blockPos.getY()
+			  && zUpdated == blockPos.getZ() ) {
+				return;
+			}
+			timeUpdated = world.getTotalWorldTime();
+			dimensionIdUpdated = world.provider.getDimension();
+			xUpdated = blockPos.getX();
+			yUpdated = blockPos.getY();
+			zUpdated = blockPos.getZ();
+		}
+		
 		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
 		if (tileEntity == null
 		    || tileEntity.getWorld().isRemote) {
