@@ -315,7 +315,9 @@ public class AcceleratorSetup extends GlobalPosition {
 				countMagnets[indexTier + 1] += 12;
 			}
 		}
-		WarpDrive.logger.info(String.format("Bounding box is %s to %s", vMin, vMax));
+		if (WarpDriveConfig.LOGGING_ACCELERATOR) {
+			WarpDrive.logger.info(String.format("Bounding box is %s to %s", vMin, vMax));
+		}
 	}
 	
 	private void computeVectorArrays(final WorldServer world) {
