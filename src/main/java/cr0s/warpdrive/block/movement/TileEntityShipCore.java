@@ -211,7 +211,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				                                    this,
 				                                    stateCurrent,
 				                                    isEnabled ? "Enabled" : "Disabled",
-				                                    0, // @TODO countControllers,
+				                                    blockPosShipControllers.size(),
 				                                    warmupTime_ticks,
 				                                    ticksCooldown));
 			}
