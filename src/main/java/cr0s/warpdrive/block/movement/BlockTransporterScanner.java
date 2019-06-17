@@ -83,7 +83,7 @@ public class BlockTransporterScanner extends BlockAbstractBase {
 	
 	@Override
 	public int getLightValue(@Nonnull final IBlockState blockState, final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
-		return blockState.getValue(BlockProperties.ACTIVE) ? 6 : 0;
+		return blockState.getValue(BlockProperties.ACTIVE) ? 13 : 0;
 	}
 	
 	@SuppressWarnings("deprecation")
