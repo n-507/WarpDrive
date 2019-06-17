@@ -184,7 +184,7 @@ public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrContro
 	}
 	
 	@Override
-	public void onDataPacket(NetworkManager networkManager, SPacketUpdateTileEntity packet) {
+	public void onDataPacket(@Nonnull final NetworkManager networkManager, @Nonnull final SPacketUpdateTileEntity packet) {
 		final NBTTagCompound tagCompound = packet.getNbtCompound();
 		readFromNBT(tagCompound);
 	}

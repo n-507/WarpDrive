@@ -444,7 +444,7 @@ public class WarpDriveDataFixer {
 	}
 	
 	@Nullable
-	public static IBlockState getFixedBlockState(@Nonnull final String nameFull) {
+	private static IBlockState getFixedBlockState(@Nonnull final String nameFull) {
 		// ensure metadata is defined
 		final int indexAt = nameFull.indexOf('@');
 		if (indexAt <= 0) {

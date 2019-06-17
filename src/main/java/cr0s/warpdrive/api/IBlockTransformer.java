@@ -1,5 +1,7 @@
 package cr0s.warpdrive.api;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
@@ -14,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public interface IBlockTransformer {
+	
 	// Return true if this transformer is applicable to that block.
 	boolean isApplicable(final Block block, final int metadata, final TileEntity tileEntity);
 	
@@ -61,7 +64,7 @@ public interface IBlockTransformer {
 	
 	// default rotation using EnumFacing properties used in many blocks
 	@SuppressWarnings("unchecked")
-	static int rotateFirstEnumFacingProperty(final Block block, final int metadata, final byte rotationSteps) {
+	static int rotateFirstEnumFacingProperty(@Nonnull final Block block, final int metadata, final byte rotationSteps) {
 		// find first property using EnumFacing
 		final IBlockState blockState = block.getStateFromMeta(metadata);
 		PropertyEnum<EnumFacing> propertyFacing = null;

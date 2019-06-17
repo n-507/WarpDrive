@@ -45,7 +45,6 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		super();
 		
 		addMethods(new String[] {
-				"isAssemblyValid",
 				"side",
 				"stabilize"
 		});

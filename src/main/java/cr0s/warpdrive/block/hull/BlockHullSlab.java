@@ -381,7 +381,7 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 			}
 		}
 		
-		EnumVariant(final String name, final boolean isDouble, final boolean isPlain, final EnumFacing facing, final AxisAlignedBB axisAlignedBB) {
+		EnumVariant(@Nonnull final String name, final boolean isDouble, final boolean isPlain, @Nonnull final EnumFacing facing, @Nonnull final AxisAlignedBB axisAlignedBB) {
 			this.name = name;
 			this.isDouble = isDouble;
 			this.isPlain = isPlain;

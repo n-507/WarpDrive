@@ -125,10 +125,11 @@ public class BlockDecorative extends BlockAbstractBase {
 			}
 			return itemStackCache[damage];
 		}
-		return new ItemStack(Blocks.FIRE);
+		return ItemStack.EMPTY;
 	}
 	
-	public static ItemStack getItemStackNoCache(final EnumDecorativeType enumDecorativeType, final int amount) {
+	@Nonnull
+	public static ItemStack getItemStackNoCache(@Nonnull final EnumDecorativeType enumDecorativeType, final int amount) {
 		return new ItemStack(WarpDrive.blockDecorative, amount, enumDecorativeType.ordinal());
 	}
 }

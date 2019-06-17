@@ -50,7 +50,8 @@ public class ItemForceFieldUpgrade extends ItemAbstractBase {
 		return itemStackCache[damage];
 	}
 	
-	public static ItemStack getItemStackNoCache(final EnumForceFieldUpgrade forceFieldUpgrade, final int amount) {
+	@Nonnull
+	public static ItemStack getItemStackNoCache(@Nonnull final EnumForceFieldUpgrade forceFieldUpgrade, final int amount) {
 		return new ItemStack(WarpDrive.itemForceFieldUpgrade, amount, forceFieldUpgrade.ordinal());
 	}
 

@@ -1031,8 +1031,6 @@ public class Commons {
 		if (fluidByBlockName == null) {
 			final Map<String, Fluid> fluidsRegistry = FluidRegistry.getRegisteredFluids();
 			final HashMap<String, Fluid> map = new HashMap<>(100);
-			
-			fluidByBlockName = map;
 			for (final Fluid fluid : fluidsRegistry.values()) {
 				final Block blockFluid = fluid.getBlock();
 				if (blockFluid != null) {

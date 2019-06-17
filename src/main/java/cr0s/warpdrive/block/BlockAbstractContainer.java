@@ -275,8 +275,8 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 		}
 		
 		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
-		if (tileEntity == null
-		    || tileEntity.getWorld().isRemote) {
+		if ( tileEntity == null
+		  || tileEntity.getWorld().isRemote ) {
 			return;
 		}
 		if (tileEntity instanceof IBlockUpdateDetector) {

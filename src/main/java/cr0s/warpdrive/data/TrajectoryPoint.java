@@ -7,6 +7,8 @@ import cr0s.warpdrive.block.atomic.BlockParticlesInjector;
 import cr0s.warpdrive.block.atomic.BlockVoidShellPlain;
 import cr0s.warpdrive.block.atomic.TileEntityAcceleratorControlPoint;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -74,7 +76,7 @@ public class TrajectoryPoint extends VectorI {
 	public final VectorI vJunctionForward;
 	public final VectorI vJunctionBackward;
 	
-	public TrajectoryPoint(final World world, final VectorI vPosition, final EnumFacing directionForward) {
+	public TrajectoryPoint(@Nonnull final World world, @Nonnull final VectorI vPosition, @Nonnull final EnumFacing directionForward) {
 		this(world, vPosition.x, vPosition.y, vPosition.z, directionForward);
 	}
 	
@@ -97,13 +99,13 @@ public class TrajectoryPoint extends VectorI {
 	}
 	
 	// get next point on an acceleration pipe
-	private TrajectoryPoint(final World world, final int x, final int y, final int z, final EnumFacing directionMain) {
+	private TrajectoryPoint(@Nonnull final World world, final int x, final int y, final int z, @Nonnull final EnumFacing directionMain) {
 		super(x, y, z);
 		int typeNew = NO_TYPE;
 		
 		// check the core
 		final BlockPos blockPos = new BlockPos(x, y, z);
-		final Block blockCore = world.getBlockState(new BlockPos(x, y, z)).getBlock();
+		final Block blockCore = world.getBlockState(blockPos).getBlock();
 		if (!(blockCore instanceof BlockVoidShellPlain)) {
 			typeNew |= ERROR_MISSING_VOID_SHELL;
 		}
@@ -278,7 +280,7 @@ public class TrajectoryPoint extends VectorI {
 	}
 	
 	// get next point on a transfer pipe
-	public TrajectoryPoint(final World world, final TrajectoryPoint trajectoryPoint, final boolean isForward) {
+	public TrajectoryPoint(@Nonnull final World world, @Nonnull final TrajectoryPoint trajectoryPoint, final boolean isForward) {
 		int typeNew = IS_TRANSFER_PIPE;
 		// get first/next transfer pipe
 		this.x = trajectoryPoint.x + (isForward ? trajectoryPoint.vJunctionForward.x : trajectoryPoint.vJunctionBackward.x);
@@ -388,10 +390,13 @@ public class TrajectoryPoint extends VectorI {
 	
 	public int getMagnetsCount() {
 		switch (type & (MASK_MAGNETS_BOTH | MASK_ERRORS)) {
-		case MAGNETS_HORIZONTAL: return 1;
-		case MAGNETS_VERTICAL: return 1;
-		case MASK_MAGNETS_BOTH: return 2;
-		default: return 0;
+		case MAGNETS_HORIZONTAL:
+		case MAGNETS_VERTICAL:
+			return 1;
+		case MASK_MAGNETS_BOTH:
+			return 2;
+		default:
+			return 0;
 		}
 	}
 	

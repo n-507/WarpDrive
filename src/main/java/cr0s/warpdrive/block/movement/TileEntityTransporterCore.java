@@ -1011,7 +1011,6 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 				ForgeChunkManager.forceChunk(ticketChunkloading, new ChunkPos(x, z));
 			}
 		}
-		return;
 	}
 	
 	private void releaseChunks() {

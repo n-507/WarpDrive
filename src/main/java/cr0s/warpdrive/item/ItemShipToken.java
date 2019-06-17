@@ -52,6 +52,7 @@ public class ItemShipToken extends ItemAbstractBase {
 		return null;
 	}
 	
+	@Nonnull
 	public static ItemStack getItemStackNoCache(final int metadataWanted, final int amount) {
 		for (final int metadataValid : VALID_METADATAS) {
 			if (metadataWanted == metadataValid) {

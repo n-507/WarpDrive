@@ -21,8 +21,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class CloakManager {
 	
-	private static CopyOnWriteArraySet<CloakedArea> cloaks = new CopyOnWriteArraySet<>();
-	private static CopyOnWriteArraySet<CloakedArea> cloakToRefresh = new CopyOnWriteArraySet<>();
+	private static final CopyOnWriteArraySet<CloakedArea> cloaks = new CopyOnWriteArraySet<>();
+	private static final CopyOnWriteArraySet<CloakedArea> cloakToRefresh = new CopyOnWriteArraySet<>();
 	
 	public CloakManager() { }
 	
@@ -80,27 +80,28 @@ public class CloakManager {
 		return (getCloakedArea(world, blockPos) != null);
 	}
 	
-	public void updateCloakedArea(
+	public CloakedArea updateCloakedArea(
 			@Nonnull final World world, @Nonnull final BlockPos blockPosCore, final boolean isFullyTransparent,
 			final int minX, final int minY, final int minZ,
 			final int maxX, final int maxY, final int maxZ) {
-		final CloakedArea newArea = new CloakedArea(world, world.provider.getDimension(), blockPosCore, isFullyTransparent, minX, minY, minZ, maxX, maxY, maxZ);
+		final CloakedArea cloakedAreaNew = new CloakedArea(world, world.provider.getDimension(), blockPosCore, isFullyTransparent, minX, minY, minZ, maxX, maxY, maxZ);
 		
 		// find existing one
-		for (final CloakedArea area : cloaks) {
-			if ( area.dimensionId == world.provider.getDimension()
-			  && area.blockPosCore.equals(blockPosCore) ) {
-				cloaks.remove(area);
+		for (final CloakedArea cloakedArea : cloaks) {
+			if ( cloakedArea.dimensionId == world.provider.getDimension()
+			  && cloakedArea.blockPosCore.equals(blockPosCore) ) {
+				cloaks.remove(cloakedArea);
 				break;
 			}
 		}
-		cloaks.add(newArea);
+		cloaks.add(cloakedAreaNew);
 		if (world.isRemote) {
-			cloakToRefresh.add(newArea);
+			cloakToRefresh.add(cloakedAreaNew);
 		}
 		if (WarpDriveConfig.LOGGING_CLOAKING) {
 			WarpDrive.logger.info(String.format("Cloak count is %s", cloaks.size()));
 		}
+		return cloakedAreaNew;
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -171,12 +172,6 @@ public class CloakManager {
 	@SuppressWarnings("unused") // Core mod
 	@SideOnly(Side.CLIENT)
 	public static void Chunk_read(final Chunk chunk) {
-		if (cloaks == null) {
-			WarpDrive.logger.info(String.format("CloakManager Chunk_read (%d %d) no cloaks",
-			                                    chunk.x, chunk.z));
-			return;
-		}
-		
 		final int chunkX_min = chunk.x * 16;
 		final int chunkX_max = chunk.x * 16 + 15;
 		final int chunkZ_min = chunk.z * 16;

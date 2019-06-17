@@ -106,7 +106,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	// persistent properties
 	private final Collection<ParticleBunch> setParticleBunches = new CopyOnWriteArraySet<>();
 	private double temperatureCurrent_K = ACCELERATOR_AMBIENT_TEMPERATURE_K;
-	private Map<Integer, AcceleratorControlParameter> mapControlParameters = new HashMap<>();
+	private final Map<Integer, AcceleratorControlParameter> mapControlParameters = new HashMap<>();
 	private int injectionPeriodTicks = 60;
 	private int injectionTicks = 0;
 	private int indexNextInjector = 0;
@@ -252,7 +252,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 					onInject(acceleratorSetup.keyInjectors[indexNextInjector]);
 				} else {
 					// invalid setup => force a reset
-					rebootAccelerator(acceleratorSetup,false, true);	
+					rebootAccelerator(acceleratorSetup,false, true);
 				}
 				indexNextInjector = (indexNextInjector + 1) % countInjectors;
 			}
@@ -341,12 +341,8 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		return legacy_isOn;
 	}
 	
-	private void reportJammed(final AcceleratorSetup acceleratorSetup) {
-		if ( world == null
-		  || world.isRemote
-		  || acceleratorSetup == null ) {
-			return;
-		}
+	private void reportJammed(@Nonnull final AcceleratorSetup acceleratorSetup) {
+		assert !world.isRemote;
 		
 		if (acceleratorSetup.setJammed.isEmpty()) {
 			return;
@@ -574,7 +570,8 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		}
 	}
 	
-	private void doCollision(final Random random, final TrajectoryPoint trajectoryPointCollider, @Nonnull final ParticleBunch particleBunch1, final ParticleBunch particleBunch2) {
+	private void doCollision(@Nonnull final Random random, @Nonnull final TrajectoryPoint trajectoryPointCollider,
+	                         @Nonnull final ParticleBunch particleBunch1, final ParticleBunch particleBunch2) {
 		final double energyTotal = particleBunch1.energy + (particleBunch2 != null ? particleBunch2.energy : 0.0D);
 		final int tier = trajectoryPointCollider.getTier();
 		

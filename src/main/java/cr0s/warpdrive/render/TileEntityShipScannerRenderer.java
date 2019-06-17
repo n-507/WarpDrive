@@ -3,6 +3,7 @@ package cr0s.warpdrive.render;
 import cr0s.warpdrive.block.building.TileEntityShipScanner;
 import cr0s.warpdrive.client.SpriteManager;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -29,7 +30,7 @@ public class TileEntityShipScannerRenderer extends TileEntitySpecialRenderer<Til
 	}
 	
 	@Override
-	public void render(final TileEntityShipScanner tileEntityShipScanner, final double x, final double y, final double z,
+	public void render(@Nonnull final TileEntityShipScanner tileEntityShipScanner, final double x, final double y, final double z,
 	                   final float partialTicks, final int destroyStage, final float alpha) {
 		if (!tileEntityShipScanner.getWorld().isBlockLoaded(tileEntityShipScanner.getPos(), false)) {
 			return;

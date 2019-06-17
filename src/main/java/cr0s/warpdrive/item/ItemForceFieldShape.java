@@ -52,10 +52,11 @@ public class ItemForceFieldShape extends ItemAbstractBase {
 			}
 			return itemStackCache[damage];
 		}
-		return new ItemStack(Blocks.FIRE);
+		return ItemStack.EMPTY;
 	}
 	
-	public static ItemStack getItemStackNoCache(final EnumForceFieldShape forceFieldShape, final int amount) {
+	@Nonnull
+	public static ItemStack getItemStackNoCache(@Nonnull final EnumForceFieldShape forceFieldShape, final int amount) {
 		return new ItemStack(WarpDrive.itemForceFieldShape, amount, forceFieldShape.ordinal());
 	}
 	

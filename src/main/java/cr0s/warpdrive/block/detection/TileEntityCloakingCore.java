@@ -30,12 +30,10 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyConsumer {
 	private static final int LASER_REFRESH_TICKS = 100;
 	private static final int LASER_DURATION_TICKS = 110;
 	
-	public boolean isFullyTransparent = false;
-	
 	// inner coils color map
-	private final float[] innerCoilColor_r = { 1.00f, 1.00f, 1.00f, 1.00f, 0.75f, 0.25f, 0.00f, 0.00f, 0.00f, 0.00f, 0.50f, 1.00f };
-	private final float[] innerCoilColor_g = { 0.00f, 0.25f, 0.75f, 1.00f, 1.00f, 1.00f, 1.00f, 1.00f, 0.50f, 0.25f, 0.00f, 0.00f };
-	private final float[] innerCoilColor_b = { 0.25f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.50f, 1.00f, 1.00f, 1.00f, 1.00f, 0.75f };
+	private static final float[] innerCoilColor_r = { 1.00f, 1.00f, 1.00f, 1.00f, 0.75f, 0.25f, 0.00f, 0.00f, 0.00f, 0.00f, 0.50f, 1.00f };
+	private static final float[] innerCoilColor_g = { 0.00f, 0.25f, 0.75f, 1.00f, 1.00f, 1.00f, 1.00f, 1.00f, 0.50f, 0.25f, 0.00f, 0.00f };
+	private static final float[] innerCoilColor_b = { 0.25f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.50f, 1.00f, 1.00f, 1.00f, 1.00f, 0.75f };
 	
 	// Spatial cloaking field parameters
 	private final boolean[] isValidInnerCoils = { false, false, false, false, false, false };
@@ -49,6 +47,7 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyConsumer {
 	
 	private boolean isValid = false;
 	private WarpDriveText textValidityIssues = new WarpDriveText();
+	private boolean isFullyTransparent = false;
 	private boolean isCloaking = false;
 	private int volume = 0;
 	private int energyRequired = 0;
@@ -126,22 +125,16 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyConsumer {
 						setCoilsState(true);
 						isRefreshNeeded = true;
 						
-						// Register cloak
-						WarpDrive.cloaks.updateCloakedArea(world, pos, isFullyTransparent,
-						                                   minX, minY, minZ, maxX, maxY, maxZ);
+						// register cloak
+						final CloakedArea area = WarpDrive.cloaks.updateCloakedArea(world, pos, isFullyTransparent,
+						                                                            minX, minY, minZ, maxX, maxY, maxZ);
 						if (!soundPlayed) {
 							soundPlayed = true;
 							world.playSound(null, pos, SoundEvents.CLOAK, SoundCategory.BLOCKS, 4F, 1F);
 						}
 						
-						// Refresh the field
-						final CloakedArea area = WarpDrive.cloaks.getCloakedArea(world, pos);
-						if (area != null) {
-							area.sendCloakPacketToPlayersEx(false); // re-cloak field
-						} else {
-							WarpDrive.logger.error(String.format("getCloakedArea1 returned null %s",
-							                                     Commons.format(world, pos)));
-						}
+						// start cloaking
+						area.sendCloakPacketToPlayersEx(false);
 						
 					} else {// enabled, not cloaking and not able to
 						// IDLE

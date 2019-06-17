@@ -4,7 +4,9 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.LocalProfiler;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
+import cr0s.warpdrive.block.atomic.BlockAcceleratorCore;
 import cr0s.warpdrive.block.movement.BlockShipCore;
+import cr0s.warpdrive.block.movement.BlockTransporterCore;
 import cr0s.warpdrive.block.movement.TileEntityShipCore;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
@@ -572,10 +574,10 @@ public class StarMapRegistry {
 					case WARP_ECHO:
 						break;
 					case ACCELERATOR:
-						isValid = block == WarpDrive.blockAcceleratorCore && tileEntity != null && !tileEntity.isInvalid();
+						isValid = block instanceof BlockAcceleratorCore && tileEntity != null && !tileEntity.isInvalid();
 						break;
 					case TRANSPORTER:
-						isValid = block == WarpDrive.blockTransporterCore && tileEntity != null && !tileEntity.isInvalid();
+						isValid = block instanceof BlockTransporterCore && tileEntity != null && !tileEntity.isInvalid();
 						break;
 					default:
 						break;

@@ -69,8 +69,8 @@ public class WarpDriveText extends TextComponentBase {
 	public WarpDriveText append(@Nonnull final ITextComponent textComponent) {
 		if (!textComponent.getUnformattedText().isEmpty()) {
 			appendLineBreak();
+			appendSibling(textComponent);
 		}
-		appendSibling(textComponent);
 		return this;
 	}
 	

@@ -454,7 +454,7 @@ public class JumpBlock {
 		}
 	}
 	
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		final String blockName = tagCompound.getString("block");
 		blockMeta = tagCompound.getByte("blockMeta");
 		final String stringBlockState = String.format("%s@%d", blockName, blockMeta);

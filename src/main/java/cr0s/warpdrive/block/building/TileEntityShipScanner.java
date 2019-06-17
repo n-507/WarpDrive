@@ -526,7 +526,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		return true;
 	}
 	
-	private static boolean isShipCoreClear(final World world, final BlockPos blockPos,
+	private static boolean isShipCoreClear(@Nonnull final World world, final BlockPos blockPos,
 	                                       final String nameRequestingPlayer, final WarpDriveText reason) {
 		final IBlockState blockState = world.getBlockState(blockPos);
 		if (blockState.getBlock().isAir(blockState, world, blockPos)) {

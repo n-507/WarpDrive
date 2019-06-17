@@ -67,7 +67,7 @@ public class Dictionary {
 	public static HashSet<Item> ITEMS_NOFALLDAMAGE = null;
 	public static HashSet<Item> ITEMS_BREATHING_HELMET = null;
 	
-	public static void loadConfig(final Configuration config) {
+	public static void loadConfig(@Nonnull final Configuration config) {
 		
 		// Block dictionary
 		{
@@ -225,8 +225,8 @@ public class Dictionary {
 			
 			// config.get("block_tags", "AdvancedRepulsionSystems:field"                  , "PlaceEarlier StopMining NoBlink").getString();
 			config.get("block_tags", "advancedrocketry:forcefield"                     , "PlaceLatest StopMining NoMass").getString();
-			config.get("block_tags", "embers:caminite_lever"                           , "PlaceLatest").getString();
 			config.get("block_tags", "computercraft:advanced_modem"                    , "PlaceLatest").getString();
+			config.get("block_tags", "embers:caminite_lever"                           , "PlaceLatest").getString();
 			config.get("block_tags", "galacticraftcore:glowstone_torch"                , "PlaceLatest").getString();
 			config.get("block_tags", "galacticraftcore:unlit_torch"                    , "PlaceLatest").getString();
 			config.get("block_tags", "galacticraftcore:unlit_torch_lit"                , "PlaceLatest").getString();

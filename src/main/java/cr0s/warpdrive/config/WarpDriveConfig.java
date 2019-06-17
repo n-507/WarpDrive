@@ -553,7 +553,7 @@ public class WarpDriveConfig {
 	public static ItemStack getItemStackOrFire(@Nonnull final String registryName, final int meta, final String stringNBT) {
 		final Object object = getOreOrItemStackOrNull(registryName, meta);
 		if (!(object instanceof ItemStack)) {
-			return new ItemStack(Blocks.FIRE);
+			return ItemStack.EMPTY;
 		}
 		final ItemStack itemStack = (ItemStack) object;
 		if (stringNBT == null || stringNBT.isEmpty()) {
@@ -567,7 +567,7 @@ public class WarpDriveConfig {
 			exception.printStackTrace();
 			WarpDrive.logger.error(String.format("Invalid NBT for %s@%d %s",
 			                                     registryName, meta, stringNBT));
-			return new ItemStack(Blocks.FIRE);
+			return ItemStack.EMPTY;
 		}
 		return itemStack;
 	}
@@ -636,20 +636,20 @@ public class WarpDriveConfig {
 			}
 		}
 		
-		return new ItemStack(Blocks.FIRE);
+		return ItemStack.EMPTY;
 	}
 	
 	public static ItemStack getOreDictionaryEntry(final String ore) {
 		if (!OreDictionary.doesOreNameExist(ore)) {
 			WarpDrive.logger.info(String.format("Skipping missing ore named %s",
 			                                    ore));
-			return new ItemStack(Blocks.FIRE);
+			return ItemStack.EMPTY;
 		}
 		final List<ItemStack> itemStacks = OreDictionary.getOres(ore);
 		if (itemStacks.isEmpty()) {
 			WarpDrive.logger.error(String.format("Failed to get item from empty ore dictionary %s",
 			                                     ore));
-			return new ItemStack(Blocks.FIRE);
+			return ItemStack.EMPTY;
 		}
 		return itemStacks.get(0);
 	}

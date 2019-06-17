@@ -4,6 +4,7 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.energy.TileEntityEnanReactorCore;
 import cr0s.warpdrive.client.SpriteManager;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -77,7 +78,7 @@ public class TileEntityEnanReactorCoreRenderer extends TileEntitySpecialRenderer
 	}
 	
 	@Override
-	public void render(final TileEntityEnanReactorCore tileEntityEnanReactorCore, final double x, final double y, final double z,
+	public void render(@Nonnull final TileEntityEnanReactorCore tileEntityEnanReactorCore, final double x, final double y, final double z,
 	                   final float partialTicks, final int destroyStage, final float alpha) {
 		if (!tileEntityEnanReactorCore.getWorld().isBlockLoaded(tileEntityEnanReactorCore.getPos(), false)) {
 			return;

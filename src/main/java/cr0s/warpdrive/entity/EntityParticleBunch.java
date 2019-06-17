@@ -138,16 +138,6 @@ public class EntityParticleBunch extends Entity {
 		}
 	}
 	
-	// @TODO MC1.10
-	/*
-	@Override
-	public void onChunkLoad() {
-		super.onChunkLoad();
-		// we're not supposed to reload this entity from a save
-		setDead();
-	}
-	/**/
-	
 	@Override
 	protected void readEntityFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		// energy = tagCompound.getInteger("energy");

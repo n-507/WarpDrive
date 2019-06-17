@@ -26,7 +26,7 @@ public class RecipeTuningDriver implements IRecipe {
 	private final ItemStack itemStackTool;
 	private final ItemStack itemStackConsumable;
 	private final int countDyesExpected;
-	private ItemStack itemStackResult = new ItemStack(Blocks.FIRE);
+	private ItemStack itemStackResult = ItemStack.EMPTY;
 	private final int size;
 	private final ResourceLocation group;
 	

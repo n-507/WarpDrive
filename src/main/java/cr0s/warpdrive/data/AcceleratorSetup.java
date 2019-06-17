@@ -282,7 +282,7 @@ public class AcceleratorSetup extends GlobalPosition {
 		}
 	}
 	
-	private boolean isInRange(final TrajectoryPoint trajectoryPoint) {
+	private boolean isInRange(@Nonnull final TrajectoryPoint trajectoryPoint) {
 		final double distanceSquared = trajectoryPoint.distance2To(new VectorI(x, y, z));
 		return distanceSquared <= ACCELERATOR_MAX_RANGE_SQUARED;
 	}
@@ -366,7 +366,7 @@ public class AcceleratorSetup extends GlobalPosition {
 		}
 	}
 	
-	private void scanCorners(final WorldServer world, final VectorI vCenter, final EnumFacing forgeDirection) {
+	private void scanCorners(@Nonnull final WorldServer world, @Nonnull final VectorI vCenter, @Nonnull final EnumFacing forgeDirection) {
 		final EnumFacing directionLeft = forgeDirection.rotateY();
 		final EnumFacing directionRight = forgeDirection.rotateYCCW();
 		for (int indexCorner = 0; indexCorner < 4; indexCorner++) {

@@ -2,6 +2,9 @@ package cr0s.warpdrive.render;
 
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.forcefield.TileEntityForceFieldProjector;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
@@ -36,7 +39,7 @@ public class TileEntityForceFieldProjectorRenderer extends TileEntitySpecialRend
 	private static List<BakedQuad> quads;
 	
 	@Override
-	public void render(final TileEntityForceFieldProjector tileEntityForceFieldProjector, final double x, final double y, final double z,
+	public void render(@Nonnull final TileEntityForceFieldProjector tileEntityForceFieldProjector, final double x, final double y, final double z,
 	                   final float partialTicks, final int destroyStage, final float alpha) {
 		if (!tileEntityForceFieldProjector.getWorld().isBlockLoaded(tileEntityForceFieldProjector.getPos(), false)) {
 			return;

@@ -2000,7 +2000,7 @@ public class Recipes {
 		if (object instanceof String) {
 			return new OreIngredient((String) object);
 		}
-		final ItemStack itemStack = new ItemStack(Blocks.FIRE);
+		final ItemStack itemStack = ItemStack.EMPTY;
 		if (object != null) {
 			itemStack.setStackDisplayName(object.toString());
 		}

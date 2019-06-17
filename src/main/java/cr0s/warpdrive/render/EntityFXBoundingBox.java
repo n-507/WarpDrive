@@ -19,8 +19,8 @@ public class EntityFXBoundingBox extends Particle {
 	
 	private static final ResourceLocation TEXTURE = new ResourceLocation("warpdrive", "textures/particle/bounding_box.png");
 	
-	private Vector3 min;
-	private Vector3 max;
+	private final Vector3 min;
+	private final Vector3 max;
 	
 	public EntityFXBoundingBox(final World world, final Vector3 position, final Vector3 min, final Vector3 max,
 	                           final float red, final float green, final float blue, final int age) {

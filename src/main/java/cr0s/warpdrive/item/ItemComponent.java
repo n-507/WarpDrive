@@ -3,7 +3,6 @@ package cr0s.warpdrive.item;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IAirContainerItem;
 import cr0s.warpdrive.block.BlockAbstractContainer;
-import cr0s.warpdrive.block.energy.BlockCapacitor;
 import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumTier;
 
@@ -13,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -44,10 +42,11 @@ public class ItemComponent extends ItemAbstractBase implements IAirContainerItem
 			}
 			return itemStackCache[damage];
 		}
-		return new ItemStack(Blocks.FIRE);
+		return ItemStack.EMPTY;
 	}
 	
-	public static ItemStack getItemStackNoCache(final EnumComponentType enumComponentType, final int amount) {
+	@Nonnull
+	public static ItemStack getItemStackNoCache(@Nonnull final EnumComponentType enumComponentType, final int amount) {
 		return new ItemStack(WarpDrive.itemComponent, amount, enumComponentType.ordinal());
 	}
 	

@@ -18,7 +18,7 @@ public class UnlistedPropertyBlockState implements IUnlistedProperty<IBlockState
 	}
 	
 	@Override
-	public boolean isValid(IBlockState value) {
+	public boolean isValid(final IBlockState value) {
 		return true;
 	}
 	
@@ -28,7 +28,7 @@ public class UnlistedPropertyBlockState implements IUnlistedProperty<IBlockState
 	}
 	
 	@Override
-	public String valueToString(IBlockState value) {
+	public String valueToString(final IBlockState value) {
 		return value.toString();
 	}
 }

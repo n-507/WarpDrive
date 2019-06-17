@@ -221,7 +221,7 @@ public class TooltipHandler {
 		if ( WarpDriveConfig.TOOLTIP_ADD_OPACITY.isEnabled(isSneaking, isCreativeMode)
 		  && blockState != null ) {
 			try {
-				Commons.addTooltip(event.getToolTip(), String.format("§8Light opacity is %d",
+				Commons.addTooltip(event.getToolTip(), String.format("§8Light opacity is %s",
 				                                                     block.getLightOpacity(blockState)));
 				if (WarpDrive.isDev) {
 					Commons.addTooltip(event.getToolTip(), String.format("§8isFullBlock is %s",

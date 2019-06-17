@@ -23,6 +23,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 // Adds support for IParticleContainerItem ingredients
+// Adds support for potions ingredients
 // Loosely inspired from vanilla ShapedOreRecipe
 public class RecipeParticleShapedOre extends ShapedOreRecipe {
 	
@@ -36,7 +37,8 @@ public class RecipeParticleShapedOre extends ShapedOreRecipe {
 		// WarpDrive.register(new ShapedOreRecipe(group, result, primer));
 	}
 	
-	protected boolean checkMatch(final InventoryCrafting inventoryCrafting, final int startX, final int startY, final boolean mirror) {
+	@Override
+	protected boolean checkMatch(@Nonnull final InventoryCrafting inventoryCrafting, final int startX, final int startY, final boolean mirror) {
 		for (int x = 0; x < inventoryCrafting.getWidth(); x++) {
 			for (int y = 0; y < inventoryCrafting.getHeight(); y++) {
 				final int subX = x - startX;

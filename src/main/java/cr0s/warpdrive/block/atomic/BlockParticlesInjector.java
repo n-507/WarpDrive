@@ -28,7 +28,6 @@ public class BlockParticlesInjector extends BlockAcceleratorControlPoint {
 		return new BlockStateContainer(this, BlockProperties.ACTIVE);
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(final int metadata) {
