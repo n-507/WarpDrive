@@ -463,12 +463,12 @@ public class Recipes {
 				"ore:gunpowder", 0,
 				"minecraft:gunpowder", 0 );
 		final ItemStack itemStackWaterBottle = WarpDriveConfig.getItemStackOrFire("minecraft:potion", 0, "{Potion: \"minecraft:water\"}");
-		WarpDrive.register(new ShapedOreRecipe(groupComponents,
-		                                       ItemComponent.getItemStack(EnumComponentType.ACTIVATED_CARBON), false, "lll", "aaa", "wgw",
-		                                       'l', leaves,
-		                                       'a', ItemComponent.getItemStack(EnumComponentType.BONE_CHARCOAL),
-		                                       'w', itemStackWaterBottle,
-		                                       'g', gunpowderOrSulfur ));
+		WarpDrive.register(new RecipeParticleShapedOre(groupComponents,
+		                                               ItemComponent.getItemStack(EnumComponentType.ACTIVATED_CARBON), false, "lll", "aaa", "wgw",
+		                                               'l', leaves,
+		                                               'a', ItemComponent.getItemStack(EnumComponentType.BONE_CHARCOAL),
+		                                               'w', itemStackWaterBottle,
+		                                               'g', gunpowderOrSulfur ));
 		
 		// Air canister is 4 iron bars, 2 rubber, 2 yellow wool, 1 tank
 		final Object woolPurple = WarpDriveConfig.getOreOrItemStack(
