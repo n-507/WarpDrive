@@ -113,8 +113,8 @@ public class TrajectoryPoint extends VectorI {
 		}
 		
 		// get main blocks
-		final EnumFacing directionLeft  = directionMain.rotateY();
-		final EnumFacing directionRight = directionMain.rotateYCCW();
+		final EnumFacing directionLeft  = directionMain.rotateYCCW();
+		final EnumFacing directionRight = directionMain.rotateY();
 		final Block blockForward   = world.getBlockState(blockPos.offset(directionMain)).getBlock();
 		final Block blockUp        = world.getBlockState(blockPos.up()).getBlock();
 		final Block blockDown      = world.getBlockState(blockPos.down()).getBlock();
@@ -338,8 +338,8 @@ public class TrajectoryPoint extends VectorI {
 			if (isStraightLine) {
 				// we just do a basic check of void shells, the full validation of magnets is done in the node evaluator
 				final EnumFacing directionMain  = directionBackward.getOpposite();
-				final EnumFacing directionLeft  = directionMain.rotateY();
-				final EnumFacing directionRight = directionLeft.rotateYCCW();
+				final EnumFacing directionLeft  = directionMain.rotateYCCW();
+				final EnumFacing directionRight = directionLeft.rotateY();
 				final Block blockLeft      = world.getBlockState(new BlockPos(x + directionLeft .getXOffset(), y, z + directionLeft .getZOffset())).getBlock();
 				final Block blockRight     = world.getBlockState(new BlockPos(x + directionRight.getXOffset(), y, z + directionRight.getZOffset())).getBlock();
 				isTurning = blockLeft instanceof BlockVoidShellPlain || blockRight instanceof BlockVoidShellPlain;

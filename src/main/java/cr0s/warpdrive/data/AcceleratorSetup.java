@@ -400,8 +400,8 @@ public class AcceleratorSetup extends GlobalPosition {
 	}
 	
 	private void scanCorners(@Nonnull final WorldServer world, @Nonnull final VectorI vCenter, @Nonnull final EnumFacing forgeDirection) {
-		final EnumFacing directionLeft = forgeDirection.rotateY();
-		final EnumFacing directionRight = forgeDirection.rotateYCCW();
+		final EnumFacing directionLeft = forgeDirection.rotateYCCW();
+		final EnumFacing directionRight = forgeDirection.rotateY();
 		for (int indexCorner = 0; indexCorner < 4; indexCorner++) {
 			final VectorI vector = new VectorI(
 				vCenter.x + ((indexCorner & 1) != 0 ? directionLeft.getXOffset() : directionRight.getXOffset()),
