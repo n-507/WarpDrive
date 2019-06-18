@@ -137,6 +137,7 @@ public class Dictionary {
 			config.get("block_tags", "draconicevolution:chaos_crystal"                      , "Anchor SkipMining").getString(); // static
 			config.get("block_tags", "draconicevolution:portal"                             , "Anchor StopMining").getString(); // lore
 			config.get("block_tags", "enderio:block_creative_spawner"                       , "Anchor SkipMining").getString(); // creative
+			config.get("block_tags", "enderio:block_transceiver"                            , "Anchor").getString(); // not supported
 			config.get("block_tags", "extrautils2:creativechest"                            , "Anchor SkipMining").getString(); // creative
 			config.get("block_tags", "extrautils2:creativeenergy"                           , "Anchor SkipMining").getString(); // creative
 			config.get("block_tags", "extrautils2:creativeharvest"                          , "Anchor SkipMining").getString(); // creative
