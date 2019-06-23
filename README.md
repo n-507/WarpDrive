@@ -11,8 +11,7 @@ If you would like to help, find an issue and then fork the repository. If you ca
 
 See mcmod.info for credits.
 
-See the official forum [here](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2510855).
-
+See the official forum [here](https://www.minecraftforum.net/forums/mapping-and-modding-java-edition/minecraft-mods/2510855).
 
 
 Installation
