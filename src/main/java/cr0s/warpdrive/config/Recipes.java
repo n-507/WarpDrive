@@ -606,7 +606,7 @@ public class Recipes {
 		} else {
 			WarpDrive.register(new RecipeParticleShapedOre(groupMachines,
 			                                               ItemComponent.getItemStack(EnumComponentType.REACTOR_CORE), false, "chc", "hph", "cec",
-			                                               'p', ItemElectromagneticCell.getItemStackNoCache(EnumTier.BASIC, ParticleRegistry.PROTON, 1000),
+			                                               'p', ItemElectromagneticCell.getItemStackNoCache(EnumTier.ADVANCED, ParticleRegistry.PROTON, 1000),
 			                                               'h', "blockHull3_plain",
 			                                               'c', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL),
 			                                               'e', ItemComponent.getItemStack(EnumComponentType.EMERALD_CRYSTAL)));
@@ -680,7 +680,7 @@ public class Recipes {
 		                                          coalDustOrCoal, coalDustOrCoal, coalDustOrCoal, coalDustOrCoal ), "coal");
 		// (alternate recipe, more expensive from charcoal)
 		final Object coalDustOrCharcoal = WarpDriveConfig.getOreOrItemStack(
-				"ore:dustCoal", 0,
+				"ore:dustCharcoal", 0,
 				"minecraft:coal", 1 );
 		WarpDrive.register(new ShapelessOreRecipe(groupMachines,
 		                                          ItemComponent.getItemStack(EnumComponentType.RAW_CARBON_FIBER),
@@ -1371,12 +1371,14 @@ public class Recipes {
 			                                       'm', itemStackMachineCasings[2]));
 		}
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       WarpDrive.blockEnanReactorCores[EnumTier.ADVANCED.getIndex()], false, " c ", "lRl", " c ",
+		                                       WarpDrive.blockEnanReactorCores[EnumTier.ADVANCED.getIndex()], false, "lcl", "CRC", "lcl",
+		                                       'C', ItemComponent.getItemStack(EnumComponentType.REACTOR_CORE),
 		                                       'R', WarpDrive.blockEnanReactorCores[EnumTier.BASIC.getIndex()],
 		                                       'l', ItemComponent.getItemStack(EnumComponentType.LENS),
 		                                       'c', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL) ));
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       WarpDrive.blockEnanReactorCores[EnumTier.SUPERIOR.getIndex()], false, "lSl", " R ", "lSl",
+		                                       WarpDrive.blockEnanReactorCores[EnumTier.SUPERIOR.getIndex()], false, "lSl", "CRC", "lSl",
+		                                       'C', ItemComponent.getItemStack(EnumComponentType.REACTOR_CORE),
 		                                       'R', WarpDrive.blockEnanReactorCores[EnumTier.ADVANCED.getIndex()],
 		                                       'l', ItemComponent.getItemStack(EnumComponentType.LENS),
 		                                       'S', ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR) ));
