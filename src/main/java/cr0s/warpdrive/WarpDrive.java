@@ -98,6 +98,7 @@ import cr0s.warpdrive.command.CommandGenerate;
 import cr0s.warpdrive.command.CommandBed;
 import cr0s.warpdrive.command.CommandInvisible;
 import cr0s.warpdrive.command.CommandReload;
+import cr0s.warpdrive.command.CommandRender;
 import cr0s.warpdrive.command.CommandSpace;
 import cr0s.warpdrive.config.Recipes;
 import cr0s.warpdrive.config.WarpDriveConfig;
@@ -646,6 +647,7 @@ public class WarpDrive {
 		event.registerServerCommand(new CommandBed());
 		event.registerServerCommand(new CommandInvisible());
 		event.registerServerCommand(new CommandReload());
+		event.registerServerCommand(new CommandRender());
 		event.registerServerCommand(new CommandSpace());
 	}
 	
