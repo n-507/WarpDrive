@@ -19,6 +19,7 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -63,6 +64,10 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 	
 	public BlockHullSlab(@Nonnull final String registryName, @Nonnull final EnumTier enumTier, @Nonnull final IBlockState blockStateHull) {
 		super(Material.ROCK);
+		
+		this.fullBlock = false;
+		this.setLightOpacity(0);
+		this.useNeighborBrightness = true;
 		
 		this.enumTier = enumTier;
 		this.blockStateHull = blockStateHull;
@@ -135,8 +140,10 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 		return getTranslationKey();
 	}
 	
+	@Deprecated
 	@Override
 	public boolean isDouble() {
+		// any use of this method, apart from construction, indicates a missing override or something unplanned
 		return false;
 	}
 	
@@ -150,6 +157,17 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 	@Override
 	public Comparable<?> getTypeForItem(@Nonnull final ItemStack itemStack) {
 		return EnumVariant.get(itemStack.getItemDamage());
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public int getLightOpacity(@Nonnull final IBlockState blockState) {
+		final EnumVariant variant = blockState.getValue(VARIANT);
+		if ( variant.getIsDouble()
+		  || variant.getFacing().getYOffset() != 0 ) {
+			return 255;
+		}
+		return 0;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -175,14 +193,32 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 	
 	@SuppressWarnings("deprecation")
 	@Override
+	public boolean isTopSolid(@Nonnull final IBlockState blockState) {
+		final EnumVariant variant = blockState.getValue(VARIANT);
+		return variant.getIsDouble() || variant.getFacing() == EnumFacing.UP;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Nonnull
+	@Override
+	public BlockFaceShape getBlockFaceShape(@Nonnull final IBlockAccess blockAccess, @Nonnull final IBlockState blockState, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing) {
+		final EnumVariant variant = blockState.getValue(VARIANT);
+		if (variant.getIsDouble()) {
+			return BlockFaceShape.SOLID;
+		}
+		return facing == variant.getFacing() ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
 	public boolean isFullBlock(@Nonnull final IBlockState blockState) {
-		return ((BlockSlab) blockState.getBlock()).isDouble();
+		return blockState.getValue(VARIANT).getIsDouble();
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isFullCube(@Nonnull final IBlockState blockState) {
-		return ((BlockSlab) blockState.getBlock()).isDouble();
+		return blockState.getValue(VARIANT).getIsDouble();
 	}
 	
 	@Nonnull
@@ -193,7 +229,7 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 		final IBlockState blockState = getStateFromMeta(metadata);
 		
 		// full block?
-		if (isDouble() || metadata >= 12) {
+		if (blockState.getValue(VARIANT).getIsDouble()) {
 			return blockState;
 		}
 		
@@ -251,36 +287,32 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 	
 	@Override
 	public int quantityDropped(final Random random) {
-		return isDouble() ? 2 : 1;
+		return 1;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean shouldSideBeRendered(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing) {
-		if (isDouble()) {
-			return super.shouldSideBeRendered(blockState, blockAccess, blockPos, facing);
-		} else if (facing != EnumFacing.DOWN && facing != EnumFacing.UP && !super.shouldSideBeRendered(blockState, blockAccess, blockPos, facing)) {
-			return false;
-		} else {
-			return true;
+		final EnumVariant variant = blockState.getValue(VARIANT);
+		final BlockPos blockPosSide = blockPos.offset(facing);
+		final boolean doesSideBlockRendering = blockAccess.getBlockState(blockPosSide).doesSideBlockRendering(blockAccess, blockPosSide, facing.getOpposite());
+		if (facing != variant.getFacing()) {
+			return !doesSideBlockRendering;
 		}
+		return !doesSideBlockRendering;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isOpaqueCube(final IBlockState blockState) {
-		return isDouble();
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
+		return blockState.getValue(VARIANT).getIsDouble();
 	}
 	
 	@Override
 	public boolean doesSideBlockRendering(@Nonnull final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos, final EnumFacing side) {
-		if (blockState.isOpaqueCube()) {
-			return true;
-		}
-		
-		final EnumFacing enumFacing = blockState.getValue(VARIANT).getFacing();
-		return enumFacing == side;
+		final EnumVariant variant = blockState.getValue(VARIANT);
+		return variant.getIsDouble() || variant.getFacing() == side;
 	}
 	
 	@SuppressWarnings("deprecation")

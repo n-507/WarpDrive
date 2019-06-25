@@ -31,6 +31,7 @@ public class BlockTransporterScanner extends BlockAbstractBase {
 		
 		setTranslationKey("warpdrive.movement.transporter_scanner");
 		setLightOpacity(255);
+		this.useNeighborBrightness = true;
 		
 		setDefaultState(getDefaultState()
 				                .withProperty(BlockProperties.ACTIVE, false)

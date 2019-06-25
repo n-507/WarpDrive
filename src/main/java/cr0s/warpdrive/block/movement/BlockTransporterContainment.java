@@ -23,6 +23,7 @@ public class BlockTransporterContainment extends BlockAbstractBase {
 		
 		setTranslationKey("warpdrive.movement.transporter_containment");
 		setLightOpacity(255);
+		this.useNeighborBrightness = true;
 	}
 	
 	@SuppressWarnings("deprecation")
