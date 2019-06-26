@@ -640,7 +640,7 @@ public class Recipes {
 				"minecraft:red_mushroom", 0 );
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       ItemComponent.getItemStackNoCache(EnumComponentType.BIOPULP, 2), false, "lll", "mbM", "lll",
-		                                       'b', "minecraft:reeds",
+		                                       'b', Items.REEDS,
 		                                       'l', leaves,
 		                                       'm', oreOrBrownMushroom,
 		                                       'M', oreOrRedMushroom ), "_sugarcane");
