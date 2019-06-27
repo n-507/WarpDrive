@@ -116,13 +116,16 @@ public class ItemPlasmaTorch extends ItemAbstractBase implements IParticleContai
 	public ItemStack getContainerItem(@Nonnull final ItemStack itemStackFilled) {
 		final ParticleStack particleStack = getParticleStack(itemStackFilled);
 		if (particleStack != null) {
-			final int amount = particleStack.getAmount() - getAmountToConsume(itemStackFilled);
-			if (amount <= 0) {
-				return getItemStackNoCache(null, 0);
+			final int amountToConsume = getAmountToConsume(itemStackFilled);
+			if (amountToConsume > 0) {
+				final int amountLeft = particleStack.getAmount() - amountToConsume;
+				if (amountLeft <= 0) {
+					return getItemStackNoCache(null, 0);
+				}
+				return getItemStackNoCache(particleStack.getParticle(), amountLeft);
 			}
-			return getItemStackNoCache(particleStack.getParticle(), amount);
 		}
-		return new ItemStack(Blocks.FIRE);
+		return ItemStack.EMPTY;
 	}
 	
 	@Override
@@ -132,16 +135,33 @@ public class ItemPlasmaTorch extends ItemAbstractBase implements IParticleContai
 			return;
 		}
 		NBTTagCompound tagCompound = itemStack.getTagCompound();
-		if (tagCompound == null) {
-			tagCompound = new NBTTagCompound();
+		if (amountToConsume > 0) {
+			if (tagCompound == null) {
+				tagCompound = new NBTTagCompound();
+			}
+			tagCompound.setInteger(IParticleContainerItem.TAG_AMOUNT_TO_CONSUME, amountToConsume);
+			tagCompound.setLong(IParticleContainerItem.TAG_TICK_TO_CONSUME, System.currentTimeMillis());
+			
+		} else if (tagCompound != null) {
+			tagCompound.removeTag(IParticleContainerItem.TAG_AMOUNT_TO_CONSUME);
+			tagCompound.removeTag(IParticleContainerItem.TAG_TICK_TO_CONSUME);
+			if (tagCompound.isEmpty()) {
+				itemStack.setTagCompound(null);
+			}
 		}
-		tagCompound.setInteger(IParticleContainerItem.TAG_AMOUNT_TO_CONSUME, amountToConsume);
 	}
 	
 	private int getAmountToConsume(@Nonnull final ItemStack itemStack) {
 		final NBTTagCompound tagCompound = itemStack.getTagCompound();
 		if (tagCompound != null) {
-			return tagCompound.getInteger(IParticleContainerItem.TAG_AMOUNT_TO_CONSUME);
+			// when taking a recipe output, the recipe is matched again before checking for recipients, so we can assume it's in the same tick
+			final long tickToConsume = tagCompound.getInteger(IParticleContainerItem.TAG_TICK_TO_CONSUME);
+			if (System.currentTimeMillis() - tickToConsume < 50L) {
+				return tagCompound.getInteger(IParticleContainerItem.TAG_AMOUNT_TO_CONSUME);
+			} else {
+				tagCompound.removeTag(IParticleContainerItem.TAG_AMOUNT_TO_CONSUME);
+				tagCompound.removeTag(IParticleContainerItem.TAG_TICK_TO_CONSUME);
+			}
 		}
 		return 0;
 	}

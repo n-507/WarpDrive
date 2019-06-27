@@ -69,6 +69,7 @@ public class RecipeParticleShapedOre extends ShapedOreRecipe {
 							
 							// reject different particles or insufficient quantity
 							if (!particleStackSlot.containsParticle(particleStackTarget)) {
+								particleContainerItemSlot.setAmountToConsume(itemStackSlot, 0);
 								return false;
 							}
 							

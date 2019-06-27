@@ -6,6 +6,7 @@ public interface IParticleContainerItem {
 	
 	String TAG_PARTICLE = "particle";
 	String TAG_AMOUNT_TO_CONSUME = "amountToConsume";
+	String TAG_TICK_TO_CONSUME = "tickToConsume";
 	
 	ParticleStack getParticleStack(final ItemStack container);
 	
