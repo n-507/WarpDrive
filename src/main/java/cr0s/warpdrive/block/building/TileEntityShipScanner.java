@@ -75,7 +75,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 	private int laserTicks = 0;
 	private int scanTicks = 0;
 	private int deployTicks = 0;
-	
+		
 	private int searchTicks = 0;
 	
 	private String playerName = "";
@@ -421,7 +421,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 	
 	// Returns true on success and reason string
 	private boolean deployShip(final String fileName, final int offsetX, final int offsetY, final int offsetZ,
-	                       final byte rotationSteps, final boolean isForced, final WarpDriveText reason) {
+	                           final byte rotationSteps, final boolean isForced, final WarpDriveText reason) {
 		targetX = pos.getX() + offsetX;
 		targetY = pos.getY() + offsetY;
 		targetZ = pos.getZ() + offsetZ;
@@ -678,6 +678,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		return state();
 	}
 	
+	@Nonnull
 	private Object[] scan() {
 		// Already scanning?
 		if (enumShipScannerState != EnumShipScannerState.IDLE) {
@@ -692,6 +693,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		return new Object[] { success, 3, Commons.removeFormatting( reason.getUnformattedText() ) };
 	}
 	
+	@Nonnull
 	private Object[] filename() {
 		if (enumShipScannerState != EnumShipScannerState.IDLE && !schematicFileName.isEmpty()) {
 			if (enumShipScannerState == EnumShipScannerState.DEPLOYING) {
@@ -704,6 +706,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		return new Object[] { true, schematicFileName };
 	}
 	
+	@Nonnull
 	private Object[] deploy(final Object[] arguments) {
 		if (arguments == null || arguments.length != 5) {
 			return new Object[] { false, "Invalid arguments count, you need <.schematic file name>, <offsetX>, <offsetY>, <offsetZ>, <rotationSteps>!" };
@@ -743,6 +746,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		return new Object[] { isSuccess, Commons.removeFormatting( reason.getUnformattedText() ) };
 	}
 	
+	@Nonnull
 	private Object[] state() {
 		switch (enumShipScannerState) {
 		default:

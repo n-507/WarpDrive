@@ -240,8 +240,8 @@ public class RenderCommons {
 			for (int i = 0; i < 4; ++i) {
 				renderer
 						.pos(	Float.intBitsToFloat(vData[size * i    ]),
-						         Float.intBitsToFloat(vData[size * i + 1]),
-						         Float.intBitsToFloat(vData[size * i + 2]))
+						        Float.intBitsToFloat(vData[size * i + 1]),
+						        Float.intBitsToFloat(vData[size * i + 2]) )
 						.color(255, 255, 255, 255)
 						.tex(Float.intBitsToFloat(vData[size * i + uv]), Float.intBitsToFloat(vData[size * i + uv + 1]))
 						.lightmap(l1, l2)

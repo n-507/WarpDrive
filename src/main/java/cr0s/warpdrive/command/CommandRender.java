@@ -41,7 +41,6 @@ public class CommandRender extends AbstractCommand {
 		if (args.length > 0) {
 			Commons.addChatMessage(commandSender, new TextComponentString(getUsage(commandSender)));
 			return;
-			
 		}
 		
 		final EntityPlayerMP entityPlayer = commandSender instanceof EntityPlayerMP ? (EntityPlayerMP) commandSender : null;

@@ -155,6 +155,7 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 		sizeClass.put(shortName, size + bytes.length);
 	}
 	
+	@Nonnull
 	public static String getClientValidation() {
 		final StringBuilder result = new StringBuilder().append(new Date().toString());
 		for (final String key : countClass.keySet()) {

@@ -8,6 +8,7 @@ import cr0s.warpdrive.data.CelestialObject.RenderData;
 import cr0s.warpdrive.data.StarMapRegistry;
 import cr0s.warpdrive.data.Vector3;
 
+import javax.annotation.Nonnull;
 import java.awt.Color;
 import java.util.Random;
 
@@ -489,7 +490,7 @@ public class RenderSpaceSky extends IRenderHandler {
 	
 	// colorization loosely inspired from Hertzsprung-Russell diagram
 	// (we're using it for non-star objects too, so yeah...)
-	private static int getStarColorRGB(final Random rand) {
+	private static int getStarColorRGB(@Nonnull final Random rand) {
 		final double colorType = rand.nextDouble();
 		final float hue;
 		final float saturation;

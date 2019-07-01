@@ -159,7 +159,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		if (ticksCooldown > 0) {
 			ticksCooldown--;
 			
-			// report coo down time when a command is requested
+			// report cool down time when a command is requested
 			if ( isEnabled
 			  && isCommandConfirmed
 			  && enumShipCommand.isMovement() ) {

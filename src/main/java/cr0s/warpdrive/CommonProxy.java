@@ -5,6 +5,8 @@ import cr0s.warpdrive.event.EMPReceiver;
 import cr0s.warpdrive.event.ItemHandler;
 import cr0s.warpdrive.event.LivingHandler;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.UUID;
 import java.util.WeakHashMap;
@@ -28,7 +30,8 @@ public class CommonProxy {
 	
 	private static final WeakHashMap<GameProfile, WeakReference<EntityPlayer>> fakePlayers = new WeakHashMap<>(100);
 	
-	private static EntityPlayerMP getPlayer(final WorldServer world, final UUID uuidPlayer) {
+	@Nullable
+	private static EntityPlayerMP getPlayer(@Nonnull final WorldServer world, final UUID uuidPlayer) {
 		assert world.getMinecraftServer() != null;
 		for (final EntityPlayerMP entityPlayerMP : world.getMinecraftServer().getPlayerList().getPlayers()) {
 			if (entityPlayerMP.getUniqueID() == uuidPlayer) {
@@ -59,7 +62,7 @@ public class CommonProxy {
 	}
 	
 	public static boolean isBlockBreakCanceled(final UUID uuidPlayer, final BlockPos blockPosSource,
-	                                           final World world, final BlockPos blockPosEvent) {
+	                                           @Nonnull final World world, final BlockPos blockPosEvent) {
 		if (world.isRemote || !(world instanceof WorldServer)) {
 			return false;
 		}
@@ -84,7 +87,7 @@ public class CommonProxy {
 	}
 	
 	public static boolean isBlockPlaceCanceled(final UUID uuidPlayer, final BlockPos blockPosSource,
-	                                           final World world, final BlockPos blockPosEvent, final IBlockState blockState) {
+	                                           @Nonnull final World world, final BlockPos blockPosEvent, final IBlockState blockState) {
 		if (world.isRemote || !(world instanceof WorldServer)) {
 			return false;
 		}
