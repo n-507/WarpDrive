@@ -544,6 +544,16 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 		final ClassReader classReader = new ClassReader(bytes);
 		classReader.accept(classNode, 0);
 		
+		// FMLCommonHandler will load NBT classes too early, so we can't use it directly.
+		// Furthermore, current thread is "main" when another core mod loaded the Chunk class (see SpongeForge), so we can't use SidedThreadGroup nor thread name reliably.
+		// FMLServerHandler is documented as being environment specific, so we can't really use it.
+		// DedicatedServer is only available server side, but can't be checked early on (see SpongeForge).
+		if (Thread.currentThread().getName().equals("Server thread")) {
+			FMLLoadingPlugin.logger.info(String.format("Skipping client-side only transformation for %s",
+			                                           classNode.name));
+			return bytes;
+		}
+		
 		final int countExpected = 1;
 		int countTransformed = 0;
 		for (final MethodNode methodNode : classNode.methods) {
