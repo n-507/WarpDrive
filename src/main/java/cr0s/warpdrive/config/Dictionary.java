@@ -251,6 +251,7 @@ public class Dictionary {
 			config.get("block_tags", "sgcraft:stargatering"                            , "PlaceEarlier").getString();
 			config.get("block_tags", "sgcraft:stargatecontroller"                      , "PlaceLatest").getString();
 			config.get("block_tags", "techguns:lamp0"                                  , "PlaceLatest").getString();
+			config.get("block_tags", "tconstruct:stone_torch"                          , "PlaceLatest").getString();
 			
 			// expendables, a.k.a. "don't blow my ship with this..."
 			config.get("block_tags", "warpdrive:gas"                                   , "LeftBehind Expandable").getString();
