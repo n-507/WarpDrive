@@ -15,6 +15,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,7 +35,7 @@ public abstract class BlockAbstractAir extends BlockAbstractBase {
 	public static final PropertyInteger CONCENTRATION = PropertyInteger.create("concentration", 0, 15);
 	
 	BlockAbstractAir(final String registryName, final EnumTier enumTier) {
-		super(registryName, enumTier, Material.FIRE);
+		super(registryName, enumTier, Material.AIR);
 		
 		setHardness(0.0F);
 		setTranslationKey("warpdrive.breathing.air");
@@ -141,7 +142,7 @@ public abstract class BlockAbstractAir extends BlockAbstractBase {
 			return false;
 		}
 		
-		return blockAccess.isAirBlock(blockPosSide);
+		return blockSide == Blocks.AIR;
 	}
 	
 	@Override
