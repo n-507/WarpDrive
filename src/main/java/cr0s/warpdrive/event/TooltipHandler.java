@@ -55,6 +55,9 @@ public class TooltipHandler {
 		if (event.getEntityPlayer() == null) {
 			return;
 		}
+		if (event.getItemStack().isEmpty()) {
+			return;
+		}
 		
 		// add dictionary information
 		if (Dictionary.ITEMS_BREATHING_HELMET.contains(event.getItemStack().getItem())) {
@@ -72,6 +75,9 @@ public class TooltipHandler {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onTooltipEvent_last(@Nonnull final ItemTooltipEvent event) {
 		if (event.getEntityPlayer() == null) {
+			return;
+		}
+		if (event.getItemStack().isEmpty()) {
 			return;
 		}
 		
