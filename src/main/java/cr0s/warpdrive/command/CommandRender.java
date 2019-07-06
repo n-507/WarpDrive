@@ -1,6 +1,7 @@
 package cr0s.warpdrive.command;
 
 import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.WarpDriveText;
 
 import javax.annotation.Nonnull;
@@ -69,43 +70,44 @@ public class CommandRender extends AbstractCommand {
 		}
 		
 		Commons.addChatMessage(commandSender, new WarpDriveText().append(getPrefix())
-		                                                         .appendInLine(Commons.styleCorrect, "Dumping render details %s", 
-		                                                                 Commons.format(world, blockPos) ) );
+		                                                         .appendInLine(Commons.styleCorrect, "Dumping render details %s",
+		                                                                       Commons.format(world, blockPos) ) );
 		final Block block = blockState.getBlock();
 		
-		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleValue, "Blockstate is %s (%s)",
-		                                                                 blockState,
-		                                                                  block.getMetaFromState(blockState) ));
-		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleValue, "Light opacity is %s / useNeighborBrightness is %s",
-		                                                                 block.getLightOpacity(blockState),
-		                                                                 block.getUseNeighborBrightness(blockState) ));
-		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleValue, "isFullBlock is %s / isFullCube is %s",
-		                                                                 block.isFullBlock(blockState),
-		                                                                 block.isFullCube(blockState) ));
-		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleValue, "isBlockNormalCube is %s / isNormalCube is %s",
-		                                                                 block.isBlockNormalCube(blockState),
-		                                                                 block.isNormalCube(blockState) ));
-		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleValue, "isTopSolid is %s / causesSuffocation is %s",
-		                                                                 block.isTopSolid(blockState),
-		                                                                 block.causesSuffocation(blockState) ));
-		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleValue, "Material isOpaque %s / blocksLight %s",
-		                                                                 blockState.getMaterial().isOpaque(),
-		                                                                 blockState.getMaterial().blocksLight() ));
-		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleValue, "Material isLiquid %s / isSolid %s",
-		                                                                 blockState.getMaterial().isLiquid(),
-		                                                                 blockState.getMaterial().isSolid() ));
-		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleValue, "isOpaqueCube is %s  / isTranslucent %s",
-		                                                                 blockState.isOpaqueCube(),
-		                                                                 world.isRemote ? blockState.isTranslucent() : "???" ));
-		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleValue, "renderLayer is %s  / renderType is %s",
-		                                                                 world.isRemote ? block.getRenderLayer() : "???",
-		                                                                 block.getRenderType(blockState) ));
-		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleValue, "isSideSolid D %s, U %s, N %s, S %s, W %s, E %s",
-		                                                                 block.isSideSolid(blockState, world, blockPos, EnumFacing.DOWN),
-		                                                                 block.isSideSolid(blockState, world, blockPos, EnumFacing.UP),
-		                                                                 block.isSideSolid(blockState, world, blockPos, EnumFacing.NORTH),
-		                                                                 block.isSideSolid(blockState, world, blockPos, EnumFacing.SOUTH),
-		                                                                 block.isSideSolid(blockState, world, blockPos, EnumFacing.WEST),
-		                                                                 block.isSideSolid(blockState, world, blockPos, EnumFacing.EAST) ));
+		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleNormal, "Blockstate is %s (%s)",
+		                                                                 Commons.getChatValue(blockState.toString()),
+		                                                                 Commons.getChatValue(block.getMetaFromState(blockState))));
+		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleNormal, "Light opacity is %s / useNeighborBrightness is %s",
+		                                                                 Commons.getChatValue(block.getLightOpacity(blockState)),
+		                                                                 Commons.getChatValue(block.getUseNeighborBrightness(blockState))));
+		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleNormal, "isFullBlock is %s / isFullCube is %s / isAir is %s",
+		                                                                 Commons.getChatValue(block.isFullBlock(blockState)),
+		                                                                 Commons.getChatValue(block.isFullCube(blockState)),
+		                                                                 Commons.getChatValue(block.isAir(blockState, world, blockPos))));
+		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleNormal, "isBlockNormalCube is %s / isNormalCube is %s",
+		                                                                 Commons.getChatValue(block.isBlockNormalCube(blockState)),
+		                                                                 Commons.getChatValue(block.isNormalCube(blockState))));
+		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleNormal, "isTopSolid is %s / causesSuffocation is %s",
+		                                                                 Commons.getChatValue(block.isTopSolid(blockState)),
+		                                                                 Commons.getChatValue(block.causesSuffocation(blockState))));
+		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleNormal, "Material isOpaque %s / Material blocksLight is %s",
+		                                                                 Commons.getChatValue(blockState.getMaterial().isOpaque()),
+		                                                                 Commons.getChatValue(blockState.getMaterial().blocksLight())));
+		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleNormal, "Material isLiquid %s / Material isSolid %s",
+		                                                                 Commons.getChatValue(blockState.getMaterial().isLiquid()),
+		                                                                 Commons.getChatValue(blockState.getMaterial().isSolid())));
+		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleNormal, "isOpaqueCube is %s  / isTranslucent %s",
+		                                                                 Commons.getChatValue(blockState.isOpaqueCube()),
+		                                                                 WarpDrive.proxy.isDedicatedServer() ? Commons.getChatValue("???") : Commons.getChatValue(blockState.isTranslucent())));
+		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleNormal, "renderLayer is %s  / renderType is %s",
+		                                                                 WarpDrive.proxy.isDedicatedServer() ? Commons.getChatValue("???") : Commons.getChatValue(block.getRenderLayer().toString()),
+		                                                                 Commons.getChatValue(block.getRenderType(blockState).toString())));
+		Commons.addChatMessage(commandSender, new WarpDriveText().append(Commons.styleNormal, "isSideSolid D %s, U %s, N %s, S %s, W %s, E %s",
+		                                                                 Commons.getChatValue(block.isSideSolid(blockState, world, blockPos, EnumFacing.DOWN)),
+		                                                                 Commons.getChatValue(block.isSideSolid(blockState, world, blockPos, EnumFacing.UP)),
+		                                                                 Commons.getChatValue(block.isSideSolid(blockState, world, blockPos, EnumFacing.NORTH)),
+		                                                                 Commons.getChatValue(block.isSideSolid(blockState, world, blockPos, EnumFacing.SOUTH)),
+		                                                                 Commons.getChatValue(block.isSideSolid(blockState, world, blockPos, EnumFacing.WEST)),
+		                                                                 Commons.getChatValue(block.isSideSolid(blockState, world, blockPos, EnumFacing.EAST))));
 	}
 }

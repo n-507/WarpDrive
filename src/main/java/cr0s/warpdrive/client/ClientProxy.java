@@ -38,6 +38,11 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 public class ClientProxy extends CommonProxy {
 	
 	@Override
+	public boolean isDedicatedServer() {
+		return false;
+	}
+	
+	@Override
 	public void onForgePreInitialisation() {
 		super.onForgePreInitialisation();
 		

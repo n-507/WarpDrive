@@ -30,6 +30,10 @@ public class CommonProxy {
 	
 	private static final WeakHashMap<GameProfile, WeakReference<EntityPlayer>> fakePlayers = new WeakHashMap<>(100);
 	
+	public boolean isDedicatedServer() {
+		return true;
+	}
+	
 	@Nullable
 	private static EntityPlayerMP getPlayer(@Nonnull final WorldServer world, final UUID uuidPlayer) {
 		assert world.getMinecraftServer() != null;

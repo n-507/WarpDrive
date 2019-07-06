@@ -153,10 +153,11 @@ public class Commons {
 	public static Style styleCommand  = new Style().setColor(TextFormatting.AQUA);
 	public static Style styleHeader   = new Style().setColor(TextFormatting.GOLD);
 	public static Style styleCorrect  = new Style().setColor(TextFormatting.GREEN);
+	public static Style styleDisabled = new Style().setColor(TextFormatting.GRAY);
 	public static Style styleNormal   = new Style().setColor(TextFormatting.WHITE);
-	public static Style styleWarning  = new Style().setColor(TextFormatting.RED);
 	public static Style styleValue    = new Style().setColor(TextFormatting.YELLOW);
 	public static Style styleVoltage  = new Style().setColor(TextFormatting.DARK_GREEN);
+	public static Style styleWarning  = new Style().setColor(TextFormatting.RED);
 	
 	@Nonnull
 	public static WarpDriveText getChatPrefix(@Nonnull final Block block) {
@@ -178,6 +179,29 @@ public class Commons {
 	public static WarpDriveText getNamedPrefix(@Nonnull final String name) {
 		return new WarpDriveText(styleHeader, "warpdrive.guide.prefix",
 		                         new TextComponentString(name));
+	}
+	
+	@Nonnull
+	public static WarpDriveText getChatValue(final boolean bool) {
+		if (bool) {
+			return new WarpDriveText(styleCorrect, "true");
+		} else {
+			return new WarpDriveText(styleWarning, "false");
+		}
+	}
+	
+	@Nonnull
+	public static WarpDriveText getChatValue(final int value) {
+		return new WarpDriveText(styleValue, "%s", value);
+	}
+	
+	@Nonnull
+	public static WarpDriveText getChatValue(@Nonnull final String value) {
+		if (value.equals("???")) {
+			return new WarpDriveText(styleDisabled, "???");
+		} else {
+			return new WarpDriveText(styleValue, "%s", value);
+		}
 	}
 	
 	public static void addChatMessage(final ICommandSender commandSender, @Nonnull final ITextComponent textComponent) {
