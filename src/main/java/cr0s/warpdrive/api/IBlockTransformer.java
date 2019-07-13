@@ -16,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public interface IBlockTransformer {
+	// This interface only applies to server side, it won't be used client side.
 	
 	// Return true if this transformer is applicable to that block.
 	boolean isApplicable(final Block block, final int metadata, final TileEntity tileEntity);
@@ -46,6 +47,7 @@ public interface IBlockTransformer {
 	
 	// Called when placing back a ship in the world, if saveExternals() returned non-null for that block.
 	// Use this to restore external data from the ship schematic, right after block & tile entity placement.
+	// Use this to send custom client notification messages after the block was placed.
 	// Use priority placement to ensure dependent blocks are placed first.
 	void restoreExternals(final World world, final BlockPos blockPos,
 	                      final IBlockState blockState, final TileEntity tileEntity,
