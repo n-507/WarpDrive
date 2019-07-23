@@ -300,7 +300,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
 		final boolean isValid = super.doScanAssembly(isDirty, textReason);
 		
-		if (getShape() != EnumForceFieldShape.NONE) {
+		if (getShape() == EnumForceFieldShape.NONE) {
 			textReason.append(Commons.styleWarning, "warpdrive.force_field.shape.status_line.none");
 			return false;
 		}
