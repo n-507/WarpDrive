@@ -1,5 +1,6 @@
 package cr0s.warpdrive.data;
 
+import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.InvalidXmlException;
 import cr0s.warpdrive.config.XmlFileManager;
@@ -19,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.minecraftforge.common.DimensionManager;
@@ -163,6 +165,38 @@ public class CelestialObjectManager extends XmlFileManager {
 			}
 		}
 		return nbtTagList;
+	}
+	
+	public static boolean onOpeningNetherPortal(@Nonnull final World world, @Nonnull final BlockPos blockPos) {
+		// prevent creating a portal outside the world border
+		final CelestialObject celestialObjectPortal = get(world, blockPos.getX(), blockPos.getZ());
+		if (celestialObjectPortal != null) {
+			if (!celestialObjectPortal.isInsideBorder(blockPos.getX(), blockPos.getZ()) ) {
+				return false;
+			}
+			
+			// @TODO prevent creating a portal in specific dimensions
+		}
+		
+		// prevent creating a portal leading outside the world border
+		final boolean isInTheNether = world.provider.getDimension() == -1;
+		final CelestialObject celestialObjectExit = get(false, isInTheNether ? 0 : -1, 0, 0);
+		if (celestialObjectExit != null) {
+			final double factor = isInTheNether ? 8.0D : 1 / 8.0D;
+			final int xExit = (int) Math.floor(blockPos.getX() * factor);
+			final int zExit = (int) Math.floor(blockPos.getZ() * factor);
+			if ( Math.abs(xExit - celestialObjectExit.dimensionCenterX) > celestialObjectExit.borderRadiusX
+			  || Math.abs(zExit - celestialObjectExit.dimensionCenterZ) > celestialObjectExit.borderRadiusZ ) {
+				return false;
+			}
+		}
+		
+		if (WarpDrive.isDev) {
+			WarpDrive.logger.info(String.format("Opening Nether portal %s",
+			                                    Commons.format(world, blockPos) ));
+		}
+		
+		return true;
 	}
 	
 	// *** client side only ***

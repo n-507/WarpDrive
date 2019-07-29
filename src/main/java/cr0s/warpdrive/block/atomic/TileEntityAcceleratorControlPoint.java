@@ -75,7 +75,7 @@ public class TileEntityAcceleratorControlPoint extends TileEntityAbstractMachine
 			if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 				WarpDrive.logger.info(this + " Accelerator control point controlChannel channel set to " + controlChannel);
 			}
-			// force update through main thread since CC runs on server as 'client'
+			// force update through main thread since CC & OC are running outside the main thread
 			markDirty();
 		}
 	}
@@ -126,12 +126,6 @@ public class TileEntityAcceleratorControlPoint extends TileEntityAbstractMachine
 	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
 		final NBTTagCompound tagCompound = packet.getNbtCompound();
 		readFromNBT(tagCompound);
-	}
-	
-	@Override
-	public void setIsEnabled(final boolean isEnabled) {
-		super.setIsEnabled(isEnabled);
-		WarpDrive.starMap.onBlockUpdated(world, pos, world.getBlockState(pos));
 	}
 	
 	// Common OC/CC methods

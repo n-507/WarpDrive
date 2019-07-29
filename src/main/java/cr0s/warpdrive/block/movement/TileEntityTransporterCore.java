@@ -35,6 +35,7 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -524,10 +525,10 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	}
 	
 	@Override
-	public void onBlockUpdatedInArea(final VectorI vector, final IBlockState blockState) {
+	public boolean onBlockUpdatingInArea(@Nullable final Entity entity, final BlockPos blockPos, final IBlockState blockState) {
 		// skip in case of explosion, etc.
 		if (isDirtyAssembly()) {
-			return;
+			return true;
 		}
 		
 		// check for significant change
@@ -535,21 +536,23 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		if ( block instanceof BlockTransporterScanner
 		  || block instanceof BlockTransporterContainment) {
 			markDirtyAssembly();
-			return;
+			return true;
 		}
 		if ( aabbLocalScanners != null
-		  && vector.x >= aabbLocalScanners.minX
-		  && vector.y >= aabbLocalScanners.minY
-		  && vector.z >= aabbLocalScanners.minZ
-		  && vector.x <  aabbLocalScanners.maxX
-		  && vector.y <  aabbLocalScanners.maxY
-		  && vector.z <  aabbLocalScanners.maxZ ) {
+		  && blockPos.getX() >= aabbLocalScanners.minX
+		  && blockPos.getY() >= aabbLocalScanners.minY
+		  && blockPos.getZ() >= aabbLocalScanners.minZ
+		  && blockPos.getX() <  aabbLocalScanners.maxX
+		  && blockPos.getY() <  aabbLocalScanners.maxY
+		  && blockPos.getZ() <  aabbLocalScanners.maxZ ) {
+			if (WarpDriveConfig.LOGGING_TRANSPORTER) {
+				WarpDrive.logger.info(String.format("onBlockUpdatingInArea %s %s",
+				                                    blockState,
+				                                    Commons.format(world, blockPos) ));
+			}
 			markDirtyAssembly();
 		}
-		
-		if (WarpDriveConfig.LOGGING_TRANSPORTER) {
-			WarpDrive.logger.info(String.format("onBlockUpdatedInArea block %s", block));
-		}
+		return true;
 	}
 	
 	@Override

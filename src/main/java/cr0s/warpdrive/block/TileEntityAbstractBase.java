@@ -165,7 +165,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 			isDirty = false;
 			final IBlockState blockState = world.getBlockState(pos);
 			world.notifyBlockUpdate(pos, blockState, blockState, 3);
-			WarpDrive.starMap.onBlockUpdated(world, pos, blockState);
+			WarpDrive.starMap.onBlockUpdating(null, world, pos, blockState);
 		} else {
 			isDirty = true;
 		}

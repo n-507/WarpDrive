@@ -8,6 +8,7 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.ChunkData;
 import cr0s.warpdrive.data.StateAir;
 
+import javax.annotation.Nonnull;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 
@@ -231,16 +233,16 @@ public class ChunkHandler {
 	}
 	
 	@SuppressWarnings("ConstantConditions")
-	public static void onBlockUpdated(final World world, final int x, final int y, final int z) {
+	public static void onBlockUpdated(@Nonnull final World world, @Nonnull final BlockPos blockPos) {
 		if (!world.isRemote) {
-			final ChunkData chunkData = getChunkData(world, x, y, z);
+			final ChunkData chunkData = getChunkData(world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			if (chunkData != null) {
-				chunkData.onBlockUpdated(x, y, z);
+				chunkData.onBlockUpdated(blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			} else {
 				if (WarpDriveConfig.LOGGING_WORLD_GENERATION) {
 					WarpDrive.logger.error(String.format("%s block updating %s, while chunk isn't loaded!",
 					                                     world.isRemote ? "Client" : "Server",
-					                                     Commons.format(world, x, y, z)));
+					                                     Commons.format(world, blockPos)));
 					Commons.dumpAllThreads();
 				}
 			}

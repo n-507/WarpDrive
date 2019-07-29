@@ -27,6 +27,7 @@ import cr0s.warpdrive.event.JumpSequencer;
 import cr0s.warpdrive.render.EntityFXBoundingBox;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -1206,8 +1207,9 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	}
 	
 	@Override
-	public void onBlockUpdatedInArea(final VectorI vector, final IBlockState blockState) {
+	public boolean onBlockUpdatingInArea(@Nullable final Entity entity, final BlockPos blockPos, final IBlockState blockState) {
 		// no operation
+		return true;
 	}
 	
 	// Common OC/CC methods

@@ -1,17 +1,28 @@
 package cr0s.warpdrive.event;
 
 import cr0s.warpdrive.BreathingManager;
+import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObject;
 import cr0s.warpdrive.network.PacketHandler;
 
+import java.util.List;
+
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.chunk.Chunk;
 
+import net.minecraftforge.common.util.BlockSnapshot;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.ChunkWatchEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -19,10 +30,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.ChunkWatchEvent;
-import net.minecraftforge.event.world.WorldEvent;
 
 /**
 *
@@ -122,17 +129,90 @@ public class WorldHandler {
 		LivingHandler.updateTick();
 	}
 	
+	// BreakEvent = entity is breaking a block (no ancestor)
+	// EntityPlaceEvent = entity is EntityFallingBlock
+	// NeighborNotifyEvent = neighbours update, snow placed/removed by environment, WorldEdit (can't be cancelled)
+	// PlaceEvent (EntityPlaceEvent) = player is (re)placing a block
+	// PortalSpawnEvent = nether portal is opening (fire placed inside an obsidian frame)
+	@SuppressWarnings("ConstantConditions")
 	@SubscribeEvent
-	public void onBlockUpdated(final BlockEvent blockEvent) {
-		if (WarpDriveConfig.LOGGING_BREAK_PLACE && WarpDrive.isDev) {
-			WarpDrive.logger.info(String.format("onBlockUpdate args %s actual %s",
-			                                    blockEvent.getState(), blockEvent.getWorld().getBlockState(blockEvent.getPos())));
-		}
+	public void onBlockEvent(final BlockEvent blockEvent) {
 		if ( WarpDriveConfig.isGregtechLoaded
 		  && blockEvent.getWorld().getWorldInfo().getWorldName().equals("DummyServer") ) {
 			return;
 		}
-		WarpDrive.starMap.onBlockUpdated(blockEvent.getWorld(), blockEvent.getPos(), blockEvent.getState());
-		ChunkHandler.onBlockUpdated(blockEvent.getWorld(), blockEvent.getPos().getX(), blockEvent.getPos().getY(), blockEvent.getPos().getZ());
+		
+		final Entity entity;
+		final IBlockState blockStateBefore;
+		final IBlockState blockStatePlaced;
+		if (blockEvent instanceof BlockEvent.EntityPlaceEvent) {
+			final BlockEvent.EntityPlaceEvent entityPlaceEvent = (BlockEvent.EntityPlaceEvent) blockEvent; 
+			entity = entityPlaceEvent.getEntity();
+			if (entity instanceof EntityPlayer) {
+				blockStateBefore = entityPlaceEvent.getBlockSnapshot().getReplacedBlock();
+				blockStatePlaced = entityPlaceEvent.getPlacedBlock();
+			} else {
+				blockStateBefore = entityPlaceEvent.getPlacedAgainst();
+				blockStatePlaced = entityPlaceEvent.getPlacedBlock();
+			}
+		} else if (blockEvent instanceof BlockEvent.BreakEvent) {
+			entity = ((BlockEvent.BreakEvent) blockEvent).getPlayer();
+			blockStateBefore = blockEvent.getWorld().getBlockState(blockEvent.getPos());
+			blockStatePlaced = blockEvent.getState();
+		} else {
+			entity = null;
+			blockStateBefore = blockEvent.getWorld().getBlockState(blockEvent.getPos());
+			blockStatePlaced = blockEvent.getState();
+		}
+		if (WarpDriveConfig.LOGGING_BREAK_PLACE && WarpDrive.isDev) {
+			if (blockStateBefore != blockStatePlaced) {
+				WarpDrive.logger.info(String.format("onBlockEvent %s %s -> %s %s by %s",
+				                                    blockEvent.getClass().getSimpleName(),
+				                                    blockStateBefore,
+				                                    blockStatePlaced,
+				                                    Commons.format(blockEvent.getWorld(), blockEvent.getPos()),
+				                                    entity ));
+			} else {
+				WarpDrive.logger.info(String.format("onBlockEvent %s %s %s by %s",
+				                                    blockEvent.getClass().getSimpleName(),
+				                                    blockStatePlaced,
+				                                    Commons.format(blockEvent.getWorld(), blockEvent.getPos()),
+				                                    entity));
+			}
+		}
+		boolean isAllowed = true;
+		if ( blockEvent instanceof BlockEvent.MultiPlaceEvent
+		  || blockEvent instanceof BlockEvent.EntityMultiPlaceEvent ) {
+			final List<BlockSnapshot> listBlockSnapshots = blockEvent instanceof BlockEvent.MultiPlaceEvent
+			                                             ? ((BlockEvent.MultiPlaceEvent) blockEvent).getReplacedBlockSnapshots()
+			                                             : ((BlockEvent.EntityMultiPlaceEvent) blockEvent).getReplacedBlockSnapshots();
+			for (final BlockSnapshot blockSnapshot : listBlockSnapshots) {
+				final IBlockState blockStateCurrent = blockSnapshot.getCurrentBlock();
+				isAllowed = isAllowed && WarpDrive.starMap.onBlockUpdating(entity, blockEvent.getWorld(), blockSnapshot.getPos(), blockStateCurrent);
+				if (blockStateCurrent != blockSnapshot.getReplacedBlock()) {
+					isAllowed = isAllowed && WarpDrive.starMap.onBlockUpdating(entity, blockEvent.getWorld(), blockSnapshot.getPos(), blockSnapshot.getReplacedBlock());
+				}
+			}
+		} else if (blockEvent instanceof BlockEvent.PortalSpawnEvent) {
+			isAllowed = isAllowed && CelestialObjectManager.onOpeningNetherPortal(blockEvent.getWorld(), blockEvent.getPos());
+		} else {
+			isAllowed = isAllowed && WarpDrive.starMap.onBlockUpdating(entity, blockEvent.getWorld(), blockEvent.getPos(), blockEvent.getState());
+		}
+		if (!isAllowed) {
+			blockEvent.setCanceled(true);
+			return;
+		}
+		
+		if ( blockEvent instanceof BlockEvent.MultiPlaceEvent
+		  || blockEvent instanceof BlockEvent.EntityMultiPlaceEvent ) {
+			final List<BlockSnapshot> listBlockSnapshots = blockEvent instanceof BlockEvent.MultiPlaceEvent
+			                                             ? ((BlockEvent.MultiPlaceEvent) blockEvent).getReplacedBlockSnapshots()
+			                                             : ((BlockEvent.EntityMultiPlaceEvent) blockEvent).getReplacedBlockSnapshots();
+			for (final BlockSnapshot blockSnapshot : listBlockSnapshots) {
+				ChunkHandler.onBlockUpdated(blockEvent.getWorld(), blockSnapshot.getPos());
+			}
+		} else {
+			ChunkHandler.onBlockUpdated(blockEvent.getWorld(), blockEvent.getPos());
+		}
 	}
 }

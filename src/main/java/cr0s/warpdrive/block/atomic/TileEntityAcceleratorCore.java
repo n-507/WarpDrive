@@ -29,6 +29,7 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1167,22 +1168,23 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	}
 	
 	@Override
-	public void onBlockUpdatedInArea(final VectorI vector, final IBlockState blockState) {
+	public boolean onBlockUpdatingInArea(@Nullable final Entity entity, final BlockPos blockPos, final IBlockState blockState) {
 		// skip in case of explosion, etc.
 		if (isDirtyAssembly()) {
-			return;
+			return true;
 		}
 		
 		// check for significant change
 		// (we don't check the controller itself: it'll be triggered in invalidate() and we don't want to reevaluate the setup at that point)
 		if ( blockState.getBlock() instanceof BlockAbstractAccelerator
 		  || blockState.getBlock() instanceof BlockCapacitor ) {
+			if (WarpDriveConfig.LOGGING_ACCELERATOR) {
+				WarpDrive.logger.info(String.format("onBlockUpdatingInArea %s %s",
+				                                    blockState,
+				                                    Commons.format(world, blockPos) ));
+			}
 			markDirtyAssembly();
-			return;
 		}
-		if (WarpDriveConfig.LOGGING_ACCELERATOR) {
-			WarpDrive.logger.info(String.format("onBlockUpdatedInArea block %s",
-			                                    blockState ));
-		}
+		return true;
 	}
 }

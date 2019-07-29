@@ -62,7 +62,7 @@ public class TileEntityMonitor extends TileEntityAbstractMachine implements IVid
 				WarpDrive.logger.info(this + " Monitor video channel set to " + videoChannel);
 			}
 			markDirty();
-			// force update through main thread since CC runs on server as 'client'
+			// force update through main thread since CC & OC are running outside the main thread
 			packetSendTicks = 0;
 		}
 	}

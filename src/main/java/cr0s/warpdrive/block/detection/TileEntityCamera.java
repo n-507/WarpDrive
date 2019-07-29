@@ -76,7 +76,7 @@ public class TileEntityCamera extends TileEntityAbstractMachine implements IVide
 				WarpDrive.logger.info(this + " Video channel set to " + videoChannel);
 			}
 			markDirty();
-			// force update through main thread since CC runs on server as 'client'
+			// force update through main thread since CC & OC are running outside the main thread
 			packetSendTicks = 0;
 			registryUpdateTicks = 0;
 		}

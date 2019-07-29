@@ -195,6 +195,8 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	
 	public void setIsEnabled(final boolean isEnabled) {
 		this.isEnabled = isEnabled;
+		// force update through main thread since CC & OC are running outside the main thread
+		markDirty();
 	}
 	
 	// Common OC/CC methods

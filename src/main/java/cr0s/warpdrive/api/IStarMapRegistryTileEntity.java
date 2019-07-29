@@ -2,10 +2,13 @@ package cr0s.warpdrive.api;
 
 import cr0s.warpdrive.api.computer.ICoreSignature;
 import cr0s.warpdrive.data.EnumStarMapEntryType;
-import cr0s.warpdrive.data.VectorI;
+
+import javax.annotation.Nullable;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 
 public interface IStarMapRegistryTileEntity extends ICoreSignature {
 	
@@ -21,6 +24,6 @@ public interface IStarMapRegistryTileEntity extends ICoreSignature {
 	// isolation rate from radars
 	double getIsolationRate();
 	
-	// report an update in the area
-	void onBlockUpdatedInArea(final VectorI vector, final IBlockState blockState);
+	// report an update in the area, return false to cancel it
+	boolean onBlockUpdatingInArea(@Nullable final Entity entity, final BlockPos blockPos, final IBlockState blockState);
 }

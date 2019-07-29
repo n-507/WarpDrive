@@ -7,18 +7,20 @@ import cr0s.warpdrive.block.TileEntityAbstractEnergyCoreOrController;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnumStarMapEntryType;
 import cr0s.warpdrive.data.Vector3;
-import cr0s.warpdrive.data.VectorI;
 import cr0s.warpdrive.render.EntityFXBoundingBox;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -199,8 +201,9 @@ public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrContro
 	}
 	
 	@Override
-	public void onBlockUpdatedInArea(final VectorI vector, final IBlockState blockState) {
+	public boolean onBlockUpdatingInArea(@Nullable final Entity entity, final BlockPos blockPos, final IBlockState blockState) {
 		// no operation
+		return true;
 	}
 	
 	// Common OC/CC methods

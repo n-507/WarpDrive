@@ -11,6 +11,7 @@ import cr0s.warpdrive.block.movement.TileEntityShipCore;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -262,19 +263,26 @@ public class StarMapRegistry {
 		return result;
 	}
 	
-	public void onBlockUpdated(@Nonnull final World world, @Nonnull final BlockPos blockPos, final IBlockState blockState) {
+	public boolean onBlockUpdating(@Nullable final Entity entity, @Nonnull final World world, @Nonnull final BlockPos blockPos, final IBlockState blockState) {
+		if (!Commons.isSafeThread()) {
+			WarpDrive.logger.error(String.format("Non-threadsafe call to StarMapRegistry:onBlockUpdating outside main thread, for %s %s",
+			                                     blockState, Commons.format(world, blockPos)));
+			return false;
+		}
 		final CopyOnWriteArraySet<StarMapRegistryItem> setStarMapRegistryItems = registry.get(world.provider.getDimension());
 		if (setStarMapRegistryItems == null) {
-			return;
+			return true;
 		}
+		boolean isAllowed = true;
 		for (final StarMapRegistryItem registryItem : setStarMapRegistryItems) {
 			if (registryItem.contains(blockPos)) {
 				final TileEntity tileEntity = world.getTileEntity(new BlockPos(registryItem.x, registryItem.y, registryItem.z));
 				if (tileEntity instanceof IStarMapRegistryTileEntity) {
-					((IStarMapRegistryTileEntity) tileEntity).onBlockUpdatedInArea(new VectorI(blockPos), blockState);
+					isAllowed = isAllowed && ((IStarMapRegistryTileEntity) tileEntity).onBlockUpdatingInArea(entity, blockPos, blockState);
 				}
 			}
 		}
+		return isAllowed;
 	}
 	
 	public static double getGravity(final Entity entity) {

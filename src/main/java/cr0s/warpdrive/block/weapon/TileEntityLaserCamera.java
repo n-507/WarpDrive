@@ -76,7 +76,7 @@ public class TileEntityLaserCamera extends TileEntityLaser implements IVideoChan
 				WarpDrive.logger.info(this + " Video channel updated from " + videoChannel + " to " + parVideoChannel);
 			}
 			markDirty();
-			// force update through main thread since CC runs on server as 'client'
+			// force update through main thread since CC & OC are running outside the main thread
 			packetSendTicks = 0;
 			registryUpdateTicks = 0;
 		}
