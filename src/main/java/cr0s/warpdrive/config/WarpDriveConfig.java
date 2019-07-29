@@ -792,11 +792,11 @@ public class WarpDriveConfig {
 		                                          "Format for location title").getString();
 		{
 			String stringValue = config.get("client", "location_background_color", String.format("0x%6X", CLIENT_LOCATION_BACKGROUND_COLOR),
-			                                      "Hexadecimal color code for location tile and description background (0xAARRGGBB where AA is alpha, RR is Red, GG is Green and BB is Blue component)").getString();
+			                                      "Hexadecimal color code for location background (0xAARRGGBB where AA is alpha, RR is Red, GG is Green and BB is Blue component)").getString();
 			CLIENT_LOCATION_BACKGROUND_COLOR = (int) (Long.decode(stringValue) & 0xFFFFFFFFL);
 			
 			stringValue = config.get("client", "location_text_color", String.format("0x%6X", CLIENT_LOCATION_TEXT_COLOR),
-			                         "Hexadecimal color code for location tile and description foreground (0xAARRGGBB where AA is alpha, RR is Red, GG is Green and BB is Blue component)").getString();
+			                         "Hexadecimal color code for location foreground (0xAARRGGBB where AA is alpha, RR is Red, GG is Green and BB is Blue component)").getString();
 			CLIENT_LOCATION_TEXT_COLOR = (int) (Long.decode(stringValue) & 0xFFFFFFFFL);
 		}
 		CLIENT_LOCATION_HAS_SHADOW = config.get("client", "location_has_shadow", CLIENT_LOCATION_HAS_SHADOW,
@@ -843,7 +843,7 @@ public class WarpDriveConfig {
 		TOOLTIP_ADD_REPAIR_WITH = EnumTooltipCondition.valueOf(config.get("tooltip", "add_repair_material", TOOLTIP_ADD_REPAIR_WITH.name(),
 		                                                                   String.format(commentTooltip, "repair material")).getString());
 		
-		TOOLTIP_CLEANUP_LIST = config.get("tooltips", "cleanup_list", TOOLTIP_CLEANUP_LIST,
+		TOOLTIP_CLEANUP_LIST = config.get("tooltip", "cleanup_list", TOOLTIP_CLEANUP_LIST,
 		                                     "List of lines to remove from tooltips before adding ours. This can be a partial match in a line. Must be lowercase without formatting.").getStringList();
 		for (int index = 0; index < TOOLTIP_CLEANUP_LIST.length; index++) {
 			final String old = TOOLTIP_CLEANUP_LIST[index];
