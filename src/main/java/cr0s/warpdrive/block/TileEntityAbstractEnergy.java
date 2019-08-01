@@ -77,7 +77,8 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 	// computed properties
 	private final IEnergyStorage[]  FE_energyStorages = new IEnergyStorage[EnumFacing.VALUES.length + 1];
 	private final Object[]          GT_energyContainers = new Object[EnumFacing.VALUES.length + 1];
-	private boolean addedToEnergyNet = false;
+	private boolean                 IC2_isAddedToEnergyNet = false;
+	private long                    IC2_timeAddedToEnergyNet = Long.MIN_VALUE;
 	private int scanTickCount = WarpDriveConfig.ENERGY_SCAN_INTERVAL_TICKS;
 	
 	private final IEnergyStorage[]  FE_energyReceivers = new IEnergyStorage[EnumFacing.VALUES.length + 1];
@@ -524,7 +525,25 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 				units };
 	}
 	
+	// IndustrialCraft IEnergyAcceptor interface
+	@Override
+	@Optional.Method(modid = "ic2")
+	public boolean acceptsEnergyFrom(final IEnergyEmitter emitter, final EnumFacing from) {
+		if (WarpDriveConfig.LOGGING_ENERGY) {
+			WarpDrive.logger.info(String.format("%s [IC2]acceptsEnergyFrom(%s, %s) => %s",
+			                                    this, emitter, from, energy_canInput(from) ));
+		}
+		return WarpDriveConfig.ENERGY_ENABLE_IC2_EU
+		    && energy_canInput(from);
+	}
+	
 	// IndustrialCraft IEnergySink interface
+	@Override
+	@Optional.Method(modid = "ic2")
+	public int getSinkTier() {
+		return WarpDriveConfig.ENERGY_ENABLE_IC2_EU && energy_getMaxStorage() > 0 ? IC2_sinkTier : 0;
+	}
+	
 	@Override
 	@Optional.Method(modid = "ic2")
 	public double getDemandedEnergy() {
@@ -539,7 +558,7 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 			                                    this, from, amount_EU, voltage, energy_canInput(from)));
 		}
 		if ( WarpDriveConfig.ENERGY_ENABLE_IC2_EU
-		  && energy_canInput(from) ) {
+		  && energy_canInput(from.getOpposite()) ) {
 			long leftover_internal = 0;
 			energyStored_internal += EnergyWrapper.convertEUtoInternal_floor(amount_EU);
 			
@@ -554,18 +573,25 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 		}
 	}
 	
+	// IndustrialCraft IEnergyEmitter interface
 	@Override
 	@Optional.Method(modid = "ic2")
-	public boolean acceptsEnergyFrom(final IEnergyEmitter emitter, final EnumFacing from) {
+	public boolean emitsEnergyTo(final IEnergyAcceptor receiver, final EnumFacing to) {
 		if (WarpDriveConfig.LOGGING_ENERGY) {
-			WarpDrive.logger.info(String.format("%s [IC2]acceptsEnergyFrom(%s, %s) => %s",
-			                                    this, emitter, from, energy_canInput(from)));
+			WarpDrive.logger.info(String.format("%s [IC2]emitsEnergyTo(%s, %s) => %s",
+			                                    this, receiver, to, energy_canOutput(to)));
 		}
 		return WarpDriveConfig.ENERGY_ENABLE_IC2_EU
-		    && energy_canInput(from);
+		    && energy_canOutput(to);
 	}
 	
 	// IndustrialCraft IEnergySource interface
+	@Override
+	@Optional.Method(modid = "ic2")
+	public int getSourceTier() {
+		return WarpDriveConfig.ENERGY_ENABLE_IC2_EU && energy_getMaxStorage() > 0 ? IC2_sourceTier : 0;
+	}
+	
 	@Override
 	@Optional.Method(modid = "ic2")
 	public double getOfferedEnergy() {
@@ -586,46 +612,25 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 		energy_outputDone(EnergyWrapper.convertEUtoInternal_ceil(amount_EU));
 	}
 	
-	@Override
-	@Optional.Method(modid = "ic2")
-	public boolean emitsEnergyTo(final IEnergyAcceptor receiver, final EnumFacing to) {
-		if (WarpDriveConfig.LOGGING_ENERGY) {
-			WarpDrive.logger.info(String.format("%s [IC2]emitsEnergyTo(%s, %s) => %s",
-			                                    this, receiver, to, energy_canOutput(to)));
-		}
-		return WarpDriveConfig.ENERGY_ENABLE_IC2_EU
-		    && energy_canOutput(to);
-	}
-	
+	// IndustrialCraft compatibility methods
 	@Optional.Method(modid = "ic2")
 	private void IC2_addToEnergyNet() {
-		if (!addedToEnergyNet) {
+		if ( !world.isRemote
+		  && !IC2_isAddedToEnergyNet ) {
+			IC2_timeAddedToEnergyNet = world.getTotalWorldTime();
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-			addedToEnergyNet = true;
+			IC2_isAddedToEnergyNet = true;
 		}
 	}
 	
 	@Optional.Method(modid = "ic2")
 	private void IC2_removeFromEnergyNet() {
-		if (addedToEnergyNet) {
+		if ( !world.isRemote
+		  && IC2_isAddedToEnergyNet ) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-			addedToEnergyNet = false;
+			IC2_isAddedToEnergyNet = false;
 		}
 	}
-	
-	// IndustrialCraft IEnergySink interface
-	@Override
-	@Optional.Method(modid = "ic2")
-	public int getSinkTier() {
-		return WarpDriveConfig.ENERGY_ENABLE_IC2_EU && energy_getEnergyStored() > 0 ? IC2_sinkTier : 0;
-	}
-	
-	@Override
-	@Optional.Method(modid = "ic2")
-	public int getSourceTier() {
-		return WarpDriveConfig.ENERGY_ENABLE_IC2_EU && energy_getEnergyStored() > 0 ? IC2_sourceTier : 0;
-	}
-	
 	
 	// RedstoneFlux IEnergyReceiver interface
 	@Override
@@ -878,7 +883,11 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 	@SuppressWarnings("UnusedParameters")
 	protected void energy_refreshConnections(final EnumFacing facing) {
 		if (WarpDriveConfig.isIndustrialCraft2Loaded) {
-			IC2_removeFromEnergyNet();
+			// IC2 EnergyNet throws a block update during the next world tick following its EnergyTileLoadEvent
+			// Ignoring this specific block update prevents us to do a constant refresh of the energy net
+			if (world.getTotalWorldTime() - IC2_timeAddedToEnergyNet > 1) {
+				IC2_removeFromEnergyNet();
+			}
 		}
 		scanTickCount = -1;
 	}
