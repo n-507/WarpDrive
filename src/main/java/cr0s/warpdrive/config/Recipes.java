@@ -1622,10 +1622,10 @@ public class Recipes {
 			if (WarpDriveConfig.isIndustrialCraft2Loaded) {
 				final ItemStack reinforcedStone = WarpDriveConfig.getItemStackOrFire("ic2:resource", 11); // IC2 reinforced stone
 				WarpDrive.register(new ShapedOreRecipe(groupHulls,
-				                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 10, 0), false, "cbc", "bXb", "cbc",
+				                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 10, metadataColor), false, "cbc", "bXb", "cbc",
 				                                       'b', reinforcedStone,
 				                                       'c', Blocks.OBSIDIAN,
-				                                       'X', oreDyes.get(enumDyeColor) ));
+				                                       'X', oreDyes.get(enumDyeColor) ), "_IC2");
 			}
 			
 			// Tier 1 = 1 concrete, 3 iron bars, 1 ceramic gives 4
@@ -1635,7 +1635,7 @@ public class Recipes {
 			                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 4, metadataColor), false, " b ", "bcb", " C ",
 			                                       'c', new ItemStack(Blocks.CONCRETE, 1, metadataColor),
 			                                       'b', barsIron,
-			                                       'C', "itemCeramic" ));
+			                                       'C', "itemCeramic" ), "_ceramic");
 			
 			// Tier 1 = 5 stone, 4 steel ingots gives 10
 			// Tier 1 = 5 stone, 4 iron ingots gives 10
@@ -1646,7 +1646,7 @@ public class Recipes {
 			                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 10, metadataColor), false, "cbc", "bXb", "cbc",
 			                                       'b', ingotSteelOrIron,
 			                                       'c', "stone",
-			                                       'X', oreDyes.get(enumDyeColor) ));
+			                                       'X', oreDyes.get(enumDyeColor) ), "_steel");
 			
 			// Tier 1 = 5 stone, 4 bronze ingots gives 6
 			//  => 96 mB of Bronze (almost twice more expensive using an common alloy) 
@@ -1655,7 +1655,7 @@ public class Recipes {
 				                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 5, metadataColor), false, "cbc", "bXb", "cbc",
 				                                       'b', "ingotBronze",
 				                                       'c', "stone",
-				                                       'X', oreDyes.get(enumDyeColor) ));
+				                                       'X', oreDyes.get(enumDyeColor) ), "_bronze");
 			}
 			
 			// Tier 1 = 5 stone, 4 aluminium ingots gives 3
@@ -1665,13 +1665,13 @@ public class Recipes {
 				                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 3, metadataColor), false, "cbc", "bXb", "cbc",
 				                                       'b', "ingotAluminium",
 				                                       'c', "stone",
-				                                       'X', oreDyes.get(enumDyeColor) ));
+				                                       'X', oreDyes.get(enumDyeColor) ), "_aluminium");
 			} else if (OreDictionary.doesOreNameExist("ingotAluminum") && !OreDictionary.getOres("ingotAluminum").isEmpty()) {
 				WarpDrive.register(new ShapedOreRecipe(groupHulls,
 				                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 3, metadataColor), false, "cbc", "bXb", "cbc",
 				                                       'b', "ingotAluminum",
 				                                       'c', "stone",
-				                                       'X', oreDyes.get(enumDyeColor) ));
+				                                       'X', oreDyes.get(enumDyeColor) ), "_aluminum");
 			}
 		}
 		
