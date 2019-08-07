@@ -762,7 +762,7 @@ warpdrive.breathing.invalid_setup=Pas de casque respiratoire\nou armure incompl�
 warpdrive.breathing.low_reserve=Réserve d'air faible!
 warpdrive.breathing.no_air=Réserve d'air épuisée!
 
-warpdrive.builder.guide.deploying_out_of_range=Impossible de déployer un vaisseau à plus de %1$d blocs du scanneur.
+warpdrive.builder.guide.deploying_out_of_range=Impossible de déployer un vaisseau à plus de %1$d blocs du scanneur de vaisseau.
 warpdrive.builder.guide.deployment_area_occupied_by_blocks=Déploiement impossible! La zone est déjà occupée par %1$d blocs.
 warpdrive.builder.guide.deploying_ship=Deploiement du vaisseau '%1$s'...
 warpdrive.builder.guide.deployment_area_occupied_by_block=Impossible de déploier un nouveau vaisseau à (%2$d %3$d %4$d)!\nLa zone est déjà occupée par %1$s. 
@@ -782,6 +782,9 @@ warpdrive.builder.guide.ship_token_detected=Jeton de vaisseau '%1$s' détecté!
 warpdrive.builder.guide.ship_materialization_countdown=Tenez-vous prêt pour matérialisation du vaisseau dans %2$d...
 warpdrive.builder.guide.ship_deployed=Vaisseau déployé. Téléportation du capitaine au pont principal...
 warpdrive.builder.guide.welcome_aboard=Bienvenu à bord capitaine! Utilises l'ordinateur pour commencer les maneuvres...
+
+warpdrive.builder.status_line.no_ship_core_in_range=Pas de cœur de vaisseau à portée.
+warpdrive.builder.status_line.ship_is_higher_tier=%1$s est trop avancé pour %2$s.
 
 warpdrive.cloaking_core.missing_channeling_and_projecting_coils=Integrité réduite à %1$d%%: bobine(s) de canalisation manquante(nt) en direction de %2$s, et bobine(s) de projection manquante(nt) en direction de %3$s
 warpdrive.cloaking_core.missing_channeling_coils=Integrité réduite à %1$d%%: bobine(s) de canalisation manquante(nt) en direction de %2$s
@@ -879,8 +882,6 @@ warpdrive.particle.antimatter.name=antimatière
 warpdrive.particle.antimatter.tooltip=Produit par collision d'un bunch de particules dans un accélérateur supérieur
 warpdrive.particle.strange_matter.name=matière étrange
 warpdrive.particle.strange_matter.tooltip=Produit par collision frontale de 2 bunches de particules dans un accélérateur supérieur
-
-warpdrive.scanner.guide.invalid_ship_dimensions=Invalid ship dimensions, nothing to scan
 
 warpdrive.security_station.guide.registered_players=Joueurs attachés: %1$s
 warpdrive.security_station.guide.player_registered=Tu es désormais attaché à cette station de sécurité.\nLes joueurs attachés sont %1$s

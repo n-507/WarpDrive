@@ -767,7 +767,7 @@ warpdrive.breathing.invalid_setup=无呼吸头盔\未完成盔甲
 warpdrive.breathing.low_reserve=空气储备不足!
 warpdrive.breathing.no_air=空气耗尽!
 
-warpdrive.builder.guide.deploying_out_of_range=Cannot deploy ship more than %1$d blocks away from scanner.
+warpdrive.builder.guide.deploying_out_of_range=Cannot deploy ship more than %1$d blocks away from ship scanner.
 warpdrive.builder.guide.deployment_area_occupied_by_blocks=Unable to deploy! Area is already occupied by %1$d blocks.
 warpdrive.builder.guide.deploying_ship=Deploying ship '%1$s'...
 warpdrive.builder.guide.deployment_area_occupied_by_block=Unable to deploy new ship at (%2$d %3$d %4$d)!\nArea is already occupied by %1$s.
@@ -787,6 +787,9 @@ warpdrive.builder.guide.ship_token_detected=Ship token '%1$s' detected!
 warpdrive.builder.guide.ship_materialization_countdown=Stand by for ship materialization in %2$d...
 warpdrive.builder.guide.ship_deployed=Ship deployed. Teleporting captain to the main deck...
 warpdrive.builder.guide.welcome_aboard=Welcome aboard captain! Use the computer to get moving...
+
+warpdrive.builder.status_line.no_ship_core_in_range=No ship core in range.
+warpdrive.builder.status_line.ship_is_higher_tier=%1$s is too advanced for %2$s.
 
 warpdrive.cloaking_core.missing_channeling_and_projecting_coils=完整度降低至 %1$d%%: %2$s 线圈失去联系且预计将失去 %3$s 线圈
 warpdrive.cloaking_core.missing_channeling_coils=完整度降低至 %1$d%%: %2$s 线圈失去联系
@@ -884,8 +887,6 @@ warpdrive.particle.antimatter.name=反物质
 warpdrive.particle.antimatter.tooltip=产生于卓越粒子加速器的束流对撞中.
 warpdrive.particle.strange_matter.name=奇异物质
 warpdrive.particle.strange_matter.tooltip=产生于卓越粒子加速器的二级束流对撞中.
-
-warpdrive.scanner.guide.invalid_ship_dimensions=Invalid ship dimensions, nothing to scan
 
 warpdrive.security_station.guide.registered_players=所属的玩家: %1$s
 warpdrive.security_station.guide.player_registered=You're now registered on this security station.\nRegistered players are %1$s

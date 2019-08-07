@@ -76,8 +76,6 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 	private int scanTicks = 0;
 	private int deployTicks = 0;
 		
-	private int searchTicks = 0;
-	
 	private String playerName = "";
 	
 	private JumpShip jumpShip;
@@ -116,12 +114,6 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		}
 		
 		// @TODO implement ShipScanner.isEnabled
-		
-		searchTicks++;
-		if (searchTicks > WarpDriveConfig.SS_SEARCH_INTERVAL_TICKS) {
-			searchTicks = 0;
-			shipCore = searchShipCore();
-		}
 		
 		// Trigger deployment by player, provided setup is done
 		final boolean isSetupDone = targetX != 0 || targetY != 0 || targetZ != 0;
@@ -229,12 +221,16 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 			return;
 		}
 		enumShipScannerState = newState;
-		if (blockCamouflage == null) {
-			updateBlockState(null, BlockProperties.ACTIVE, newState != EnumShipScannerState.IDLE);
-		} else {
-			if (getBlockMetadata() != metadataCamouflage) {
-				world.setBlockState(pos, getBlockType().getStateFromMeta(metadataCamouflage), 2);
+		if (Commons.isSafeThread()) {
+			if (blockCamouflage == null) {
+				updateBlockState(null, BlockProperties.ACTIVE, newState != EnumShipScannerState.IDLE);
+			} else {
+				if (getBlockMetadata() != metadataCamouflage) {
+					world.setBlockState(pos, getBlockType().getStateFromMeta(metadataCamouflage), 2);
+				}
 			}
+		} else {
+			WarpDrive.logger.error("Bad multithreading!");
 		}
 	}
 	
@@ -263,27 +259,50 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		}
 	}
 	
-	private TileEntityShipCore searchShipCore() {
+	@Override
+	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
+		final boolean isValid = super.doScanAssembly(isDirty, textReason);
+		
+		IBlockState blockStateShipCoreTooHigh = null;
 		TileEntityShipCore tileEntityShipCore = null;
 		
 		// Search for ship cores above
 		final BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(pos);
 		for (int newY = pos.getY() + 1; newY <= 255; newY++) {
 			mutableBlockPos.setY(newY);
-			if (world.getBlockState(mutableBlockPos).getBlock() instanceof BlockShipCore) { // found ship core above
-				tileEntityShipCore = (TileEntityShipCore) world.getTileEntity(mutableBlockPos);
-				
-				if (tileEntityShipCore != null) {
-					if (!tileEntityShipCore.isAssemblyValid()) { // If we can't refresh ship's spatial parameters
-						tileEntityShipCore = null;
-					} else {
-						break;
-					}
+			final IBlockState blockState = world.getBlockState(mutableBlockPos);
+			if (blockState.getBlock() instanceof BlockShipCore) {
+				// validate the ship assembly
+				final TileEntity tileEntity = world.getTileEntity(mutableBlockPos);
+				if ( !(tileEntity instanceof TileEntityShipCore)
+				  || tileEntity.isInvalid()
+				  || !((TileEntityShipCore) tileEntity).isAssemblyValid()) {
+					continue;
 				}
+				
+				// validate tier
+				if (((BlockShipCore) blockState.getBlock()).getTier(null).getIndex() > enumTier.getIndex()) {
+					blockStateShipCoreTooHigh = blockState;
+					continue;
+				}
+				
+				tileEntityShipCore = (TileEntityShipCore) tileEntity;
+				break;
 			}
 		}
 		
-		return tileEntityShipCore;
+		// compute result
+		shipCore = tileEntityShipCore;
+		if (shipCore == null) {
+			if (blockStateShipCoreTooHigh == null) {
+				textReason.append(Commons.styleWarning, "warpdrive.builder.status_line.no_ship_core_in_range");
+			} else {
+				textReason.append(Commons.styleWarning, "warpdrive.builder.status_line.ship_is_higher_tier",
+				                  blockStateShipCoreTooHigh.getBlock().getLocalizedName(),
+				                  getBlockType().getLocalizedName() );
+			}
+		}
+		return isValid && shipCore != null; 
 	}
 	
 	private boolean saveShipToSchematic(final String fileName, final WarpDriveText reason) {
@@ -682,11 +701,11 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 	private Object[] scan() {
 		// Already scanning?
 		if (enumShipScannerState != EnumShipScannerState.IDLE) {
-			return new Object[] { false, 0, "Already active" };
+			return new Object[] { false, "Already active" };
 		}
 		
 		if (shipCore == null) {
-			return new Object[] { false, 1, "Ship-Core not found" };
+			return new Object[] { false, "No ship core in range" };
 		}
 		final WarpDriveText reason = new WarpDriveText();
 		final boolean success = scanShip(reason);
