@@ -8,7 +8,6 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
@@ -34,6 +33,7 @@ public class BlockDecorative extends BlockAbstractBase {
 	public BlockDecorative(final String registryName, final EnumTier enumTier) {
 		super(registryName, enumTier, Material.IRON);
 		
+		setLightOpacity(0);
 		setHardness(1.5f);
 		setTranslationKey("warpdrive.decoration.decorative.");
 		
@@ -76,6 +76,19 @@ public class BlockDecorative extends BlockAbstractBase {
 	}
 	
 	@SuppressWarnings("deprecation")
+	@Nonnull
+	@Override
+	public Material getMaterial(final IBlockState blockState) {
+		return blockState == null || blockState.getValue(TYPE) != EnumDecorativeType.GLASS ?  Material.IRON :  Material.GLASS;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public int getLightOpacity(@Nonnull final IBlockState blockState) {
+		return  blockState.getValue(TYPE) != EnumDecorativeType.GLASS ? 255 : 0;
+	}
+	
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isOpaqueCube(final IBlockState blockState) {
 		return blockState.getValue(TYPE) != EnumDecorativeType.GLASS;
@@ -103,12 +116,13 @@ public class BlockDecorative extends BlockAbstractBase {
 		if (blockStateSide.getBlock().isAir(blockStateSide, blockAccess, blockPosSide)) {
 			return true;
 		}
-		final EnumFacing opposite = facing.getOpposite();
-		if ( blockStateSide.getBlock() instanceof BlockDecorative ) {
-			return !( blockState.getValue(TYPE) == EnumDecorativeType.GLASS
-			       && blockStateSide.getValue(TYPE) == EnumDecorativeType.GLASS );
+		if ( blockStateSide.getBlock() instanceof BlockDecorative
+		  && blockState.getValue(TYPE) == EnumDecorativeType.GLASS
+		  && blockStateSide.getValue(TYPE) == EnumDecorativeType.GLASS ) {
+			return false;
 		}
-		return !blockAccess.isSideSolid(blockPosSide, opposite, false);
+		final boolean doesSideBlockRendering = blockAccess.getBlockState(blockPosSide).doesSideBlockRendering(blockAccess, blockPosSide, facing.getOpposite());
+		return !doesSideBlockRendering;
 	}
 	
 	@Override
