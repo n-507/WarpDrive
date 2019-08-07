@@ -7,12 +7,14 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 
 import javax.annotation.Nonnull;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
@@ -205,11 +207,29 @@ public class TooltipHandler {
 			}
 		}
 		
-		// tool related stats
+		// material stats
 		final IBlockState blockState = getStateForPlacement(block,
 		                                                    null, null,
 		                                                    EnumFacing.DOWN, 0.0F, 0.0F, 0.0F, event.getItemStack().getMetadata(),
 		                                                    null, EnumHand.MAIN_HAND);
+		if (WarpDriveConfig.TOOLTIP_ADD_BLOCK_MATERIAL.isEnabled(isSneaking, isCreativeMode)) {
+			try {
+				final Material material = blockState.getMaterial();
+				String name = material.toString();
+				for (final Field field : Material.class.getDeclaredFields()) {
+					if (field.get(null) == material) {
+						name = field.getName();
+						break;
+					}
+				}
+				Commons.addTooltip(event.getToolTip(), String.format("§8Material is %s",
+				                                                     name ));
+			} catch (final Exception exception) {
+				// no operation
+			}
+		}
+		
+		// tool related stats
 		if (WarpDriveConfig.TOOLTIP_ADD_HARVESTING.isEnabled(isSneaking, isCreativeMode)) {
 			try {
 				final String harvestTool = block.getHarvestTool(blockState);

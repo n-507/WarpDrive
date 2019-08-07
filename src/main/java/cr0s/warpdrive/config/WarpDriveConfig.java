@@ -203,6 +203,7 @@ public class WarpDriveConfig {
 	public static EnumTooltipCondition TOOLTIP_ADD_REGISTRY_NAME = EnumTooltipCondition.ADVANCED_TOOLTIPS;
 	public static EnumTooltipCondition TOOLTIP_ADD_ORE_DICTIONARY_NAME = EnumTooltipCondition.ALWAYS;
 	public static EnumTooltipCondition TOOLTIP_ADD_ARMOR_POINTS = EnumTooltipCondition.NEVER;
+	public static EnumTooltipCondition TOOLTIP_ADD_BLOCK_MATERIAL = EnumTooltipCondition.ADVANCED_TOOLTIPS;
 	public static EnumTooltipCondition TOOLTIP_ADD_BURN_TIME = EnumTooltipCondition.ADVANCED_TOOLTIPS;
 	public static EnumTooltipCondition TOOLTIP_ADD_DURABILITY = EnumTooltipCondition.ALWAYS;
 	public static EnumTooltipCondition TOOLTIP_ADD_ENCHANTABILITY = EnumTooltipCondition.ON_SNEAK;
@@ -822,6 +823,8 @@ public class WarpDriveConfig {
 		                                                                           String.format(commentTooltip, "ore dictionary names")).getString());
 		TOOLTIP_ADD_ARMOR_POINTS = EnumTooltipCondition.valueOf(config.get("tooltip", "add_armor_points", TOOLTIP_ADD_ARMOR_POINTS.name(),
 		                                                                    String.format(commentTooltip, "armor points")).getString());
+		TOOLTIP_ADD_BLOCK_MATERIAL = EnumTooltipCondition.valueOf(config.get("tooltip", "add_block_material", TOOLTIP_ADD_BLOCK_MATERIAL.name(),
+		                                                                      String.format(commentTooltip, "block material")).getString());
 		TOOLTIP_ADD_BURN_TIME = EnumTooltipCondition.valueOf(config.get("tooltip", "add_burn_time", TOOLTIP_ADD_BURN_TIME.name(),
 		                                                                 String.format(commentTooltip, "burn time")).getString());
 		TOOLTIP_ADD_DURABILITY = EnumTooltipCondition.valueOf(config.get("tooltip", "add_durability", TOOLTIP_ADD_DURABILITY.name(),
