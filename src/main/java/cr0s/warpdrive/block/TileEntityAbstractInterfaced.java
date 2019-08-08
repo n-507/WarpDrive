@@ -12,6 +12,7 @@ import cr0s.warpdrive.data.VectorI;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import li.cil.oc.api.FileSystem;
@@ -426,7 +427,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	@Override
 	@Optional.Method(modid = "computercraft")
 	final public Object[] callMethod(@Nonnull final IComputerAccess computerAccess, @Nonnull final ILuaContext context,
-	                                 final int method, @Nonnull final Object[] arguments) {
+	                                 final int method, @Nonnull final Object[] arguments) throws LuaException {
 		final String methodName = CC_getMethodNameAndLogCall(computerAccess, method, arguments);
 		
 		// we separate the proxy from the logs so children can override the proxy without having to handle the logs themselves
@@ -441,8 +442,11 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 			if (WarpDriveConfig.LOGGING_LUA) {
 				exception.printStackTrace();
 			}
-			throw new RuntimeException(String.format("Internal exception in %s()\nEnable LUA logs for details.",
-			                                         methodName));
+			
+			throw new LuaException(String.format("Internal exception %s from %d:%s to %s.%s(%s)\nEnable LUA logs for details.",
+			                                     Commons.format(world, pos),
+			                                     computerAccess.getID(), computerAccess.getAttachmentName(),
+			                                     peripheralName, methodName, Commons.format(arguments) ));
 		}
 	}
 	
