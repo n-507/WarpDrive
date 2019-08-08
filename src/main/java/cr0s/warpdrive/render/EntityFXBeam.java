@@ -4,6 +4,9 @@ import cr0s.warpdrive.data.Vector3;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -84,7 +87,7 @@ public class EntityFXBeam extends Particle {
 	@Override
 	public void renderParticle(final BufferBuilder vertexBuffer, final Entity entityIn, final float partialTick,
 	                           final float rotationX, final float rotationZ, final float rotationYZ, final float rotationXY, final float rotationXZ) {
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		
 		final float rot = world.provider.getWorldTime() % (360 / ROTATION_SPEED) * ROTATION_SPEED + ROTATION_SPEED * partialTick;
 		
@@ -103,28 +106,28 @@ public class EntityFXBeam extends Particle {
 		final int brightnessLow  = Math.max(240, brightnessForRender & 65535);
 		
 		Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
-		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
-		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
-		GL11.glDisable(GL11.GL_CULL_FACE);
+		GlStateManager.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
+		GlStateManager.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
+		GlStateManager.disableCull();
 		
 		final float relativeTime = world.getTotalWorldTime() + partialTick;
 		final float vOffset = -relativeTime * 0.2F - MathHelper.floor(-relativeTime * 0.1F);
 		
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		GL11.glDepthMask(false);
+		GlStateManager.enableBlend();
+		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE);
+		GlStateManager.depthMask(false);
 		
 		final float xx = (float)(prevPosX + (posX - prevPosX) * partialTick - interpPosX);
 		final float yy = (float)(prevPosY + (posY - prevPosY) * partialTick - interpPosY);
 		final float zz = (float)(prevPosZ + (posZ - prevPosZ) * partialTick - interpPosZ);
-		GL11.glTranslated(xx, yy, zz);
+		GlStateManager.translate(xx, yy, zz);
 		
 		final float rotYaw = prevYaw + (this.rotYaw - prevYaw) * partialTick;
 		final float rotPitch = prevPitch + (this.rotPitch - prevPitch) * partialTick;
-		GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
-		GL11.glRotatef(180.0F + rotYaw, 0.0F, 0.0F, -1.0F);
-		GL11.glRotatef(rotPitch, 1.0F, 0.0F, 0.0F);
-		GL11.glRotatef(rot, 0.0F, 1.0F, 0.0F);
+		GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+		GlStateManager.rotate(180.0F + rotYaw, 0.0F, 0.0F, -1.0F);
+		GlStateManager.rotate(rotPitch, 1.0F, 0.0F, 0.0F);
+		GlStateManager.rotate(rot, 0.0F, 1.0F, 0.0F);
 		
 		final double xMinStart = -0.15D * size;
 		final double xMaxStart = 0.15D * size;
@@ -138,7 +141,7 @@ public class EntityFXBeam extends Particle {
 		for (int t = 0; t < 3; t++) {
 			final double vMin = -1.0F + vOffset + t / 3.0F;
 			final double vMax = vMin + length * size;
-			GL11.glRotatef(60.0F, 0.0F, 1.0F, 0.0F);
+			GlStateManager.rotate(60.0F, 0.0F, 1.0F, 0.0F);
 			vertexBuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 			vertexBuffer.pos(xMinEnd  , yMax, 0.0D).tex(uMax, vMax).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 			vertexBuffer.pos(xMinStart, 0.0D, 0.0D).tex(uMax, vMin).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
@@ -147,10 +150,10 @@ public class EntityFXBeam extends Particle {
 			tessellator.draw();
 		}
 		
-		GL11.glDepthMask(true);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glPopMatrix();
+		GlStateManager.depthMask(true);
+		GlStateManager.disableBlend();
+		GlStateManager.enableCull();
+		GlStateManager.popMatrix();
 		prevSize = size;
 		Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("textures/particle/particles.png"));
 	}

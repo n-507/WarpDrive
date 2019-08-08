@@ -4,6 +4,9 @@ import cr0s.warpdrive.data.Vector3;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -65,7 +68,7 @@ public class EntityFXBoundingBox extends Particle {
 	@Override
 	public void renderParticle(final BufferBuilder vertexBuffer, final Entity entityIn, final float partialTick,
 	                           final float rotationX, final float rotationZ, final float rotationYZ, final float rotationXY, final float rotationXZ) {
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		
 		// final float rot = (world.provider.getWorldTime() % (360 / rotationSpeed) + partialTick) * rotationSpeed;
 		
@@ -106,18 +109,18 @@ public class EntityFXBoundingBox extends Particle {
 		final double uv_zMax = zMax / uvScale + 0.5D;
 		
 		Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
-		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
-		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
-		GL11.glDisable(GL11.GL_CULL_FACE);
+		GlStateManager.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
+		GlStateManager.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
+		GlStateManager.disableCull();
 		
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		GL11.glDepthMask(false);
+		GlStateManager.enableBlend();
+		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE);
+		GlStateManager.depthMask(false);
 		
 		final float xx = (float)(prevPosX + (posX - prevPosX) * partialTick - interpPosX);
 		final float yy = (float)(prevPosY + (posY - prevPosY) * partialTick - interpPosY);
 		final float zz = (float)(prevPosZ + (posZ - prevPosZ) * partialTick - interpPosZ);
-		GL11.glTranslated(xx, yy, zz);
+		GlStateManager.translate(xx, yy, zz);
 		
 		final Tessellator tessellator = Tessellator.getInstance();
 		
@@ -166,10 +169,10 @@ public class EntityFXBoundingBox extends Particle {
 		vertexBuffer.pos(xMax, yMin, zMax).tex(uv_xMax, uv_yMin).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		tessellator.draw();
 		
-		GL11.glDepthMask(true);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glPopMatrix();
+		GlStateManager.depthMask(true);
+		GlStateManager.disableBlend();
+		GlStateManager.enableCull();
+		GlStateManager.popMatrix();
 	}
 	
 	@Override

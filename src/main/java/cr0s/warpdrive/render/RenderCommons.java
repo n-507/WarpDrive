@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -16,8 +19,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
-
-import org.lwjgl.opengl.GL11;
 
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -57,8 +58,8 @@ public class RenderCommons {
 		final double cycle = ((System.nanoTime() / 1000) % 0x200000) / (double) 0x200000;
 		
 		// start rendering
-		GL11.glPushMatrix();
-		GL11.glScalef(2.0F, 2.0F, 0.0F);
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(2.0F, 2.0F, 0.0F);
 		
 		int y = scaledHeight / 10;
 		
@@ -86,7 +87,7 @@ public class RenderCommons {
 		}
 		
 		// close rendering
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 		return alpha;
 	}
 	
@@ -108,16 +109,16 @@ public class RenderCommons {
 		final int screen_text_y = Math.round(screen_height * enumScreenAnchor.yRatio + yOffset - enumTextAlignment.yRatio * scaled_box_height * scale);
 		
 		// start rendering
-		GL11.glPushMatrix();
-		GL11.glScalef(scale, scale, 0.0F);
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(scale, scale, 0.0F);
 		final int scaled_box_x  = Math.round(screen_text_x / scale - TEXT_BORDER);
 		final int scaled_box_y  = Math.round(screen_text_y / scale - TEXT_BORDER);
 		final int scaled_text_x = Math.round(screen_text_x / scale);
 		int scaled_text_y       = Math.round(screen_text_y / scale);
 		
 		// draw background box
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GlStateManager.disableTexture2D();
+		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 		
 		final float red   = (colorBackground >> 16 & 255) / 255.0F;
 		final float blue  = (colorBackground >> 8  & 255) / 255.0F;
@@ -132,8 +133,8 @@ public class RenderCommons {
 		vertexBuffer.pos(scaled_box_x + scaled_box_width, scaled_box_y                    , -90.0D).color(red, green, blue, alpha).endVertex();
 		vertexBuffer.pos(scaled_box_x                   , scaled_box_y                    , -90.0D).color(red, green, blue, alpha).endVertex();
 		tessellator.draw();
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+		GlStateManager.enableTexture2D();
+		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE);
 		
 		// draw text
 		for (final String textLine : listLines) {
@@ -142,7 +143,7 @@ public class RenderCommons {
 		}
 		
 		// close rendering
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 	
 	public static void drawText(final int screen_width, final int screen_height, final String textHeader, final String textContent,
@@ -171,16 +172,16 @@ public class RenderCommons {
 		final int screen_text_y = Math.round(screen_height * enumScreenAnchor.yRatio + yOffset - enumTextAlignment.yRatio * scaled_box_height * scale);
 		
 		// start rendering
-		GL11.glPushMatrix();
-		GL11.glScalef(scale, scale, 0.0F);
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(scale, scale, 0.0F);
 		final int scaled_box_x  = Math.round(screen_text_x / scale - TEXT_BORDER);
 		final int scaled_box_y  = Math.round(screen_text_y / scale - TEXT_BORDER);
 		final int scaled_text_x = Math.round(screen_text_x / scale);
 		int scaled_text_y       = Math.round(screen_text_y / scale);
 		
 		// draw background box
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GlStateManager.disableTexture2D();
+		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 		
 		final float red   = (colorBackground >> 16 & 0xFF) / 255.0F;
 		final float green = (colorBackground >> 8  & 0xFF) / 255.0F;
@@ -195,8 +196,8 @@ public class RenderCommons {
 		vertexBuffer.pos(scaled_box_x + scaled_box_width, scaled_box_y                    , -90.0D).color(red, green, blue, alpha).endVertex();
 		vertexBuffer.pos(scaled_box_x                   , scaled_box_y                    , -90.0D).color(red, green, blue, alpha).endVertex();
 		tessellator.draw();
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+		GlStateManager.enableTexture2D();
+		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE);
 		
 		// draw text
 		for (final String textLine : listHeaderLines) {
@@ -212,9 +213,9 @@ public class RenderCommons {
 		}
 		
 		// close rendering
-		// GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glPopMatrix();
+		// GlStateManager.enableTexture2D();
+		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+		GlStateManager.popMatrix();
 	}
 	
 	public static IModel getModel(final ResourceLocation resourceLocation) {

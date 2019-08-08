@@ -7,11 +7,11 @@ import cr0s.warpdrive.data.CelestialObject;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -56,7 +56,7 @@ public class RenderOverlayAir {
 		final float ratioAirReserve = BreathingManager.getAirReserveRatio(entityPlayer);
 		
 		// start rendering
-		GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.enableBlend();
 		
 		// show splash message
 		int alpha = 255;
@@ -114,7 +114,7 @@ public class RenderOverlayAir {
 		// close rendering
 		GuiIngameForge.right_height += 10;
 		
-		GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.disableBlend();
 	}
 	
 	private boolean isVoid(final IBlockAccess blockAccess, final int x, final int y, final int z) {

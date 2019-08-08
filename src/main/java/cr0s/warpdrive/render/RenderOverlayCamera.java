@@ -2,9 +2,11 @@ package cr0s.warpdrive.render;
 
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnumCameraType;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -21,14 +23,14 @@ public class RenderOverlayCamera {
 	
 	private static final int ANIMATION_FRAMES = 200;
 	
-	private Minecraft minecraft = Minecraft.getMinecraft();
+	private final Minecraft minecraft = Minecraft.getMinecraft();
 	private int frameCount = 0;
 	
 	private void renderOverlay(final int scaledWidth, final int scaledHeight) {
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		GL11.glDepthMask(false);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
+		GlStateManager.disableDepth();
+		GlStateManager.depthMask(false);
+		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+		GlStateManager.disableAlpha();
 		
 		try {
 			final String strHelp;
@@ -79,9 +81,9 @@ public class RenderOverlayCamera {
 			exception.printStackTrace();
 		}
 		
-		GL11.glDepthMask(true);
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
+		GlStateManager.depthMask(true);
+		GlStateManager.enableDepth();
+		GlStateManager.enableAlpha();
 	}
 	
 	@SubscribeEvent

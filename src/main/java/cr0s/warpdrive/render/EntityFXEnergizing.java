@@ -2,6 +2,9 @@ package cr0s.warpdrive.render;
 
 import cr0s.warpdrive.data.Vector3;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -85,7 +88,7 @@ public class EntityFXEnergizing extends AbstractEntityFX {
 	@Override
 	public void renderParticle(final BufferBuilder vertexBuffer, final Entity entityIn, final float partialTick,
 	                           final float rotationX, final float rotationZ, final float rotationYZ, final float rotationXY, final float rotationXZ) {
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		
 		final double factorFadeIn = Math.min((particleAge + partialTick) / 20.0F, 1.0F);
 		
@@ -116,31 +119,31 @@ public class EntityFXEnergizing extends AbstractEntityFX {
 		
 		// bind our texture, repeating on both axis
 		Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
-		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
-		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
+		GlStateManager.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
+		GlStateManager.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
 		
 		// rendering on both sides
-		GL11.glDisable(GL11.GL_CULL_FACE);
+		GlStateManager.disableCull();
 		
 		// alpha transparency, don't update depth mask
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		GL11.glDepthMask(false);
+		GlStateManager.enableBlend();
+		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE);
+		GlStateManager.depthMask(false);
 		
 		// animated translation
 		final float xx = (float)(prevPosX + (posX - prevPosX) * partialTick - interpPosX);
 		final float yy = (float)(prevPosY + (posY - prevPosY) * partialTick - interpPosY);
 		final float zz = (float)(prevPosZ + (posZ - prevPosZ) * partialTick - interpPosZ);
-		GL11.glTranslated(xx, yy, zz);
+		GlStateManager.translate(xx, yy, zz);
 		
 		// animated rotation
 		final float rotYaw = prevYaw + (this.rotYaw - prevYaw) * partialTick;
 		final float rotPitch = prevPitch + (this.rotPitch - prevPitch) * partialTick;
 		final float rotSpin = 0.0F;
-		GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
-		GL11.glRotatef(180.0F + rotYaw, 0.0F, 0.0F, -1.0F);
-		GL11.glRotatef(rotPitch, 1.0F, 0.0F, 0.0F);
-		GL11.glRotatef(rotSpin, 0.0F, 1.0F, 0.0F);
+		GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+		GlStateManager.rotate(180.0F + rotYaw, 0.0F, 0.0F, -1.0F);
+		GlStateManager.rotate(rotPitch, 1.0F, 0.0F, 0.0F);
+		GlStateManager.rotate(rotSpin, 0.0F, 1.0F, 0.0F);
 		
 		// actual parameters
 		final double radius = this.radius * factorFadeIn;
@@ -217,10 +220,10 @@ public class EntityFXEnergizing extends AbstractEntityFX {
 		tessellator.draw();
 		
 		// restore OpenGL state
-		GL11.glDepthMask(true);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glPopMatrix();
+		GlStateManager.depthMask(true);
+		GlStateManager.disableBlend();
+		GlStateManager.enableCull();
+		GlStateManager.popMatrix();
 	}
 	
 	@Override

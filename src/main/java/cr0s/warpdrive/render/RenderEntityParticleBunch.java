@@ -10,6 +10,9 @@ import org.lwjgl.opengl.GL11;
 import java.util.Random;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -68,8 +71,8 @@ public class RenderEntityParticleBunch extends RenderEntity {
 		}
 		
 		// translate
-		GL11.glPushMatrix();
-		GL11.glTranslatef((float) x, (float) y, (float) z);
+		GlStateManager.pushMatrix();
+		GlStateManager.translate((float) x, (float) y, (float) z);
 		
 		// compute parameters
 		final double energy = entityParticleBunch.getEnergy();
@@ -86,7 +89,7 @@ public class RenderEntityParticleBunch extends RenderEntity {
             size, size, size);
         
         // restore
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 	
 	// Loosely based on ender dragon death effect
@@ -124,24 +127,24 @@ public class RenderEntityParticleBunch extends RenderEntity {
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder vertexBuffer = tessellator.getBuffer();
 		RenderHelper.disableStandardItemLighting();
-		GL11.glPushAttrib(GL11.GL_LIGHTING_BIT | GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glShadeModel(GL11.GL_SMOOTH);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glDepthMask(false);
-		GL11.glPushMatrix();
-		GL11.glScalef(scaleX, scaleY, scaleZ);
+		// GL11.glPushAttrib(GL11.GL_LIGHTING_BIT | GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT);
+		GlStateManager.disableTexture2D();
+		GlStateManager.shadeModel(GL11.GL_SMOOTH);
+		GlStateManager.enableBlend();
+		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE);
+		GlStateManager.disableAlpha();
+		GlStateManager.enableCull();
+		GlStateManager.depthMask(false);
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(scaleX, scaleY, scaleZ);
 		
 		for (int i = 0; i < rayCount; i++) {
-			GL11.glRotatef(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
-			GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
-			GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
-			GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
-			GL11.glRotatef(random.nextFloat() * 360.0F + cycleRotation * 90F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
+			GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
+			GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
+			GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
+			GlStateManager.rotate(random.nextFloat() * 360.0F + cycleRotation * 90F, 0.0F, 0.0F, 1.0F);
 			vertexBuffer.begin(6, DefaultVertexFormats.POSITION_COLOR);
 			final float rayLength = random.nextFloat() * 15.0F + 5.0F + boost *  5.0F;
 			final float rayWidth  = random.nextFloat() *  2.0F + 1.0F + boost *  1.0F;
@@ -154,14 +157,14 @@ public class RenderEntityParticleBunch extends RenderEntity {
 		}
 		
 		// drawing closure
-		GL11.glPopMatrix();
-		GL11.glDepthMask(true);
-		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glShadeModel(GL11.GL_FLAT);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
-		GL11.glPopAttrib();
+		GlStateManager.popMatrix();
+		GlStateManager.depthMask(true);
+		GlStateManager.disableCull();
+		GlStateManager.disableBlend();
+		GlStateManager.shadeModel(GL11.GL_FLAT);
+		GlStateManager.enableTexture2D();
+		GlStateManager.enableAlpha();
+		// GL11.glPopAttrib();
 		RenderHelper.enableStandardItemLighting();
 	}
 }
