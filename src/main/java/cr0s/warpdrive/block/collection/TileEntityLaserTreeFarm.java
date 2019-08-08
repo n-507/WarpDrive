@@ -89,9 +89,9 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 	
 	private int tickCurrentTask = 0;
 	
-	private ArrayList<BlockPos> blockPosSoils;
+	private ArrayList<BlockPos> blockPosSoils = new ArrayList<>(0);
 	private int indexSoil = 0;
-	private ArrayList<BlockStatePos> blockPosValuables;
+	private ArrayList<BlockStatePos> blockPosValuables = new ArrayList<>(0);
 	private int indexValuable = 0;
 	
 	public TileEntityLaserTreeFarm() {
@@ -243,7 +243,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 				WarpDrive.logger.debug("Scanning done");
 			}
 			
-			if (blockPosSoils != null && !blockPosSoils.isEmpty() && !InventoryWrapper.getConnectedInventories(world, pos).isEmpty()) {
+			if (!blockPosSoils.isEmpty() && !InventoryWrapper.getConnectedInventories(world, pos).isEmpty()) {
 				world.playSound(null, pos, SoundEvents.LASER_HIGH, SoundCategory.BLOCKS, 4F, 1F);
 				currentState = STATE_PLANTING;
 				tickCurrentTask = WarpDriveConfig.TREE_FARM_PLANT_DELAY_TICKS;
@@ -277,7 +277,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 			}
 			
 			// planting done, move to harvesting
-			if (blockPosSoils == null || indexSoil >= blockPosSoils.size()) {
+			if (indexSoil >= blockPosSoils.size()) {
 				currentState = STATE_HARVESTING;
 				tickCurrentTask = WarpDriveConfig.TREE_FARM_HARVEST_LOG_DELAY_TICKS;
 				return;
@@ -317,7 +317,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 			}
 			
 			// harvesting done, back to scanning
-			if (blockPosValuables == null || indexValuable >= blockPosValuables.size()) {
+			if (indexValuable >= blockPosValuables.size()) {
 				currentState = STATE_WARMING_UP;
 				tickCurrentTask = 0;
 				return;
@@ -606,8 +606,8 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 				WarpDrive.logger.info(String.format("Calculation initiated for %s",
 				                                    this));
 			}
-			blockPosSoils = null;
-			blockPosValuables = null;
+			blockPosSoils = new ArrayList<>(0);
+			blockPosValuables = new ArrayList<>(0);
 			
 			new ThreadCalculation(this).start();
 		}
