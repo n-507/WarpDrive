@@ -210,6 +210,7 @@ import javax.annotation.Nullable;
                   + "after:gregtech;"
                   + "after:ic2;"
                   + "after:icbmclassic;"
+                  + "after:metalchests@[v5.8.1,);"
                   + "after:opencomputers;",
      certificateFingerprint = "f7be6b40743c6a8205df86c5e57547d578605d8a"
 )

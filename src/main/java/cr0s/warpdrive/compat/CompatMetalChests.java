@@ -23,7 +23,7 @@ public class CompatMetalChests implements IBlockTransformer {
 	
 	public static void register() {
 		try {
-			classBlockMetalChest = Class.forName("T145.metalchests.blocks.BlockMetalChest");
+			classBlockMetalChest = Class.forName("t145.metalchests.blocks.BlockMetalChest");
 			
 			WarpDriveConfig.registerBlockTransformer("MetalChests", new CompatMetalChests());
 		} catch(final ClassNotFoundException exception) {
