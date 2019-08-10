@@ -24,6 +24,13 @@ public class HyperSpaceWorldProvider extends AbstractWorldProvider {
 		nether = true;
 	}
 	
+	@Override
+	protected void init() {
+		super.init();
+		
+		world.setSeaLevel(0);
+	}
+	
 	@Nonnull
 	@Override
 	public DimensionType getDimensionType() {
@@ -69,18 +76,18 @@ public class HyperSpaceWorldProvider extends AbstractWorldProvider {
 	@Override
 	public float calculateCelestialAngle(final long time, final float partialTick) {
 		// returns the clock angle: 0 is noon, 0.5 is midnight on the vanilla clock
-		// daylight is required to enable IC2 and EnderIO solar panels
+		// daylight is required to enable IC2, NuclearCraft and EnderIO solar panels
 		// we want no solar power in hyperspace => permanent midnight
 		return 0.5F;
 	}
 	
 	@Override
 	protected void generateLightBrightnessTable() {
-		final float f = 0.0F;
+		final float ambient = 0.1F;
 		
 		for (int i = 0; i <= 15; ++i) {
 			final float f1 = 1.0F - i / 15.0F;
-			lightBrightnessTable[i] = (1.0F - f1) / (f1 * 3.0F + 1.0F) * (1.0F - f) + f;
+			lightBrightnessTable[i] = (1.0F - f1) / (f1 * 3.0F + 1.0F) * (1.0F - ambient) + ambient;
 		}
 	}
 	
