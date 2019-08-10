@@ -807,12 +807,20 @@ public class Commons {
 	}
 	
 	// loosely inspired by crunchify
+	private static long dumpAllThreads_lastDump_ms = Long.MIN_VALUE;
 	public static void dumpAllThreads() {
+		// only dump once per second
+		final long currentTime_ms = System.currentTimeMillis();
+		if (dumpAllThreads_lastDump_ms + 1000L < currentTime_ms) {
+			return;
+		}
+		dumpAllThreads_lastDump_ms = currentTime_ms;
+		
 		final StringBuilder stringBuilder = new StringBuilder();
 		final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 		final ThreadInfo[] threadInfos = threadMXBean.getThreadInfo(threadMXBean.getAllThreadIds(), 100);
 		for (final ThreadInfo threadInfo : threadInfos) {
-			stringBuilder.append('"');
+			stringBuilder.append("\n\"");
 			stringBuilder.append(threadInfo.getThreadName());
 			stringBuilder.append("\"\n\tjava.lang.Thread.State: ");
 			stringBuilder.append(threadInfo.getThreadState());
@@ -821,7 +829,7 @@ public class Commons {
 				stringBuilder.append("\n\t\tat ");
 				stringBuilder.append(stackTraceElement);
 			}
-			stringBuilder.append("\n\n");
+			stringBuilder.append("\n");
 		}
 		WarpDrive.logger.error(stringBuilder.toString());
 	}
