@@ -811,7 +811,7 @@ public class Commons {
 	public static void dumpAllThreads() {
 		// only dump once per second
 		final long currentTime_ms = System.currentTimeMillis();
-		if (dumpAllThreads_lastDump_ms + 1000L < currentTime_ms) {
+		if (dumpAllThreads_lastDump_ms + 1000L >= currentTime_ms) {
 			return;
 		}
 		dumpAllThreads_lastDump_ms = currentTime_ms;
