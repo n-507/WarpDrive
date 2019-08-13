@@ -11,11 +11,9 @@ import cr0s.warpdrive.render.EntityFXBoundingBox;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -113,27 +111,6 @@ public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrContro
 	
 	public boolean isBusy() {
 		return timeLastScanDone < 0 || jumpGateScanner != null;
-	}
-	
-	@Override
-	public String getAllPlayersInArea() {
-		final AxisAlignedBB axisalignedbb = new AxisAlignedBB(minX, minY, minZ, maxX + 0.99D, maxY + 0.99D, maxZ + 0.99D);
-		final List list = world.getEntitiesWithinAABBExcludingEntity(null, axisalignedbb);
-		final StringBuilder stringBuilderResult = new StringBuilder();
-		
-		boolean isFirst = true;
-		for (final Object object : list) {
-			if (!(object instanceof EntityPlayer)) {
-				continue;
-			}
-			if (isFirst) {
-				isFirst = false;
-			} else {
-				stringBuilderResult.append(", ");
-			}
-			stringBuilderResult.append(((EntityPlayer) object).getName());
-		}
-		return stringBuilderResult.toString();
 	}
 	
 	@Override

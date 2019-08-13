@@ -557,27 +557,6 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		}
 	}
 	
-	@Override
-	public String getAllPlayersInArea() {
-		final AxisAlignedBB axisalignedbb = new AxisAlignedBB(minX, minY, minZ, maxX + 0.99D, maxY + 0.99D, maxZ + 0.99D);
-		final List list = world.getEntitiesWithinAABBExcludingEntity(null, axisalignedbb);
-		final StringBuilder stringBuilderResult = new StringBuilder();
-		
-		boolean isFirst = true;
-		for (final Object object : list) {
-			if (!(object instanceof EntityPlayer)) {
-				continue;
-			}
-			if (isFirst) {
-				isFirst = false;
-			} else {
-				stringBuilderResult.append(", ");
-			}
-			stringBuilderResult.append(((EntityPlayer) object).getName());
-		}
-		return stringBuilderResult.toString();
-	}
-	
 	public String getFirstOnlineCrew() {
 		if (posSecurityStation == null) {// no crew defined
 			return null;

@@ -2,21 +2,21 @@ package cr0s.warpdrive.block;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.api.computer.ICoreSignature;
 import cr0s.warpdrive.api.computer.IMachine;
 import cr0s.warpdrive.config.WarpDriveConfig;
-
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 
 import javax.annotation.Nonnull;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 
@@ -169,14 +169,20 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 		return tagCompound;
 	}
 	
+	private static final Predicate<EntityPlayerMP> ALIVE_NOT_SPECTATING_PLAYER = entityPlayerMP -> entityPlayerMP != null
+	                                                                                               && entityPlayerMP.isEntityAlive()
+	                                                                                               && !entityPlayerMP.isSpectator();
 	public String getAllPlayersInArea() {
-		final AxisAlignedBB axisalignedbb = new AxisAlignedBB(pos).grow(10.0D);
-		final List list = world.getEntitiesWithinAABBExcludingEntity(null, axisalignedbb);
+		final AxisAlignedBB axisalignedbb = this instanceof IStarMapRegistryTileEntity
+		                                  ? ((IStarMapRegistryTileEntity) this).getStarMapArea()
+		                                  : new AxisAlignedBB(pos).grow(10.0D);
+		
+		final List<EntityPlayerMP> entityPlayers = world.getPlayers(EntityPlayerMP.class, ALIVE_NOT_SPECTATING_PLAYER::test);
 		final StringBuilder stringBuilderResult = new StringBuilder();
 		
 		boolean isFirst = true;
-		for (final Object object : list) {
-			if (!(object instanceof EntityPlayer)) {
+		for (final EntityPlayerMP entityPlayerMP : entityPlayers) {
+			if (!entityPlayerMP.getEntityBoundingBox().intersects(axisalignedbb)) {
 				continue;
 			}
 			if (isFirst) {
@@ -184,7 +190,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 			} else {
 				stringBuilderResult.append(", ");
 			}
-			stringBuilderResult.append(((EntityPlayer) object).getName());
+			stringBuilderResult.append(entityPlayerMP.getName());
 		}
 		return stringBuilderResult.toString();
 	}
