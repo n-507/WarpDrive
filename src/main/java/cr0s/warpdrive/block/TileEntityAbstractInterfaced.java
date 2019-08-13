@@ -58,6 +58,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	protected String peripheralName = null;
 	private String[] methodsArray = {};
 	private boolean isAlwaysInterfaced = true;
+	private long lastLUAinternalException_ms = Long.MIN_VALUE;
 	
 	// String returned to LUA script in case of error
 	public static final String COMPUTER_ERROR_TAG = "!ERROR!";
@@ -439,11 +440,15 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 			}
 			return result;
 		} catch (final Exception exception) {
-			if (WarpDriveConfig.LOGGING_LUA) {
+			// only dump once per second
+			final long currentTime_ms = System.currentTimeMillis();
+			if ( WarpDriveConfig.LOGGING_LUA
+			  || lastLUAinternalException_ms + 1000L < currentTime_ms ) {
+				lastLUAinternalException_ms = currentTime_ms;
 				exception.printStackTrace();
 			}
 			
-			throw new LuaException(String.format("Internal exception %s from %d:%s to %s.%s(%s)\nEnable LUA logs for details.",
+			throw new LuaException(String.format("Internal exception %s from %d:%s to %s.%s(%s)\nCheck server logs for details.",
 			                                     Commons.format(world, pos),
 			                                     computerAccess.getID(), computerAccess.getAttachmentName(),
 			                                     peripheralName, methodName, Commons.format(arguments) ));
