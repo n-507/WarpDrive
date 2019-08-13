@@ -355,13 +355,19 @@ public class WarpDriveDataFixer {
 			// then check if the block exists in the game
 			blockEntry = Block.getBlockFromName(nameBlock);
 			if (blockEntry == null) {
-				WarpDrive.logger.info(String.format("Ignoring missing block %s in %s",
+				WarpDrive.logger.info(String.format("Ignoring missing in-game block %s in %s",
 				                                    nameBlock, nameFull ));
 				return null;
 			}
 			
 			// finally build the blockstate itself
-			blockStateEntry = blockEntry.getStateFromMeta(intMetadata);
+			try {
+				blockStateEntry = blockEntry.getStateFromMeta(intMetadata);
+			} catch (final Exception exception) {
+				WarpDrive.logger.info(String.format("Using default state due to exception when fixing block %s in %s",
+				                                    nameBlock, nameFull ));
+				blockStateEntry = blockEntry.getDefaultState();
+			}
 			
 		} else if (indexBracket > 0) {
 			// check closing bracket
@@ -389,7 +395,7 @@ public class WarpDriveDataFixer {
 			// then check if the block exists in the game
 			blockEntry = Block.getBlockFromName(nameBlock);
 			if (blockEntry == null) {
-				WarpDrive.logger.info(String.format("Ignoring missing block %s in %s",
+				WarpDrive.logger.info(String.format("Ignoring missing in-game block %s in %s",
 				                                    nameBlock, nameFull ));
 				return null;
 			}
@@ -419,7 +425,7 @@ public class WarpDriveDataFixer {
 		} else {// (just a block)
 			blockEntry = Block.getBlockFromName(nameFull);
 			if (blockEntry == null) {
-				WarpDrive.logger.info(String.format("Ignoring missing block %s",
+				WarpDrive.logger.info(String.format("Ignoring missing in-game block %s",
 				                                    nameFull ));
 				return null;
 			}
