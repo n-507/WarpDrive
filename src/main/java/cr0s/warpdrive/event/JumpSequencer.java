@@ -1270,7 +1270,8 @@ public class JumpSequencer extends AbstractSequencer {
 				try {
 					final BlockPos blockPos = new BlockPos(jumpBlock.x, jumpBlock.y, jumpBlock.z);
 					boolean isRemoved = FastSetBlockState.setBlockStateNoLight(sourceWorld, blockPos, Blocks.AIR.getDefaultState(), 2);
-					if (!isRemoved) {
+					if ( !isRemoved
+					  && sourceWorld.getBlockState(blockPos) != Blocks.AIR.getDefaultState() ) {
 						WarpDrive.logger.info(String.format("Failed to remove %s@%d at (%d %d %d), retrying...",
 						                                    jumpBlock.block, jumpBlock.blockMeta, jumpBlock.x, jumpBlock.y, jumpBlock.z));
 						isRemoved = FastSetBlockState.setBlockStateNoLight(sourceWorld, blockPos, Blocks.AIR.getDefaultState(), 2);
