@@ -904,6 +904,7 @@ public class WarpDrive {
 			return block;
 		}
 		
+		assert !blocks.contains(block);
 		blocks.add(block);
 		
 		if (itemBlock != null) {

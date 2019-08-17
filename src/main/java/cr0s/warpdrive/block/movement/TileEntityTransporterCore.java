@@ -335,9 +335,10 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		if (worldRemote == null) {
 			WarpDrive.logger.error(String.format("Unable to initialize dimension %d for %s",
 			                                     globalPositionRemote.dimensionId,
-			                                     this));
+			                                     this ));
 			isJammed = true;
-			reasonJammed = String.format("Unable to initialize dimension %d", globalPositionRemote.dimensionId);
+			reasonJammed = String.format("Unable to initialize dimension %d",
+			                             globalPositionRemote.dimensionId);
 			return;
 		}
 		
@@ -812,7 +813,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 			if (worldRemote == null) {
 				WarpDrive.logger.error(String.format("Unable to initialize dimension %d for %s",
 				                                     celestialObjectRemote.dimensionId,
-				                                     this));
+				                                     this ));
 				isJammed = true;
 				reasonJammed = String.format("Unable to initialize dimension %d",
 				                             celestialObjectRemote.dimensionId);

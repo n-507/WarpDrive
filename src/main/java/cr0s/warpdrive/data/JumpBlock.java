@@ -136,6 +136,7 @@ public class JumpBlock {
 		return worldSource.getTileEntity(new BlockPos(x, y, z));
 	}
 	
+	@Nullable
 	private NBTTagCompound getBlockNBT(@Nonnull final World worldSource) {
 		if (weakTileEntity == null) {
 			return blockNBT == null ? null : blockNBT.copy();
@@ -502,7 +503,7 @@ public class JumpBlock {
 		}
 	}
 	
-	public void writeToNBT(final World worldSource, final NBTTagCompound tagCompound) {
+	public void writeToNBT(final World worldSource, @Nonnull final NBTTagCompound tagCompound) {
 		tagCompound.setString("block", Block.REGISTRY.getNameForObject(block).toString());
 		tagCompound.setByte("blockMeta", (byte) blockMeta);
 		final NBTTagCompound nbtTileEntity = getBlockNBT(worldSource);
@@ -540,7 +541,7 @@ public class JumpBlock {
 			tagCompound.removeTag("label");
 		}
 		
-		// WarpDrive UUID
+		// WarpDrive machine signature UUID
 		if (tagCompound.hasKey(ICoreSignature.UUID_MOST_TAG)) {
 			tagCompound.removeTag(ICoreSignature.UUID_MOST_TAG);
 			tagCompound.removeTag(ICoreSignature.UUID_LEAST_TAG);

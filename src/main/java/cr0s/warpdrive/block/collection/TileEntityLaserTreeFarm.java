@@ -559,7 +559,9 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 			
 			harvestBlock(blockPosValuable, blockStateValuable);
 			
-			tickCurrentTask = isLog ? WarpDriveConfig.TREE_FARM_HARVEST_LOG_DELAY_TICKS : enableSilktouch ? WarpDriveConfig.TREE_FARM_SILKTOUCH_LEAF_DELAY_TICKS : WarpDriveConfig.TREE_FARM_BREAK_LEAF_DELAY_TICKS;
+			tickCurrentTask = isLog ? WarpDriveConfig.TREE_FARM_HARVEST_LOG_DELAY_TICKS
+			                        : enableSilktouch ? WarpDriveConfig.TREE_FARM_SILKTOUCH_LEAF_DELAY_TICKS
+			                                          : WarpDriveConfig.TREE_FARM_BREAK_LEAF_DELAY_TICKS;
 			return EnumTaskResult.CONTINUE;
 		}
 		
@@ -1038,7 +1040,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 				if (!(tileEntity instanceof TileEntityLaserTreeFarm)) {
 					if (WarpDriveConfig.LOGGING_COLLECTION) {
 						WarpDrive.logger.error(String.format("%s Scanning aborted",
-						                                     this));
+						                                     this ));
 					}
 					
 				} else {
@@ -1054,7 +1056,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 					
 					if (WarpDriveConfig.LOGGING_COLLECTION) {
 						WarpDrive.logger.debug(String.format("%s Calculation started for %s",
-						                                     this, stringTileEntity));
+						                                     this, stringTileEntity ));
 					}
 					
 					blockPosSoils = calculate_getSoilPositions(blockAccess, axisAlignedBBSoil);
@@ -1063,7 +1065,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 					
 					if (WarpDriveConfig.LOGGING_COLLECTION) {
 						WarpDrive.logger.debug(String.format("%s Calculation done: %s soil positions, %s valuables positions",
-						                                     this, blockPosSoils.size(), blockStatePosValuables.size()));
+						                                     this, blockPosSoils.size(), blockStatePosValuables.size() ));
 					}
 				}
 			} catch (final Exception exception) {
