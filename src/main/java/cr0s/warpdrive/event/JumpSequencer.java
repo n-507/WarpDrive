@@ -1045,6 +1045,12 @@ public class JumpSequencer extends AbstractSequencer {
 					jumpBlock.fillEnergyStorage();
 				}
 				
+				if ( shipMovementType != EnumShipMovementType.INSTANTIATE
+				  && shipMovementType != EnumShipMovementType.RESTORE
+				  && WarpDriveConfig.G_ENABLE_EXPERIMENTAL_REFRESH ) {
+					jumpBlock.refreshSource(sourceWorld);
+				}
+				
 				final BlockPos target = jumpBlock.deploy(sourceWorld, targetWorld, transformation);
 				
 				if ( shipMovementType != EnumShipMovementType.INSTANTIATE
@@ -1230,6 +1236,12 @@ public class JumpSequencer extends AbstractSequencer {
 					}
 				}
 			}
+			
+			// remove item drops and such
+			final WarpDriveText reason = new WarpDriveText();
+			if (!ship.removeEntities(reason)) {
+				WarpDrive.logger.error(reason.getUnformattedComponentText());
+			}
 		}
 		
 		LocalProfiler.stop();
@@ -1260,7 +1272,7 @@ public class JumpSequencer extends AbstractSequencer {
 			}
 			
 			if (sourceWorld != null) {
-				if (jumpBlock.weakTileEntity != null) {
+				if (jumpBlock.hasTileEntity) {
 					if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
 						WarpDrive.logger.info(String.format("Removing tile entity at (%d %d %d)",
 						                                    jumpBlock.x, jumpBlock.y, jumpBlock.z));

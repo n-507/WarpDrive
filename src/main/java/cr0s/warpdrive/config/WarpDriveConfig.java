@@ -177,6 +177,7 @@ public class WarpDriveConfig {
 	public static int                  G_BLOCKS_PER_TICK = 3500;
 	public static boolean              G_ENABLE_FAST_SET_BLOCKSTATE = false;
 	public static boolean              G_ENABLE_PROTECTION_CHECKS = true;
+	public static boolean              G_ENABLE_EXPERIMENTAL_REFRESH = false;
 	
 	public static float                G_BLAST_RESISTANCE_CAP = 60.0F;
 	
@@ -780,6 +781,8 @@ public class WarpDriveConfig {
 		                                          "Enable fast blockstate placement, skipping light computation. Disable if you have world implementations conflicts").getBoolean(G_ENABLE_FAST_SET_BLOCKSTATE);
 		G_ENABLE_PROTECTION_CHECKS = config.get("general", "enable_protection_checks", G_ENABLE_PROTECTION_CHECKS,
 		                                        "Enable area protection checks from other mods or plugins, disable if you use the event system exclusively").getBoolean(G_ENABLE_PROTECTION_CHECKS);
+		G_ENABLE_EXPERIMENTAL_REFRESH  = config.get("general", "enable_experimental_refresh", G_ENABLE_EXPERIMENTAL_REFRESH,
+		                                            "Enable experimental refresh during jump to prevent duping, use at your own risk").getBoolean(G_ENABLE_EXPERIMENTAL_REFRESH);
 		
 		G_BLAST_RESISTANCE_CAP = Commons.clamp(10.0F, 6000.0F,
 				(float) config.get("general", "blast_resistance_cap", G_BLAST_RESISTANCE_CAP,

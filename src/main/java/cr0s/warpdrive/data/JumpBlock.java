@@ -69,6 +69,7 @@ public class JumpBlock {
 	
 	public Block block;
 	public int blockMeta;
+	public boolean hasTileEntity;
 	public WeakReference<TileEntity> weakTileEntity;
 	public NBTTagCompound blockNBT;
 	public int x;
@@ -86,9 +87,11 @@ public class JumpBlock {
 		this.block = blockState.getBlock();
 		this.blockMeta = blockState.getBlock().getMetaFromState(blockState);
 		if (tileEntity == null) {
+			hasTileEntity = false;
 			weakTileEntity = null;
 			blockNBT = null;
 		} else {
+			hasTileEntity = true;
 			weakTileEntity = new WeakReference<>(tileEntity);
 			blockNBT = new NBTTagCompound();
 			tileEntity.writeToNBT(blockNBT);
@@ -116,6 +119,7 @@ public class JumpBlock {
 		}
 		block = filler.block;
 		blockMeta = filler.metadata;
+		hasTileEntity = false;
 		weakTileEntity = null;
 		blockNBT = (filler.tagCompound != null) ? filler.tagCompound.copy() : null;
 		this.x = x;
@@ -123,32 +127,64 @@ public class JumpBlock {
 		this.z = z;
 	}
 	
+	public void refreshSource(@Nonnull final World worldSource) {
+		final BlockPos blockPos = new BlockPos(x, y, z);
+		final IBlockState blockState = worldSource.getBlockState(blockPos);
+		if (blockState.getBlock() != block) {
+			WarpDrive.logger.error(String.format("Source block has changed to %s, updating in %s",
+			                                     blockState, this ));
+			block = blockState.getBlock();
+			blockMeta = block.getMetaFromState(blockState);
+			hasTileEntity = false;
+			weakTileEntity = null;
+			blockNBT = null;
+			return;
+		}
+		if (block.getMetaFromState(blockState) != blockMeta) {
+			WarpDrive.logger.error(String.format("Source block variation has changed to %s, updating in %s",
+			                                     blockState, this ));
+			blockMeta = block.getMetaFromState(blockState);
+		}
+		final TileEntity tileEntity = worldSource.getTileEntity(blockPos);
+		if ( (hasTileEntity && tileEntity == null)
+		  || (!hasTileEntity && tileEntity != null) ) {
+			WarpDrive.logger.error(String.format("Tile entity has changed, refreshing in %s",
+			                                     this));
+		}
+		hasTileEntity = tileEntity != null;
+		if (hasTileEntity) {
+			weakTileEntity = new WeakReference<>(tileEntity);
+		} else {
+			weakTileEntity = null;
+		}
+		blockNBT = null;
+	}
+	
 	public TileEntity getTileEntity(@Nonnull final World worldSource) {
-		if (weakTileEntity == null) {
+		if (!hasTileEntity) {
 			return null;
 		}
-		final TileEntity tileEntity = weakTileEntity.get();
+		TileEntity tileEntity = weakTileEntity.get();
 		if (tileEntity != null) {
 			return tileEntity;
 		}
 		WarpDrive.logger.error(String.format("Tile entity lost in %s",
 		                                     this));
-		return worldSource.getTileEntity(new BlockPos(x, y, z));
+		tileEntity = worldSource.getTileEntity(new BlockPos(x, y, z));
+		weakTileEntity = new WeakReference<>(tileEntity);
+		return tileEntity;
 	}
 	
 	@Nullable
 	private NBTTagCompound getBlockNBT(@Nonnull final World worldSource) {
-		if (weakTileEntity == null) {
+		if (!hasTileEntity) {
 			return blockNBT == null ? null : blockNBT.copy();
 		}
-		TileEntity tileEntity = weakTileEntity.get();
+		final TileEntity tileEntity = getTileEntity(worldSource);
 		if (tileEntity == null) {
-			tileEntity = worldSource.getTileEntity(new BlockPos(x, y, z));
-			if (tileEntity == null) {
-				WarpDrive.logger.error(String.format("Tile entity lost in %s",
-				                                     this));
-				return blockNBT == null ? null : blockNBT.copy();
-			}
+			WarpDrive.logger.error(String.format("No more tile entity in %s",
+			                                     this ));
+			return null;
 		}
 		final NBTTagCompound tagCompound = new NBTTagCompound();
 		tileEntity.writeToNBT(tagCompound);
@@ -471,6 +507,7 @@ public class JumpBlock {
 		block = blockState.getBlock();
 		blockMeta = blockState.getBlock().getMetaFromState(blockState);
 		
+		hasTileEntity = false;
 		weakTileEntity = null;
 		if (tagCompound.hasKey("blockNBT")) {
 			blockNBT = tagCompound.getCompoundTag("blockNBT");

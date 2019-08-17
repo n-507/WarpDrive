@@ -355,6 +355,36 @@ public class JumpShip {
 		return isSuccess;
 	}
 	
+	public boolean removeEntities(final WarpDriveText reason) {
+		if (world == null) {
+			WarpDrive.logger.error("Invalid call to removeEntities, please report it to mod author: world is null");
+			reason.append(Commons.styleWarning, "warpdrive.error.internal_check_console");
+			return false;
+		}
+		
+		final AxisAlignedBB axisalignedbb = new AxisAlignedBB(minX, minY, minZ, maxX + 0.99D, maxY + 0.99D, maxZ + 0.99D);
+		
+		final List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(null, axisalignedbb);
+		
+		for (final Entity entity : list) {
+			if ( entity == null
+			  || entity instanceof EntityPlayer ) {
+				continue;
+			}
+			
+			// ignore left behind
+			if ( Dictionary.isLeftBehind(entity) ) {
+				continue;
+			}
+			WarpDrive.logger.warn(String.format("Removing entity %s: %s",
+			                                    Dictionary.getId(entity),
+			                                    entity ));
+			world.removeEntity(entity);
+		}
+		
+		return true;
+	}
+	
 	public void addPlayerToEntities(final String playerName) {
 		if (entitiesOnShip == null) {
 			entitiesOnShip = new ArrayList<>();
