@@ -593,10 +593,16 @@ public class JumpBlock {
 		if (tagCompound.hasKey("Owner")) {
 			tagCompound.setString("Owner", "None");
 		}
+		if (tagCompound.hasKey("OwnerUUID")) {
+			tagCompound.removeTag("OwnerUUID");
+		}
 		
 		// Mekanism
 		if (tagCompound.hasKey("owner")) {
 			tagCompound.setString("owner", "None");
+		}
+		if (tagCompound.hasKey("ownerUUID")) {
+			tagCompound.removeTag("ownerUUID");
 		}
 	}
 	
