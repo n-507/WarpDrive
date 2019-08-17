@@ -529,34 +529,44 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 	@Override
 	@Optional.Method(modid = "ic2")
 	public boolean acceptsEnergyFrom(final IEnergyEmitter emitter, final EnumFacing from) {
+		final boolean accepts = WarpDriveConfig.ENERGY_ENABLE_IC2_EU
+		                     && energy_canInput(from);
 		if (WarpDriveConfig.LOGGING_ENERGY) {
 			WarpDrive.logger.info(String.format("%s [IC2]acceptsEnergyFrom(%s, %s) => %s",
-			                                    this, emitter, from, energy_canInput(from) ));
+			                                    this, emitter, from, accepts ));
 		}
-		return WarpDriveConfig.ENERGY_ENABLE_IC2_EU
-		    && energy_canInput(from);
+		return accepts;
 	}
 	
 	// IndustrialCraft IEnergySink interface
 	@Override
 	@Optional.Method(modid = "ic2")
 	public int getSinkTier() {
-		return WarpDriveConfig.ENERGY_ENABLE_IC2_EU && energy_getMaxStorage() > 0 ? IC2_sinkTier : 0;
+		final int tier = WarpDriveConfig.ENERGY_ENABLE_IC2_EU
+		              && energy_getMaxStorage() > 0
+		               ? IC2_sinkTier : 0;
+		if (WarpDriveConfig.LOGGING_ENERGY) {
+			WarpDrive.logger.info(String.format("%s [IC2]getSinkTier() => %d",
+			                                    this, tier ));
+		}
+		return tier;
 	}
 	
 	@Override
 	@Optional.Method(modid = "ic2")
 	public double getDemandedEnergy() {
-		return Math.max(0.0D, EnergyWrapper.convertInternalToEU_floor(energy_getMaxStorage() - energy_getEnergyStored()));
+		final double demanded_EU = Math.max(0.0D, EnergyWrapper.convertInternalToEU_floor(energy_getMaxStorage() - energy_getEnergyStored()));
+		if (WarpDriveConfig.LOGGING_ENERGY) {
+			WarpDrive.logger.info(String.format("%s [IC2]getDemandedEnergy() => %.2f EU",
+			                                    this, demanded_EU ));
+		}
+		return demanded_EU;
 	}
 	
 	@Override
 	@Optional.Method(modid = "ic2")
 	public double injectEnergy(final EnumFacing from, final double amount_EU, final double voltage) {
-		if (WarpDriveConfig.LOGGING_ENERGY) {
-			WarpDrive.logger.info(String.format("%s [IC2]injectEnergy(%s, %.2f, %.1f) => %s",
-			                                    this, from, amount_EU, voltage, energy_canInput(from)));
-		}
+		double amountLeftOver_EU = amount_EU;
 		if ( WarpDriveConfig.ENERGY_ENABLE_IC2_EU
 		  && energy_canInput(from.getOpposite()) ) {
 			long leftover_internal = 0;
@@ -567,46 +577,61 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 				energyStored_internal = energy_getMaxStorage();
 			}
 			
-			return EnergyWrapper.convertInternalToEU_floor(leftover_internal);
-		} else {
-			return amount_EU;
+			amountLeftOver_EU = EnergyWrapper.convertInternalToEU_floor(leftover_internal);
 		}
+		if (WarpDriveConfig.LOGGING_ENERGY) {
+			WarpDrive.logger.info(String.format("%s [IC2]injectEnergy(%s, %.2f EU, %.1f) => %.2f EU",
+			                                    this, from, amount_EU, voltage, amountLeftOver_EU ));
+		}
+		return amountLeftOver_EU;
 	}
 	
 	// IndustrialCraft IEnergyEmitter interface
 	@Override
 	@Optional.Method(modid = "ic2")
 	public boolean emitsEnergyTo(final IEnergyAcceptor receiver, final EnumFacing to) {
+		final boolean emits = WarpDriveConfig.ENERGY_ENABLE_IC2_EU
+		                   && energy_canOutput(to);
 		if (WarpDriveConfig.LOGGING_ENERGY) {
 			WarpDrive.logger.info(String.format("%s [IC2]emitsEnergyTo(%s, %s) => %s",
-			                                    this, receiver, to, energy_canOutput(to)));
+			                                    this, receiver, to, emits ));
 		}
-		return WarpDriveConfig.ENERGY_ENABLE_IC2_EU
-		    && energy_canOutput(to);
+		return emits;
 	}
 	
 	// IndustrialCraft IEnergySource interface
 	@Override
 	@Optional.Method(modid = "ic2")
 	public int getSourceTier() {
-		return WarpDriveConfig.ENERGY_ENABLE_IC2_EU && energy_getMaxStorage() > 0 ? IC2_sourceTier : 0;
+		final int tier = WarpDriveConfig.ENERGY_ENABLE_IC2_EU
+		              && energy_getMaxStorage() > 0
+		               ? IC2_sourceTier : 0;
+		if (WarpDriveConfig.LOGGING_ENERGY) {
+			WarpDrive.logger.info(String.format("%s [IC2]getSourceTier() => %d",
+			                                    this, tier ));
+		}
+		return tier;
 	}
 	
 	@Override
 	@Optional.Method(modid = "ic2")
 	public double getOfferedEnergy() {
+		double offered_EU = 0.0D;
 		if (WarpDriveConfig.ENERGY_ENABLE_IC2_EU) {
-			return EnergyWrapper.convertInternalToEU_floor(energy_getPotentialOutput());
-		} else {
-			return 0.0D;
+			offered_EU = EnergyWrapper.convertInternalToEU_floor(energy_getPotentialOutput());
 		}
+		if (WarpDriveConfig.LOGGING_ENERGY) {
+			WarpDrive.logger.info(String.format("%s [IC2]getOfferedEnergy() => %.2f EU",
+			                                    this, offered_EU ));
+		}
+		return offered_EU;
 	}
 	
 	@Override
 	@Optional.Method(modid = "ic2")
 	public void drawEnergy(final double amount_EU) {
 		if (WarpDriveConfig.LOGGING_ENERGY) {
-			WarpDrive.logger.info(String.format("%s [IC2]drawEnergy amount_EU(%.2f)",
+			WarpDrive.logger.info(String.format("%s [IC2]drawEnergy(%.2f EU)",
 			                                    this, amount_EU));
 		}
 		energy_outputDone(EnergyWrapper.convertEUtoInternal_ceil(amount_EU));
