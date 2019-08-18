@@ -182,6 +182,21 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 				return;
 			}
 			
+			// validate environment: loaded chunks
+			final MutableBlockPos mutableBlockPos = new MutableBlockPos();
+			final IBlockState blockStateMinMin = Commons.getBlockState_noChunkLoading(world, mutableBlockPos.setPos(axisAlignedBBScan.minX, axisAlignedBBScan.minY, axisAlignedBBScan.minZ));
+			final IBlockState blockStateMinMax = Commons.getBlockState_noChunkLoading(world, mutableBlockPos.setPos(axisAlignedBBScan.minX, axisAlignedBBScan.minY, axisAlignedBBScan.maxZ));
+			final IBlockState blockStateMaxMin = Commons.getBlockState_noChunkLoading(world, mutableBlockPos.setPos(axisAlignedBBScan.maxX, axisAlignedBBScan.maxY, axisAlignedBBScan.minZ));
+			final IBlockState blockStateMaxMax = Commons.getBlockState_noChunkLoading(world, mutableBlockPos.setPos(axisAlignedBBScan.maxX, axisAlignedBBScan.maxY, axisAlignedBBScan.maxZ));
+			if ( blockStateMinMin == null 
+			  || blockStateMinMax == null
+			  || blockStateMaxMin == null
+			  || blockStateMaxMax == null ) {
+				currentState = STATE_WARMING_UP;
+				tickCurrentTask = WarpDriveConfig.TREE_FARM_WARM_UP_DELAY_TICKS;
+				return;
+			}
+			
 			// validate environment: clearance above
 			final IBlockState blockStateAbove = world.getBlockState(pos.up());
 			final Block blockAbove = blockStateAbove.getBlock();
@@ -624,6 +639,8 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 		if (blockPosSoils == null || blockPosValuables == null) {
 			this.blockPosSoils = new ArrayList<>(0);
 			this.blockPosValuables = new ArrayList<>(0);
+			currentState = STATE_WARMING_UP;
+			tickCurrentTask = WarpDriveConfig.TREE_FARM_WARM_UP_DELAY_TICKS;
 		} else {
 			this.blockPosSoils = blockPosSoils;
 			this.blockPosValuables = blockPosValuables;
@@ -1071,9 +1088,14 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 			} catch (final Exception exception) {
 				blockPosSoils = null;
 				blockStatePosValuables = null;
-				exception.printStackTrace();
-				WarpDrive.logger.error(String.format("%s Calculation failed for %s",
-				                                     this, stringTileEntity));
+				if (!(exception instanceof ExceptionChunkNotLoaded)) {
+					exception.printStackTrace();
+					WarpDrive.logger.error(String.format("%s Calculation failed for %s",
+					                                     this, stringTileEntity ));
+				} else {
+					WarpDrive.logger.warn(String.format("%s Calculation aborted to prevent chunkloading for %s",
+					                                    this, stringTileEntity ));
+				}
 			}
 			
 			final TileEntity tileEntity = weakTileEntity.get();
