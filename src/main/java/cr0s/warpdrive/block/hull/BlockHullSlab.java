@@ -3,6 +3,7 @@ package cr0s.warpdrive.block.hull;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBlockBase;
 import cr0s.warpdrive.api.IDamageReceiver;
+import cr0s.warpdrive.block.BlockAbstractBase;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.Vector3;
@@ -12,12 +13,9 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Random;
 
-import net.minecraft.block.BlockSlab;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
@@ -41,7 +39,7 @@ import net.minecraftforge.common.IRarity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageReceiver {
+public class BlockHullSlab extends BlockAbstractBase implements IBlockBase, IDamageReceiver {
 	
 	// Metadata values are
 	// 0-5 for plain slabs orientations
@@ -63,7 +61,7 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 	private final IBlockState blockStateHull;
 	
 	public BlockHullSlab(@Nonnull final String registryName, @Nonnull final EnumTier enumTier, @Nonnull final IBlockState blockStateHull) {
-		super(Material.ROCK);
+		super(registryName, enumTier, Material.ROCK);
 		
 		this.fullBlock = false;
 		this.setLightOpacity(0);
@@ -73,11 +71,7 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 		this.blockStateHull = blockStateHull;
 		setHardness(WarpDriveConfig.HULL_HARDNESS[enumTier.getIndex()]);
 		setResistance(WarpDriveConfig.HULL_BLAST_RESISTANCE[enumTier.getIndex()] * 5.0F / 3.0F);
-		setSoundType(SoundType.METAL);
-		setCreativeTab(WarpDrive.creativeTabHull);
 		setTranslationKey("warpdrive.hull." + enumTier.getName() + ".slab." + EnumDyeColor.byMetadata(blockStateHull.getBlock().getMetaFromState(blockStateHull)).getTranslationKey());
-		setRegistryName(registryName);
-		WarpDrive.register(this, new ItemBlockHullSlab(this));
 		
 		setDefaultState(getDefaultState()
 				                .withProperty(VARIANT, EnumVariant.PLAIN_DOWN)
@@ -131,32 +125,6 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 		     : metadata <= 7 ? 6    // tiled horizontal
 		     : metadata <= 11 ? 8   // tiled vertical
 		     : metadata;            // others
-	}
-	
-	// ItemSlab abstract methods
-	@Nonnull
-	@Override
-	public String getTranslationKey(final int metadata) {
-		return getTranslationKey();
-	}
-	
-	@Deprecated
-	@Override
-	public boolean isDouble() {
-		// any use of this method, apart from construction, indicates a missing override or something unplanned
-		return false;
-	}
-	
-	@Nonnull
-	@Override
-	public IProperty<?> getVariantProperty() {
-		return VARIANT;
-	}
-	
-	@Nonnull
-	@Override
-	public Comparable<?> getTypeForItem(@Nonnull final ItemStack itemStack) {
-		return EnumVariant.get(itemStack.getItemDamage());
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -344,7 +312,7 @@ public class BlockHullSlab extends BlockSlab implements IBlockBase, IDamageRecei
 	@Nullable
 	@Override
 	public ItemBlock createItemBlock() {
-		return new ItemBlockHull(this);
+		return new ItemBlockHullSlab(this);
 	}
 	
 	@SideOnly(Side.CLIENT)
