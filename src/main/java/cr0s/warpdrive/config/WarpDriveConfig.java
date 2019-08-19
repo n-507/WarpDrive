@@ -305,7 +305,7 @@ public class WarpDriveConfig {
 	public static float[]          SIREN_RANGE_BLOCKS_BY_TIER = { 0.0F, 32.0F, 64.0F, 128.0F };
 	
 	// Ship Scanner
-	public static int              SS_MAX_DEPLOY_RADIUS_BLOCKS = 50;
+	public static int              SS_MAX_DEPLOY_RADIUS_BLOCKS = 100;
 	public static int              SS_SEARCH_INTERVAL_TICKS = 20;
 	public static int              SS_SCAN_BLOCKS_PER_SECOND = 10;
 	public static int              SS_DEPLOY_BLOCKS_PER_INTERVAL = 10;
@@ -532,7 +532,7 @@ public class WarpDriveConfig {
 	public static HashMap<String, IBlockTransformer> blockTransformers = new HashMap<>(30);
 	
 	// Particles accelerator
-	public static boolean          ACCELERATOR_ENABLE = false;
+	public static boolean          ACCELERATOR_ENABLE = true;
 	public static final double[]   ACCELERATOR_TEMPERATURES_K = { 270.0, 200.0, 7.0 };
 	public static final double     ACCELERATOR_THRESHOLD_DEFAULT = 0.95D;
 	public static int              ACCELERATOR_MAX_PARTICLE_BUNCHES = 20;

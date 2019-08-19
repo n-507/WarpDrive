@@ -27,17 +27,17 @@
 				<filler block="undergroundbiomes:%type%_stone_forestry_resources" metadata="%metadata%" ratio=".036" mods="forestry" /><!-- Apatite -->
 				<filler block="LanteaCraft:blockLanteaOre" metadata="2" ratio=".008" mods="LanteaCraft" /><!-- Trinium -->
 				<filler block="undergroundbiomes:%type%_stone_mekanism_oreblock" metadata="%metadata%" ratio=".004" mods="mekanism" /><!-- Osmium -->
-				<filler block="undergroundbiomes:%type%_stone_metal.block.base.ore.2" metadata="%metadata%" ratio=".008" mods="Metallurgy" /><!-- Manganese -->
-				<filler block="undergroundbiomes:%type%_stone_metal.block.fantasy.ore" metadata="%metadata%" ratio=".020" mods="Metallurgy" /><!-- Prometheum -->
-				<filler block="undergroundbiomes:%type%_stone_metal.block.fantasy.ore.1" metadata="%metadata%" ratio=".012" mods="Metallurgy" /><!-- Deep Iron -->
-				<filler block="undergroundbiomes:%type%_stone_metal.block.fantasy.ore.2" metadata="%metadata%" ratio=".012" mods="Metallurgy" /><!-- Infuscolium -->
-				<filler block="undergroundbiomes:%type%_stone_metal.block.fantasy.ore.4" metadata="%metadata%" ratio=".008" mods="Metallurgy" /><!-- Oureclase -->
-				<filler block="undergroundbiomes:%type%_stone_metal.block.utility.ore" metadata="%metadata%" ratio=".006" mods="Metallurgy" /><!-- Sulfur -->
-				<filler block="undergroundbiomes:%type%_stone_metal.block.utility.ore.1" metadata="%metadata%" ratio=".006" mods="Metallurgy" /><!-- Phosphorite -->
-				<filler block="undergroundbiomes:%type%_stone_metal.block.utility.ore.2" metadata="%metadata%" ratio=".007" mods="Metallurgy" /><!-- Saltpeter -->
-				<filler block="undergroundbiomes:%type%_stone_metal.block.utility.ore.3" metadata="%metadata%" ratio=".006" mods="Metallurgy,!voltzengine" /><!-- Magnesium -->
-				<filler block="undergroundbiomes:%type%_stone_metal.block.utility.ore.4" metadata="%metadata%" ratio=".006" mods="off,Metallurgy" /><!-- Bitumen -->
-				<filler block="undergroundbiomes:%type%_stone_metal.block.utility.ore.5" metadata="%metadata%" ratio=".006" mods="Metallurgy" /><!-- Potash -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_manganese_ore"   metadata="%metadata%" ratio=".008" mods="metallurgy" /><!-- Manganese -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_prometheum_ore"  metadata="%metadata%" ratio=".020" mods="metallurgy" /><!-- Prometheum -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_deep_iron_ore"   metadata="%metadata%" ratio=".012" mods="metallurgy" /><!-- Deep Iron -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_infuscolium_ore" metadata="%metadata%" ratio=".012" mods="metallurgy" /><!-- Infuscolium -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_oureclase_ore"   metadata="%metadata%" ratio=".008" mods="metallurgy" /><!-- Oureclase -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_sulfur_ore"      metadata="%metadata%" ratio=".006" mods="metallurgy" /><!-- Sulfur -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_phosphorite_ore" metadata="%metadata%" ratio=".006" mods="metallurgy" /><!-- Phosphorite -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_saltpeter_ore"   metadata="%metadata%" ratio=".007" mods="removed,metallurgy" /><!-- Saltpeter (removed in 1.12+, kept for reference ratio) -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_magnesium_ore"   metadata="%metadata%" ratio=".006" mods="removed,metallurgy" /><!-- Magnesium (removed in 1.12+, kept for reference ratio) -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_bitumen_ore"     metadata="%metadata%" ratio=".006" mods="off,metallurgy" /><!-- Bitumen (replaced with lakes in 1.12+, kept for reference ratio) -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_potash_ore"      metadata="%metadata%" ratio=".006" mods="off,metallurgy" /><!-- Potash -->
 				<filler block="undergroundbiomes:%type%_stone_mysticalagriculture_inferium_ore" metadata="%metadata%" ratio=".012" mods="mysticalagriculture" /><!-- Inferium -->
 				
 				<filler block="undergroundbiomes:%type%_stone_tile.thermalfoundation.ore.aluminum.name" metadata="%metadata%" ratio=".032" mods="thermalfoundation" /><!-- Aluminum -->
@@ -82,10 +82,10 @@
 				<filler block="undergroundbiomes:%type%_stone_arsmagica2:ores.1" metadata="%metadata%" ratio=".006" mods="arsmagica2" /><!-- Chimerite -->
 				<filler block="undergroundbiomes:%type%_stone_deepresonance_resonating_ore" metadata="%metadata%" ratio=".001" mods="deepresonance" /><!-- Resonating -->
 				<filler block="undergroundbiomes:%type%_stone_mekanism_oreblock" metadata="%metadata%" ratio=".010" mods="mekanism" /><!-- Osmium -->
-				<filler block="undergroundbiomes:%type%_stone_metal.block.fantasy.ore.5" metadata="%metadata%" ratio=".008" mods="Metallurgy" /><!-- Astral Silver -->
-				<filler block="undergroundbiomes:%type%_stone_metal.block.fantasy.ore.6" metadata="%metadata%" ratio=".0064" mods="Metallurgy" /><!-- Carmot -->
-				<filler block="undergroundbiomes:%type%_stone_metal.block.fantasy.ore.8" metadata="%metadata%" ratio=".004" mods="Metallurgy" /><!-- Rubracium -->
-				<filler block="undergroundbiomes:%type%_stone_metal.block.precious.ore" metadata="%metadata%" ratio=".015" mods="Metallurgy" /><!-- Zinc -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_astral_silver_ore"           metadata="%metadata%" ratio=".008" mods="metallurgy" /><!-- Astral Silver -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_carmot_ore"                  metadata="%metadata%" ratio=".0064" mods="metallurgy" /><!-- Carmot -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_rubracium_ore"               metadata="%metadata%" ratio=".004" mods="metallurgy" /><!-- Rubracium -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_zinc_ore"                    metadata="%metadata%" ratio=".015" mods="metallurgy" /><!-- Zinc -->
 				<filler block="undergroundbiomes:%type%_stone_tile.nuclearcraft.ore.thorium"   metadata="%metadata%" ratio=".002" mods="nuclearcraft" /><!-- Thorium -->
 				<filler block="undergroundbiomes:%type%_stone_tile.nuclearcraft.ore.boron"     metadata="%metadata%" ratio=".004" mods="nuclearcraft" /><!-- Boron -->
 				<filler block="undergroundbiomes:%type%_stone_tile.nuclearcraft.ore.lithium"   metadata="%metadata%" ratio=".003" mods="nuclearcraft" /><!-- Lithium -->
@@ -157,9 +157,9 @@
 				<filler block="undergroundbiomes:%type%_arsmagica2:ores.2" metadata="%metadata%" ratio=".008" mods="arsmagica2" /><!-- Blue topaz -->
 				<filler block="undergroundbiomes:%type%_stone_draconicevolution_draconium_ore" metadata="%metadata%" ratio="0.004" mods="off,draconicevolution" /><!-- Draconium -->
 				<filler block="LanteaCraft:blockLanteaOre" metadata="1" ratio=".006" mods="LanteaCraft" /><!-- Naquadriah -->
-				<filler block="undergroundbiomes:%type%_metal.block.fantasy.ore.11" metadata="%metadata%" ratio=".006" mods="Metallurgy" /><!-- Orichalcum -->
-				<filler block="undergroundbiomes:%type%_metal.block.fantasy.ore.13" metadata="%metadata%" ratio=".004" mods="Metallurgy" /><!-- Adamantine -->
-				<filler block="undergroundbiomes:%type%_metal.block.fantasy.ore.14" metadata="%metadata%" ratio=".004" mods="Metallurgy" /><!-- Atlarus -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_orichalcum_ore"              metadata="%metadata%" ratio=".006" mods="metallurgy" /><!-- Orichalcum -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_adamantine_ore"              metadata="%metadata%" ratio=".004" mods="metallurgy" /><!-- Adamantine -->
+				<filler block="undergroundbiomes:%type%_stone_metallurgy_atlarus_ore"                 metadata="%metadata%" ratio=".004" mods="metallurgy" /><!-- Atlarus -->
 				<filler block="undergroundbiomes:%type%_stone_tile.nuclearcraft.ore.thorium"   metadata="%metadata%" ratio=".015" mods="nuclearcraft" /><!-- Thorium -->
 				<filler block="undergroundbiomes:%type%_stone_tile.nuclearcraft.ore.boron"     metadata="%metadata%" ratio=".030" mods="nuclearcraft" /><!-- Boron -->
 				<filler block="undergroundbiomes:%type%_stone_tile.nuclearcraft.ore.lithium"   metadata="%metadata%" ratio=".020" mods="nuclearcraft" /><!-- Lithium -->
