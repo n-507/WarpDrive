@@ -987,8 +987,8 @@ public class Commons {
 		if (worldDestination != entity.world) {
 			final World worldSource = entity.world;
 			final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-			final WorldServer worldServerFrom = server.getWorld(worldSource.provider.getDimension());
-			final WorldServer worldServerTo   = server.getWorld(worldDestination.provider.getDimension());
+			final WorldServer worldServerFrom = getOrCreateWorldServer(worldSource.provider.getDimension());
+			final WorldServer worldServerTo   = getOrCreateWorldServer(worldDestination.provider.getDimension());
 			final SpaceTeleporter teleporter = new SpaceTeleporter(worldServerTo, v3Destination);
 			
 			if (entity instanceof EntityPlayerMP) {
@@ -1017,6 +1017,10 @@ public class Commons {
 			try {
 				final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 				worldServer = server.getWorld(dimensionId);
+				if (worldServer.provider.getDimension() != dimensionId) {
+					throw new RuntimeException(String.format("Inconsistent dimension id %d, expecting %d",
+					                                         worldServer.provider.getDimension(), dimensionId ));
+				}
 			} catch (final Exception exception) {
 				WarpDrive.logger.error(String.format("%s: Failed to initialize dimension %d",
 				                                     exception.getMessage(),

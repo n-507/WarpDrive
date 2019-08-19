@@ -171,7 +171,7 @@ public class CommandSpace extends AbstractCommand {
 			}
 			
 			// get target world
-			final WorldServer worldTarget = server.getWorld(dimensionIdTarget);
+			final WorldServer worldTarget = Commons.getOrCreateWorldServer(dimensionIdTarget);
 			if (worldTarget == null) {
 				Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.undefined_dimension",
 				                                                                                             dimensionIdTarget).setStyle(Commons.styleWarning)));

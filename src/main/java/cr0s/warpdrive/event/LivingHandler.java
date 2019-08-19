@@ -197,6 +197,11 @@ public class LivingHandler {
 					WarpDrive.logger.error(String.format("Unable to initialize dimension %d for %s",
 					                                     celestialObjectChild.dimensionId,
 					                                     entityLivingBase));
+					// inform player then roll around to cooldown
+					Commons.addChatMessage( entityLivingBase,
+					                        new TextComponentTranslation("warpdrive.ship.guide.exception_loading_dimension",
+					                                                     celestialObjectChild.dimensionId ).setStyle(Commons.styleWarning));
+					entityLivingBase.setPositionAndUpdate(entityLivingBase.posX, 260.0D, entityLivingBase.posZ);
 				} else {
 					final VectorI vEntry = celestialObjectChild.getEntryOffset();
 					final double xTarget = entityLivingBase.posX + vEntry.x;

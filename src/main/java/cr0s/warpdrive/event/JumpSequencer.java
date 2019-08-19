@@ -870,12 +870,8 @@ public class JumpSequencer extends AbstractSequencer {
 			
 			// is world available?
 			final int dimensionIdSpace = celestialObject.dimensionId;
-			final MinecraftServer server = sourceWorld.getMinecraftServer();
-			assert server != null;
-			try {
-				targetWorld = server.getWorld(dimensionIdSpace);
-			} catch (final Exception exception) {
-				exception.printStackTrace();
+			targetWorld = Commons.getOrCreateWorldServer(dimensionIdSpace);
+			if (targetWorld == null) {
 				reason.append(Commons.styleWarning, "warpdrive.ship.guide.exception_loading_dimension",
 				              dimensionIdSpace);
 				return false;
@@ -899,12 +895,8 @@ public class JumpSequencer extends AbstractSequencer {
 			
 			// is world available?
 			final int dimensionIdHyperspace = celestialObjectSource.parent.dimensionId;
-			final MinecraftServer server = sourceWorld.getMinecraftServer();
-			assert server != null;
-			try {
-				targetWorld = server.getWorld(dimensionIdHyperspace);
-			} catch (final Exception exception) {
-				exception.printStackTrace();
+			targetWorld = Commons.getOrCreateWorldServer(dimensionIdHyperspace);
+			if (targetWorld == null) {
 				reason.append(Commons.styleWarning, "warpdrive.ship.guide.exception_loading_dimension",
 				              dimensionIdHyperspace);
 				return false;
@@ -938,12 +930,8 @@ public class JumpSequencer extends AbstractSequencer {
 			
 			// is world available?
 			final int dimensionIdSpace = celestialObjectSource.parent.dimensionId;
-			final MinecraftServer server = sourceWorld.getMinecraftServer();
-			assert server != null;
-			try {
-				targetWorld = server.getWorld(dimensionIdSpace);
-			} catch (final Exception exception) {
-				exception.printStackTrace();
+			targetWorld = Commons.getOrCreateWorldServer(dimensionIdSpace);
+			if (targetWorld == null) {
 				reason.append(Commons.styleWarning, "warpdrive.ship.guide.exception_loading_dimension",
 				              dimensionIdSpace);
 				return false;
@@ -984,12 +972,8 @@ public class JumpSequencer extends AbstractSequencer {
 			}
 			
 			// validate world availability
-			final MinecraftServer server = sourceWorld.getMinecraftServer();
-			assert server != null;
-			try {
-				targetWorld = server.getWorld(celestialObject.dimensionId);
-			} catch (final Exception exception) {
-				exception.printStackTrace();
+			targetWorld = Commons.getOrCreateWorldServer(celestialObject.dimensionId);
+			if (targetWorld == null) {
 				reason.append(Commons.styleWarning, "warpdrive.ship.guide.exception_loading_dimension",
 				              celestialObject.getDisplayName(), celestialObject.dimensionId);
 				return false;
