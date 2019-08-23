@@ -1,5 +1,6 @@
 package cr0s.warpdrive.render;
 
+import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.BlockAbstractOmnipanel;
 
@@ -17,7 +18,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 
 public class BakedModelOmnipanel extends BakedModelAbstractBase {
 	
-	protected IExtendedBlockState extendedBlockStateDefault;
+	private IExtendedBlockState extendedBlockStateDefault;
 	
 	public BakedModelOmnipanel() {
 		super();
@@ -30,13 +31,21 @@ public class BakedModelOmnipanel extends BakedModelAbstractBase {
 		assert bakedModelOriginal != null;
 		
 		final IExtendedBlockState extendedBlockState;
-		if (blockState == null) {// (probably an item form)
-			if (!(blockStateDefault instanceof IExtendedBlockState)) {
-				WarpDrive.logger.error(String.format("Invalid default blockstate %s for model %s",
-				                                     blockStateDefault, modelResourceLocation));
-				return bakedModelOriginal.getQuads(null, enumFacing, rand);
-			}
+		if ( blockState instanceof IExtendedBlockState
+		  && ((IExtendedBlockState) blockState).getValue(BlockAbstractOmnipanel.CAN_CONNECT_Y_NEG) != null ) {
+			extendedBlockState = (IExtendedBlockState) blockState;
+			
+		} else {
+			// first, ensure we've a fallback
 			if (extendedBlockStateDefault == null) {
+				if (!(blockStateDefault instanceof IExtendedBlockState)) {
+					if (Commons.throttleMe("BakedModelOmnipanel Invalid default")) {
+						WarpDrive.logger.error(String.format("Invalid default blockstate %s for model %s",
+						                                     blockStateDefault, modelResourceLocation));
+						(new RuntimeException()).printStackTrace();
+					}
+					return bakedModelOriginal.getQuads(null, enumFacing, rand);
+				}
 				extendedBlockStateDefault = ((IExtendedBlockState) blockStateDefault)
 						                            .withProperty(BlockAbstractOmnipanel.CAN_CONNECT_Y_NEG, false)
 						                            .withProperty(BlockAbstractOmnipanel.CAN_CONNECT_Y_POS, false)
@@ -57,15 +66,27 @@ public class BakedModelOmnipanel extends BakedModelAbstractBase {
 						                            .withProperty(BlockAbstractOmnipanel.HAS_ZN_YP, true)
 						                            .withProperty(BlockAbstractOmnipanel.HAS_ZP_YP, true);
 			}
-			extendedBlockState = extendedBlockStateDefault;
 			
-		} else if (!(blockState instanceof IExtendedBlockState)) {
-			WarpDrive.logger.error(String.format("Invalid non-extended blockstate %s for model %s",
-			                                     blockStateDefault, modelResourceLocation));
-			return bakedModelOriginal.getQuads(null, enumFacing, rand);
-			
-		} else {
-			extendedBlockState = (IExtendedBlockState) blockState;
+			if (blockState == null) {// (probably an item form)
+				extendedBlockState = extendedBlockStateDefault;
+				
+			} else if (!(blockState instanceof IExtendedBlockState)) {
+				if (Commons.throttleMe("BakedModelOmnipanel Invalid non-extended")) {
+					WarpDrive.logger.error(String.format("Invalid non-extended blockstate %s for model %s",
+					                                     blockStateDefault, modelResourceLocation));
+					(new RuntimeException()).printStackTrace();
+				}
+				return bakedModelOriginal.getQuads(null, enumFacing, rand);
+				
+			} else {// it's an extended state without values
+				if (Commons.throttleMe("BakedModelOmnipanel Invalid extended")) {
+					WarpDrive.logger.error(String.format("Invalid extended blockstate %s for model %s",
+					                                     blockStateDefault, modelResourceLocation));
+					(new RuntimeException()).printStackTrace();
+				}
+				extendedBlockState = extendedBlockStateDefault;
+				
+			}
 		}
 		
 		// get color
