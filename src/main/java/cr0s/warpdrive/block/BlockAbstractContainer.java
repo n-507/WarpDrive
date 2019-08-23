@@ -43,7 +43,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Random;
 
 @Optional.InterfaceList({
-	@Optional.Interface(iface = "defense.api.IEMPBlock", modid = "DefenseTech"),
+	@Optional.Interface(iface = "defense.api.IEMPBlock", modid = "defensetech"),
 })
 public abstract class BlockAbstractContainer extends BlockContainer implements IBlockBase, defense.api.IEMPBlock {
 	
@@ -284,19 +284,19 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	}
 	
 	@Override
-	@Optional.Method(modid = "DefenseTech")
+	@Optional.Method(modid = "defensetech")
 	public void onEMP(final World world, final int x, final int y, final int z, final defense.api.IExplosion explosiveEMP) {
 		if (WarpDriveConfig.LOGGING_WEAPON) {
 			WarpDrive.logger.info(String.format("EMP received %s from %s with energy %d and radius %.1f",
 			                                    Commons.format(world, x, y, z),
 			                                    explosiveEMP, explosiveEMP.getEnergy(), explosiveEMP.getRadius()));
 		}
-		// EMP tower = 3k Energy, 60 radius
 		// EMP explosive = 3k Energy, 50 radius
-		if (explosiveEMP.getRadius() == 60.0F) {// compensate tower stacking effect
-			onEMP(world, new BlockPos(x, y, z), 0.02F);
-		} else if (explosiveEMP.getRadius() == 50.0F) {
+		// EMP tower = 3k Energy, 60 radius adjustable
+		if (explosiveEMP.getRadius() == 50.0F) {
 			onEMP(world, new BlockPos(x, y, z), 0.70F);
+		} else if (explosiveEMP.getRadius() > 0.0F) {// compensate tower stacking effect
+			onEMP(world, new BlockPos(x, y, z), Math.min(1.0F, explosiveEMP.getRadius() / 60.0F) * 0.02F);
 		} else {
 			if (Commons.throttleMe("BlockAbstractContainer Invalid EMP radius")) {
 				WarpDrive.logger.warn(String.format("EMP received %s from %s with energy %d and unsupported radius %.1f",

@@ -8,9 +8,11 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 import net.minecraftforge.common.capabilities.Capability;
@@ -54,22 +56,24 @@ public class EMPReceiver implements IEMPReceiver, ICapabilityProvider {
 			return power;
 		}
 		
+		// directly access the exploder since ICBM has a stack-overflow on blastEMP.getBlastSource()
+		final Entity exploder = blastEMP instanceof Explosion ? ((Explosion) blastEMP).exploder : null;
 		if (WarpDriveConfig.LOGGING_WEAPON) {
 			WarpDrive.logger.info(String.format("EMP received %s from %s with source %s and radius %.1f",
 			                                    Commons.format(world, x, y, z),
-			                                    blastEMP, blastEMP.getBlastSource(), blastEMP.getBlastRadius()));
+			                                    blastEMP, exploder, blastEMP.getBlastRadius()));
 		}
-		// EMP tower = 3k Energy, 60 radius
 		// EMP explosive = 3k Energy, 50 radius
-		if (blastEMP.getBlastRadius() == 60.0F) {// compensate tower stacking effect
-			tileEntityAbstractBase.onEMP(0.02F);
-		} else if (blastEMP.getBlastRadius() == 50.0F) {
+		// EMP tower = 3k Energy, 60 radius adjustable
+		if (blastEMP.getBlastRadius() == 50.0F) {
 			tileEntityAbstractBase.onEMP(0.70F);
+		} else if (blastEMP.getBlastRadius() > 0.0F) {// compensate tower stacking effect
+			tileEntityAbstractBase.onEMP(Math.min(1.0F, blastEMP.getBlastRadius() / 60.0F) * 0.02F);
 		} else {
 			if (Commons.throttleMe("EMPReceiver Invalid radius")) {
 				WarpDrive.logger.warn(String.format("EMP received @ %s from %s with source %s and unsupported radius %.1f",
 				                                    Commons.format(world, x, y, z),
-				                                    blastEMP, blastEMP.getBlastSource(), blastEMP.getBlastRadius()));
+				                                    blastEMP, exploder, blastEMP.getBlastRadius()));
 				Commons.dumpAllThreads();
 			}
 			tileEntityAbstractBase.onEMP(0.02F);
