@@ -239,7 +239,7 @@ public class ChunkHandler {
 			if (chunkData != null) {
 				chunkData.onBlockUpdated(blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			} else {
-				if (WarpDriveConfig.LOGGING_WORLD_GENERATION) {
+				if (Commons.throttleMe("ChunkHandler block updating in non-loaded chunk")) {
 					WarpDrive.logger.error(String.format("%s block updating %s, while chunk isn't loaded!",
 					                                     world.isRemote ? "Client" : "Server",
 					                                     Commons.format(world, blockPos)));
@@ -256,11 +256,13 @@ public class ChunkHandler {
 	public static ChunkData getChunkData(final World world, final int x, final int y, final int z) {
 		final ChunkData chunkData = getChunkData(world.isRemote, world.provider.getDimension(), x, y, z);
 		if (chunkData == null) {
-			WarpDrive.logger.error(String.format("Trying to get data from an non-loaded chunk in %s %s",
-			                                     world.isRemote ? "Client" : "Server",
-			                                     Commons.format(world, x, y, z)));
-			LocalProfiler.printCallStats();
-			Commons.dumpAllThreads();
+			if (Commons.throttleMe("ChunkHandler get data from an non-loaded chunk")) {
+				WarpDrive.logger.error(String.format("Trying to get data from an non-loaded chunk in %s %s",
+				                                     world.isRemote ? "Client" : "Server",
+				                                     Commons.format(world, x, y, z)));
+				LocalProfiler.printCallStats();
+				Commons.dumpAllThreads();
+			}
 			assert false;
 		}
 		return chunkData;
@@ -310,7 +312,7 @@ public class ChunkHandler {
 			}
 			if (Commons.isSafeThread()) {
 				mapRegistryItems.put(index, chunkData);
-			} else {
+			} else if (Commons.throttleMe("ChunkHandler added to the registry outside main thread")) {
 				WarpDrive.logger.error(String.format("%s world DIM%d chunk %s is being added to the registry outside main thread!",
 				                                    isRemote ? "Client" : "Server",
 				                                    dimensionId,

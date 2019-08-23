@@ -71,6 +71,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -789,6 +790,17 @@ public class Commons {
 			return facing;
 		}
 		return EnumFacing.UP;
+	}
+	
+	private static final ConcurrentHashMap<String, Long> throttle_timePreviousForKey_ms = new ConcurrentHashMap<>(16);
+	public static boolean throttleMe(final String keyword) {
+		final Long timeLastLog_ms = throttle_timePreviousForKey_ms.getOrDefault(keyword, Long.MIN_VALUE);
+		final long timeCurrent_ms = System.currentTimeMillis();
+		if (timeCurrent_ms > timeLastLog_ms + WarpDriveConfig.LOGGING_THROTTLE_MS) {
+			throttle_timePreviousForKey_ms.put(keyword, timeCurrent_ms);
+			return true;
+		}
+		return false;
 	}
 	
 	public static boolean isSafeThread() {

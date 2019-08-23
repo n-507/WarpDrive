@@ -47,7 +47,6 @@ import java.util.Random;
 })
 public abstract class BlockAbstractContainer extends BlockContainer implements IBlockBase, defense.api.IEMPBlock {
 	
-	private static boolean isInvalidEMPreported = false;
 	private static long timeUpdated = -1L;
 	private static int dimensionIdUpdated = Integer.MAX_VALUE;
 	private static int xUpdated = Integer.MAX_VALUE;
@@ -299,8 +298,7 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 		} else if (explosiveEMP.getRadius() == 50.0F) {
 			onEMP(world, new BlockPos(x, y, z), 0.70F);
 		} else {
-			if (!isInvalidEMPreported) {
-				isInvalidEMPreported = true;
+			if (Commons.throttleMe("BlockAbstractContainer Invalid EMP radius")) {
 				WarpDrive.logger.warn(String.format("EMP received %s from %s with energy %d and unsupported radius %.1f",
 				                                    Commons.format(world, x, y, z),
 				                                    explosiveEMP, explosiveEMP.getEnergy(), explosiveEMP.getRadius()));

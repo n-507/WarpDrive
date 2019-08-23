@@ -1,5 +1,6 @@
 package cr0s.warpdrive.render;
 
+import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.energy.BlockCapacitor;
 import cr0s.warpdrive.data.EnumDisabledInputOutput;
@@ -21,8 +22,6 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 public class BakedModelCapacitor extends BakedModelAbstractBase {
 	
 	private IExtendedBlockState extendedBlockStateDefault;
-	
-	private long timeLastError = -1L;
 	
 	public BakedModelCapacitor() {
 	}
@@ -58,9 +57,7 @@ public class BakedModelCapacitor extends BakedModelAbstractBase {
 		if (extendedBlockState != null) {
 			final EnumDisabledInputOutput enumDisabledInputOutput = getEnumDisabledInputOutput(extendedBlockState, enumFacing);
 			if (enumDisabledInputOutput == null) {
-				final long time = System.currentTimeMillis();
-				if (time - timeLastError > 5000L) {
-					timeLastError = time;
+				if (Commons.throttleMe("BakedModelCapacitor invalid extended")) {
 					new RuntimeException("Invalid extended property").printStackTrace();
 					WarpDrive.logger.error(String.format("%s Invalid extended property for %s enumFacing %s\n%s",
 					                                     this, extendedBlockState, enumFacing, formatDetails()));

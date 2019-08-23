@@ -29,7 +29,6 @@ import icbm.classic.lib.emp.CapabilityEMP;
 public class EMPReceiver implements IEMPReceiver, ICapabilityProvider {
 	
 	public static final ResourceLocation resourceLocation = new ResourceLocation(WarpDrive.MODID, "EMPReceiver");
-	private static boolean isInvalidEMPReported = false;
 	
 	@SubscribeEvent
 	@Optional.Method(modid = "icbmclassic")
@@ -67,8 +66,7 @@ public class EMPReceiver implements IEMPReceiver, ICapabilityProvider {
 		} else if (blastEMP.getBlastRadius() == 50.0F) {
 			tileEntityAbstractBase.onEMP(0.70F);
 		} else {
-			if (!isInvalidEMPReported) {
-				isInvalidEMPReported = true;
+			if (Commons.throttleMe("EMPReceiver Invalid radius")) {
 				WarpDrive.logger.warn(String.format("EMP received @ %s from %s with source %s and unsupported radius %.1f",
 				                                    Commons.format(world, x, y, z),
 				                                    blastEMP, blastEMP.getBlastSource(), blastEMP.getBlastRadius()));

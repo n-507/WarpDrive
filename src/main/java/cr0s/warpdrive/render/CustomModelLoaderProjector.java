@@ -2,6 +2,8 @@ package cr0s.warpdrive.render;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+
+import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.forcefield.BlockForceFieldProjector;
 import cr0s.warpdrive.data.EnumForceFieldShape;
@@ -102,9 +104,7 @@ public enum CustomModelLoaderProjector implements ICustomModelLoader {
 	class MyBakedModel implements IBakedModel {
 		
 		private final IBakedModel bakedModel;
-		
-		private long timeLastError = -1L;
-		
+				
 		MyBakedModel(final IBakedModel bakedModel) {
 			this.bakedModel = bakedModel;
 			initSprites();
@@ -117,9 +117,7 @@ public enum CustomModelLoaderProjector implements ICustomModelLoader {
 			final IExtendedBlockState exState = (IExtendedBlockState) blockState;
 			EnumForceFieldShape enumForceFieldShape = exState != null ? exState.getValue(BlockForceFieldProjector.SHAPE) : EnumForceFieldShape.NONE;
 			if (enumForceFieldShape == null) {
-				final long time = System.currentTimeMillis();
-				if (time - timeLastError > 5000L) {
-					timeLastError = time;
+				if (Commons.throttleMe("CustomModelLoaderProjector Invalid shape")) {
 					new RuntimeException("Invalid shape").printStackTrace();
 					WarpDrive.logger.error(String.format("Invalid shape for %s facing %s",
 					                                     blockState, enumFacing));
