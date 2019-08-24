@@ -182,6 +182,7 @@ public class WarpDriveConfig {
 	public static float                G_BLAST_RESISTANCE_CAP = 60.0F;
 	
 	// Client
+	public static boolean              CLIENT_BREATHING_OVERLAY_FORCED = false;
 	public static float                CLIENT_LOCATION_SCALE = 1.0F;
 	public static String               CLIENT_LOCATION_FORMAT_TITLE = "§l%1$s";
 	public static int                  CLIENT_LOCATION_BACKGROUND_COLOR = Commons.colorARGBtoInt(64, 48, 48, 48);
@@ -790,6 +791,8 @@ public class WarpDriveConfig {
 				           "Maximum allowed blast resistance for non-hull, breakable blocks from other mods. Required to fix non-sense scaling in modded fluids, etc. Default is basic hull resistance (60).").getDouble(G_BLAST_RESISTANCE_CAP));
 		
 		// Client
+		CLIENT_BREATHING_OVERLAY_FORCED = config.get("client", "breathing_overlay_forced", CLIENT_BREATHING_OVERLAY_FORCED,
+		                                             "Force rendering the breathing overlay to compensate HUD modifications").getBoolean(false);
 		CLIENT_LOCATION_SCALE = Commons.clamp(0.25F, 4.0F, (float) config.get("client", "location_scale", CLIENT_LOCATION_SCALE,
 		                                   "Scale for location text font").getDouble() );
 		

@@ -3,11 +3,10 @@ package cr0s.warpdrive.render;
 import cr0s.warpdrive.BreathingManager;
 import cr0s.warpdrive.api.ExceptionChunkNotLoaded;
 import cr0s.warpdrive.block.breathing.BlockAirShield;
+import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.CelestialObject;
 import cr0s.warpdrive.data.StateAir;
-
-import javax.annotation.Nonnull;
 
 import javax.annotation.Nonnull;
 
@@ -26,8 +25,6 @@ import net.minecraft.world.World;
 
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -46,6 +43,9 @@ public class RenderOverlayAir {
 		// get player
 		final EntityPlayer entityPlayer = minecraft.player;
 		if (entityPlayer == null) {
+			return;
+		}
+		if (entityPlayer.isCreative()) {
 			return;
 		}
 		final int x = MathHelper.floor(entityPlayer.posX);
@@ -182,10 +182,36 @@ public class RenderOverlayAir {
 		    && !BreathingManager.isAirBlock(blockState.getBlock());
 	}
 	
+	private boolean wasRendered;
 	@SubscribeEvent
 	public void onRender(@Nonnull final RenderGameOverlayEvent.Pre event) {
-		if (event.getType() == ElementType.AIR) {
+		switch (event.getType()) {
+		case ALL:
+			wasRendered = false;
+			break;
+		case AIR:
 			renderAir(event.getResolution().getScaledWidth(), event.getResolution().getScaledHeight());
+			wasRendered = true;
+			break;
+		case CHAT:
+			if ( !wasRendered
+			  && WarpDriveConfig.CLIENT_BREATHING_OVERLAY_FORCED ) {
+				renderAir(event.getResolution().getScaledWidth(), event.getResolution().getScaledHeight());
+				wasRendered = true;
+			}
+			break;
+		}
+	}
+	
+	@SubscribeEvent
+	public void onRender(@Nonnull final RenderGameOverlayEvent.Post event) {
+		switch (event.getType()) {
+		case ALL:
+			if ( !wasRendered
+			  && WarpDriveConfig.CLIENT_BREATHING_OVERLAY_FORCED ) {
+				renderAir(event.getResolution().getScaledWidth(), event.getResolution().getScaledHeight());
+			}
+			break;
 		}
 	}
 }
