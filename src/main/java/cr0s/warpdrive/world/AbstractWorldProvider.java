@@ -9,6 +9,7 @@ import cr0s.warpdrive.render.RenderSpaceSky;
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -46,6 +47,17 @@ public abstract class AbstractWorldProvider extends WorldProvider {
 			                                         isRemote ? "client" : "server", getDimension()));
 		}
 		return celestialObjectDimension.id;
+	}
+	
+	@Override
+	public boolean isDaytime() {
+		return true;
+	}
+	
+	@Nonnull
+	@Override
+	public WorldSleepResult canSleepAt(final EntityPlayer player, @Nonnull final BlockPos blockPos) {
+		return WorldSleepResult.ALLOW;
 	}
 	
 	@Override
