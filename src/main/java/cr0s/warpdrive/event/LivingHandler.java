@@ -34,8 +34,10 @@ import net.minecraft.world.WorldServer;
 
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class LivingHandler {
@@ -346,6 +348,14 @@ public class LivingHandler {
 					}
 				}
 			}
+		}
+	}
+	
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	void onLivingDeath(@Nonnull final LivingDeathEvent event) {
+		final EntityLivingBase entityLivingBase = event.getEntityLiving();
+		if (entityLivingBase != null) {
+			BreathingManager.onEntityLivingDeath(entityLivingBase);
 		}
 	}
 }

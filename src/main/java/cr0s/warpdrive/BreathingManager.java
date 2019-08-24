@@ -112,9 +112,8 @@ public class BreathingManager {
 		}
 		
 		final boolean notInVacuum = vAirBlock != null;
-		Integer air;
+		Integer air = entity_airBlock.get(uuidEntity);
 		if (notInVacuum) {// no atmosphere with air blocks
-			air = entity_airBlock.get(uuidEntity);
 			if (air == null) {
 				entity_airBlock.put(uuidEntity, AIR_BLOCK_TICKS);
 			} else if (air <= 1) {// time elapsed => consume air block
@@ -124,14 +123,22 @@ public class BreathingManager {
 			}
 			
 		} else {// no atmosphere without air blocks
-			// finish air from blocks
-			air = entity_airBlock.get(uuidEntity);
-			if (air != null && air > 0) {
-				entity_airBlock.put(uuidEntity, air - 1);
-				return;
-			} else if (air == null) {
+			// add grace period on first breath
+			if (air == null) {
 				entity_airBlock.put(uuidEntity, AIR_FIRST_BREATH_TICKS);
 				return;
+			}
+			// players have a grace period when exiting breathable area
+			// others just finish air from blocks
+			if (air > 0) {
+				if (entityLivingBase instanceof EntityPlayerMP) {
+					entity_airBlock.put(uuidEntity, 0);
+					player_airTank.put(uuidEntity, AIR_FIRST_BREATH_TICKS);
+					return;
+				} else {
+					entity_airBlock.put(uuidEntity, air - 1);
+					return;
+				} 
 			}
 			
 			// damage entity if in vacuum without protection
@@ -459,5 +466,9 @@ public class BreathingManager {
 		
 		// first air breath is free
 		return airCanister.getAirTicksPerConsumption(itemStackAirCanister);
+	}
+	
+	public static void onEntityLivingDeath(@Nonnull final EntityLivingBase entityLivingBase) {
+		entity_airBlock.remove(entityLivingBase.getUniqueID());
 	}
 }
