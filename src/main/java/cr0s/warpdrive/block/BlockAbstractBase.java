@@ -225,8 +225,8 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 			return true;
 			
 		} else if ( !world.isRemote
-		            && tileEntityAbstractBase instanceof TileEntityAbstractMachine
-		            && itemStackHeld.getItem() == Item.getItemFromBlock(Blocks.REDSTONE_TORCH) ) {// redstone torch on a machine to toggle it on/off
+		         && tileEntityAbstractBase instanceof TileEntityAbstractMachine
+		         && itemStackHeld.getItem() == Item.getItemFromBlock(Blocks.REDSTONE_TORCH) ) {// redstone torch on a machine to toggle it on/off
 			final TileEntityAbstractMachine tileEntityAbstractMachine = (TileEntityAbstractMachine) tileEntityAbstractBase;
 			tileEntityAbstractMachine.setIsEnabled(!tileEntityAbstractMachine.getIsEnabled());
 			Commons.addChatMessage(entityPlayer, tileEntityAbstractBase.getStatus());

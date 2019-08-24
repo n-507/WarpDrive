@@ -724,7 +724,7 @@ warpdrive.upgrade.result.not_enough_shapes.single=You need at least 1 item to se
 warpdrive.upgrade.result.shape_dismounted=Shape dismounted successfully.
 warpdrive.upgrade.result.shape_mounted=Shape mounted successfully.
 
-warpdrive.upgrade.status_line.none=§7No upgrade installed.
+warpdrive.upgrade.status_line.none=No upgrade installed.
 warpdrive.upgrade.status_line.valid=Upgraded with %1$s.
 
 warpdrive.video_channel.tooltip=Видеоканал установлен на %1$d.

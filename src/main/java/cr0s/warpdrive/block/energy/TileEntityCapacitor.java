@@ -16,6 +16,7 @@ import net.minecraft.util.EnumFacing;
 
 public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 	
+	// global properties
 	private static final String TAG_MODE_SIDE = "modeSide";
 	
 	private static final EnumDisabledInputOutput[] MODE_DEFAULT_SIDES = {

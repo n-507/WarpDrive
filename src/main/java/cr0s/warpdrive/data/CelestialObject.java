@@ -8,6 +8,9 @@ import cr0s.warpdrive.config.RandomCollection;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.config.XmlFileManager;
 import cr0s.warpdrive.config.structures.StructureGroup;
+
+import javax.annotation.Nonnull;
+
 import org.w3c.dom.Element;
 
 import java.util.LinkedHashSet;
@@ -109,6 +112,7 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 		readFromNBT(tagCompound);
 	}
 	
+	@Nonnull
 	@Override
 	public String getName() {
 		return id;
@@ -758,7 +762,7 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 	}
 	
 	
-	public class ColorData {
+	public static class ColorData {
 		
 		public float red;
 		public float green;
@@ -802,7 +806,7 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 		}
 	}
 	
-	public class RenderData {
+	public static class RenderData {
 		
 		public float red;
 		public float green;
@@ -875,7 +879,7 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 			blue = tagCompound.getFloat("blue");
 			alpha = tagCompound.getFloat("alpha");
 			texture = tagCompound.getString("texture");
-			if (texture == null || texture.isEmpty()) {
+			if (texture.isEmpty()) {
 				texture = null;
 				resourceLocation = null;
 				periodU = 1.0D;

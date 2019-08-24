@@ -723,7 +723,7 @@ warpdrive.upgrade.result.not_enough_shapes.single=至少需要1個項目來設�
 warpdrive.upgrade.result.shape_dismounted=已成功卸載形狀。
 warpdrive.upgrade.result.shape_mounted=形狀已成功安裝。
 
-warpdrive.upgrade.status_line.none=§7未安裝升級。
+warpdrive.upgrade.status_line.none=未安裝升級。
 warpdrive.upgrade.status_line.valid=已升級 %1$s.
 
 warpdrive.video_channel.tooltip=視頻頻道設置為 %1$d.

@@ -10,6 +10,7 @@ import cr0s.warpdrive.data.VectorI;
 import cr0s.warpdrive.event.ChunkHandler;
 import cr0s.warpdrive.data.EnergyWrapper;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -37,9 +38,10 @@ public class BreathingManager {
 	
 	private static final int AIR_ENERGY_FOR_ELECTROLYSE = 2000;
 	
-	private static final VectorI[] vAirOffsets = { new VectorI(0, 0, 0), new VectorI(0, 1, 0),
-		new VectorI(0, 1, 1), new VectorI(0, 1, -1), new VectorI(1, 1, 0), new VectorI(1, 1, 0),
-		new VectorI(0, 0, 1), new VectorI(0, 0, -1), new VectorI(1, 0, 0), new VectorI(1, 0, 0) };
+	private static final VectorI[] vAirOffsets = {
+			new VectorI(0, 0, 0), new VectorI(0, 1, 0),
+			new VectorI(0, 1, 1), new VectorI(0, 1, -1), new VectorI(1, 1, 0), new VectorI(1, 1, 0),
+			new VectorI(0, 0, 1), new VectorI(0, 0, -1), new VectorI(1, 0, 0), new VectorI(1, 0, 0) };
 	
 	private static final HashMap<UUID, Integer> entity_airBlock = new HashMap<>();
 	private static final HashMap<UUID, Integer> player_airTank = new HashMap<>();
@@ -55,8 +57,9 @@ public class BreathingManager {
 		return false;
 	}
 	
-	public static boolean isAirBlock(final Block block) {
-		return block == WarpDrive.blockAirSource || block == WarpDrive.blockAirFlow;
+	public static boolean isAirBlock(@Nonnull final Block block) {
+		return block == WarpDrive.blockAirSource
+		    || block == WarpDrive.blockAirFlow;
 	}
 	
 	public static boolean onLivingJoinEvent(final EntityLivingBase entityLivingBase, final int x, final int y, final int z) {
@@ -95,7 +98,7 @@ public class BreathingManager {
 			final VectorI vPosition = new VectorI(x + vOffset.x, y + vOffset.y, z + vOffset.z);
 			blockState = vPosition.getBlockState(entityLivingBase.world);
 			block = blockState.getBlock();
-			if (block == WarpDrive.blockAirSource || block == WarpDrive.blockAirFlow) {
+			if (isAirBlock(block)) {
 				vAirBlock = vPosition;
 				break;
 			} else if (block != Blocks.AIR) {
@@ -271,7 +274,7 @@ public class BreathingManager {
 		return 0;
 	}
 	
-	public static boolean hasValidSetup(final EntityLivingBase entityLivingBase) {
+	public static boolean hasValidSetup(@Nonnull final EntityLivingBase entityLivingBase) {
 		final ItemStack itemStackHelmet = entityLivingBase.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 		if (entityLivingBase instanceof EntityPlayer) {
 			final ItemStack itemStackChestplate = entityLivingBase.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
@@ -299,7 +302,7 @@ public class BreathingManager {
 		return false;
 	}
 	
-	public static float getAirReserveRatio(final EntityPlayer entityPlayer) {
+	public static float getAirReserveRatio(@Nonnull final EntityPlayer entityPlayer) {
 		final NonNullList<ItemStack> playerInventory = entityPlayer.inventory.mainInventory;
 		
 		// check electrolysing

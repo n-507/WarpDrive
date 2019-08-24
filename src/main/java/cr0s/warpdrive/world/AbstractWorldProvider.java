@@ -121,7 +121,7 @@ public abstract class AbstractWorldProvider extends WorldProvider {
 	@SideOnly(Side.CLIENT)
 	@Nonnull
 	@Override
-	public Vec3d getFogColor(float celestialAngle, final float par2) {
+	public Vec3d getFogColor(final float celestialAngle, final float par2) {
 		final float factor = Commons.clamp(0.0F, 1.0F, MathHelper.cos(celestialAngle * (float) Math.PI * 2.0F) * 2.0F + 0.5F);
 		
 		float red   = celestialObject == null ? 0.0F : celestialObject.colorFog.red;

@@ -355,7 +355,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		return message;
 	}
 	
-	public final WarpDriveText getStatus(final ItemStack itemStack, final IBlockState blockState) {
+	public final WarpDriveText getStatus(@Nonnull final ItemStack itemStack, @Nonnull final IBlockState blockState) {
 		// (this is a temporary object to compute status)
 		// get tier from ItemStack
 		final Block block = blockState.getBlock();

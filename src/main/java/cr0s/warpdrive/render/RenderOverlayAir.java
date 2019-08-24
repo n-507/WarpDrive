@@ -4,6 +4,8 @@ import cr0s.warpdrive.BreathingManager;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.CelestialObject;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -25,7 +27,7 @@ public class RenderOverlayAir {
 	
 	private static final int WARNING_ON_JOIN_TICKS = 20 * 20;
 	
-	private static Minecraft minecraft = Minecraft.getMinecraft();
+	private static final Minecraft minecraft = Minecraft.getMinecraft();
 	
 	private static float ratioPreviousAir = 1.0F;
 	private static long timePreviousAir = 0;
@@ -124,7 +126,7 @@ public class RenderOverlayAir {
 	}
 	
 	@SubscribeEvent
-	public void onRender(final RenderGameOverlayEvent.Pre event) {
+	public void onRender(@Nonnull final RenderGameOverlayEvent.Pre event) {
 		if (event.getType() == ElementType.AIR) {
 			renderAir(event.getResolution().getScaledWidth(), event.getResolution().getScaledHeight());
 		}

@@ -163,7 +163,7 @@ item.warpdrive.upgrade.Energy.name=Energie Upgrade
 
 item.warpdrive.tool.ship_token.name=Schiffes token
 item.warpdrive.tool.ship_token.tooltip.usage=Token exchangeable for ship '%1$s'\n§bEnter a builder's field§r to claim it
-item.warpdrive.tool.ship_token.tooltip_legacyTranslation=Kristall Kapsel des Schiffes '%1$s'\n§bBetritt das Scanner Feld§r um das Schiff zu bauen.
+item.warpdrive.tool.ship_token.tooltip.usage-legacyTranslation=Kristall Kapsel des Schiffes '%1$s'\n§bBetritt das Scanner Feld§r um das Schiff zu bauen.
 item.warpdrive.tool.ship_token0.name=Schiffes token #0
 item.warpdrive.tool.ship_token1.name=Schiffes token #1
 item.warpdrive.tool.ship_token2.name=Schiffes token #2
@@ -724,7 +724,7 @@ warpdrive.upgrade.result.not_enough_shapes.single=Du brauchst mindestens 1 Item 
 warpdrive.upgrade.result.shape_dismounted=Form erfolgreich deinstalliert.
 warpdrive.upgrade.result.shape_mounted=Form erfolgreich installiert.
 
-warpdrive.upgrade.status_line.none=§7Kein Upgrade installiert.
+warpdrive.upgrade.status_line.none=Kein Upgrade installiert.
 warpdrive.upgrade.status_line.valid=%1$s Upgrade installiert.
 
 warpdrive.video_channel.tooltip=Videokanal auf %1$d gestellt.

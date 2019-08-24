@@ -91,16 +91,16 @@ public class RenderOverlayCamera {
 		if (ClientCameraHandler.isOverlayEnabled) {
 			if (event.getType() == ElementType.HELMET) {
 				renderOverlay(event.getResolution().getScaledWidth(), event.getResolution().getScaledHeight());
-			} else if (event.getType() == ElementType.AIR
-					|| event.getType() == ElementType.ARMOR
-					|| event.getType() == ElementType.BOSSHEALTH
-					|| event.getType() == ElementType.CROSSHAIRS
-					|| event.getType() == ElementType.EXPERIENCE
-					|| event.getType() == ElementType.FOOD
-					|| event.getType() == ElementType.HEALTH
-					|| event.getType() == ElementType.HEALTHMOUNT
-					|| event.getType() == ElementType.HOTBAR
-					|| event.getType() == ElementType.TEXT) {
+			} else if ( event.getType() == ElementType.AIR
+			         || event.getType() == ElementType.ARMOR
+			         || event.getType() == ElementType.BOSSHEALTH
+			         || event.getType() == ElementType.CROSSHAIRS
+			         || event.getType() == ElementType.EXPERIENCE
+			         || event.getType() == ElementType.FOOD
+			         || event.getType() == ElementType.HEALTH
+			         || event.getType() == ElementType.HEALTHMOUNT
+			         || event.getType() == ElementType.HOTBAR
+			         || event.getType() == ElementType.TEXT ) {
 				// Don't render other GUI parts
 				if (event.isCancelable()) {
 					event.setCanceled(true);

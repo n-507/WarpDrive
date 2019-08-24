@@ -724,7 +724,7 @@ warpdrive.upgrade.result.not_enough_shapes.single=Je hebt tenminste 1 items nodi
 warpdrive.upgrade.result.shape_dismounted=Vorm succesvol uitgeschakeld.
 warpdrive.upgrade.result.shape_mounted=Vorm succesvol geplaatst.
 
-warpdrive.upgrade.status_line.none=§7Geen upgrade geinstalleerd.
+warpdrive.upgrade.status_line.none=Geen upgrade geinstalleerd.
 warpdrive.upgrade.status_line.valid=Geupgrade met1$s.
 
 warpdrive.video_channel.tooltip=Videokanaal is gezet naar %1$d.

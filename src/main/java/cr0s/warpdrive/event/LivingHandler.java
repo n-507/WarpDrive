@@ -13,6 +13,7 @@ import cr0s.warpdrive.data.StateAir;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
@@ -78,7 +79,7 @@ public class LivingHandler {
 	}
 	
 	@SubscribeEvent
-	public void onLivingUpdate(final LivingUpdateEvent event) {
+	public void onLivingUpdate(@Nonnull final LivingUpdateEvent event) {
 		if (event.getEntityLiving() == null || event.getEntityLiving().world.isRemote) {
 			return;
 		}
@@ -250,7 +251,7 @@ public class LivingHandler {
 	}
 	
 	@SubscribeEvent
-	public void onLivingFall(final LivingFallEvent event) {
+	public void onLivingFall(@Nonnull final LivingFallEvent event) {
 		// player in the overworld falling from
 		// 3 blocks high is motionY = -0,6517088xxx
 		// 4 blocks high is motionY = -0,717
@@ -319,7 +320,7 @@ public class LivingHandler {
 	}
 	
 	@SubscribeEvent
-	public void onEnderTeleport(final EnderTeleportEvent event) {
+	public void onEnderTeleport(@Nonnull final EnderTeleportEvent event) {
 		if ( event.getEntityLiving() == null
 		  || event.getEntityLiving().world.isRemote ) {
 			return;

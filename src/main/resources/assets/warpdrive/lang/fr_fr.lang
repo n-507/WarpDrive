@@ -724,7 +724,7 @@ warpdrive.upgrade.result.not_enough_shapes.single=Il faut au moins 1 object pour
 warpdrive.upgrade.result.shape_dismounted=Forme démontée correctement.
 warpdrive.upgrade.result.shape_mounted=Forme montée correctement.
 
-warpdrive.upgrade.status_line.none=§7Pas d'augmentation installée.
+warpdrive.upgrade.status_line.none=Pas d'augmentation installée.
 warpdrive.upgrade.status_line.valid=Augmenté avec %1$s.
 
 warpdrive.video_channel.tooltip=Canal vidéo ajusté à %1$d.

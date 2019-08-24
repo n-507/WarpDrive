@@ -27,6 +27,7 @@ import net.minecraft.world.World;
 
 public class TileEntityCloakingCore extends TileEntityAbstractEnergyCoreOrController {
 	
+	// global properties
 	private static final int CLOAKING_CORE_SOUND_UPDATE_TICKS = 40;
 	private static final int DISTANCE_INNER_COILS_BLOCKS = 2;
 	private static final int LASER_REFRESH_TICKS = 100;

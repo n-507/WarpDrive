@@ -68,10 +68,10 @@ item.warpdrive.component.raw_carbon_fiber.name=Raw Carbon fiber
 item.warpdrive.component.raw_carbon_mesh.name=Raw Carbon Mesh
 item.warpdrive.component.carbon_fiber.name=Carbon Fiber
 
-item.warpdrive.armor.helmet.legacy_name=曲率头盔
-item.warpdrive.armor.chestplate.legacy_name=曲率胸甲
-item.warpdrive.armor.leggings.legacy_name=曲率护腿
-item.warpdrive.armor.boots.legacy_name=曲率战靴
+item.warpdrive.armor.helmet.name-legacyTranslation=曲率头盔
+item.warpdrive.armor.chestplate.name-legacyTranslation=曲率胸甲
+item.warpdrive.armor.leggings.name-legacyTranslation=曲率护腿
+item.warpdrive.armor.boots.name-legacyTranslation=曲率战靴
 item.warpdrive.armor.basic.helmet.name=Emergency Helmet
 item.warpdrive.armor.basic.chestplate.name=Emergency Chestplate
 item.warpdrive.armor.basic.leggings.name=Emergency Leggings
@@ -85,7 +85,7 @@ item.warpdrive.armor.superior.chestplate.name=Warp Chestplate
 item.warpdrive.armor.superior.leggings.name=Warp Leggings
 item.warpdrive.armor.superior.boots.name=Warp Boots
 
-legacyname.item.warpdrive.atomic.electromagnetic_cell.name=电磁电池
+item.warpdrive.atomic.electromagnetic_cell.name-legacyTranslation=电磁电池
 item.warpdrive.atomic.electromagnetic_cell.basic.name=Basic Electromagnetic cell
 item.warpdrive.atomic.electromagnetic_cell.advanced.name=Advanced Electromagnetic cell
 item.warpdrive.atomic.electromagnetic_cell.superior.name=Superior Electromagnetic cell
@@ -729,7 +729,7 @@ warpdrive.upgrade.result.not_enough_shapes.single=你需要至少一个物品去
 warpdrive.upgrade.result.shape_dismounted=模型卸载成功.
 warpdrive.upgrade.result.shape_mounted=模型加载成功.
 
-warpdrive.upgrade.status_line.none=§7没有安装升级
+warpdrive.upgrade.status_line.none=没有安装升级
 warpdrive.upgrade.status_line.valid=用升级%1$s.
 
 warpdrive.video_channel.tooltip-tbc=频道设置为%1$d.

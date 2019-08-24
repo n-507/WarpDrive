@@ -1002,6 +1002,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		return false;
 	}
 	
+	@Nonnull
 	private WarpDriveText getShapeStatus() {
 		final EnumForceFieldShape enumForceFieldShape = getShape();
 		final WarpDriveText displayName = new WarpDriveText(null, "warpdrive.force_field.shape.status_line." + enumForceFieldShape.getName());
@@ -1270,7 +1271,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		return super.CC_callMethod(methodName, arguments);
 	}
 	
-	private class ThreadCalculation extends Thread {
+	private static class ThreadCalculation extends Thread {
 		
 		private final WeakReference<TileEntityForceFieldProjector> weakProjector;
 		private final String stringProjector;
