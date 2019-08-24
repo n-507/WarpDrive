@@ -400,6 +400,9 @@ public class JumpBlock {
 						CompatForgeMultipart.methodMultipartHelper_sendDescPacket.invoke(null, worldTarget, newTileEntity);
 					}
 					
+					// see https://github.com/MinecraftForge/MinecraftForge/issues/5061
+					newTileEntity.onLoad();
+					
 					newTileEntity.markDirty();
 				}
 			}
