@@ -771,6 +771,13 @@ public class Recipes {
 		                                       'a', WarpDrive.itemWarpArmor[EnumTier.ADVANCED.getIndex()][EntityEquipmentSlot.FEET.getIndex()],
 		                                       'm', "plateCarbon" ));
 		
+		// Wrench
+		WarpDrive.register(new ShapedOreRecipe(groupTools,
+		                                       WarpDrive.itemWrench, false, "n n", "nin", " m ",
+		                                       'm', "itemRubber",
+		                                       'i', "ingotIron",
+		                                       'n', "nuggetIron" ));
+		
 		// Tuning fork variations
 		for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
 			final int damageColor = enumDyeColor.getDyeDamage();
