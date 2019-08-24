@@ -37,7 +37,7 @@
 		<!--
 		  dimension defines an actual game world. If it's missing, that celestialObject remains visible but you can't "land" on it.  
 		  dimension.id: this is the id of the dimension. 0 is the Overworld, -1 is the Nether, 1 is the End.
-		  dimension.isBreathable: this is a boolean flag defining if ambient atmosphere is breathable.
+		  dimension.isBreathable: this is a boolean flag defining if ambient atmosphere is breathable. This only applies to planets; space and hyperspace are always non-breathable, obviously.
 		  dimension.isHyperspace: this is a boolean flag defining if this an hyperspace dimension. 
 		  dimension.gravity: this is the gravity simulation type. Valid keywords are 'none' (0.0), 'legacySpace', 'legacyHyperspace', 'normal' (1.0) or any value between 0 and 1.
 		  dimension.center.x, dimension.center.z: those are the center coordinate of that dimension world border, measured in blocks. For convenience, it's usually 0, 0.
