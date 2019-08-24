@@ -5,24 +5,26 @@ import cr0s.warpdrive.api.ITransformation;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.BlockAbstractBase;
 import cr0s.warpdrive.block.BlockAbstractContainer;
+import cr0s.warpdrive.block.BlockAbstractRotatingContainer;
 import cr0s.warpdrive.block.breathing.BlockAirFlow;
-import cr0s.warpdrive.block.breathing.BlockAirGeneratorTiered;
 import cr0s.warpdrive.block.breathing.BlockAirSource;
 import cr0s.warpdrive.block.decoration.BlockAbstractLamp;
-import cr0s.warpdrive.block.detection.BlockMonitor;
 import cr0s.warpdrive.block.forcefield.BlockForceFieldProjector;
 import cr0s.warpdrive.block.hull.BlockHullSlab;
-import cr0s.warpdrive.block.movement.BlockShipCore;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.ChunkData;
 import cr0s.warpdrive.data.StateAir;
 import cr0s.warpdrive.event.ChunkHandler;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -34,8 +36,7 @@ public class CompatWarpDrive implements IBlockTransformer {
 	
 	@Override
 	public boolean isApplicable(final Block block, final int metadata, final TileEntity tileEntity) {
-		return block instanceof BlockHullSlab
-		    || block instanceof BlockAbstractBase
+		return block instanceof BlockAbstractBase
 		    || block instanceof BlockAbstractContainer;
 	}
 	
@@ -119,26 +120,56 @@ public class CompatWarpDrive implements IBlockTransformer {
 			}
 		}
 		
-		// Monitor and lamps
-		if ( block instanceof BlockAirSource
-		  || block instanceof BlockMonitor
-		  || block instanceof BlockAbstractLamp ) {
-			switch (rotationSteps) {
-			case 1:
-				return mrotDirection[metadata];
-			case 2:
-				return mrotDirection[mrotDirection[metadata]];
-			case 3:
-				return mrotDirection[mrotDirection[mrotDirection[metadata]]];
-			default:
-				return metadata;
+		if (nbtTileEntity != null) {
+			// subspace capacitor sides
+			if (nbtTileEntity.hasKey("modeSide")) {
+				nbtTileEntity.setByteArray("modeSide", rotate_byteArray(rotationSteps, nbtTileEntity.getByteArray("modeSide")));
+			}
+			
+			// reactor stabilization laser
+			if ( nbtTileEntity.hasKey("reactorFace")
+			  && rotationSteps != 0 ) {
+				final String reactorFaceOriginal = nbtTileEntity.getString("reactorFace");
+				final Pattern patternFacing = Pattern.compile("(laser\\.[a-z]+\\.)([a-z]+)([+-]*)");
+				final Matcher matcher = patternFacing.matcher(reactorFaceOriginal);
+				if (!matcher.matches()) {
+					throw new RuntimeException(String.format("Failed to parse reactor facing %s: unrecognized format",
+					                                         reactorFaceOriginal));
+				}
+				
+				final String prefix = matcher.group(1);
+				final String nameFacing = matcher.group(2);
+				final String suffix = matcher.group(3);
+				
+				EnumFacing enumFacing = EnumFacing.byName(nameFacing);
+				if (enumFacing == null) {
+					throw new RuntimeException(String.format("Failed to parse reactor facing %s: unrecognized facing %s",
+					                                         reactorFaceOriginal, nameFacing));
+				}
+				switch (rotationSteps) {
+				case 1:
+					enumFacing = enumFacing.rotateY();
+					break;
+				case 2:
+					enumFacing = enumFacing.rotateY().rotateY();
+					break;
+				case 3:
+					enumFacing = enumFacing.rotateY().rotateY().rotateY();
+					break;
+				default:
+					assert false;
+					break;
+				}
+				
+				final String reactorFaceUpdated = prefix + enumFacing.name().toLowerCase() + suffix; 
+				nbtTileEntity.setString("reactorFace", reactorFaceUpdated);
 			}
 		}
 		
-		// Force field projector
-		if ( block instanceof BlockAirGeneratorTiered
-		  || block instanceof BlockForceFieldProjector
-		  || block instanceof BlockShipCore ) {
+		// Rotating blocks
+		if ( block instanceof BlockAbstractRotatingContainer
+		  || block instanceof BlockAbstractLamp
+		  || block instanceof BlockForceFieldProjector ) {
 			switch (rotationSteps) {
 			case 1:
 				return mrotDirection[metadata & 0x7] | (metadata & 0x8);
@@ -151,10 +182,6 @@ public class CompatWarpDrive implements IBlockTransformer {
 			}
 		}
 		
-		// subspace capacitor sides
-		if (nbtTileEntity != null && nbtTileEntity.hasKey("modeSide")) {
-			nbtTileEntity.setByteArray("modeSide", rotate_byteArray(rotationSteps, nbtTileEntity.getByteArray("modeSide")));
-		}
 		return metadata;
 	}
 	

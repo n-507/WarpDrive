@@ -82,23 +82,16 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	}
 	
 	public void setReactorFace(@Nonnull final ReactorFace reactorFace, final TileEntityEnanReactorCore reactorCore) {
-		// skip if it's already set to another reactor
+		// skip if it's already set to another valid reactor core
 		if ( this.reactorFace != reactorFace
 		  && this.reactorFace != ReactorFace.UNKNOWN ) {
-			return;
+			if (getReactorCore() != null) {
+				return;
+			}
 		}
 		
 		// always update cached signature name
 		reactorSignatureName = reactorCore != null ? reactorCore.getSignatureName() : "";
-		
-		// skip if it's already set to save resources
-		if (this.reactorFace == reactorFace) {
-			return;
-		}
-		
-		// update properties
-		this.reactorFace = reactorFace;
-		this.weakReactorCore = reactorCore != null && reactorFace != ReactorFace.UNKNOWN ? new WeakReference<>(reactorCore) : null;
 		
 		// refresh blockstate
 		final IBlockState blockState_old = world.getBlockState(pos);
@@ -111,6 +104,15 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 			                               .withProperty(BlockProperties.FACING, EnumFacing.DOWN);
 		}
 		updateBlockState(blockState_old, blockState_new);
+		
+		// skip if it's already set to save resources
+		if (this.reactorFace == reactorFace) {
+			return;
+		}
+		
+		// update properties
+		this.reactorFace = reactorFace;
+		this.weakReactorCore = reactorCore != null && reactorFace != ReactorFace.UNKNOWN ? new WeakReference<>(reactorCore) : null;
 		
 		// cache reactor coordinates
 		if (reactorCore != null) {
@@ -136,6 +138,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 				                                     this,
 				                                     Commons.format(world, pos),
 				                                     tileEntity));
+				reactorFace = ReactorFace.UNKNOWN;
 			}
 		}
 		return reactorCore;
