@@ -39,8 +39,9 @@ local radius = tonumber(argv[1])
 if radius < 1 or radius > 10000 then
   showErrorAndExit("Radius must be between 1 and 10000")
 end
+radar.radius(radius)
 
-local success, result = radar.getEnergyRequired(radius)
+local success, result = radar.getEnergyRequired()
 if not success then
   showErrorAndExit(result)
 end
@@ -51,8 +52,7 @@ if energyStored < energyRequired then
   showErrorAndExit("Low energy level... (" .. energyStored .. "/" .. energyRequired .. " " .. energyUnits .. ")")
 end
 
-local scanDuration = radar.getScanDuration(radius)
-radar.radius(radius)
+local scanDuration = radar.getScanDuration()
 radar.start()
 os.sleep(0.5)
 

@@ -174,15 +174,8 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 				EnergyWrapper.convert(calculateEnergyRequired(radius), units) };
 	}
 	
-	private Object[] getScanDuration(final Object[] arguments) {
-		try {
-			if (arguments.length == 1 && arguments[0] != null) {
-				return new Object[] { 0.050D * calculateScanDuration(Commons.toInt(arguments[0])) };
-			}
-		} catch (final Exception exception) {
-			return new Integer[] { -1 };
-		}
-		return new Integer[] { -1 };
+	private Object[] getScanDuration() {
+		return new Object[] { 0.050D * calculateScanDuration(radius) };
 	}
 	
 	private Object[] start() {
@@ -280,7 +273,8 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	@Callback
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getScanDuration(final Context context, final Arguments arguments) {
-		return getScanDuration(OC_convertArgumentsAndLogCall(context, arguments));
+		OC_convertArgumentsAndLogCall(context, arguments);
+		return getScanDuration();
 	}
 	
 	@Callback
@@ -322,7 +316,7 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 			return radius(arguments);
 			
 		case "getScanDuration":
-			return getScanDuration(arguments);
+			return getScanDuration();
 			
 		case "start":
 			return start();

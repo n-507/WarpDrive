@@ -87,7 +87,8 @@ local function scanAndDraw()
   if energyStored == nil then energyStored = 0 end
   if energyMax == nil or energyMax == 0 then energyMax = 1 end
   
-  local success, result = radar.getEnergyRequired(radius)
+  radar.radius(radius)
+  local success, result = radar.getEnergyRequired()
   if not success then
     showErrorAndExit(result)
   end
@@ -100,9 +101,8 @@ local function scanAndDraw()
     return 0
   end
   
-  radar.radius(radius)
   radar.start()
-  local scanDuration = radar.getScanDuration(radius)
+  local scanDuration = radar.getScanDuration()
   textOut((w / 2) - 7, 1, "   ping sent    ", colors.gray, colors.black)
   os.sleep(scanDuration)
   
