@@ -1006,7 +1006,8 @@ public class Commons {
 			if (entity instanceof EntityPlayerMP) {
 				final EntityPlayerMP player = (EntityPlayerMP) entity;
 				server.getPlayerList().transferPlayerToDimension(player, worldDestination.provider.getDimension(), teleporter);
-				// player.sendPlayerAbilities();
+				player.invulnerableDimensionChange = true;
+				player.connection.captureCurrentPosition();
 			} else {
 				server.getPlayerList().transferEntityToWorld(entity, worldSource.provider.getDimension(), worldServerFrom, worldServerTo, teleporter);
 			}

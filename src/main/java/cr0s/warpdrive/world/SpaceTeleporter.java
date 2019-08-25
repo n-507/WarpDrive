@@ -23,10 +23,9 @@ public class SpaceTeleporter implements ITeleporter {
 	
 	@Override
 	public void placeEntity(final World world, @Nonnull final Entity entity, final float yaw) {
+		entity.setLocationAndAngles(v3Destination.x, v3Destination.y, v3Destination.z, entity.rotationYaw, entity.rotationPitch);
 		if (entity instanceof EntityPlayerMP) {
-			((EntityPlayerMP)entity).connection.setPlayerLocation(v3Destination.x, v3Destination.y, v3Destination.z, yaw, entity.rotationPitch);
-		} else {
-			entity.setLocationAndAngles(v3Destination.x, v3Destination.y, v3Destination.z, entity.rotationYaw, entity.rotationPitch);
+			((EntityPlayerMP) entity).connection.setPlayerLocation(v3Destination.x, v3Destination.y, v3Destination.z, yaw, entity.rotationPitch);
 		}
 	}
 }
