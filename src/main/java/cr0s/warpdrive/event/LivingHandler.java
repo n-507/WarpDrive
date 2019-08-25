@@ -9,9 +9,11 @@ import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObject;
+import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.StateAir;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
+import cr0s.warpdrive.item.ItemWarpArmor;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -219,7 +221,7 @@ public class LivingHandler {
 					
 					// add fire if we're entering an atmosphere
 					if (!celestialObject.hasAtmosphere() && celestialObjectChild.hasAtmosphere()) {
-						entityLivingBase.setFire(30);
+						applyAtmosphericEntryEffect(entityLivingBase);
 					}
 				}
 				
@@ -228,6 +230,24 @@ public class LivingHandler {
 				entityLivingBase.setPositionAndUpdate(entityLivingBase.posX, 260.0D, entityLivingBase.posZ);
 			}
 		}
+	}
+	
+	private void applyAtmosphericEntryEffect(@Nonnull final EntityLivingBase entityLivingBase) {
+		final Iterable<ItemStack> inventoryArmor = entityLivingBase.getArmorInventoryList();
+		int countReentryArmor = 0;
+		for (final ItemStack itemStack : inventoryArmor) {
+			if ( itemStack.getItem() instanceof ItemWarpArmor
+			  && ((ItemWarpArmor) itemStack.getItem()).getTier(itemStack).getIndex() > EnumTier.BASIC.getIndex() ) {
+				countReentryArmor++;
+			}
+		}
+		// no damage for player in full armor or entity with at least 1 element
+		if ( countReentryArmor == 4
+		  || ( !(entityLivingBase instanceof EntityPlayer)
+		    && countReentryArmor>= 1 ) ) {
+			return;
+		}
+		entityLivingBase.setFire(30);
 	}
 	
 	private void updatePlayerCloakState(final EntityLivingBase entity) {
