@@ -151,14 +151,38 @@ public class Commons {
 		return result.toString();
 	}
 	
-	public static Style styleCommand  = new Style().setColor(TextFormatting.AQUA);
-	public static Style styleHeader   = new Style().setColor(TextFormatting.GOLD);
-	public static Style styleCorrect  = new Style().setColor(TextFormatting.GREEN);
-	public static Style styleDisabled = new Style().setColor(TextFormatting.GRAY);
-	public static Style styleNormal   = new Style().setColor(TextFormatting.WHITE);
-	public static Style styleValue    = new Style().setColor(TextFormatting.YELLOW);
-	public static Style styleVoltage  = new Style().setColor(TextFormatting.DARK_GREEN);
-	public static Style styleWarning  = new Style().setColor(TextFormatting.RED);
+	@Nonnull
+	public static Style getStyleCommand() {
+		return new Style().setColor(TextFormatting.AQUA);
+	}
+	@Nonnull
+	public static Style getStyleHeader() {
+		return new Style().setColor(TextFormatting.GOLD);
+	}
+	@Nonnull
+	public static Style getStyleCorrect() {
+		return new Style().setColor(TextFormatting.GREEN);
+	}
+	@Nonnull
+	public static Style getStyleDisabled() {
+		return new Style().setColor(TextFormatting.GRAY);
+	}
+	@Nonnull
+	public static Style getStyleNormal() {
+		return new Style().setColor(TextFormatting.WHITE);
+	}
+	@Nonnull
+	public static Style getStyleValue() {
+		return new Style().setColor(TextFormatting.YELLOW);
+	}
+	@Nonnull
+	public static Style getStyleVoltage() {
+		return new Style().setColor(TextFormatting.DARK_GREEN);
+	}
+	@Nonnull
+	public static Style getStyleWarning() {
+		return new Style().setColor(TextFormatting.RED);
+	}
 	
 	@Nonnull
 	public static WarpDriveText getChatPrefix(@Nonnull final Block block) {
@@ -172,36 +196,36 @@ public class Commons {
 	
 	@Nonnull
 	public static WarpDriveText getChatPrefix(@Nonnull final String translationKey) {
-		return new WarpDriveText(styleHeader, "warpdrive.guide.prefix",
+		return new WarpDriveText(getStyleHeader(), "warpdrive.guide.prefix",
 		                         new TextComponentTranslation(translationKey));
 	}
 	
 	@Nonnull
 	public static WarpDriveText getNamedPrefix(@Nonnull final String name) {
-		return new WarpDriveText(styleHeader, "warpdrive.guide.prefix",
+		return new WarpDriveText(getStyleHeader(), "warpdrive.guide.prefix",
 		                         new TextComponentString(name));
 	}
 	
 	@Nonnull
 	public static WarpDriveText getChatValue(final boolean bool) {
 		if (bool) {
-			return new WarpDriveText(styleCorrect, "true");
+			return new WarpDriveText(getStyleCorrect(), "true");
 		} else {
-			return new WarpDriveText(styleWarning, "false");
+			return new WarpDriveText(getStyleWarning(), "false");
 		}
 	}
 	
 	@Nonnull
 	public static WarpDriveText getChatValue(final int value) {
-		return new WarpDriveText(styleValue, "%s", value);
+		return new WarpDriveText(getStyleValue(), "%s", value);
 	}
 	
 	@Nonnull
 	public static WarpDriveText getChatValue(@Nonnull final String value) {
 		if (value.equals("???")) {
-			return new WarpDriveText(styleDisabled, "???");
+			return new WarpDriveText(getStyleDisabled(), "???");
 		} else {
-			return new WarpDriveText(styleValue, "%s", value);
+			return new WarpDriveText(getStyleValue(), "%s", value);
 		}
 	}
 	

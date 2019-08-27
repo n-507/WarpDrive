@@ -48,9 +48,9 @@ public class TileEntityForceFieldRelay extends TileEntityAbstractForceField impl
 		final EnumForceFieldUpgrade enumForceFieldUpgrade = getUpgrade();
 		final String keyName = ItemForceFieldUpgrade.getItemStack(enumForceFieldUpgrade).getTranslationKey() + ".name";
 		final int value = enumForceFieldUpgrade == EnumForceFieldUpgrade.NONE ? 0 : 1;
-		final Style style = value == 0 ? Commons.styleDisabled : Commons.styleCorrect;
-		warpDriveText.append(Commons.styleDisabled, "- %1$s/%2$s x %3$s",
-		                     new WarpDriveText(Commons.styleValue, "%1$s", value),
+		final Style style = value == 0 ? Commons.getStyleDisabled() : Commons.getStyleCorrect();
+		warpDriveText.append(Commons.getStyleDisabled(), "- %1$s/%2$s x %3$s",
+		                     new WarpDriveText(Commons.getStyleValue(), "%1$s", value),
 		                     1,
 		                     new WarpDriveText(style, keyName) );
 		return warpDriveText;

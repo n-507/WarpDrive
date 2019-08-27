@@ -32,7 +32,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	private boolean isDirtyAssembly = true;
 	private int tickScanAssembly = 0;
 	protected boolean isAssemblyValid = true;
-	protected WarpDriveText textValidityIssues = new WarpDriveText(Commons.styleWarning, "unknown"); 
+	protected WarpDriveText textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "unknown"); 
 	
 	// allow only one computation at a time
 	protected static final AtomicBoolean isGlobalThreadRunning = new AtomicBoolean(false);
@@ -96,7 +96,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 		final WarpDriveText textReason = new WarpDriveText();
 		final boolean isValid = doScanAssembly(isDirty, textReason);
 		if (!isValid && textReason.isEmpty()) {
-			textReason.append(Commons.styleWarning, "unknown");
+			textReason.append(Commons.getStyleWarning(), "unknown");
 			WarpDrive.logger.warn(String.format("Unknown assembly status %s %s, please report to mod author",
 			                                    this, Commons.format(world, pos) ));
 		}

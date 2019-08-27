@@ -67,7 +67,7 @@ public class CommandSpace extends AbstractCommand {
 			} else if (commandSender instanceof EntityPlayer) {
 				dimensionIdTarget = StarMapRegistry.getDimensionId(args[0], (EntityPlayer) commandSender);
 			} else {
-				Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.player_not_found", args[0]).setStyle(Commons.styleWarning)));
+				Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.player_not_found", args[0]).setStyle(Commons.getStyleWarning())));
 				return;
 			}
 			
@@ -76,19 +76,19 @@ public class CommandSpace extends AbstractCommand {
 			if (entityPlayerMPs_found != null) {
 				entityPlayerMPs = entityPlayerMPs_found;
 			} else {
-				Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.player_not_found", args[0]).setStyle(Commons.styleWarning)));
+				Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.player_not_found", args[0]).setStyle(Commons.getStyleWarning())));
 				return;
 			}
 			dimensionIdTarget = StarMapRegistry.getDimensionId(args[1], entityPlayerMPs[0]);
 			
 		} else {
-			Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.too_many_arguments", args.length).setStyle(Commons.styleWarning)));
+			Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.too_many_arguments", args.length).setStyle(Commons.getStyleWarning())));
 			return;
 		}
 		
 		// check player
 		if (entityPlayerMPs == null || entityPlayerMPs.length <= 0) {
-			Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.player_not_found", args[0]).setStyle(Commons.styleWarning)));
+			Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.player_not_found", args[0]).setStyle(Commons.getStyleWarning())));
 			return;
 		}
 		
@@ -101,8 +101,8 @@ public class CommandSpace extends AbstractCommand {
 			if (dimensionIdTarget == Integer.MAX_VALUE) {
 				if (celestialObjectCurrent == null) {
 					Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.player_in_unknown_dimension",
-					                                                                                             entityPlayerMP.getName(), entityPlayerMP.world.provider.getDimension()).setStyle(Commons.styleWarning)));
-					Commons.addChatMessage(commandSender, new TextComponentTranslation("warpdrive.command.specify_explicit_dimension").setStyle(Commons.styleCorrect));
+					                                                                                             entityPlayerMP.getName(), entityPlayerMP.world.provider.getDimension()).setStyle(Commons.getStyleWarning())));
+					Commons.addChatMessage(commandSender, new TextComponentTranslation("warpdrive.command.specify_explicit_dimension").setStyle(Commons.getStyleCorrect()));
 					continue;
 				}
 				if ( celestialObjectCurrent.isSpace()
@@ -113,8 +113,8 @@ public class CommandSpace extends AbstractCommand {
 						dimensionIdTarget = 0;
 					} else if (celestialObjectChild.isVirtual()) {
 						Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.player_can_t_go_virtual",
-						                                                                                             entityPlayerMP.getName(), celestialObjectChild.getDisplayName()).setStyle(Commons.styleWarning) ));
-						Commons.addChatMessage(commandSender, new TextComponentTranslation("warpdrive.command.specify_explicit_dimension").setStyle(Commons.styleCorrect));
+						                                                                                             entityPlayerMP.getName(), celestialObjectChild.getDisplayName()).setStyle(Commons.getStyleWarning()) ));
+						Commons.addChatMessage(commandSender, new TextComponentTranslation("warpdrive.command.specify_explicit_dimension").setStyle(Commons.getStyleCorrect()));
 						continue;
 					} else {
 						dimensionIdTarget = celestialObjectChild.dimensionId;
@@ -174,19 +174,19 @@ public class CommandSpace extends AbstractCommand {
 			final WorldServer worldTarget = Commons.getOrCreateWorldServer(dimensionIdTarget);
 			if (worldTarget == null) {
 				Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.undefined_dimension",
-				                                                                                             dimensionIdTarget).setStyle(Commons.styleWarning)));
+				                                                                                             dimensionIdTarget).setStyle(Commons.getStyleWarning())));
 				continue;
 			}
 			
 			// inform player
 			final ITextComponent textComponent = new TextComponentTranslation("warpdrive.command.teleporting_player_x_to_y",
 			                                             entityPlayerMP.getName(),
-			                                             Commons.format(worldTarget)).setStyle(Commons.styleCorrect);
+			                                             Commons.format(worldTarget)).setStyle(Commons.getStyleCorrect());
 			Commons.addChatMessage(commandSender, textComponent);
 			WarpDrive.logger.info(textComponent.getUnformattedText());
 			if (commandSender != entityPlayerMP) {
 				Commons.addChatMessage(entityPlayerMP, new TextComponentTranslation("warpdrive.command.teleporting_by_x_to_y",
-				                                                                    commandSender.getName(), Commons.format(worldTarget), dimensionIdTarget).setStyle(Commons.styleCorrect));
+				                                                                    commandSender.getName(), Commons.format(worldTarget), dimensionIdTarget).setStyle(Commons.getStyleCorrect()));
 			}
 			
 			// find a good spot

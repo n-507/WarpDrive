@@ -102,9 +102,9 @@ public class EnergyWrapper {
 		final String energyMaxStorage_units = EnergyWrapper.format(maxStorage, unitsToUse);
 		final WarpDriveText textRate = new WarpDriveText(null, "warpdrive.energy.status_line.charge")
 				                               .appendInLine(null, " ")
-				                               .appendInLine(Commons.styleValue, energyStored_units)
+				                               .appendInLine(Commons.getStyleValue(), energyStored_units)
 				                               .appendInLine(null, " / ")
-				                               .appendInLine(Commons.styleValue, energyMaxStorage_units)
+				                               .appendInLine(Commons.getStyleValue(), energyMaxStorage_units)
 				                               .appendInLine(null, String.format(" %s.", unitsToUse));
 		warpDriveText.append(textRate);
 	}
@@ -162,11 +162,11 @@ public class EnergyWrapper {
 	                                        final long amperage, final long voltage, final int tier, @Nonnull final String units) {
 		final WarpDriveText textRate = new WarpDriveText(null, translationKey)
 				                               .appendInLine(null, " ")
-				                               .appendInLine(Commons.styleValue, amperage)
+				                               .appendInLine(Commons.getStyleValue(), amperage)
 				                               .appendInLine(null, " x ")
-				                               .appendInLine(Commons.styleVoltage, voltage)
+				                               .appendInLine(Commons.getStyleVoltage(), voltage)
 				                               .appendInLine(null, String.format(" %s/t (", units))
-				                               .appendInLine(Commons.styleVoltage, EnergyWrapper.EU_nameTier[tier])
+				                               .appendInLine(Commons.getStyleVoltage(), EnergyWrapper.EU_nameTier[tier])
 				                               .appendInLine(null, ").");
 		warpDriveText.append(textRate);
 	}

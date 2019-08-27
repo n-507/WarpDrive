@@ -57,6 +57,6 @@ public class BlockSiren extends BlockAbstractRotatingContainer {
 		final int range = MathHelper.floor(WarpDriveConfig.SIREN_RANGE_BLOCKS_BY_TIER[enumTier.getIndex()]);
 		final String unlocalizedName_withoutTier = getTranslationKey().replace("." + enumTier.getName(), "");
 		Commons.addTooltip(list, new TextComponentTranslation(unlocalizedName_withoutTier + ".tooltip.usage",
-		                                                      new WarpDriveText(Commons.styleValue, range) ).getFormattedText());
+		                                                      new WarpDriveText(Commons.getStyleValue(), range) ).getFormattedText());
 	}
 }

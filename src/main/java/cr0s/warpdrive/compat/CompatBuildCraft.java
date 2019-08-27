@@ -68,7 +68,7 @@ public class CompatBuildCraft implements IBlockTransformer {
 		  || classBlockQuarry.isInstance(block)
 		  || classBlockReplacer.isInstance(block)
 		  || classBlockZonePlanner.isInstance(block) ) {
-			reason.append(Commons.styleWarning, "warpdrive.compat.guide.block_detected_on_board",
+			reason.append(Commons.getStyleWarning(), "warpdrive.compat.guide.block_detected_on_board",
 			              new TextComponentTranslation(block.getTranslationKey()));
 			return false;
 		}

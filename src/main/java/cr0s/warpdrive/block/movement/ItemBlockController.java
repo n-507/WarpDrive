@@ -125,16 +125,16 @@ public class ItemBlockController extends ItemBlockAbstractBase {
 			if ( uuidSignatureFromBlock == null
 			  || nameSignatureFromBlock == null
 			  || nameSignatureFromBlock.isEmpty() ) {
-				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.core_signature.get_missing",
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.core_signature.get_missing",
 				                                                       null, nameItem, nameBlock ));
 				
 			} else if (uuidSignatureFromBlock.equals(uuidSignatureFromItem)) {
-				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleCorrect, "warpdrive.core_signature.get_same",
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.core_signature.get_same",
 				                                                       nameSignatureFromItem, nameItem, nameBlock ));
 				
 			} else {
 				final ItemStack itemStackNew = setNameAndSignature(itemStackHeld, nameSignatureFromBlock, uuidSignatureFromBlock);
-				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleCorrect, "warpdrive.core_signature.get",
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.core_signature.get",
 				                                                       nameSignatureFromBlock, nameItem, nameBlock ));
 				world.playSound(entityPlayer.posX + 0.5D, entityPlayer.posY + 0.5D, entityPlayer.posZ + 0.5D,
 				                SoundEvents.ENTITY_ZOMBIE_VILLAGER_CURE, SoundCategory.PLAYERS,
@@ -143,23 +143,23 @@ public class ItemBlockController extends ItemBlockAbstractBase {
 			
 		} else {// set block signature
 			if (uuidSignatureFromItem == null) {
-				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.core_signature.set_missing",
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.core_signature.set_missing",
 				                                                       null, nameItem, nameBlock ));
 				
 			} else if (uuidSignatureFromItem.equals(uuidSignatureFromBlock)) {
-				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleCorrect, "warpdrive.core_signature.set_same",
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.core_signature.set_same",
 				                                                       nameSignatureFromItem, nameItem, nameBlock ));
 				
 			} else {
 				final boolean isSuccess = ((IMultiBlockCoreOrController) tileEntity).setSignature(uuidSignatureFromItem, nameSignatureFromItem);
 				if (isSuccess) {
-					Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleCorrect, "warpdrive.core_signature.set",
+					Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.core_signature.set",
 					                                                       nameSignatureFromItem, nameItem, nameBlock));
 					world.playSound(entityPlayer.posX + 0.5D, entityPlayer.posY + 0.5D, entityPlayer.posZ + 0.5D,
 					                SoundEvents.ENTITY_ZOMBIE_VILLAGER_CONVERTED, SoundCategory.PLAYERS,
 					                1.0F, 1.2F + 0.2F * world.rand.nextFloat(), false);
 				} else {
-					Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.core_signature.set_not_supported",
+					Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.core_signature.set_not_supported",
 					                                                       null, nameItem, nameBlock ));
 				}
 			}

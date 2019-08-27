@@ -9,7 +9,7 @@ import net.minecraft.util.text.TextComponentString;
 public abstract class AbstractCommand extends CommandBase {
 	
 	public ITextComponent getPrefix() {
-		return new TextComponentString("/" + getName()).setStyle(Commons.styleHeader)
+		return new TextComponentString("/" + getName()).setStyle(Commons.getStyleHeader())
 		                                               .appendSibling(new TextComponentString(" "));
 	}
 	

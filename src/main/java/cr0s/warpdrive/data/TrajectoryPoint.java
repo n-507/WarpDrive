@@ -417,39 +417,39 @@ public class TrajectoryPoint extends VectorI {
 			final String strPosition = String.format("(%d %d %d)",
 			                                         x, y, z );
 			if ((errorCode & ERROR_DOUBLE_JUNCTION) != 0) {
-				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.invalid_double_junction",
+				textReason.append(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.invalid_double_junction",
 				                  strPosition );
 			}
 			if ((errorCode & ERROR_VERTICAL_JUNCTION) != 0) {
-				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.invalid_vertical_junction",
+				textReason.append(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.invalid_vertical_junction",
 				                  strPosition );
 			}
 			if ((errorCode & ERROR_MISSING_TURNING_MAGNET) != 0) {
-				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_turning_magnet",
+				textReason.append(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.missing_turning_magnet",
 				                  strPosition );
 			}
 			if ((errorCode & ERROR_MISSING_MAIN_MAGNET) != 0) {
-				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_main_magnets",
+				textReason.append(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.missing_main_magnets",
 				                  strPosition );
 			}
 			if ((errorCode & ERROR_MISSING_CORNER_MAGNET) != 0) {
-				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_corner_magnets",
+				textReason.append(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.missing_corner_magnets",
 				                  strPosition );
 			}
 			if ((errorCode & ERROR_MISSING_COLLIDER) != 0) {
-				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_collider_block",
+				textReason.append(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.missing_collider_block",
 				                  strPosition );
 			}
 			if ((errorCode & ERROR_MISSING_VOID_SHELL) != 0) {
-					textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_void_shell",
+					textReason.append(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.missing_void_shell",
 					                  strPosition);
 			}
 			if ((errorCode & ERROR_TOO_MANY_VOID_SHELLS) != 0) {
-				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.too_many_void_shells",
+				textReason.append(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.too_many_void_shells",
 				                  strPosition );
 			}
 			if (strReasonBefore.equals(textReason.getUnformattedText())) {
-				textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.invalid_error_code",
+				textReason.append(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.invalid_error_code",
 				                  errorCode, strPosition);
 			}
 			return false;

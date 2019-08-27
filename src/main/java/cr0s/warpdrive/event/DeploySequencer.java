@@ -62,7 +62,7 @@ public class DeploySequencer extends JumpSequencer {
 			// Warn owner if deployment done but wait next tick for teleportation
 			final EntityPlayerMP entityPlayerMP = Commons.getOnlinePlayerByName(playerNameRequester);
 			if (entityPlayerMP != null) {
-				Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.styleCorrect, "warpdrive.builder.guide.ship_deployed"));
+				Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.builder.guide.ship_deployed"));
 			}
 		}
 	}
@@ -77,7 +77,7 @@ public class DeploySequencer extends JumpSequencer {
 				if (tileEntity instanceof TileEntityShipCore) {
 					final boolean isSuccess = ((TileEntityShipCore) tileEntity).summonOwnerOnDeploy(entityPlayerMP);
 					if (isSuccess) {
-						Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.styleCorrect, "warpdrive.builder.guide.welcome_aboard"));
+						Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.builder.guide.welcome_aboard"));
 					} else {
 						WarpDrive.logger.warn(String.format("Failed to assign new captain %s",
 						                                    playerNameRequester));

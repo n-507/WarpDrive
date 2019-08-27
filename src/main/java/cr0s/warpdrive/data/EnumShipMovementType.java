@@ -92,7 +92,7 @@ public enum EnumShipMovementType implements IStringSerializable {
 			} else if (isInSpace) {
 				return HYPERSPACE_ENTERING;
 			}
-			reason.append(Commons.styleWarning, "warpdrive.ship.guide.unable_to_reach_hyperspace_from_planet");
+			reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.unable_to_reach_hyperspace_from_planet");
 			return null;
 			
 		case MANUAL:
@@ -126,7 +126,7 @@ public enum EnumShipMovementType implements IStringSerializable {
 		// invalid command?
 		WarpDrive.logger.error(String.format("Invalid command '%s'",
 		                                     command));
-		reason.append(Commons.styleWarning, "warpdrive.error.internal_check_console");
+		reason.append(Commons.getStyleWarning(), "warpdrive.error.internal_check_console");
 		return null;
 	}
 }

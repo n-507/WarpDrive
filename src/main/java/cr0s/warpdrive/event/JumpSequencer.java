@@ -181,7 +181,7 @@ public class JumpSequencer extends AbstractSequencer {
 		if (isSuccessful) {
 			reason = reasonRaw;
 		} else {
-			reason = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.movement_aborted")
+			reason = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.movement_aborted")
 					         .append(reasonRaw);
 		}
 		disable(isSuccessful, reason);
@@ -237,7 +237,7 @@ public class JumpSequencer extends AbstractSequencer {
 		}
 		
 		if (ship.minY < 0 || ship.maxY > 255) {
-			disableAndMessage(false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.invalid_y_coordinates"));
+			disableAndMessage(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.invalid_y_coordinates"));
 			return true;
 		}
 		
@@ -358,7 +358,7 @@ public class JumpSequencer extends AbstractSequencer {
 			break;
 			
 		default:
-			disableAndMessage(false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.invalid_state"));
+			disableAndMessage(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.invalid_state"));
 			return true;
 		}
 		return true;
@@ -371,7 +371,7 @@ public class JumpSequencer extends AbstractSequencer {
 		}
 		sourceWorldTicket = ForgeChunkManager.requestTicket(WarpDrive.instance, sourceWorld, Type.NORMAL);
 		if (sourceWorldTicket == null) {
-			reason.append(Commons.styleWarning, "warpdrive.ship.guide.chunkloading_rejected_in_source_world",
+			reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.chunkloading_rejected_in_source_world",
 			              Commons.format(sourceWorld));
 			return false;
 		}
@@ -385,10 +385,10 @@ public class JumpSequencer extends AbstractSequencer {
 			for (int z = minZ; z <= maxZ; z++) {
 				chunkCount++;
 				if (chunkCount > sourceWorldTicket.getMaxChunkListDepth()) {
-					reason.append(Commons.styleWarning, "warpdrive.ship.guide.too_many_chunks_to_load",
+					reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.too_many_chunks_to_load",
 					              (maxX - minX + 1) * (maxZ - minZ + 1),
 					              sourceWorldTicket.getMaxChunkListDepth());
-					reason.append(Commons.styleCommand, "warpdrive.ship.guide.max_chunkloading");
+					reason.append(Commons.getStyleCommand(), "warpdrive.ship.guide.max_chunkloading");
 					return false;
 				}
 				ForgeChunkManager.forceChunk(sourceWorldTicket, new ChunkPos(x, z));
@@ -405,7 +405,7 @@ public class JumpSequencer extends AbstractSequencer {
 		}
 		targetWorldTicket = ForgeChunkManager.requestTicket(WarpDrive.instance, targetWorld, Type.NORMAL);
 		if (targetWorldTicket == null) {
-			reason.append(Commons.styleWarning, "warpdrive.ship.guide.chunkloading_rejected_in_target_world",
+			reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.chunkloading_rejected_in_target_world",
 			              Commons.format(targetWorld));
 			return false;
 		}
@@ -421,10 +421,10 @@ public class JumpSequencer extends AbstractSequencer {
 			for (int z = minZ; z <= maxZ; z++) {
 				chunkCount++;
 				if (chunkCount > targetWorldTicket.getMaxChunkListDepth()) {
-					reason.append(Commons.styleWarning, "warpdrive.ship.guide.too_many_chunks_to_load",
+					reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.too_many_chunks_to_load",
 					              (maxX - minX + 1) * (maxZ - minZ + 1),
 					              targetWorldTicket.getMaxChunkListDepth());
-					reason.append(Commons.styleCommand, "warpdrive.ship.guide.max_chunkloading");
+					reason.append(Commons.getStyleCommand(), "warpdrive.ship.guide.max_chunkloading");
 					return false;
 				}
 				ForgeChunkManager.forceChunk(targetWorldTicket, new ChunkPos(x, z));
@@ -607,7 +607,7 @@ public class JumpSequencer extends AbstractSequencer {
 		  || CelestialObjectManager.isPlanet(targetWorld, ship.core.getX() + moveX, ship.core.getZ() + moveZ) ) {
 			if (!ship.isUnlimited() && ship.actualMass > WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE) {
 				LocalProfiler.stop();
-				disableAndMessage(false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.too_much_mass_for_planet",
+				disableAndMessage(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.too_much_mass_for_planet",
 				                                           WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE, ship.actualMass));
 				return;
 			}
@@ -704,14 +704,14 @@ public class JumpSequencer extends AbstractSequencer {
 				doCollisionDamage(false);
 				
 				// cancel jump
-				final WarpDriveText textOverlapping = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.overlapping_source_and_target");
+				final WarpDriveText textOverlapping = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.overlapping_source_and_target");
 				final WarpDriveText textComponent;
 				if (firstAdjustmentReason.isEmpty()) {
 					textComponent = textOverlapping;
 				} else if (firstAdjustmentReason.getUnformattedText().equals(textOverlapping.getUnformattedText())) {
 					textComponent = firstAdjustmentReason;
 				} else {
-					textComponent = firstAdjustmentReason.append(Commons.styleWarning, "warpdrive.ship.guide.not_enough_space_after_adjustment");
+					textComponent = firstAdjustmentReason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.not_enough_space_after_adjustment");
 				}
 				disableAndMessage(false, textComponent);
 				LocalProfiler.stop();
@@ -730,7 +730,7 @@ public class JumpSequencer extends AbstractSequencer {
 				// are we in range?
 				if (!celestialObjectTarget.isInsideBorder(aabbTarget)) {
 					final AxisAlignedBB axisAlignedBB = celestialObjectTarget.getWorldBorderArea();
-					final WarpDriveText message = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.target_outside_planet_border",
+					final WarpDriveText message = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.target_outside_planet_border",
 					                                                (int) axisAlignedBB.minX, (int) axisAlignedBB.minY, (int) axisAlignedBB.minZ,
 					                                                (int) axisAlignedBB.maxX, (int) axisAlignedBB.maxY, (int) axisAlignedBB.maxZ );
 					LocalProfiler.stop();
@@ -852,7 +852,7 @@ public class JumpSequencer extends AbstractSequencer {
 			final CelestialObject celestialObject = CelestialObjectManager.getClosestChild(sourceWorld, ship.core.getX(), ship.core.getZ());
 			// anything defined?
 			if (celestialObject == null) {
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.no_celestial_object_in_hyperspace",
+				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.no_celestial_object_in_hyperspace",
 				              Commons.format(sourceWorld), sourceWorld.provider.getDimension());
 				return false;
 			}
@@ -861,7 +861,7 @@ public class JumpSequencer extends AbstractSequencer {
 			final double distanceSquared = celestialObject.getSquareDistanceInParent(sourceWorld.provider.getDimension(), ship.core.getX(), ship.core.getZ());
 			if (distanceSquared > 0.0D) {
 				final AxisAlignedBB axisAlignedBB = celestialObject.getAreaInParent();
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.no_star_system_in_range",
+				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.no_star_system_in_range",
 				              (int) Math.sqrt(distanceSquared),
 				              (int) axisAlignedBB.minX, (int) axisAlignedBB.minY, (int) axisAlignedBB.minZ,
 				              (int) axisAlignedBB.maxX, (int) axisAlignedBB.maxY, (int) axisAlignedBB.maxZ);
@@ -872,7 +872,7 @@ public class JumpSequencer extends AbstractSequencer {
 			final int dimensionIdSpace = celestialObject.dimensionId;
 			targetWorld = Commons.getOrCreateWorldServer(dimensionIdSpace);
 			if (targetWorld == null) {
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.exception_loading_dimension",
+				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.exception_loading_dimension",
 				              dimensionIdSpace);
 				return false;
 			}
@@ -887,7 +887,7 @@ public class JumpSequencer extends AbstractSequencer {
 		case HYPERSPACE_ENTERING: {
 			// anything defined?
 			if (celestialObjectSource.parent == null) {
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.unable_to_reach_hyperspace_no_parent",
+				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.unable_to_reach_hyperspace_no_parent",
 				              Commons.format(sourceWorld), sourceWorld.provider.getDimension());
 				return false;
 			}
@@ -897,7 +897,7 @@ public class JumpSequencer extends AbstractSequencer {
 			final int dimensionIdHyperspace = celestialObjectSource.parent.dimensionId;
 			targetWorld = Commons.getOrCreateWorldServer(dimensionIdHyperspace);
 			if (targetWorld == null) {
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.exception_loading_dimension",
+				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.exception_loading_dimension",
 				              dimensionIdHyperspace);
 				return false;
 			}
@@ -912,7 +912,7 @@ public class JumpSequencer extends AbstractSequencer {
 		case PLANET_TAKEOFF: {
 			// anything defined?
 			if (celestialObjectSource.parent == null) {
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.unable_to_reach_space_no_parent",
+				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.unable_to_reach_space_no_parent",
 				              Commons.format(sourceWorld), sourceWorld.provider.getDimension());
 				return false;
 			}
@@ -921,7 +921,7 @@ public class JumpSequencer extends AbstractSequencer {
 			final double distanceSquared = celestialObjectSource.getSquareDistanceOutsideBorder(ship.core.getX(), ship.core.getZ());
 			if (distanceSquared > 0) {
 				final AxisAlignedBB axisAlignedBB = celestialObjectSource.getAreaToReachParent();
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.unable_to_reach_space_outside_border",
+				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.unable_to_reach_space_outside_border",
 				              (int) Math.sqrt(distanceSquared),
 				              (int) axisAlignedBB.minX, (int) axisAlignedBB.minY, (int) axisAlignedBB.minZ,
 				              (int) axisAlignedBB.maxX, (int) axisAlignedBB.maxY, (int) axisAlignedBB.maxZ);
@@ -932,7 +932,7 @@ public class JumpSequencer extends AbstractSequencer {
 			final int dimensionIdSpace = celestialObjectSource.parent.dimensionId;
 			targetWorld = Commons.getOrCreateWorldServer(dimensionIdSpace);
 			if (targetWorld == null) {
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.exception_loading_dimension",
+				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.exception_loading_dimension",
 				              dimensionIdSpace);
 				return false;
 			}
@@ -948,7 +948,7 @@ public class JumpSequencer extends AbstractSequencer {
 			final CelestialObject celestialObject = CelestialObjectManager.getClosestChild(sourceWorld, ship.core.getX(), ship.core.getZ());
 			// anything defined?
 			if (celestialObject == null) {
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.no_celestial_object_in_space",
+				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.no_celestial_object_in_space",
 				              Commons.format(sourceWorld), sourceWorld.provider.getDimension());
 				return false;
 			}
@@ -957,7 +957,7 @@ public class JumpSequencer extends AbstractSequencer {
 			final double distanceSquared = celestialObject.getSquareDistanceInParent(sourceWorld.provider.getDimension(), ship.core.getX(), ship.core.getZ());
 			if (distanceSquared > 0.0D) {
 				final AxisAlignedBB axisAlignedBB = celestialObject.getAreaInParent();
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.unable_to_land_outside_orbit",
+				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.unable_to_land_outside_orbit",
 				              (int) Math.sqrt(distanceSquared),
 				              (int) axisAlignedBB.minX, (int) axisAlignedBB.minY, (int) axisAlignedBB.minZ,
 				              (int) axisAlignedBB.maxX, (int) axisAlignedBB.maxY, (int) axisAlignedBB.maxZ);
@@ -966,7 +966,7 @@ public class JumpSequencer extends AbstractSequencer {
 			
 			// is it defined?
 			if (celestialObject.isVirtual()) {
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.unable_to_land_virtual_planet",
+				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.unable_to_land_virtual_planet",
 				              celestialObject.getDisplayName());
 				return false;
 			}
@@ -974,7 +974,7 @@ public class JumpSequencer extends AbstractSequencer {
 			// validate world availability
 			targetWorld = Commons.getOrCreateWorldServer(celestialObject.dimensionId);
 			if (targetWorld == null) {
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.exception_loading_dimension",
+				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.exception_loading_dimension",
 				              celestialObject.getDisplayName(), celestialObject.dimensionId);
 				return false;
 			}
@@ -997,7 +997,7 @@ public class JumpSequencer extends AbstractSequencer {
 		default:
 			WarpDrive.logger.error(String.format("Invalid movement type %s",
 			                                     shipMovementType));
-			reason.append(Commons.styleWarning, "warpdrive.error.internal_check_console");
+			reason.append(Commons.getStyleWarning(), "warpdrive.error.internal_check_console");
 			return false;
 		}
 		
@@ -1324,7 +1324,7 @@ public class JumpSequencer extends AbstractSequencer {
 		
 		doCollisionDamage(true);
 		
-		disable(true, new WarpDriveText(Commons.styleCorrect, "warpdrive.ship.guide.jump_done"));
+		disable(true, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.ship.guide.jump_done"));
 		final int countAfter = targetWorld.loadedTileEntityList.size();
 		if (WarpDriveConfig.LOGGING_JUMP && countBefore != countAfter) {
 			WarpDrive.logger.info(String.format("Checking for TE duplicates: tileEntities in target world after jump, cleanup %d -> %d",
@@ -1436,7 +1436,7 @@ public class JumpSequencer extends AbstractSequencer {
 		final double rx = Math.round(min.x + sourceWorld.rand.nextInt(Math.max(1, (int) (max.x - min.x))));
 		final double ry = Math.round(min.y + sourceWorld.rand.nextInt(Math.max(1, (int) (max.y - min.y))));
 		final double rz = Math.round(min.z + sourceWorld.rand.nextInt(Math.max(1, (int) (max.z - min.z))));
-		ship.messageToAllPlayersOnShip(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.ship_collision",
+		ship.messageToAllPlayersOnShip(new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.ship_collision",
 		                                                 (int) rx, (int) ry, (int) rz));
 		// randomize if too many collision points
 		final int nbExplosions = Math.min(5, collisionPoints.size());
@@ -1560,7 +1560,7 @@ public class JumpSequencer extends AbstractSequencer {
 			           blockPosCoreAtTarget.getY(),
 			           blockPosCoreAtTarget.getZ(),
 			           false,
-			           new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.overlapping_source_and_target") );
+			           new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.overlapping_source_and_target") );
 			return result;
 		}
 		
@@ -1596,7 +1596,7 @@ public class JumpSequencer extends AbstractSequencer {
 						           blockPosTarget.getY() + 0.5D - offset.y,
 						           blockPosTarget.getZ() + 0.5D - offset.z,
 						           true,
-						           new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.impassable_block_detected",
+						           new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.impassable_block_detected",
 						                             blockStateTarget, blockPosTarget.getX(), blockPosTarget.getY(), blockPosTarget.getZ()) );
 						if (!fullCollisionDetails) {
 							return result;
@@ -1614,7 +1614,7 @@ public class JumpSequencer extends AbstractSequencer {
 						           blockPosTarget.getY() + 0.5D + offset.y * 0.1D,
 						           blockPosTarget.getZ() + 0.5D + offset.z * 0.1D,
 						           true,
-						           new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.obstacle_block_detected",
+						           new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.obstacle_block_detected",
 						                             Commons.format(blockStateTarget, targetWorld, blockPosTarget),
 						                             blockPosTarget.getX(), blockPosTarget.getY(), blockPosTarget.getZ()) );
 						if (!fullCollisionDetails) {
@@ -1632,7 +1632,7 @@ public class JumpSequencer extends AbstractSequencer {
 						           blockPosTarget.getY(),
 						           blockPosTarget.getZ(),
 						           false,
-						           new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.entering_protected_area",
+						           new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.entering_protected_area",
 						                             blockPosTarget.getX(), blockPosTarget.getZ(), blockPosTarget.getZ()) );
 						return result;
 					}
@@ -1655,7 +1655,7 @@ public class JumpSequencer extends AbstractSequencer {
 				ship.core.getZ(), ship.core.getX() + 0.5D,
 				ship.maxY + testMovement.y + 1.0D,
 				ship.core.getZ() + 0.5D,
-				false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.moving_too_high"));
+				false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.moving_too_high"));
 			return result;
 		}
 		
@@ -1664,7 +1664,7 @@ public class JumpSequencer extends AbstractSequencer {
 				ship.core.getX() + 0.5D,
 				ship.maxY + testMovement.y,
 				ship.core.getZ() + 0.5D,
-				false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.moving_too_low"));
+				false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.moving_too_low"));
 			return result;
 		}
 		

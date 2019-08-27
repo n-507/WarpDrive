@@ -259,16 +259,16 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyCoreOrContro
 		// build status message
 		final float integrity = countIntegrity / 13.0F;
 		if (messageInnerCoils.length() > 0 && messageOuterCoils.length() > 0) {
-			textReason.append(Commons.styleWarning, "warpdrive.cloaking_core.missing_channeling_and_projecting_coils",
+			textReason.append(Commons.getStyleWarning(), "warpdrive.cloaking_core.missing_channeling_and_projecting_coils",
 			                  Math.round(100.0F * integrity), messageInnerCoils, messageOuterCoils);
 		} else if (messageInnerCoils.length() > 0) {
-			textReason.append(Commons.styleWarning, "warpdrive.cloaking_core.missing_channeling_coils",
+			textReason.append(Commons.getStyleWarning(), "warpdrive.cloaking_core.missing_channeling_coils",
 			                  Math.round(100.0F * integrity), messageInnerCoils);
 		} else if (messageOuterCoils.length() > 0) {
-			textReason.append(Commons.styleWarning, "warpdrive.cloaking_core.missing_projecting_coils",
+			textReason.append(Commons.getStyleWarning(), "warpdrive.cloaking_core.missing_projecting_coils",
 			                  Math.round(100.0F * integrity), messageOuterCoils);
 		} else {
-			textReason.append(Commons.styleCorrect, "warpdrive.cloaking_core.valid");
+			textReason.append(Commons.getStyleCorrect(), "warpdrive.cloaking_core.valid");
 		}
 		
 		// Update cloaking field parameters defined by coils
@@ -458,15 +458,15 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyCoreOrContro
 		if (!isAssemblyValid) {
 			textStatus = textValidityIssues;
 		} else if (!isEnabled) {
-			textStatus = new WarpDriveText(Commons.styleNormal, "warpdrive.cloaking_core.disabled",
+			textStatus = new WarpDriveText(Commons.getStyleNormal(), "warpdrive.cloaking_core.disabled",
 			                               isFullyTransparent ? 2 : 1,
 			                               volume);
 		} else if (!isCloaking) {
-			textStatus = new WarpDriveText(Commons.styleWarning, "warpdrive.cloaking_core.low_power",
+			textStatus = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.cloaking_core.low_power",
 			                               isFullyTransparent ? 2 : 1,
 			                               volume);
 		} else {
-			textStatus = new WarpDriveText(Commons.styleCorrect, "warpdrive.cloaking_core.cloaking",
+			textStatus = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.cloaking_core.cloaking",
 			                               isFullyTransparent ? 2 : 1,
 			                               volume);
 		}

@@ -194,9 +194,9 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 	// TileEntityAbstractBase overrides
 	private WarpDriveText getSignatureStatus() {
 		if (uuidTransporterCore == null) {
-			return new WarpDriveText(Commons.styleWarning, "warpdrive.transporter_signature.status_line.invalid");
+			return new WarpDriveText(Commons.getStyleWarning(), "warpdrive.transporter_signature.status_line.invalid");
 		}
-		return new WarpDriveText(Commons.styleCorrect, "warpdrive.transporter_signature.status_line.valid",
+		return new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.transporter_signature.status_line.valid",
 		                         nameTransporterCore, uuidTransporterCore);
 	}
 	

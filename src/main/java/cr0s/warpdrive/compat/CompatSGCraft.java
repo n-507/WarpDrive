@@ -51,7 +51,7 @@ public class CompatSGCraft implements IBlockTransformer {
 				final Object object = methodSGBaseTE_sgStateDescription.invoke(tileEntity);
 				final String state = (String)object;
 				if (!state.equalsIgnoreCase("Idle")) {
-					reason.append(Commons.styleWarning, "warpdrive.compat.guide.stargate_is_active", state);
+					reason.append(Commons.getStyleWarning(), "warpdrive.compat.guide.stargate_is_active", state);
 					return false;
 				}
 			} catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException exception) {

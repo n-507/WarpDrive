@@ -55,7 +55,7 @@ public class JumpShip {
 	public static JumpShip createFromFile(final String fileName, final WarpDriveText reason) {
 		final NBTTagCompound schematic = Commons.readNBTFromFile(WarpDriveConfig.G_SCHEMATICS_LOCATION + "/" + fileName + ".schematic");
 		if (schematic == null) {
-			reason.append(Commons.styleWarning, "warpdrive.ship.guide.schematic_not_found",
+			reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.schematic_not_found",
 			              fileName + ".schematic");
 			return null;
 		}
@@ -76,7 +76,7 @@ public class JumpShip {
 			final int height = schematic.getInteger("Height");
 			final int length = schematic.getInteger("Length");
 			if (width <= 0 || height <= 0 || length <= 0) {
-				reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+				reason.append(new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.schematic_invalid_format",
 				                                String.format("Invalid size values: expecting strictly positive integers, found %1d %2d %3d.",
 				                                              width, height, length) ));
 				return null;
@@ -101,7 +101,7 @@ public class JumpShip {
 				// Offset is core position relative to origin
 				final int[] intOffset = schematic.getIntArray("Offset");
 				if (intOffset.length != 3) {
-					reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+					reason.append(new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.schematic_invalid_format",
 					                                String.format("Invalid offset format: expecting 3 integers, found %1d",
 					                                              intOffset.length) ));
 					return null;
@@ -114,7 +114,7 @@ public class JumpShip {
 				vOrigin = new VectorI(0, 0, 0 );
 				
 			} else {
-				reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+				reason.append(new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.schematic_invalid_format",
 				                                "Unknown offset format"));
 				return null;
 			}
@@ -159,7 +159,7 @@ public class JumpShip {
 			final byte[] localAddBlocks = schematic.hasKey("AddBlocks") ? schematic.getByteArray("AddBlocks") : null;
 			final byte[] localMetadata = blockStatePalette == null ? schematic.getByteArray("Data") : null;
 			if (localBlocks.length != jumpShip.jumpBlocks.length) {
-				reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+				reason.append(new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.schematic_invalid_format",
 				                                String.format("Invalid array size for Blocks: expecting %d (%d x %d x %d), found %d",
 				                                              width, height, length,
 				                                              jumpShip.jumpBlocks.length,
@@ -168,7 +168,7 @@ public class JumpShip {
 			}
 			final int sizeAddBlocks = (int) Math.ceil((jumpShip.jumpBlocks.length + 1.0F) / 2);
 			if (localAddBlocks != null && localAddBlocks.length != sizeAddBlocks) {
-				reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+				reason.append(new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.schematic_invalid_format",
 				                                String.format("Invalid array size for AddBlocks: expecting %d (%d x %d x %d), found %d",
 				                                              width, height, length,
 				                                              jumpShip.jumpBlocks.length,
@@ -176,7 +176,7 @@ public class JumpShip {
 				return null;
 			}
 			if (localMetadata != null && localMetadata.length != jumpShip.jumpBlocks.length) {
-				reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+				reason.append(new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.schematic_invalid_format",
 				                                String.format("Invalid array size for Metadata: expecting %d (%d x %d x %d), found %d",
 				                                              width, height, length,
 				                                              jumpShip.jumpBlocks.length,
@@ -200,7 +200,7 @@ public class JumpShip {
 				} else if (tagCompoundTileEntity.hasKey("Pos")) {
 					final int[] intPosition = tagCompoundTileEntity.getIntArray("Pos");
 					if (intPosition.length != 3) {
-						reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+						reason.append(new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.schematic_invalid_format",
 						                                String.format("Invalid array size for TileEntity Pos: expecting 3, found %d in %s",
 						                                              intPosition.length, tagCompoundTileEntity ) ));
 						return null;
@@ -209,7 +209,7 @@ public class JumpShip {
 					yTileEntity = intPosition[1];
 					zTileEntity = intPosition[2];
 				} else {
-					reason.append(new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.schematic_invalid_format",
+					reason.append(new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.schematic_invalid_format",
 					                                String.format("Missing position for TileEntity %s",
 					                                              tagCompoundTileEntity ) ));
 					return null;
@@ -314,7 +314,7 @@ public class JumpShip {
 		
 		if (world == null) {
 			WarpDrive.logger.error("Invalid call to saveEntities, please report it to mod author: world is null");
-			reason.append(Commons.styleWarning, "warpdrive.error.internal_check_console");
+			reason.append(Commons.getStyleWarning(), "warpdrive.error.internal_check_console");
 			return false;
 		}
 		
@@ -328,7 +328,7 @@ public class JumpShip {
 			}
 			
 			if (Dictionary.isAnchor(entity)) {
-				reason.append(Commons.styleWarning, "warpdrive.ship.guide.anchor_entity_detected",
+				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.anchor_entity_detected",
 				              Dictionary.getId(entity),
 				              Math.round(entity.posX), Math.round(entity.posY), Math.round(entity.posZ) );
 				isSuccess = false;
@@ -358,7 +358,7 @@ public class JumpShip {
 	public boolean removeEntities(final WarpDriveText reason) {
 		if (world == null) {
 			WarpDrive.logger.error("Invalid call to removeEntities, please report it to mod author: world is null");
-			reason.append(Commons.styleWarning, "warpdrive.error.internal_check_console");
+			reason.append(Commons.getStyleWarning(), "warpdrive.error.internal_check_console");
 			return false;
 		}
 		
@@ -487,10 +487,10 @@ public class JumpShip {
 						continue;
 					}
 					
-					reason.append(Commons.styleWarning, "warpdrive.ship.guide.ship_snagged1",
+					reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.ship_snagged1",
 					              blockState.getBlock().getLocalizedName(),
 					              x, y, z);
-					reason.append(Commons.styleCommand, "warpdrive.ship.guide.ship_snagged2");
+					reason.append(Commons.getStyleCommand(), "warpdrive.ship.guide.ship_snagged2");
 					world.createExplosion(null, x, y, z, Math.min(4F * 30, 4F * (jumpBlocks.length / 50.0F)), false);
 					return false;
 				}
@@ -548,7 +548,7 @@ public class JumpShip {
 								
 								// Stop on non-movable blocks
 								if (Dictionary.BLOCKS_ANCHOR.contains(blockState.getBlock())) {
-									reason.append(Commons.styleWarning, "warpdrive.ship.guide.anchor_block_detected",
+									reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.anchor_block_detected",
 									              blockState.getBlock().getLocalizedName(),
 									              x, y, z);
 									return false;
@@ -562,7 +562,7 @@ public class JumpShip {
 										final IBlockTransformer blockTransformer = WarpDriveConfig.blockTransformers.get(external.getKey());
 										if (blockTransformer != null) {
 											if (!blockTransformer.isJumpReady(jumpBlock.block, jumpBlock.blockMeta, tileEntity, reason)) {
-												reason.append(Commons.styleWarning, "warpdrive.ship.guide.block_not_ready_for_jump",
+												reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.block_not_ready_for_jump",
 												              jumpBlock.block.getLocalizedName(),
 												              jumpBlock.x, jumpBlock.y, jumpBlock.z);
 												return false;
@@ -600,7 +600,7 @@ public class JumpShip {
 			actualMass = newMass;
 		} catch (final Exception exception) {
 			exception.printStackTrace();
-			final WarpDriveText textComponent = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.save_exception",
+			final WarpDriveText textComponent = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.save_exception",
 			                                                      Commons.format(world, blockPos));
 			WarpDrive.logger.error(textComponent.getUnformattedText());
 			reason.appendSibling(textComponent);

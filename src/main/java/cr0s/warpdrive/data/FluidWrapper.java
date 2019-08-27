@@ -63,9 +63,9 @@ public class FluidWrapper {
 		final String energyMaxStorage_units = FluidWrapper.format(maxStorage, unitsToUse);
 		final WarpDriveText textRate = new WarpDriveText(null, "warpdrive.fluid.status_line.charge")
 				                               .appendInLine(null, " ")
-				                               .appendInLine(Commons.styleValue, energyStored_units)
+				                               .appendInLine(Commons.getStyleValue(), energyStored_units)
 				                               .appendInLine(null, " / ")
-				                               .appendInLine(Commons.styleValue, energyMaxStorage_units)
+				                               .appendInLine(Commons.getStyleValue(), energyMaxStorage_units)
 				                               .appendInLine(null, String.format(" %s.", unitsToUse));
 		warpDriveText.append(textRate);
 	}
@@ -100,7 +100,7 @@ public class FluidWrapper {
 	                                        final long rate, final String units) {
 		final String unitsToUse = units == null ? WarpDriveConfig.ENERGY_DISPLAY_UNITS : units;
 		final WarpDriveText textRate = new WarpDriveText(null, translationKey)
-				                               .appendInLine(Commons.styleValue, String.format(" %d", convert(rate, unitsToUse)))
+				                               .appendInLine(Commons.getStyleValue(), String.format(" %d", convert(rate, unitsToUse)))
 				                               .appendInLine(null, String.format(" %s/t.", unitsToUse));
 		warpDriveText.append(textRate);
 	}

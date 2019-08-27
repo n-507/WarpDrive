@@ -264,9 +264,9 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		for (final Entry<UpgradeSlot, Integer> entry : upgradeSlots.entrySet()) {
 			final UpgradeSlot upgradeSlot = entry.getKey();
 			final String keyName = isShowingItemNames ? upgradeSlot.itemStack.getTranslationKey() + ".name" : upgradeSlot.getTranslationKey();
-			final Style style = entry.getValue() == 0 ? Commons.styleDisabled : Commons.styleCorrect;
-			warpDriveText.append(Commons.styleDisabled, "- %1$s/%2$s x %3$s",
-			                     new WarpDriveText(Commons.styleValue, "%1$s", entry.getValue()),
+			final Style style = entry.getValue() == 0 ? Commons.getStyleDisabled() : Commons.getStyleCorrect();
+			warpDriveText.append(Commons.getStyleDisabled(), "- %1$s/%2$s x %3$s",
+			                     new WarpDriveText(Commons.getStyleValue(), "%1$s", entry.getValue()),
 			                     entry.getKey().maxCount,
 			                     new WarpDriveText(style, keyName) );
 		}
@@ -288,31 +288,31 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	@Nonnull
 	protected WarpDriveText getBeamFrequencyStatus(final int beamFrequency) {
 		if (beamFrequency == -1) {
-			return new WarpDriveText(Commons.styleWarning, "warpdrive.beam_frequency.status_line.undefined");
+			return new WarpDriveText(Commons.getStyleWarning(), "warpdrive.beam_frequency.status_line.undefined");
 		} else if (beamFrequency < 0) {
-			return new WarpDriveText(Commons.styleWarning, "warpdrive.beam_frequency.status_line.invalid", beamFrequency);
+			return new WarpDriveText(Commons.getStyleWarning(), "warpdrive.beam_frequency.status_line.invalid", beamFrequency);
 		} else {
-			return new WarpDriveText(Commons.styleCorrect, "warpdrive.beam_frequency.status_line.valid", beamFrequency);
+			return new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.beam_frequency.status_line.valid", beamFrequency);
 		}
 	}
 	
 	@Nonnull
 	protected WarpDriveText getVideoChannelStatus(final int videoChannel) {
 		if (videoChannel == -1) {
-			return new WarpDriveText(Commons.styleWarning, "warpdrive.video_channel.status_line.undefined");
+			return new WarpDriveText(Commons.getStyleWarning(), "warpdrive.video_channel.status_line.undefined");
 		} else if (videoChannel < 0) {
-			return new WarpDriveText(Commons.styleWarning, "warpdrive.video_channel.status_line.invalid",
+			return new WarpDriveText(Commons.getStyleWarning(), "warpdrive.video_channel.status_line.invalid",
 			                         videoChannel);
 		} else {
 			final CameraRegistryItem camera = WarpDrive.cameras.getCameraByVideoChannel(world, videoChannel);
 			if (camera == null) {
-				return new WarpDriveText(Commons.styleWarning, "warpdrive.video_channel.status_line.not_loaded",
+				return new WarpDriveText(Commons.getStyleWarning(), "warpdrive.video_channel.status_line.not_loaded",
 				                         videoChannel);
 			} else if (camera.isTileEntity(this)) {
-				return new WarpDriveText(Commons.styleCorrect, "warpdrive.video_channel.status_line.valid_self",
+				return new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.video_channel.status_line.valid_self",
 				                         videoChannel);
 			} else {
-				return new WarpDriveText(Commons.styleCorrect, "warpdrive.video_channel.status_line.valid_other",
+				return new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.video_channel.status_line.valid_other",
 				                         videoChannel,
 				                         Commons.format(world, camera.blockPos) );
 			}
@@ -323,7 +323,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	protected WarpDriveText getCoreSignatureStatus(final String nameSignature) {
 		// note: we only report 'undefined' status for Remote controllers
 		if (nameSignature != null && !nameSignature.isEmpty()) {
-			return new WarpDriveText(Commons.styleCorrect, "warpdrive.core_signature.status_line.defined",
+			return new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.core_signature.status_line.defined",
 			                         nameSignature);
 		}
 		return new WarpDriveText();
@@ -370,7 +370,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 				showDetails = Keyboard.isKeyDown(keyCodeSneak);
 				if (!showDetails) {
 					message.append(null, "warpdrive.upgrade.status_line.upgradeable",
-					               new WarpDriveText(Commons.styleCommand, "%1$s", keyName) );
+					               new WarpDriveText(Commons.getStyleCommand(), "%1$s", keyName) );
 				}
 			}
 			if (showDetails) {

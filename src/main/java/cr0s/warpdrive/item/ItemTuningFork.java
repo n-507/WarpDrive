@@ -163,11 +163,11 @@ public class ItemTuningFork extends ItemAbstractBase implements IWarpTool {
 		
 		final WarpDriveText textTooltip = new WarpDriveText();
 		textTooltip.append(null, "warpdrive.video_channel.tooltip",
-		               new WarpDriveText(Commons.styleValue, getVideoChannel(itemStack)) );
+		               new WarpDriveText(Commons.getStyleValue(), getVideoChannel(itemStack)) );
 		textTooltip.append(null, "warpdrive.beam_frequency.tooltip",
-		               new WarpDriveText(Commons.styleValue, getBeamFrequency(itemStack)) );
+		               new WarpDriveText(Commons.getStyleValue(), getBeamFrequency(itemStack)) );
 		textTooltip.append(null, "warpdrive.control_channel.tooltip",
-		               new WarpDriveText(Commons.styleValue, getControlChannel(itemStack)) );
+		               new WarpDriveText(Commons.getStyleValue(), getControlChannel(itemStack)) );
 		textTooltip.appendLineBreak();
 		textTooltip.append(null, "item.warpdrive.tool.tuning_fork.tooltip.usage");
 		

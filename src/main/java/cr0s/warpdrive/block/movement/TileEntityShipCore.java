@@ -214,14 +214,14 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			if ( getBack() == 0 && getFront() == 0
 			  && getLeft() == 0 && getRight() == 0
 			  && getDown() == 0 && getUp() == 0 ) {
-				textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.no_dimension_set");
+				textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.no_dimension_set");
 				isAssemblyValid = false;
 				return;
 			}
 			if ( (getBack() + getFront()) > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]
 			     || (getLeft() + getRight()) > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]
 			     || (getDown() + getUp()   ) > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()] ) {
-				textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.too_large_side_for_tier",
+				textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.too_large_side_for_tier",
 				                                       WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]);
 				isAssemblyValid = false;
 				return;
@@ -265,7 +265,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			if (!isUnlimited) {
 				if ( shipMass > WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE
 				  && CelestialObjectManager.isPlanet(world, pos.getX(), pos.getZ()) ) {
-					textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.too_much_mass_for_planet",
+					textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.too_much_mass_for_planet",
 					                                  WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE, shipMass);
 					isAssemblyValid = false;
 					if (isEnabled) {
@@ -275,7 +275,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				}
 				if ( shipMass < WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE
 				  && CelestialObjectManager.isInHyperspace(world, pos.getX(), pos.getZ()) ) {
-					textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.insufficient_mass_for_hyperspace",
+					textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.insufficient_mass_for_hyperspace",
 					                                       WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE, shipMass);
 					isAssemblyValid = false;
 					if (isEnabled) {
@@ -284,7 +284,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 					return;
 				}
 				if (shipMass < WarpDriveConfig.SHIP_MASS_MIN_BY_TIER[enumTier.getIndex()]) {
-					textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.insufficient_mass_for_tier",
+					textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.insufficient_mass_for_tier",
 					                                       WarpDriveConfig.SHIP_MASS_MIN_BY_TIER[enumTier.getIndex()], shipMass);
 					isAssemblyValid = false;
 					if (isEnabled) {
@@ -293,7 +293,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 					return;
 				}
 				if (shipMass > WarpDriveConfig.SHIP_MASS_MAX_BY_TIER[enumTier.getIndex()]) {
-					textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.too_much_mass_for_tier",
+					textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.too_much_mass_for_tier",
 					                                       WarpDriveConfig.SHIP_MASS_MAX_BY_TIER[enumTier.getIndex()], shipMass);
 					isAssemblyValid = false;
 					if (isEnabled) {
@@ -447,19 +447,19 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			
 			final TileEntityShipCore shipCoreIntersecting = WarpDrive.starMap.getIntersectingShipCore(this);
 			if (shipCoreIntersecting != null) {
-				commandDone(false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.warp_field_overlapping",
+				commandDone(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.warp_field_overlapping",
 				                                     shipCoreIntersecting.getSignatureName() ));
 				return;
 			}
 			
 			if (WarpDrive.cloaks.isCloaked(world.provider.getDimension(), pos)) {
-				commandDone(false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.cloaking_field_overlapping"));
+				commandDone(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.cloaking_field_overlapping"));
 				return;
 			}
 			
 			doJump();
 			setCooldown(shipMovementCosts.cooldown_seconds * 20);
-			commandDone(true, new WarpDriveText(Commons.styleCorrect, "warpdrive.ship.guide.pre_jump_success"));
+			commandDone(true, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.ship.guide.pre_jump_success"));
 			jumpCount++;
 			stateCurrent = EnumShipCoreState.IDLE;
 			isCooldownReported = false;
@@ -532,7 +532,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		if (success || !commandCurrent.isMovement()) {
 			reason = reasonRaw;
 		} else {
-			reason = new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.movement_aborted")
+			reason = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.movement_aborted")
 					         .append(reasonRaw);
 		}
 		super.commandDone(success, reason);
@@ -653,7 +653,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		}
 		updateAfterResize();
 		if (!isAssemblyValid) {
-			Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.styleHeader, !name.isEmpty() ? name : "ShipCore")
+			Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.getStyleHeader(), !name.isEmpty() ? name : "ShipCore")
 					                                       .appendSibling(textValidityIssues));
 			return false;
 		}
@@ -707,7 +707,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				return;
 			}
 		}
-		final WarpDriveText message = new WarpDriveText(Commons.styleWarning, "warpdrive.teleportation.guide.no_safe_spot",
+		final WarpDriveText message = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.teleportation.guide.no_safe_spot",
 		                                                entityPlayer.getDisplayName());
 		Commons.messageToAllPlayersInArea(this, message);
 		Commons.addChatMessage(entityPlayer, message);
@@ -864,10 +864,10 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		if (percent > 80F) {
 			return true;
 		} else if (percent <= 0.001) {
-			reason.append(Commons.styleWarning, "warpdrive.ship.guide.jumpgate_is_too_far");
+			reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.jumpgate_is_too_far");
 			return false;
 		} else {
-			reason.append(Commons.styleWarning, "warpdrive.ship.guide.jumpgate_partially_entered",
+			reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.jumpgate_partially_entered",
 			              percent);
 			return false;
 		}
@@ -918,7 +918,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		final StarMapRegistryItem jumpGate_target = WarpDrive.starMap.getByName(EnumStarMapEntryType.JUMP_GATE, targetName);
 		
 		if (jumpGate_target == null) {
-			commandDone(false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.jumpgate_not_defined",
+			commandDone(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.jumpgate_not_defined",
 			                                     targetName));
 			return;
 		}
@@ -959,7 +959,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			}
 			
 			if (!placeFound) {
-				commandDone(false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.jumpgate_blocked"));
+				commandDone(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.jumpgate_blocked"));
 				return;
 			}
 			
@@ -975,7 +975,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			jump.enable();
 		} else {
 			final String units = WarpDriveConfig.ENERGY_DISPLAY_UNITS;
-			Commons.messageToAllPlayersInArea(this, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.insufficient_energy",
+			Commons.messageToAllPlayersInArea(this, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.insufficient_energy",
 			                                                          EnergyWrapper.format(energy_getEnergyStored(), units),
 			                                                          EnergyWrapper.format(shipMovementCosts.energyRequired, units),
 			                                                          units));
@@ -988,7 +988,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		
 		if (!energy_consume(requiredEnergy, true)) {
 			final String units = WarpDriveConfig.ENERGY_DISPLAY_UNITS;
-			commandDone(false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.insufficient_energy",
+			commandDone(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.insufficient_energy",
 			                                     EnergyWrapper.format(energy_getEnergyStored(), units),
 			                                     EnergyWrapper.format(requiredEnergy, units),
 			                                     units));
@@ -1012,7 +1012,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				
 				final WarpDriveText reason = new WarpDriveText();
 				if (nearestGate == null || !isShipInJumpgate(nearestGate, reason)) {
-					commandDone(false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.insufficient_mass_for_hyperspace",
+					commandDone(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.insufficient_mass_for_hyperspace",
 					                                     shipMass, WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE));
 					return;
 				}
@@ -1027,7 +1027,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		default:
 			WarpDrive.logger.error(String.format("%s Aborting while trying to perform invalid jump command %s",
 			                                     this, commandCurrent));
-			commandDone(false, new WarpDriveText(Commons.styleWarning, "warpdrive.error.internal_check_console"));
+			commandDone(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.error.internal_check_console"));
 			commandCurrent = EnumShipCommand.IDLE;
 			stateCurrent = EnumShipCoreState.IDLE;
 			return;
@@ -1035,7 +1035,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		
 		if (!energy_consume(requiredEnergy, false)) {
 			final String units = WarpDriveConfig.ENERGY_DISPLAY_UNITS;
-			commandDone(false, new WarpDriveText(Commons.styleWarning, "warpdrive.ship.guide.insufficient_energy",
+			commandDone(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.insufficient_energy",
 			                                     EnergyWrapper.format(energy_getEnergyStored(), units),
 			                                     EnergyWrapper.format(requiredEnergy, units),
 			                                     units));

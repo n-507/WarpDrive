@@ -276,15 +276,15 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 					
 					final WarpDriveText text = getStatusPrefix();
 					if (energyRequired > acceleratorSetup.energy_getMaxStorage()) {
-						text.append(Commons.styleWarning, "warpdrive.accelerator.guide.low_power.not_enough_storage",
+						text.append(Commons.getStyleWarning(), "warpdrive.accelerator.guide.low_power.not_enough_storage",
 						            energyRequired, acceleratorSetup.energy_getMaxStorage() );
 					} else if (acceleratorSetup.setChillers.isEmpty()) {
-						text.append(Commons.styleWarning, "warpdrive.accelerator.guide.no_chiller");
+						text.append(Commons.getStyleWarning(), "warpdrive.accelerator.guide.no_chiller");
 					} else if (setParticleBunches.isEmpty()) {
-						text.append(Commons.styleWarning, "warpdrive.accelerator.guide.low_power.no_particles",
+						text.append(Commons.getStyleWarning(), "warpdrive.accelerator.guide.low_power.no_particles",
 						            energyRequired, energyPotential);
 					} else {
-						text.append(Commons.styleWarning, "warpdrive.accelerator.guide.low_power.accelerating",
+						text.append(Commons.getStyleWarning(), "warpdrive.accelerator.guide.low_power.accelerating",
 						            energyRequired, energyPotential);
 					}
 					

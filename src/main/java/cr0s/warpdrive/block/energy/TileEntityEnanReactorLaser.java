@@ -176,7 +176,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		final boolean isValid = super.doScanAssembly(isDirty, textReason);
 		
 		if (reactorFace == ReactorFace.UNKNOWN) {
-			textReason.append(Commons.styleWarning, "warpdrive.enan_reactor.status_line.missing_reactor_core");
+			textReason.append(Commons.getStyleWarning(), "warpdrive.enan_reactor.status_line.missing_reactor_core");
 			return false;
 		}
 		

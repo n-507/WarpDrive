@@ -268,7 +268,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 					guideTicks = PROJECTOR_GUIDE_UPDATE_TICKS;
 					
 					final WarpDriveText msg = Commons.getChatPrefix(getBlockType());
-					msg.appendSibling(new WarpDriveText(Commons.styleWarning, "warpdrive.force_field.guide.low_power"));
+					msg.appendSibling(new WarpDriveText(Commons.getStyleWarning(), "warpdrive.force_field.guide.low_power"));
 					
 					final AxisAlignedBB axisalignedbb = new AxisAlignedBB(pos.getX() - 10, pos.getY() - 10, pos.getZ() - 10, pos.getX() + 10, pos.getY() + 10, pos.getZ() + 10);
 					final List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(null, axisalignedbb);
@@ -302,7 +302,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		final boolean isValid = super.doScanAssembly(isDirty, textReason);
 		
 		if (getShape() == EnumForceFieldShape.NONE) {
-			textReason.append(Commons.styleWarning, "warpdrive.force_field.shape.status_line.none");
+			textReason.append(Commons.getStyleWarning(), "warpdrive.force_field.shape.status_line.none");
 			return false;
 		}
 		
@@ -1003,7 +1003,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		final EnumForceFieldShape enumForceFieldShape = getShape();
 		final WarpDriveText displayName = new WarpDriveText(null, "warpdrive.force_field.shape.status_line." + enumForceFieldShape.getName());
 		if (enumForceFieldShape == EnumForceFieldShape.NONE) {
-			return new WarpDriveText(Commons.styleWarning, "warpdrive.force_field.shape.status_line.none",
+			return new WarpDriveText(Commons.getStyleWarning(), "warpdrive.force_field.shape.status_line.none",
 			                         displayName);
 		} else if (isDoubleSided) {
 			return new WarpDriveText(null, "warpdrive.force_field.shape.status_line.double",

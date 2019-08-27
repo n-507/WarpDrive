@@ -189,11 +189,11 @@ public class TileEntityIC2reactorLaserMonitor extends TileEntityAbstractLaser {
 		
 		if (facing != null) {
 			return super.getStatus() 
-					.append(Commons.styleCorrect, "warpdrive.ic2_reactor_laser_cooler.reactor_found",
+					.append(Commons.getStyleCorrect(), "warpdrive.ic2_reactor_laser_cooler.reactor_found",
 					        facing.name().toLowerCase());
 		} else {
 			return super.getStatus()
-					.append(Commons.styleWarning, "warpdrive.ic2_reactor_laser_cooler.no_reactor");
+					.append(Commons.getStyleWarning(), "warpdrive.ic2_reactor_laser_cooler.no_reactor");
 		}
 	}
 	

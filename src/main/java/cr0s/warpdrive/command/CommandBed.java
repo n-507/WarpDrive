@@ -42,7 +42,7 @@ public class CommandBed extends AbstractCommand {
 				entityPlayerMPs = new EntityPlayerMP[1];
 				entityPlayerMPs[0] = (EntityPlayerMP) commandSender;
 			} else {
-				Commons.addChatMessage(commandSender, getPrefix().appendSibling(new WarpDriveText(Commons.styleWarning, "warpdrive.command.player_required")));
+				Commons.addChatMessage(commandSender, getPrefix().appendSibling(new WarpDriveText(Commons.getStyleWarning(), "warpdrive.command.player_required")));
 				return;
 			}
 			
@@ -65,7 +65,7 @@ public class CommandBed extends AbstractCommand {
 				entityPlayerMPs = new EntityPlayerMP[1];
 				entityPlayerMPs[0] = (EntityPlayerMP) commandSender;
 			} else {
-				Commons.addChatMessage(commandSender, new WarpDriveText(Commons.styleWarning, "warpdrive.command.player_not_found",
+				Commons.addChatMessage(commandSender, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.command.player_not_found",
 				                                                        args[0] ));
 				return;
 			}
@@ -75,10 +75,10 @@ public class CommandBed extends AbstractCommand {
 		for (final EntityPlayerMP entityPlayerMP : entityPlayerMPs) {
 			final BlockPos bedLocation = entityPlayerMP.getBedLocation(entityPlayerMP.world.provider.getDimension());
 			if (bedLocation == null) {
-				Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.styleWarning, "warpdrive.command.no_bed_to_teleport_to_self",
+				Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.command.no_bed_to_teleport_to_self",
 				                                                         Commons.format(entityPlayerMP.world) ));
 				if (args.length != 0) {
-					Commons.addChatMessage(commandSender, new WarpDriveText(Commons.styleWarning, "warpdrive.command.no_bed_to_teleport_to_other",
+					Commons.addChatMessage(commandSender, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.command.no_bed_to_teleport_to_other",
 					                                                        entityPlayerMP.getName(),
 					                                                        Commons.format(entityPlayerMP.world) ));
 				}
@@ -87,10 +87,10 @@ public class CommandBed extends AbstractCommand {
 			
 			final Block block = entityPlayerMP.world.getBlockState(bedLocation).getBlock();
 			if (!(block instanceof BlockBed)) {
-				Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.styleWarning, "warpdrive.command.lost_bed_can_t_teleport_self",
+				Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.command.lost_bed_can_t_teleport_self",
 				                                                         Commons.format(entityPlayerMP.world) ));
 				if (args.length != 0) {
-					Commons.addChatMessage(commandSender, new WarpDriveText(Commons.styleWarning, "warpdrive.command.lost_bed_can_t_teleport_other",
+					Commons.addChatMessage(commandSender, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.command.lost_bed_can_t_teleport_other",
 					                                                        entityPlayerMP.getName(),
 					                                                        Commons.format(entityPlayerMP.world) ));
 				}
@@ -100,12 +100,12 @@ public class CommandBed extends AbstractCommand {
 			entityPlayerMP.setPositionAndUpdate(bedLocation.getX() + 0.5D, bedLocation.getY() + 0.5D, bedLocation.getZ() + 0.5D);
 			
 			if (args.length == 0) {
-				Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.styleCorrect, "warpdrive.command.teleporting_to_x",
+				Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.command.teleporting_to_x",
 				                                                         Commons.format(entityPlayerMP.world, bedLocation) ));
 			} else {
-				Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.styleCorrect, "warpdrive.command.teleporting_by_x_to_y",
+				Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.command.teleporting_by_x_to_y",
 				                                                         Commons.format(entityPlayerMP.world, bedLocation) ));
-				Commons.addChatMessage(commandSender, new WarpDriveText(Commons.styleCorrect, "warpdrive.command.teleporting_player_x_to_y",
+				Commons.addChatMessage(commandSender, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.command.teleporting_player_x_to_y",
 				                                                        entityPlayerMP.getName(),
 				                                                        Commons.format(entityPlayerMP.world, bedLocation) ));
 			}

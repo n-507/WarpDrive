@@ -240,7 +240,7 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 							entityItem.setNoPickupDelay();
 							final boolean isSuccess = world.spawnEntity(entityItem);
 							if (!isSuccess) {
-								Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.spawn_denied",
+								Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.upgrade.result.spawn_denied",
 								                                                       entityItem ));
 								return true;
 							}
@@ -248,16 +248,16 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 						
 						tileEntityForceFieldProjector.setShape(EnumForceFieldShape.NONE);
 						// shape dismounted
-						Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleCorrect, "warpdrive.upgrade.result.shape_dismounted"));
+						Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.upgrade.result.shape_dismounted"));
 						
 					} else {
 						// wrong side
-						Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.wrong_shape_side"));
+						Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.upgrade.result.wrong_shape_side"));
 					}
 					
 				} else {
 					// no shape to dismount
-					Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.no_shape_to_dismount"));
+					Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.upgrade.result.no_shape_to_dismount"));
 				}
 				return true;
 			}
@@ -290,7 +290,7 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 						entityItem.setNoPickupDelay();
 						final boolean isSuccess = world.spawnEntity(entityItem);
 						if (!isSuccess) {
-							Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.spawn_denied",
+							Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.upgrade.result.spawn_denied",
 							                                                       entityItem ));
 							return true;
 						}
@@ -300,18 +300,18 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 				// mount the new shape item(s)
 				tileEntityForceFieldProjector.setShape(EnumForceFieldShape.get(itemStackHeld.getItemDamage()));
 				// shape mounted
-				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleCorrect, "warpdrive.upgrade.result.shape_mounted"));
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.upgrade.result.shape_mounted"));
 				
 			} else {
 				// wrong side
-				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.wrong_shape_side"));
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.upgrade.result.wrong_shape_side"));
 			}
 			return true;
 			
 		} else if (itemStackHeld.getItem() instanceof ItemForceFieldUpgrade) {// no sneaking and an upgrade in hand => mounting an upgrade
 			// validate type
 			if (upgradeSlot == null) {
-				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.invalid_upgrade_for_projector"));
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.upgrade.result.invalid_upgrade_for_projector"));
 				return true;
 			}
 			

@@ -537,7 +537,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 				final IBlockState blockState = world.getBlockState(mutableBlockPos);
 				final boolean isAir = blockState.getBlock().isAir(blockState, world, mutableBlockPos);
 				if (!isAir) {
-					textReason.append(Commons.styleWarning, "warpdrive.enan_reactor.status_line.non_air_block",
+					textReason.append(Commons.getStyleWarning(), "warpdrive.enan_reactor.status_line.non_air_block",
 					                  Commons.format(world, mutableBlockPos) );
 					isValid = false;
 					final Vector3 vPosition = new Vector3(mutableBlockPos).translate(0.5D);
@@ -559,7 +559,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 			if (tileEntity instanceof TileEntityEnanReactorLaser) {
 				((TileEntityEnanReactorLaser) tileEntity).setReactorFace(reactorFace, this);
 			} else {
-				textReason.append(Commons.styleWarning, "warpdrive.enan_reactor.status_line.missing_stabilization_laser",
+				textReason.append(Commons.getStyleWarning(), "warpdrive.enan_reactor.status_line.missing_stabilization_laser",
 				                  Commons.format(world, mutableBlockPos) );
 				isValid = false;
 				final Vector3 vPosition = new Vector3(mutableBlockPos).translate(0.5D);

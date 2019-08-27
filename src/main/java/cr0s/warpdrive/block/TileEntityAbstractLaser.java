@@ -101,7 +101,7 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractEnergyBa
 		cache_laserMedium_factor = 0.0D;
 		cache_laserMedium_energyStored = 0;
 		cache_laserMedium_maxStorage = 0;
-		textReason.append(Commons.styleWarning, "warpdrive.laser.status_line.missing_laser_medium",
+		textReason.append(Commons.getStyleWarning(), "warpdrive.laser.status_line.missing_laser_medium",
 		                  Commons.format(laserMedium_directionsValid) );
 		return false;
 	}

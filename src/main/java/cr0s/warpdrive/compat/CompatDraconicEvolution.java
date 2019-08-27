@@ -96,7 +96,7 @@ public class CompatDraconicEvolution implements IBlockTransformer {
 	public boolean isJumpReady(final Block block, final int metadata, final TileEntity tileEntity, final WarpDriveText reason) {
 		if ( classBlockDislocatorReceptacle.isInstance(block)
 		  || classBlockPortal.isInstance(block) ) {
-			reason.append(Commons.styleWarning, "warpdrive.compat.guide.draconic_evolution_portal");
+			reason.append(Commons.getStyleWarning(), "warpdrive.compat.guide.draconic_evolution_portal");
 			return false;
 		}
 		return true;

@@ -353,19 +353,19 @@ public class ItemTuningDriver extends ItemAbstractBase implements IWarpTool {
 		
 		final WarpDriveText textTooltip = new WarpDriveText();
 		textTooltip.append(null, "warpdrive.video_channel.tooltip",
-		                   new WarpDriveText(Commons.styleValue, getVideoChannel(itemStack)) );
+		                   new WarpDriveText(Commons.getStyleValue(), getVideoChannel(itemStack)) );
 		switch (itemStack.getItemDamage()) {
 		case MODE_VIDEO_CHANNEL:
 			textTooltip.append(null, "warpdrive.video_channel.tooltip",
-			                   new WarpDriveText(Commons.styleValue, getVideoChannel(itemStack)) );
+			                   new WarpDriveText(Commons.getStyleValue(), getVideoChannel(itemStack)) );
 			break;
 		case MODE_BEAM_FREQUENCY:
 			textTooltip.append(null, "warpdrive.beam_frequency.tooltip",
-			                   new WarpDriveText(Commons.styleValue, getBeamFrequency(itemStack)) );
+			                   new WarpDriveText(Commons.getStyleValue(), getBeamFrequency(itemStack)) );
 			break;
 		case MODE_CONTROL_CHANNEL:
 			textTooltip.append(null, "warpdrive.control_channel.tooltip",
-			                   new WarpDriveText(Commons.styleValue, getControlChannel(itemStack)) );
+			                   new WarpDriveText(Commons.getStyleValue(), getControlChannel(itemStack)) );
 			break;
 		default:
 			textTooltip.append(new TextComponentString("I'm broken :("));

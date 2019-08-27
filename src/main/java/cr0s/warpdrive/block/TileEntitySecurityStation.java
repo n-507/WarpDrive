@@ -85,7 +85,7 @@ public class TileEntitySecurityStation extends TileEntityAbstractMachine impleme
 			if (entityPlayer.getName().equals(name)) {
 				players.remove(i);
 				WarpDriveText text = Commons.getChatPrefix(getBlockType());
-				text.appendSibling(new WarpDriveText(Commons.styleCorrect, "warpdrive.security_station.guide.player_unregistered",
+				text.appendSibling(new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.security_station.guide.player_unregistered",
 				                                     getAttachedPlayersList()));
 				return text;
 			}
@@ -94,7 +94,7 @@ public class TileEntitySecurityStation extends TileEntityAbstractMachine impleme
 		entityPlayer.attackEntityFrom(DamageSource.GENERIC, 1);
 		players.add(entityPlayer.getName());
 		WarpDriveText text = Commons.getChatPrefix(getBlockType());
-		text.appendSibling(new WarpDriveText(Commons.styleCorrect, "warpdrive.security_station.guide.player_registered",
+		text.appendSibling(new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.security_station.guide.player_registered",
 		                                     getAttachedPlayersList()));
 		return text;
 	}

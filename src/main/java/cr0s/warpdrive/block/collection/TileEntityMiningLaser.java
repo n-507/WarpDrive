@@ -600,40 +600,40 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	@Override
 	public WarpDriveText getStatusHeader() {
 		final int energy = laserMedium_getEnergyStored(true);
-		WarpDriveText textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.error.internal_check_console");
+		WarpDriveText textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.error.internal_check_console");
 		if (stateCurrent == STATE_IDLE) {
-			textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.mining_laser.status_line.idle");
+			textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.mining_laser.status_line.idle");
 		} else if (stateCurrent == STATE_WARMING_UP) {
-			textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.mining_laser.status_line.warming_up");
+			textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.mining_laser.status_line.warming_up");
 		} else if ( stateCurrent == STATE_START_SCANNING
 		         || stateCurrent == STATE_DO_SCANNING ) {
 			if (mineAllBlocks) {
-				textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.mining_laser.status_line.scanning_all");
+				textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.mining_laser.status_line.scanning_all");
 			} else {
-				textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.mining_laser.status_line.scanning_ores");
+				textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.mining_laser.status_line.scanning_ores");
 			}
 		} else if (stateCurrent == STATE_MINING) {
 			if (!enableSilktouch) {
 				if (mineAllBlocks) {
-					textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.mining_laser.status_line.mining_all");
+					textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.mining_laser.status_line.mining_all");
 				} else {
-					textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.mining_laser.status_line.mining_ores");
+					textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.mining_laser.status_line.mining_ores");
 				}
 			} else {
 				if (mineAllBlocks) {
-					textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.mining_laser.status_line.mining_all_with_silktouch");
+					textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.mining_laser.status_line.mining_all_with_silktouch");
 				} else {
-					textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.mining_laser.status_line.mining_ores_with_silktouch");
+					textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.mining_laser.status_line.mining_ores_with_silktouch");
 				}
 			}
 		}
 		if (energy <= 0) {
-			textState.appendSibling(new WarpDriveText(Commons.styleWarning, "warpdrive.mining_laser.status_line._insufficient_energy"));
+			textState.appendSibling(new WarpDriveText(Commons.getStyleWarning(), "warpdrive.mining_laser.status_line._insufficient_energy"));
 		} else if ( ( stateCurrent == STATE_START_SCANNING
 		           || stateCurrent == STATE_DO_SCANNING
 		           || stateCurrent == STATE_MINING )
 		         && !isPowered ) {
-			textState.appendSibling(new WarpDriveText(Commons.styleWarning, "warpdrive.mining_laser.status_line._insufficient_energy"));
+			textState.appendSibling(new WarpDriveText(Commons.getStyleWarning(), "warpdrive.mining_laser.status_line._insufficient_energy"));
 		}
 		return textState;
 	}

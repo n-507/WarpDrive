@@ -295,9 +295,9 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		shipCore = tileEntityShipCore;
 		if (shipCore == null) {
 			if (blockStateShipCoreTooHigh == null) {
-				textReason.append(Commons.styleWarning, "warpdrive.builder.status_line.no_ship_core_in_range");
+				textReason.append(Commons.getStyleWarning(), "warpdrive.builder.status_line.no_ship_core_in_range");
 			} else {
-				textReason.append(Commons.styleWarning, "warpdrive.builder.status_line.ship_is_higher_tier",
+				textReason.append(Commons.getStyleWarning(), "warpdrive.builder.status_line.ship_is_higher_tier",
 				                  blockStateShipCoreTooHigh.getBlock().getLocalizedName(),
 				                  getBlockType().getLocalizedName() );
 			}
@@ -315,7 +315,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		final int size = width * length * height;
 		
 		if (width <= 0 || length <= 0 || height <= 0) {
-			reason.append(Commons.styleWarning, "warpdrive.scanner.guide.invalid_ship_dimensions");
+			reason.append(Commons.getStyleWarning(), "warpdrive.scanner.guide.invalid_ship_dimensions");
 			return false;
 		}
 		
@@ -466,7 +466,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 			final double distance = MathHelper.sqrt(dX * dX + dY * dY + dZ * dZ);
 			
 			if (distance > WarpDriveConfig.SS_MAX_DEPLOY_RADIUS_BLOCKS) {
-				reason.append(Commons.styleWarning, "warpdrive.builder.guide.deploying_out_of_range",
+				reason.append(Commons.getStyleWarning(), "warpdrive.builder.guide.deploying_out_of_range",
 				              WarpDriveConfig.SS_MAX_DEPLOY_RADIUS_BLOCKS);
 				return false;
 			}
@@ -528,7 +528,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 					}
 				}
 				if (occupiedBlockCount > 0) {
-					reason.append(Commons.styleWarning, "warpdrive.builder.guide.deployment_area_occupied_by_blocks",
+					reason.append(Commons.getStyleWarning(), "warpdrive.builder.guide.deployment_area_occupied_by_blocks",
 					              occupiedBlockCount);
 					return false;
 				}
@@ -540,7 +540,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		
 		isShipToken = isForced;
 		setState(EnumShipScannerState.DEPLOYING);
-		reason.append(Commons.styleCorrect, "warpdrive.builder.guide.deploying_ship",
+		reason.append(Commons.getStyleCorrect(), "warpdrive.builder.guide.deploying_ship",
 		              fileName);
 		return true;
 	}
@@ -555,7 +555,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		if (!(blockState.getBlock() instanceof BlockShipCore)) {
 			world.newExplosion(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(),
 			                   1, false, false);
-			reason.append(Commons.styleWarning, "warpdrive.builder.guide.deployment_area_occupied_by_block",
+			reason.append(Commons.getStyleWarning(), "warpdrive.builder.guide.deployment_area_occupied_by_block",
 			              blockState.getBlock().getLocalizedName(),
 			              blockPos.getX(), blockPos.getY(), blockPos.getZ());
 			return false;
@@ -563,9 +563,9 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		
 		final TileEntity tileEntity = world.getTileEntity(blockPos);
 		if (!(tileEntity instanceof TileEntityShipCore)) {
-			reason.append(Commons.styleWarning, "warpdrive.builder.guide.deployment_area_corrupted_tile_entity",
+			reason.append(Commons.getStyleWarning(), "warpdrive.builder.guide.deployment_area_corrupted_tile_entity",
 			              tileEntity);
-			reason.append(Commons.styleCommand, "warpdrive.builder.guide.contact_an_admin",
+			reason.append(Commons.getStyleCommand(), "warpdrive.builder.guide.contact_an_admin",
 			              Commons.format(world, blockPos));
 			WarpDrive.logger.error(reason.toString());
 			world.newExplosion(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(),
@@ -576,15 +576,15 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		final TileEntityShipCore tileEntityShipCore = (TileEntityShipCore) tileEntity;
 		final String namePlayersAboard = tileEntityShipCore.getAllPlayersInArea();
 		if (!namePlayersAboard.isEmpty()) {
-			reason.append(Commons.styleWarning, "warpdrive.builder.guide.deployment_area_with_active_crew",
+			reason.append(Commons.getStyleWarning(), "warpdrive.builder.guide.deployment_area_with_active_crew",
 			              namePlayersAboard);
-			reason.append(Commons.styleCommand, "warpdrive.builder.guide.wait_your_turn");
+			reason.append(Commons.getStyleCommand(), "warpdrive.builder.guide.wait_your_turn");
 			return false;
 		}
 		
 		if (tileEntityShipCore.isBusy()) {
-			reason.append(Commons.styleWarning, "warpdrive.builder.guide.deployment_area_is_busy");
-			reason.append(Commons.styleCommand, "warpdrive.builder.guide.wait_your_turn");
+			reason.append(Commons.getStyleWarning(), "warpdrive.builder.guide.deployment_area_is_busy");
+			reason.append(Commons.getStyleCommand(), "warpdrive.builder.guide.wait_your_turn");
 			return false;
 		}
 		
@@ -594,15 +594,15 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		}
 		
 		if (nameOnlineCrew.equals(nameRequestingPlayer)) {
-			reason.append(Commons.styleWarning, "warpdrive.builder.guide.deployment_area_occupied_by_your_ship1",
+			reason.append(Commons.getStyleWarning(), "warpdrive.builder.guide.deployment_area_occupied_by_your_ship1",
 			              nameOnlineCrew);
-			reason.append(Commons.styleCommand, "warpdrive.builder.guide.deployment_area_occupied_by_your_ship2");
+			reason.append(Commons.getStyleCommand(), "warpdrive.builder.guide.deployment_area_occupied_by_your_ship2");
 			return false;
 		}
 		
-		reason.append(Commons.styleWarning, "warpdrive.builder.guide.deployment_area_occupied_by_online_player1",
+		reason.append(Commons.getStyleWarning(), "warpdrive.builder.guide.deployment_area_occupied_by_online_player1",
 		              nameOnlineCrew);
-		reason.append(Commons.styleCommand, "warpdrive.builder.guide.deployment_area_occupied_by_online_player2");
+		reason.append(Commons.getStyleCommand(), "warpdrive.builder.guide.deployment_area_occupied_by_online_player2");
 		return false;
 		
 	}
@@ -831,7 +831,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		}
 		if (entityPlayers.size() > 1) {
 			for (final EntityPlayer entityPlayer : entityPlayers) {
-				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.builder.guide.too_many_players"));
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.builder.guide.too_many_players"));
 				shipToken_nextUpdate_ticks = SHIP_TOKEN_UPDATE_DELAY_FAILED_PRECONDITION_TICKS;
 			}
 			shipToken_idPlayer = null;
@@ -852,7 +852,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		}
 		if ( itemStack == null
 		  || slotIndex >= entityPlayer.inventory.getSizeInventory() ) {
-			Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.builder.guide.no_ship_token"));
+			Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.builder.guide.no_ship_token"));
 			shipToken_nextUpdate_ticks = SHIP_TOKEN_UPDATE_DELAY_FAILED_PRECONDITION_TICKS;
 			shipToken_idPlayer = null;
 			return;
@@ -864,12 +864,12 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 			shipToken_idPlayer = entityPlayer.getUniqueID();
 			shipToken_countWarmup = SHIP_TOKEN_PLAYER_WARMUP_PERIODS + 1;
 			shipToken_nameSchematic = ItemShipToken.getSchematicName(itemStack);
-			Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleCorrect, "warpdrive.builder.guide.ship_token_detected",
+			Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.builder.guide.ship_token_detected",
 			                                                       shipToken_nameSchematic));
 		}
 		shipToken_countWarmup--;
 		if (shipToken_countWarmup > 0) {
-			Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleNormal, "warpdrive.builder.guide.ship_materialization_countdown",
+			Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleNormal(), "warpdrive.builder.guide.ship_materialization_countdown",
 			                                                       shipToken_nameSchematic, shipToken_countWarmup));
 			return;
 		}

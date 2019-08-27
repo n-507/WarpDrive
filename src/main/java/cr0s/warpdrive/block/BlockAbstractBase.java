@@ -161,7 +161,7 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 				
 				if (upgradeSlot == null) {
 					// no more upgrades to dismount
-					Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.no_upgrade_to_dismount"));
+					Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.upgrade.result.no_upgrade_to_dismount"));
 					return true;
 				}
 				
@@ -172,7 +172,7 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 					entityItem.setNoPickupDelay();
 					final boolean isSuccess = world.spawnEntity(entityItem);
 					if (!isSuccess) {
-						Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.spawn_denied",
+						Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.upgrade.result.spawn_denied",
 						                                                       entityItem ));
 						return true;
 					}
@@ -180,7 +180,7 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 				
 				tileEntityAbstractBase.dismountUpgrade(upgradeSlot);
 				// upgrade dismounted
-				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleCorrect, "warpdrive.upgrade.result.dismounted",
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.upgrade.result.dismounted",
 				                                                       new TextComponentTranslation(upgradeSlot.itemStack.getTranslationKey() + ".name") ));
 				return true;
 			}
@@ -195,13 +195,13 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 		         && upgradeSlot != null ) {// no sneaking and an upgrade in hand => mounting an upgrade
 			// validate quantity already installed
 			if (tileEntityAbstractBase.getUpgradeMaxCount(upgradeSlot) < tileEntityAbstractBase.getUpgradeCount(upgradeSlot) + 1) {
-				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning,"warpdrive.upgrade.result.too_many_upgrades",
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(),"warpdrive.upgrade.result.too_many_upgrades",
 				                                                       tileEntityAbstractBase.getUpgradeMaxCount(upgradeSlot) ));
 				return true;
 			}
 			// validate dependency
 			if (!tileEntityAbstractBase.canMountUpgrade(upgradeSlot)) {
-				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning,"warpdrive.upgrade.result.invalid_upgrade"));
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(),"warpdrive.upgrade.result.invalid_upgrade"));
 				return true;
 			}
 			
@@ -210,7 +210,7 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 				final int countRequired = upgradeSlot.itemStack.getCount();
 				if (itemStackHeld.getCount() < countRequired) {
 					// not enough upgrade items
-					Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.not_enough_upgrades"));
+					Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.upgrade.result.not_enough_upgrades"));
 					return true;
 				}
 				
@@ -221,7 +221,7 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 			// mount the new upgrade item
 			tileEntityAbstractBase.mountUpgrade(upgradeSlot);
 			// upgrade mounted
-			Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleCorrect, "warpdrive.upgrade.result.mounted",
+			Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.upgrade.result.mounted",
 			                                                       new TextComponentTranslation(upgradeSlot.itemStack.getTranslationKey() + ".name") ));
 			return true;
 			

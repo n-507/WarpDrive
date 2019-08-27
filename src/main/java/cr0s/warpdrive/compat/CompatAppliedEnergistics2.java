@@ -57,7 +57,7 @@ public class CompatAppliedEnergistics2 implements IBlockTransformer {
 				try {
 					final Object object = methodTileQuantumBridge_getQEFrequency.invoke(tileEntity);
 					if (((Long)object) != 0L) {
-						reason.append(Commons.styleWarning, "warpdrive.compat.guide.quantum_field_interference");
+						reason.append(Commons.getStyleWarning(), "warpdrive.compat.guide.quantum_field_interference");
 						return false;
 					} else {
 						return true;

@@ -68,19 +68,19 @@ public class TileEntityShipController extends TileEntityAbstractShipController {
 		if (tileEntityShipCore == null) {
 			final StarMapRegistryItem starMapRegistryItem = WarpDrive.starMap.getByUUID(EnumStarMapEntryType.SHIP, uuid);
 			if (starMapRegistryItem == null) {
-				textReason.append(Commons.styleWarning, "warpdrive.core_signature.status_line.unknown_core_signature");
+				textReason.append(Commons.getStyleWarning(), "warpdrive.core_signature.status_line.unknown_core_signature");
 				return false;
 			}
 			final WorldServer worldServer = starMapRegistryItem.getWorldServerIfLoaded();
 			if (worldServer == null) {
-				textReason.append(Commons.styleWarning, "warpdrive.core_signature.status_line.world_not_loaded");
+				textReason.append(Commons.getStyleWarning(), "warpdrive.core_signature.status_line.world_not_loaded");
 				return false;
 			}
 			final TileEntity tileEntity = worldServer.getTileEntity(starMapRegistryItem.getBlockPos());
 			if ( !(tileEntity instanceof TileEntityShipCore)
 			  || tileEntity.isInvalid()
 			  || !((TileEntityShipCore) tileEntity).getSignatureUUID().equals(uuid) ) {
-				textReason.append(Commons.styleWarning, "warpdrive.core_signature.status_line.unknown_core_signature");
+				textReason.append(Commons.getStyleWarning(), "warpdrive.core_signature.status_line.unknown_core_signature");
 				return false;
 			}
 			tileEntityShipCore = (TileEntityShipCore) tileEntity;
@@ -132,7 +132,7 @@ public class TileEntityShipController extends TileEntityAbstractShipController {
 	@Override
 	protected WarpDriveText getCoreSignatureStatus(final String nameSignature) {
 		if (nameSignature == null || nameSignature.isEmpty()) {
-			return new WarpDriveText(Commons.styleWarning, "warpdrive.core_signature.status_line.undefined");
+			return new WarpDriveText(Commons.getStyleWarning(), "warpdrive.core_signature.status_line.undefined");
 		}
 		return super.getCoreSignatureStatus(nameSignature);
 	}

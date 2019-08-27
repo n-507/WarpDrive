@@ -4,6 +4,7 @@ import cr0s.warpdrive.BreathingManager;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.LocalProfiler;
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.forcefield.BlockForceField;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.config.Dictionary;
@@ -30,7 +31,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -113,16 +113,16 @@ public class LivingHandler {
 			  && entityLivingBase instanceof EntityPlayer
 			  && entityLivingBase.ticksExisted % 40 == 0) {
 				Commons.addChatMessage( entityLivingBase,
-					new TextComponentTranslation("warpdrive.world_border.in_range",
-					                             (int) Math.sqrt(Math.abs(distanceSquared))).setStyle(Commons.styleWarning) );
+					new WarpDriveText(Commons.getStyleWarning(), "warpdrive.world_border.in_range",
+					                  (int) Math.sqrt(Math.abs(distanceSquared))) );
 			}
 		} else {
 			if (entityLivingBase instanceof EntityPlayerMP) {
 				if (((EntityPlayerMP) entityLivingBase).capabilities.isCreativeMode) {
 					if (entityLivingBase.ticksExisted % 100 == 0) {
 						Commons.addChatMessage( entityLivingBase,
-							new TextComponentTranslation("warpdrive.world_border.outside",
-							                             (int) Math.sqrt(Math.abs(distanceSquared))).setStyle(Commons.styleWarning) );
+							new WarpDriveText(Commons.getStyleWarning(), "warpdrive.world_border.outside",
+							                  (int) Math.sqrt(Math.abs(distanceSquared))) );
 					}
 					return;
 				}
@@ -142,7 +142,7 @@ public class LivingHandler {
 			// spam chat if it's a player
 			if (entityLivingBase instanceof EntityPlayer && !entityLivingBase.isDead && entityLivingBase.deathTime <= 0) {
 				Commons.addChatMessage( entityLivingBase,
-					new TextComponentTranslation("warpdrive.world_border.reached").setStyle(Commons.styleWarning));
+					new WarpDriveText(Commons.getStyleWarning(), "warpdrive.world_border.reached"));
 			}
 			
 			// delay damage for 'fast moving' players
@@ -204,8 +204,8 @@ public class LivingHandler {
 					                                     entityLivingBase));
 					// inform player then roll around to cooldown
 					Commons.addChatMessage( entityLivingBase,
-					                        new TextComponentTranslation("warpdrive.ship.guide.exception_loading_dimension",
-					                                                     celestialObjectChild.dimensionId ).setStyle(Commons.styleWarning));
+					                        new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.exception_loading_dimension",
+					                                          celestialObjectChild.dimensionId ));
 					entityLivingBase.setPositionAndUpdate(entityLivingBase.posX, 260.0D, entityLivingBase.posZ);
 				} else {
 					final VectorI vEntry = celestialObjectChild.getEntryOffset();

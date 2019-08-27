@@ -80,7 +80,7 @@ public class AcceleratorSetup extends GlobalPosition {
 	public double   particleEnergy_energyCost_perTick;
 	
 	protected boolean isAssemblyValid = true;
-	protected WarpDriveText textValidityIssues = new WarpDriveText(Commons.styleWarning, "-undefined accelerator setup-");
+	protected WarpDriveText textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "-undefined accelerator setup-");
 	
 	public AcceleratorSetup(final int dimensionId, @Nonnull final BlockPos blockPos) {
 		super(dimensionId, blockPos.getX(), blockPos.getY(), blockPos.getZ());
@@ -201,7 +201,7 @@ public class AcceleratorSetup extends GlobalPosition {
 		}
 		if (firstVoidShell == null) {
 			isAssemblyValid = false;
-			textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_void_shell_connection");
+			textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.missing_void_shell_connection");
 			return;
 		}
 		
@@ -226,7 +226,7 @@ public class AcceleratorSetup extends GlobalPosition {
 		}
 		if (trajectoryPoint == null) {
 			isAssemblyValid = false;
-			textValidityIssues = new WarpDriveText(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_void_shell_connection");
+			textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.missing_void_shell_connection");
 			return;
 		}
 		
@@ -377,21 +377,21 @@ public class AcceleratorSetup extends GlobalPosition {
 		// check counts
 		if (mapInjectors.isEmpty()) {
 			isValid = false;
-			textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_injector");
+			textReason.append(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.missing_injector");
 		}
 		if (listColliders.isEmpty()) {
 			isValid = false;
-			textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_collider_node");
+			textReason.append(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.missing_collider_node");
 		}
 		if (countMagnets[2] > 0 && countChillers[2] == 0) {
 			isValid = false;
-			textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_superior_chiller");
+			textReason.append(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.missing_superior_chiller");
 		} else if (countMagnets[1] > 0 && countChillers[1] == 0) {
 			isValid = false;
-			textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_advanced_chiller");
+			textReason.append(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.missing_advanced_chiller");
 		} else if (countMagnets[0] > 0 && countChillers[0] == 0) {
 			isValid = false;
-			textReason.append(Commons.styleWarning, "warpdrive.accelerator.status_line.missing_basic_chiller");
+			textReason.append(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.missing_basic_chiller");
 		}
 		
 		// update validity status

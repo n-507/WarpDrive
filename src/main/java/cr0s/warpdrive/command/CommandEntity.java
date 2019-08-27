@@ -172,12 +172,12 @@ public class CommandEntity extends AbstractCommand {
 			}
 		}
 		if (count == 0) {
-			final ITextComponent textComponent = new TextComponentTranslation("warpdrive.command.no_matching_entity", radius).setStyle(Commons.styleWarning);
+			final ITextComponent textComponent = new TextComponentTranslation("warpdrive.command.no_matching_entity", radius).setStyle(Commons.getStyleWarning());
 			Commons.addChatMessage(commandSender, textComponent);
 			return;
 		}
 		
-		ITextComponent textComponent = new TextComponentTranslation("warpdrive.command.x_matching_entities", count, radius).setStyle(Commons.styleCorrect);
+		ITextComponent textComponent = new TextComponentTranslation("warpdrive.command.x_matching_entities", count, radius).setStyle(Commons.getStyleCorrect());
 		Commons.addChatMessage(commandSender, textComponent);
 		if (counts.size() < 10) {
 			for (final Entry<String, Integer> entry : counts.entrySet()) {

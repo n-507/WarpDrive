@@ -69,7 +69,7 @@ public class CommandDump extends AbstractCommand {
 				final EntityPlayerMP[] entityPlayers = Commons.getOnlinePlayerByNameOrSelector(commandSender, args[1]);
 				if (entityPlayers == null || entityPlayers.length < 1) {
 					Commons.addChatMessage(commandSender, new WarpDriveText().append(getPrefix())
-					                                                         .append(Commons.styleWarning, "warpdrive.command.player_not_found",
+					                                                         .append(Commons.getStyleWarning(), "warpdrive.command.player_not_found",
 					                                                                 args[1]) );
 					return;
 				}
@@ -83,7 +83,7 @@ public class CommandDump extends AbstractCommand {
 		// validate context
 		if (entityPlayer == null) {
 			Commons.addChatMessage(commandSender, new WarpDriveText().append(getPrefix())
-			                                                         .append(Commons.styleWarning, "warpdrive.command.player_required") );
+			                                                         .append(Commons.getStyleWarning(), "warpdrive.command.player_required") );
 			return;
 		}
 		
@@ -97,14 +97,14 @@ public class CommandDump extends AbstractCommand {
 			//noinspection ConstantConditions
 			if (world == null || blockPos == null) {
 				Commons.addChatMessage(commandSender, new WarpDriveText().append(getPrefix())
-				                                                         .append(Commons.styleWarning, "warpdrive.command.invalid_location") );
+				                                                         .append(Commons.getStyleWarning(), "warpdrive.command.invalid_location") );
 				return;
 			}
 			
 			final Collection<Object> inventories = InventoryWrapper.getConnectedInventories(world, blockPos);
 			if (inventories.isEmpty()) {
 				Commons.addChatMessage(commandSender, new WarpDriveText().append(getPrefix())
-				                                                         .append(Commons.styleWarning, "warpdrive.command.no_container") );
+				                                                         .append(Commons.getStyleWarning(), "warpdrive.command.no_container") );
 				return;
 			}
 			inventory = inventories.iterator().next();
@@ -132,7 +132,7 @@ public class CommandDump extends AbstractCommand {
 			
 		default:
 			Commons.addChatMessage(commandSender, new WarpDriveText().append(getPrefix())
-			                                                         .append(Commons.styleWarning, "warpdrive.command.invalid_parameter", 
+			                                                         .append(Commons.getStyleWarning(), "warpdrive.command.invalid_parameter", 
 			                                                                 args[0])
 			                                                         .appendLineBreak()
 			                                                         .appendSibling(new TextComponentString(getUsage(commandSender))) );
@@ -143,7 +143,7 @@ public class CommandDump extends AbstractCommand {
 		final int size = InventoryWrapper.getSize(inventory);
 		if (size == 0) {
 			Commons.addChatMessage(commandSender, new WarpDriveText().append(getPrefix())
-			                                                         .append(Commons.styleWarning, "warpdrive.command.empty_inventory") );
+			                                                         .append(Commons.getStyleWarning(), "warpdrive.command.empty_inventory") );
 		}
 		for (int indexSlot = 0; indexSlot < size; indexSlot++) {
 			final ItemStack itemStack = InventoryWrapper.getStackInSlot(inventory, indexSlot);

@@ -149,10 +149,10 @@ public class BlockShipCore extends BlockAbstractRotatingContainer {
 		super.addInformation(stack, world, list, advancedItemTooltips);
 		
 		Commons.addTooltip(list, new TextComponentTranslation("tile.warpdrive.movement.ship_core.tooltip.constrains",
-		                                                      new WarpDriveText(Commons.styleValue, WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]),
-		                                                      new WarpDriveText(Commons.styleValue, WarpDriveConfig.SHIP_MASS_MIN_BY_TIER[enumTier.getIndex()]),
-		                                                      new WarpDriveText(Commons.styleValue, WarpDriveConfig.SHIP_MASS_MAX_BY_TIER[enumTier.getIndex()]),
-		                                                      new WarpDriveText(Commons.styleValue, WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE),
-		                                                      new WarpDriveText(Commons.styleValue, WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE) ).getFormattedText());
+		                                                      new WarpDriveText(Commons.getStyleValue(), WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]),
+		                                                      new WarpDriveText(Commons.getStyleValue(), WarpDriveConfig.SHIP_MASS_MIN_BY_TIER[enumTier.getIndex()]),
+		                                                      new WarpDriveText(Commons.getStyleValue(), WarpDriveConfig.SHIP_MASS_MAX_BY_TIER[enumTier.getIndex()]),
+		                                                      new WarpDriveText(Commons.getStyleValue(), WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE),
+		                                                      new WarpDriveText(Commons.getStyleValue(), WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE) ).getFormattedText());
 	}
 }

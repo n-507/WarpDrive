@@ -598,7 +598,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 						// only accept valid ones, spawn particles on others
 						final Collection<BlockPos> vValidContainments = ((BlockTransporterScanner) block).getValidContainment(world, mutableBlockPos);
 						if (vValidContainments == null || vValidContainments.isEmpty()) {
-							textReason.append(Commons.styleWarning, "warpdrive.transporter.status_line.missing_containment",
+							textReason.append(Commons.getStyleWarning(), "warpdrive.transporter.status_line.missing_containment",
 							                  Commons.format(world, mutableBlockPos) );
 							world.setBlockState(mutableBlockPos, blockState.withProperty(BlockProperties.ACTIVE, false), 2);
 							PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5,

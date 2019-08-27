@@ -330,8 +330,8 @@ public class ItemElectromagneticCell extends ItemAbstractBase implements IPartic
 			final Particle particle = particleStack.getParticle();
 			
 			tooltip = new TextComponentTranslation("item.warpdrive.atomic.electromagnetic_cell.tooltip.filled",
-			                                       new WarpDriveText(Commons.styleValue, particleStack.getAmount()),
-			                                       new WarpDriveText(Commons.styleValue, particle.getLocalizedName()) ).getFormattedText();
+			                                       new WarpDriveText(Commons.getStyleValue(), particleStack.getAmount()),
+			                                       new WarpDriveText(Commons.getStyleValue(), particle.getLocalizedName()) ).getFormattedText();
 			Commons.addTooltip(list, tooltip);
 			
 			final String particleTooltip = particle.getLocalizedTooltip();

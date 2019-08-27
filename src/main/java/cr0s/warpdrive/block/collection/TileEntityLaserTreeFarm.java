@@ -982,56 +982,56 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 	@Override
 	public WarpDriveText getStatusHeader() {
 		final int energy = laserMedium_getEnergyStored(true);
-		WarpDriveText textState = new WarpDriveText(Commons.styleWarning, "warpdrive.error.internal_check_console");
+		WarpDriveText textState = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.error.internal_check_console");
 		if (currentState == STATE_IDLE) {
-			textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.laser_tree_farm.status_line.idle");
+			textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.laser_tree_farm.status_line.idle");
 		} else if (currentState == STATE_WARMING_UP) {
-			textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.laser_tree_farm.status_line.warming_up");
+			textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.laser_tree_farm.status_line.warming_up");
 		} else if (currentState == STATE_SCANNING) {
 			if (breakLeaves) {
-				textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.laser_tree_farm.status_line.scanning_all");
+				textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.laser_tree_farm.status_line.scanning_all");
 			} else {
-				textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.laser_tree_farm.status_line.scanning_logs");
+				textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.laser_tree_farm.status_line.scanning_logs");
 			}
 		} else if (currentState == STATE_HARVESTING) {
 			if (!tapTrees) {
 				if (!enableSilktouch) {
 					if (breakLeaves) {
-						textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.laser_tree_farm.status_line.harvesting_all");
+						textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.laser_tree_farm.status_line.harvesting_all");
 					} else {
-						textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.laser_tree_farm.status_line.harvesting_logs");
+						textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.laser_tree_farm.status_line.harvesting_logs");
 					}
 				} else {
 					if (breakLeaves) {
-						textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.laser_tree_farm.status_line.harvesting_all_with_silktouch");
+						textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.laser_tree_farm.status_line.harvesting_all_with_silktouch");
 					} else {
-						textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.laser_tree_farm.status_line.harvesting_logs_with_silktouch");
+						textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.laser_tree_farm.status_line.harvesting_logs_with_silktouch");
 					}
 				}
 			} else {
 				if (!enableSilktouch) {
 					if (breakLeaves) {
-						textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.laser_tree_farm.status_line.tapping_all");
+						textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.laser_tree_farm.status_line.tapping_all");
 					} else {
-						textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.laser_tree_farm.status_line.tapping_logs");
+						textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.laser_tree_farm.status_line.tapping_logs");
 					}
 				} else {
 					if (breakLeaves) {
-						textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.laser_tree_farm.status_line.tapping_all_with_silktouch");
+						textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.laser_tree_farm.status_line.tapping_all_with_silktouch");
 					} else {
-						textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.laser_tree_farm.status_line.tapping_logs_with_silktouch");
+						textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.laser_tree_farm.status_line.tapping_logs_with_silktouch");
 					}
 				}
 			}
 		} else if (currentState == STATE_PLANTING) {
-			textState = new WarpDriveText(Commons.styleCorrect, "warpdrive.laser_tree_farm.status_line.planting");
+			textState = new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.laser_tree_farm.status_line.planting");
 		}
 		if (energy <= 0) {
-			textState.appendSibling(new WarpDriveText(Commons.styleWarning, "warpdrive.mining_laser.status_line._insufficient_energy"));
+			textState.appendSibling(new WarpDriveText(Commons.getStyleWarning(), "warpdrive.mining_laser.status_line._insufficient_energy"));
 		} else if ( (currentState != STATE_IDLE)
 		         && (currentState != STATE_WARMING_UP)
 		         && !isPowered ) {
-			textState.appendSibling(new WarpDriveText(Commons.styleWarning, "warpdrive.mining_laser.status_line._insufficient_energy"));
+			textState.appendSibling(new WarpDriveText(Commons.getStyleWarning(), "warpdrive.mining_laser.status_line._insufficient_energy"));
 		}
 		return textState;
 	}

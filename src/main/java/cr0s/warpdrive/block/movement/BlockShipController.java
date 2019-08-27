@@ -83,7 +83,7 @@ public class BlockShipController extends BlockAbstractContainer {
 				if (world.getBlockState(mutableBlockPos).getBlock() instanceof BlockShipCore) {
 					final EntityPlayer entityPlayer = world.getClosestPlayer(blockPos.getX() + 0.5D, blockPos.getY() + 0.5D, blockPos.getZ() + 0.5D, 5, false);
 					if (entityPlayer != null) {
-						Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "tile.warpdrive.movement.ship_controller.away_from_core"));
+						Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleWarning(), "tile.warpdrive.movement.ship_controller.away_from_core"));
 					}
 					return false;
 				}

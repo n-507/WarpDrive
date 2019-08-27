@@ -48,7 +48,7 @@ public class CommandGenerate extends AbstractCommand {
 		
 		//noinspection ConstantConditions
 		if (world == null || blockPos == null) {
-			Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.invalid_location").setStyle(Commons.styleWarning)));
+			Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.invalid_location").setStyle(Commons.getStyleWarning())));
 			return;
 		}
 		
@@ -68,7 +68,7 @@ public class CommandGenerate extends AbstractCommand {
 		
 		// Reject command, if player is not in space
 		if (!CelestialObjectManager.isInSpace(world, blockPos.getX(), blockPos.getZ()) && (!"ship".equals(structure))) {
-			Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.only_in_space").setStyle(Commons.styleWarning)));
+			Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.only_in_space").setStyle(Commons.getStyleWarning())));
 			return;
 		}
 		
@@ -122,7 +122,7 @@ public class CommandGenerate extends AbstractCommand {
 		final AbstractStructure structure = StructureManager.getStructure(world.rand, group, name);
 		if (structure == null) {
 			Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("Invalid %1$s:%2$s, try one of the followings:\n%3$s",
-			                                                                                             group, name, StructureManager.getStructureNames(group)).setStyle(Commons.styleWarning)));
+			                                                                                             group, name, StructureManager.getStructureNames(group)).setStyle(Commons.getStyleWarning())));
 		} else {
 			WarpDrive.logger.info(String.format("/generate: Generating %s:%s %s",
 			                                    group, structure.getName(), Commons.format(world, blockPos)));
