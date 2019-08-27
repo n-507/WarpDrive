@@ -394,12 +394,15 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		
 		// evaluate force field block metadata
 		final IBlockState blockStateForceField;
-		if (forceFieldSetup.getCamouflageBlockState() == null) {
-			blockStateForceField = WarpDrive.blockForceFields[enumTier.getIndex()].getStateFromMeta(
-					Math.min(15, (beamFrequency * 16) / IBeamFrequency.BEAM_FREQUENCY_MAX));
-		} else {
-			blockStateForceField = WarpDrive.blockForceFields[enumTier.getIndex()].getStateFromMeta(
-					forceFieldSetup.getCamouflageBlockState().getBlock().getMetaFromState(forceFieldSetup.getCamouflageBlockState()));
+		{
+			final IBlockState blockStateCamouflage = forceFieldSetup.getCamouflageBlockState();
+			final int metadata;
+			if (blockStateCamouflage == null) {
+				metadata = Math.min(15, (beamFrequency * 16) / IBeamFrequency.BEAM_FREQUENCY_MAX);
+			} else {
+				metadata = blockStateCamouflage.getBlock().getMetaFromState(blockStateCamouflage);
+			}
+			blockStateForceField = WarpDrive.blockForceFields[enumTier.getIndex()].getStateFromMeta(metadata);
 		}
 		
 		VectorI vector;
@@ -1117,9 +1120,12 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			// reset field in case of major changes
 			if (legacy_forceFieldSetup != null) {
 				final int energyRequired = (int) Math.max(0, Math.round(cache_forceFieldSetup.startupEnergyCost - legacy_forceFieldSetup.startupEnergyCost));
-				if ( !legacy_forceFieldSetup.getCamouflageBlockState().equals(cache_forceFieldSetup.getCamouflageBlockState())
+				final IBlockState blockStateLegacyCamouflage = legacy_forceFieldSetup.getCamouflageBlockState();
+				final IBlockState blockStateCachedCamouflage = cache_forceFieldSetup.getCamouflageBlockState();
+				if ( (blockStateLegacyCamouflage == null && blockStateCachedCamouflage != null)
+				  || (blockStateLegacyCamouflage != null && !blockStateLegacyCamouflage.equals(blockStateCachedCamouflage))
 				  || legacy_forceFieldSetup.beamFrequency != cache_forceFieldSetup.beamFrequency
-				  || !energy_consume(energyRequired, false)) {
+				  || !energy_consume(energyRequired, false) ) {
 					if (WarpDriveConfig.LOGGING_FORCE_FIELD) {
 						WarpDrive.logger.info(this + " rebooting with new rendering...");
 					}

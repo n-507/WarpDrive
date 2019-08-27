@@ -1109,7 +1109,7 @@ public class Commons {
 	public static boolean isValidCamouflage(@Nullable final IBlockState blockState) {
 		// fast check
 		if ( blockState == null
-		  || blockState == Blocks.AIR
+		  || blockState.getBlock() == Blocks.AIR
 		  || !ALLOWED_RENDER_TYPES.contains(blockState.getRenderType())
 		  || Dictionary.BLOCKS_NOCAMOUFLAGE.contains(blockState.getBlock()) ) {
 			return false;

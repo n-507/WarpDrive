@@ -8,6 +8,7 @@ import cr0s.warpdrive.api.IForceFieldUpgradeEffector;
 import cr0s.warpdrive.block.forcefield.TileEntityForceFieldProjector;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -96,11 +97,12 @@ public class ForceFieldSetup extends GlobalPosition {
 		return false; // TODO
 	}
 	
+	@Nullable
 	public IBlockState getCamouflageBlockState() {
 		if (Commons.isValidCamouflage(blockStateCamouflage)) {
 			return blockStateCamouflage;
 		}
-		return Blocks.AIR.getDefaultState();
+		return null;
 	}
 	
 	public int getCamouflageColorMultiplier() {

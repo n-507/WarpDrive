@@ -114,8 +114,10 @@ public class TileEntityForceField extends TileEntityAbstractBase {
 		final ForceFieldSetup forceFieldSetup = getForceFieldSetup();
 		if (forceFieldSetup != null) {
 			cache_beamFrequency = forceFieldSetup.beamFrequency;
-			if (getBlockMetadata() == forceFieldSetup.getCamouflageBlockState().getBlock().getMetaFromState(forceFieldSetup.getCamouflageBlockState())) {
-				cache_blockStateCamouflage = forceFieldSetup.getCamouflageBlockState();
+			final IBlockState blockStateCamouflage = forceFieldSetup.getCamouflageBlockState();
+			if ( blockStateCamouflage == null
+			  || getBlockMetadata() == blockStateCamouflage.getBlock().getMetaFromState(blockStateCamouflage)) {
+				cache_blockStateCamouflage = blockStateCamouflage;
 				cache_colorMultiplierCamouflage = forceFieldSetup.getCamouflageColorMultiplier();
 				cache_lightCamouflage = forceFieldSetup.getCamouflageLight();
 			}
