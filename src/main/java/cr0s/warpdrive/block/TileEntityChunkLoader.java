@@ -5,6 +5,7 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumComponentType;
+import cr0s.warpdrive.item.ItemComponent;
 
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -19,6 +20,14 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.fml.common.Optional;
 
 public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
+	
+	// global properties
+	private static final UpgradeSlot upgradeSlotEfficiency = new UpgradeSlot("chunk_loader.efficiency",
+	                                                                         ItemComponent.getItemStackNoCache(EnumComponentType.SUPERCONDUCTOR, 1),
+	                                                                         5);
+	private static final UpgradeSlot upgradeSlotRange = new UpgradeSlot("chunk_loader.range",
+	                                                                    ItemComponent.getItemStackNoCache(EnumComponentType.EMERALD_CRYSTAL, 1),
+	                                                                    WarpDriveConfig.CHUNK_LOADER_MAX_RADIUS);
 	
 	// persistent properties
 	private int radiusXneg = 0;
@@ -42,8 +51,8 @@ public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
 		});
 		doRequireUpgradeToInterface();
 		
-		setUpgradeMaxCount(EnumComponentType.SUPERCONDUCTOR, 5);
-		setUpgradeMaxCount(EnumComponentType.EMERALD_CRYSTAL, WarpDriveConfig.CHUNK_LOADER_MAX_RADIUS);
+		registerUpgradeSlot(upgradeSlotEfficiency);
+		registerUpgradeSlot(upgradeSlotRange);
 	}
 	
 	@Override
@@ -52,31 +61,20 @@ public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
 	}
 	
 	@Override
-	public boolean dismountUpgrade(final Object upgrade) {
-		final boolean isSuccess = super.dismountUpgrade(upgrade);
-		if (isSuccess) {
+	protected void onUpgradeChanged(final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
+		super.onUpgradeChanged(upgradeSlot, countNew, isAdded);
+		if (isAdded) {
 			final int maxRange = getMaxRange();
 			setBounds(maxRange, maxRange, maxRange, maxRange);
 		}
-		return isSuccess;
-	}
-	
-	@Override
-	public boolean mountUpgrade(final Object upgrade) {
-		final boolean isSuccess = super.mountUpgrade(upgrade);
-		if (isSuccess) {
-			final int maxRange = getMaxRange();
-			setBounds(maxRange, maxRange, maxRange, maxRange);
-		}
-		return isSuccess;
 	}
 	
 	private int getMaxRange() {
-		return getValidUpgradeCount(EnumComponentType.EMERALD_CRYSTAL);
+		return getValidUpgradeCount(upgradeSlotRange);
 	}
 	
 	private double getEnergyFactor() {
-		final int upgradeCount = getValidUpgradeCount(EnumComponentType.SUPERCONDUCTOR);
+		final int upgradeCount = getValidUpgradeCount(upgradeSlotEfficiency);
 		return 1.0D - 0.1D * upgradeCount;
 	}
 	

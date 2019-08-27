@@ -8,6 +8,7 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
+import cr0s.warpdrive.item.ItemComponent;
 
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.filesystem.IMount;
@@ -53,6 +54,9 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	
 	// global storage
 	private static final ConcurrentHashMap<String, Object> CC_mountGlobals = new ConcurrentHashMap<>(32);
+	private static final UpgradeSlot upgradeSlotComputerInterface = new UpgradeSlot("base.computer_interface",
+	                                                                                ItemComponent.getItemStackNoCache(EnumComponentType.COMPUTER_INTERFACE, 1),
+	                                                                                1);
 	
 	// Common computer properties
 	protected String peripheralName = null;
@@ -92,12 +96,12 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		assert isAlwaysInterfaced;
 		
 		isAlwaysInterfaced = false;
-		setUpgradeMaxCount(EnumComponentType.COMPUTER_INTERFACE, 1);
+		registerUpgradeSlot(upgradeSlotComputerInterface);
 	}
 	
 	@Override
-	protected void onUpgradeChanged(final Object upgrade, final int countNew, final boolean isAdded) {
-		if (upgrade == EnumComponentType.COMPUTER_INTERFACE) {
+	protected void onUpgradeChanged(final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
+		if (upgradeSlot == upgradeSlotComputerInterface) {
 			if (isAdded) {
 				if (WarpDriveConfig.isComputerCraftLoaded) {
 					CC_mount();
@@ -114,12 +118,12 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 				}
 			}
 		}
-		super.onUpgradeChanged(upgrade, countNew, isAdded);
+		super.onUpgradeChanged(upgradeSlot, countNew, isAdded);
 	}
 	
 	@Override
 	public boolean isInterfaceEnabled() {
-		return isAlwaysInterfaced || getUpgradeCount(EnumComponentType.COMPUTER_INTERFACE) > 0;
+		return isAlwaysInterfaced || getUpgradeCount(upgradeSlotComputerInterface) > 0;
 	}
 	
 	protected void addMethods(final String[] methodsToAdd) {
@@ -306,7 +310,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	
 	@Override
 	public Object[] getUpgrades() {
-		return new Object[] { isUpgradeable(), getUpgradesAsString() };
+		return new Object[] { isUpgradeable(), getUpgradeStatus(false).getUnformattedText() };
 	}
 	
 	@Override

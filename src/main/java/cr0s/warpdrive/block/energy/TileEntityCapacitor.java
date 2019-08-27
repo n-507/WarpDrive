@@ -6,6 +6,7 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumDisabledInputOutput;
 import cr0s.warpdrive.data.EnumTier;
+import cr0s.warpdrive.item.ItemComponent;
 
 import javax.annotation.Nonnull;
 
@@ -27,6 +28,10 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 			EnumDisabledInputOutput.OUTPUT,
 			EnumDisabledInputOutput.OUTPUT };
 	
+	private static final UpgradeSlot upgradeSlotEfficiency = new UpgradeSlot("capacitor.efficiency",
+	                                                                         ItemComponent.getItemStackNoCache(EnumComponentType.SUPERCONDUCTOR, 1),
+	                                                                         WarpDriveConfig.CAPACITOR_EFFICIENCY_PER_UPGRADE.length - 1);
+	
 	// persistent properties
 	private EnumDisabledInputOutput[] modeSide = MODE_DEFAULT_SIDES.clone();
 	
@@ -36,7 +41,7 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 		peripheralName = "warpdriveCapacitor";
 		doRequireUpgradeToInterface();
 		
-		setUpgradeMaxCount(EnumComponentType.SUPERCONDUCTOR, WarpDriveConfig.CAPACITOR_EFFICIENCY_PER_UPGRADE.length - 1);
+		registerUpgradeSlot(upgradeSlotEfficiency);
 	}
 	
 	@Override
@@ -51,7 +56,7 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 	}
 	
 	private double getEfficiency() {
-		final int upgradeCount = getValidUpgradeCount(EnumComponentType.SUPERCONDUCTOR);
+		final int upgradeCount = getValidUpgradeCount(upgradeSlotEfficiency);
 		return WarpDriveConfig.CAPACITOR_EFFICIENCY_PER_UPGRADE[upgradeCount];
 	}
 	

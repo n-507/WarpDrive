@@ -54,7 +54,6 @@ import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -654,8 +653,8 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		}
 		updateAfterResize();
 		if (!isAssemblyValid) {
-			Commons.addChatMessage(entityPlayerMP, new TextComponentString(!name.isEmpty() ? name : "ShipCore").setStyle(Commons.styleHeader)
-			                                       .appendSibling(textValidityIssues));
+			Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.styleHeader, !name.isEmpty() ? name : "ShipCore")
+					                                       .appendSibling(textValidityIssues));
 			return false;
 		}
 		

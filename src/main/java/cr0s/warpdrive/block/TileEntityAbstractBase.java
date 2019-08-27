@@ -21,6 +21,7 @@ import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,10 +30,13 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.Style;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import org.lwjgl.input.Keyboard;
 
 public abstract class TileEntityAbstractBase extends TileEntity implements IBlockUpdateDetector, ITickable {
 	
@@ -194,14 +198,14 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 			final NBTTagCompound nbtTagCompoundUpgrades = tagCompound.getCompoundTag("upgrades");
 			final Set<String> keys = nbtTagCompoundUpgrades.getKeySet();
 			for (final String key : keys) {
-				Object object = getUpgradeFromString(key);
-				final int value = nbtTagCompoundUpgrades.getByte(key);
-				if (object == null) {
+				UpgradeSlot upgradeSlot = getUpgradeSlot(key);
+				final int quantity = nbtTagCompoundUpgrades.getByte(key);
+				if (upgradeSlot == null) {
 					WarpDrive.logger.error(String.format("Found an unknown upgrade named %s in %s",
 					                                     key, this));
-					object = key;
+					upgradeSlot = new UpgradeSlot(key, ItemStack.EMPTY, 0);
 				}
-				installedUpgrades.put(object, value);
+				upgradeSlots.put(upgradeSlot, quantity);
 			}
 		}
 	}
@@ -216,11 +220,11 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 			tagCompound.removeTag("ForgeCaps");
 		}
 		
-		if (!installedUpgrades.isEmpty()) {
+		if (!upgradeSlots.isEmpty()) {
 			final NBTTagCompound nbtTagCompoundUpgrades = new NBTTagCompound();
-			for (final Entry<Object, Integer> entry : installedUpgrades.entrySet()) {
-				final String key = getUpgradeAsString(entry.getKey());
-				nbtTagCompoundUpgrades.setByte(key, (byte)(int)entry.getValue());
+			for (final Entry<UpgradeSlot, Integer> entry : upgradeSlots.entrySet()) {
+				final String key = entry.getKey().toString();
+				nbtTagCompoundUpgrades.setByte(key, (byte)(int) entry.getValue());
 			}
 			tagCompound.setTag("upgrades", nbtTagCompoundUpgrades);
 		}
@@ -249,15 +253,24 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	}
 	
 	// status
-	protected WarpDriveText getUpgradeStatus() {
-		final String strUpgrades = getUpgradesAsString();
-		if (strUpgrades.isEmpty()) {
-			return new WarpDriveText(Commons.styleCorrect, "warpdrive.upgrade.status_line.none",
-			                         strUpgrades);
-		} else {
-			return new WarpDriveText(Commons.styleCorrect, "warpdrive.upgrade.status_line.valid",
-			                         strUpgrades);
+	protected WarpDriveText getUpgradeStatus(final boolean isAnimated) {
+		if (!isUpgradeable()) {
+			return new WarpDriveText(null, "");
 		}
+		
+		final boolean isShowingItemNames = !isAnimated || (System.currentTimeMillis() % 4000) > 2000;
+		
+		final WarpDriveText warpDriveText = new WarpDriveText(null, "warpdrive.upgrade.status_line.header");
+		for (final Entry<UpgradeSlot, Integer> entry : upgradeSlots.entrySet()) {
+			final UpgradeSlot upgradeSlot = entry.getKey();
+			final String keyName = isShowingItemNames ? upgradeSlot.itemStack.getTranslationKey() + ".name" : upgradeSlot.getTranslationKey();
+			final Style style = entry.getValue() == 0 ? Commons.styleDisabled : Commons.styleCorrect;
+			warpDriveText.append(Commons.styleDisabled, "- %1$s/%2$s x %3$s",
+			                     new WarpDriveText(Commons.styleValue, "%1$s", entry.getValue()),
+			                     entry.getKey().maxCount,
+			                     new WarpDriveText(style, keyName) );
+		}
+		return warpDriveText;
 	}
 	
 	@Nonnull
@@ -349,7 +362,21 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		}
 		
 		if (isUpgradeable()) {
-			message.append( getUpgradeStatus() );
+			// show updates details in the world or while sneaking in the inventory
+			boolean showDetails = hasWorld();
+			if (Commons.isClientThread()) {
+				final int keyCodeSneak = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
+				final String keyName = Minecraft.getMinecraft().gameSettings.keyBindSneak.getDisplayName();
+				showDetails = Keyboard.isKeyDown(keyCodeSneak);
+				if (!showDetails) {
+					message.append(null, "warpdrive.upgrade.status_line.upgradeable",
+					               new WarpDriveText(Commons.styleCommand, "%1$s", keyName) );
+				}
+			}
+			if (showDetails) {
+				// show animation only in the inventory (i.e. no world defined)
+				message.append(getUpgradeStatus(!hasWorld()));
+			}
 		}
 		
 		return message;
@@ -379,51 +406,90 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	}
 	
 	// upgrade system
-	private final HashMap<Object, Integer> installedUpgrades = new HashMap<>(10);
-	private final HashMap<Object, Integer> maxUpgrades = new HashMap<>(10);
-	public boolean isUpgradeable() {
-		return !maxUpgrades.isEmpty();
-	}
-	public boolean hasUpgrade(final Object upgrade) {
-		return getUpgradeCount(upgrade) > 0;
-	}
-	
-	private String getUpgradeAsString(final Object object) {
-		if (object instanceof Item) {
-			return Item.REGISTRY.getNameForObject((Item) object).toString();
-		} else if (object instanceof Block) {
-			return Block.REGISTRY.getNameForObject((Block) object).toString();
-		} else if (object instanceof ItemStack) {
-			return Item.REGISTRY.getNameForObject(((ItemStack) object).getItem()) + ":" + ((ItemStack) object).getItemDamage();
-		} else {
-			return object.toString();
+	public static class UpgradeSlot {
+		
+		// unique name for NBT saving and translation
+		public final String name;
+		// item stack for upgrading, quantity & NBT are ignored
+		public final ItemStack itemStack;
+		// max quantity of upgrades that can be installed
+		public final int maxCount;
+		// cached hashcode
+		private final int hashCode;
+		
+		public UpgradeSlot(@Nonnull final String name, @Nonnull final ItemStack itemStack, final int maxCount) {
+			this.name = name;
+			this.itemStack = itemStack;
+			this.maxCount = maxCount;
+			this.hashCode = name.hashCode();
+		}
+		
+		@Nonnull
+		String getTranslationKey() {
+			return "warpdrive.upgrade.description." + name;
+		}
+		
+		@Override
+		public int hashCode() {
+			return hashCode;
+		}
+		
+		@Override
+		public String toString() {
+			return name;
 		}
 	}
+	private final HashMap<UpgradeSlot, Integer> upgradeSlots = new HashMap<>(10);
+	public boolean isUpgradeable() {
+		return !upgradeSlots.isEmpty();
+	}
+	public boolean hasUpgrade(@Nonnull final UpgradeSlot upgradeSlot) {
+		return getUpgradeCount(upgradeSlot) > 0;
+	}
 	
-	private Object getUpgradeFromString(final String name) {
-		for (final Object object : maxUpgrades.keySet()) {
-			if (getUpgradeAsString(object).equals(name)) {
-				return object;
+	@Nullable
+	private UpgradeSlot getUpgradeSlot(@Nonnull final String name) {
+		for (final UpgradeSlot upgradeSlot : upgradeSlots.keySet()) {
+			if (upgradeSlot.name.equals(name)) {
+				return upgradeSlot;
 			}
 		}
 		return null;
 	}
 	
-	public Object getFirstUpgradeOfType(final Class clazz, final Object defaultValue) {
-		for (final Object object : installedUpgrades.keySet()) {
-			if (clazz != null && clazz.isInstance(object)) {
-				return object;
+	@Nullable
+	public UpgradeSlot getUpgradeSlot(@Nonnull final ItemStack itemStack) {
+		// fast check
+		if (itemStack.isEmpty()) {
+			return null;
+		}
+		// check all slots, ignoring NBT
+		for (final UpgradeSlot upgradeSlot : upgradeSlots.keySet()) {
+			if (upgradeSlot.itemStack.isItemEqual(itemStack)) {
+				return upgradeSlot;
+			}
+		}
+		return null;
+	}
+	
+	@Nullable
+	public UpgradeSlot getFirstUpgradeOfType(@Nonnull final Class clazz, @Nullable final UpgradeSlot defaultValue) {
+		for (final Entry<UpgradeSlot, Integer> entry : upgradeSlots.entrySet()) {
+			if ( entry.getValue() > 0
+			  && ( clazz.isInstance(entry.getKey())
+			    || clazz.isInstance(entry.getKey().itemStack.getItem()) ) ) {
+				return entry.getKey();
 			}
 		}
 		return defaultValue;
 	}
 	
-	public Map<Object, Integer> getUpgradesOfType(final Class clazz) {
+	public Map<UpgradeSlot, Integer> getUpgradesOfType(final Class clazz) {
 		if (clazz == null) {
-			return installedUpgrades;
+			return upgradeSlots;
 		}
-		final Map<Object, Integer> mapResult = new HashMap<>(installedUpgrades.size());
-		for (final Entry<Object, Integer> entry : installedUpgrades.entrySet()) {
+		final Map<UpgradeSlot, Integer> mapResult = new HashMap<>(upgradeSlots.size());
+		for (final Entry<UpgradeSlot, Integer> entry : upgradeSlots.entrySet()) {
 			if (clazz.isInstance(entry.getKey())) {
 				mapResult.put(entry.getKey(), entry.getValue());
 			}
@@ -431,79 +497,58 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		return mapResult;
 	}
 	
-	public int getValidUpgradeCount(final Object upgrade) {
+	public int getValidUpgradeCount(@Nonnull final UpgradeSlot upgrade) {
 		return Math.min(getUpgradeMaxCount(upgrade), getUpgradeCount(upgrade));
 	}
 	
-	public int getUpgradeCount(final Object upgrade) {
-		final Integer value = installedUpgrades.get(upgrade);
+	public int getUpgradeCount(@Nonnull final UpgradeSlot upgradeSlot) {
+		final Integer value = upgradeSlots.get(upgradeSlot);
 		return value == null ? 0 : value;
 	}
 	
-	public int getUpgradeMaxCount(final Object upgrade) {
-		final Integer value = maxUpgrades.get(upgrade);
-		return value == null ? 0 : value;
+	public int getUpgradeMaxCount(@Nonnull final UpgradeSlot upgradeSlot) {
+		return upgradeSlot.maxCount;
 	}
 	
-	protected String getUpgradesAsString() {
-		final StringBuilder message = new StringBuilder();
-		for (final Entry<Object, Integer> entry : installedUpgrades.entrySet()) {
-			if (message.length() > 0) {
-				message.append(", ");
-			}
-			final Object key = entry.getKey();
-			String keyName = key.toString();
-			if (key instanceof Item) {
-				keyName = ((Item) key).getTranslationKey();
-			} else if (key instanceof Block) {
-				keyName = ((Block) key).getTranslationKey();
-			}
-			if (entry.getValue() == 1) {
-				message.append(keyName);
-			} else {
-				message.append(entry.getValue()).append(" x ").append(keyName);
-			}
-		}
-		return message.toString();
+	protected void registerUpgradeSlot(final UpgradeSlot upgradeSlot) {
+		upgradeSlots.put(upgradeSlot, 0);
 	}
 	
-	protected void setUpgradeMaxCount(final Object upgrade, final int value) {
-		maxUpgrades.put(upgrade, value);
+	public boolean canMountUpgrade(@Nonnull final UpgradeSlot upgradeSlot) {
+		return upgradeSlots.containsKey(upgradeSlot)
+		    && upgradeSlot.maxCount >= getUpgradeCount(upgradeSlot) + 1;
 	}
 	
-	public boolean canUpgrade(final Object upgrade) {
-		return getUpgradeMaxCount(upgrade) >= getUpgradeCount(upgrade) + 1;
-	}
-	
-	public boolean mountUpgrade(final Object upgrade) {
-		if (canUpgrade(upgrade)) {
-			final int countNew = getUpgradeCount(upgrade) + 1;
-			installedUpgrades.put(upgrade, countNew);
-			onUpgradeChanged(upgrade, countNew, true);
+	public final boolean mountUpgrade(@Nonnull final UpgradeSlot upgradeSlot) {
+		if (canMountUpgrade(upgradeSlot)) {
+			final int countNew = getUpgradeCount(upgradeSlot) + 1;
+			upgradeSlots.put(upgradeSlot, countNew);
+			onUpgradeChanged(upgradeSlot, countNew, true);
 			markDirty();
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean dismountUpgrade(final Object upgrade) {
-		final int count = getUpgradeCount(upgrade);
-		if (count > 1) {
-			installedUpgrades.put(upgrade, count - 1);
-			onUpgradeChanged(upgrade, count - 1, false);
-			markDirty();
-			return true;
-			
-		} else if (count > 0) {
-			installedUpgrades.remove(upgrade);
-			onUpgradeChanged(upgrade, 0, false);
-			markDirty();
-			return true;
+	public boolean canDismountUpgrade(@Nonnull final UpgradeSlot upgradeSlot) {
+		return upgradeSlots.containsKey(upgradeSlot)
+		    && getUpgradeCount(upgradeSlot) > 0;
+	}
+	
+	public final boolean dismountUpgrade(@Nonnull final UpgradeSlot upgradeSlot ) {
+		if (canDismountUpgrade(upgradeSlot)) {
+			final int countNew = getUpgradeCount(upgradeSlot) - 1;
+			if (countNew >= 0) {
+				upgradeSlots.put(upgradeSlot, countNew);
+				onUpgradeChanged(upgradeSlot, countNew, false);
+				markDirty();
+				return true;
+			}
 		}
 		return false;
 	}
 	
-	protected void onUpgradeChanged(final Object upgrade, final int countNew, final boolean isAdded) {
+	protected void onUpgradeChanged(final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
 	
 	}
 	

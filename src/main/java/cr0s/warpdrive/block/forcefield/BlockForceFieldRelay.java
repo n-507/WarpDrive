@@ -1,6 +1,7 @@
 package cr0s.warpdrive.block.forcefield;
 
 import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.data.EnumForceFieldUpgrade;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.item.ItemForceFieldUpgrade;
@@ -114,16 +115,23 @@ public class BlockForceFieldRelay extends BlockAbstractForceField {
 					final ItemStack itemStackDrop = ItemForceFieldUpgrade.getItemStackNoCache(enumForceFieldUpgrade, 1);
 					final EntityItem entityItem = new EntityItem(world, entityPlayer.posX, entityPlayer.posY + 0.5D, entityPlayer.posZ, itemStackDrop);
 					entityItem.setNoPickupDelay();
-					world.spawnEntity(entityItem);
+					final boolean isSuccess = world.spawnEntity(entityItem);
+					if (!isSuccess) {
+						Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.spawn_denied",
+						                                                       entityItem ));
+						return true;
+					}
 				}
 				
 				tileEntityForceFieldRelay.setUpgrade(EnumForceFieldUpgrade.NONE);
 				// upgrade dismounted
-				Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.dismounted", enumForceFieldUpgrade.name()));
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleCorrect, "warpdrive.upgrade.result.dismounted",
+				                                                       new TextComponentTranslation(enumForceFieldUpgrade.name()) ));
+				return true;
 				
 			} else {
 				// no more upgrades to dismount
-				Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.no_upgrade_to_dismount"));
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.no_upgrade_to_dismount"));
 				return true;
 			}
 			
@@ -135,7 +143,7 @@ public class BlockForceFieldRelay extends BlockAbstractForceField {
 			// validate type
 			if (EnumForceFieldUpgrade.get(itemStackHeld.getItemDamage()).maxCountOnRelay <= 0) {
 				// invalid upgrade type
-				Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.invalid_upgrade_for_relay"));
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.invalid_upgrade_for_relay"));
 				return true;
 			}
 			
@@ -143,7 +151,7 @@ public class BlockForceFieldRelay extends BlockAbstractForceField {
 				// validate quantity
 				if (itemStackHeld.getCount() < 1) {
 					// not enough upgrade items
-					Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.not_enough_upgrades"));
+					Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.not_enough_upgrades"));
 					return true;
 				}
 				
@@ -155,7 +163,12 @@ public class BlockForceFieldRelay extends BlockAbstractForceField {
 					final ItemStack itemStackDrop = ItemForceFieldUpgrade.getItemStackNoCache(tileEntityForceFieldRelay.getUpgrade(), 1);
 					final EntityItem entityItem = new EntityItem(world, entityPlayer.posX, entityPlayer.posY + 0.5D, entityPlayer.posZ, itemStackDrop);
 					entityItem.setNoPickupDelay();
-					world.spawnEntity(entityItem);
+					final boolean isSuccess = world.spawnEntity(entityItem);
+					if (!isSuccess) {
+						Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.spawn_denied",
+						                                                       entityItem ));
+						return true;
+					}
 				}
 			}
 			
@@ -163,7 +176,9 @@ public class BlockForceFieldRelay extends BlockAbstractForceField {
 			final EnumForceFieldUpgrade enumForceFieldUpgrade = EnumForceFieldUpgrade.get(itemStackHeld.getItemDamage());
 			tileEntityForceFieldRelay.setUpgrade(enumForceFieldUpgrade);
 			// upgrade mounted
-			Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.mounted", enumForceFieldUpgrade.name()));
+			Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleCorrect, "warpdrive.upgrade.result.mounted",
+			                                                       new TextComponentTranslation(enumForceFieldUpgrade.name()) ));
+			return true;
 		}
 		
 		return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);

@@ -12,6 +12,7 @@ import cr0s.warpdrive.data.EnumMiningLaserMode;
 import cr0s.warpdrive.data.FluidWrapper;
 import cr0s.warpdrive.data.SoundEvents;
 import cr0s.warpdrive.data.Vector3;
+import cr0s.warpdrive.item.ItemComponent;
 import cr0s.warpdrive.network.PacketHandler;
 
 import li.cil.oc.api.machine.Arguments;
@@ -37,7 +38,11 @@ import net.minecraftforge.fml.common.Optional;
 
 public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	
-	private final boolean canSilktouch = (WarpDriveConfig.MINING_LASER_MINE_SILKTOUCH_DEUTERIUM_MB <= 0 || FluidRegistry.isFluidRegistered("deuterium"));
+	// global properties
+	private static final UpgradeSlot upgradeSlotPumping = new UpgradeSlot("mining_laser.pumping",
+	                                                                      ItemComponent.getItemStackNoCache(EnumComponentType.PUMP, 1),
+	                                                                      20);
+	private static final boolean canSilktouch = (WarpDriveConfig.MINING_LASER_MINE_SILKTOUCH_DEUTERIUM_MB <= 0 || FluidRegistry.isFluidRegistered("deuterium"));
 	
 	private boolean isActive() {
 		return stateCurrent != STATE_IDLE;
@@ -85,7 +90,7 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 		doRequireUpgradeToInterface();
 		
 		laserMedium_maxCount = WarpDriveConfig.MINING_LASER_MAX_MEDIUMS_COUNT;
-		setUpgradeMaxCount(EnumComponentType.PUMP, 20);
+		registerUpgradeSlot(upgradeSlotPumping);
 	}
 	
 	@Override
@@ -96,7 +101,7 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	}
 	
 	private void updateParameters() {
-		viscosityMax = getUpgradeCount(EnumComponentType.PUMP) * 2500;
+		viscosityMax = getUpgradeCount(upgradeSlotPumping) * 2500;
 		
 		final boolean hasAtmosphere = CelestialObjectManager.hasAtmosphere(world, pos.getX(), pos.getZ());
 		
@@ -456,9 +461,9 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	}
 	
 	@Override
-	protected void onUpgradeChanged(final Object upgrade, final int countNew, final boolean isAdded) {
-		super.onUpgradeChanged(upgrade, countNew, isAdded);
-		if (upgrade == EnumComponentType.PUMP) {
+	protected void onUpgradeChanged(final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
+		super.onUpgradeChanged(upgradeSlot, countNew, isAdded);
+		if (upgradeSlot == upgradeSlotPumping) {
 			updateParameters();
 		}
 	}

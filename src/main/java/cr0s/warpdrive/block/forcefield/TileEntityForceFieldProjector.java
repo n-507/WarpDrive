@@ -125,7 +125,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		
 		for (final EnumForceFieldUpgrade enumForceFieldUpgrade : EnumForceFieldUpgrade.values()) {
 			if (enumForceFieldUpgrade.maxCountOnProjector > 0) {
-				setUpgradeMaxCount(enumForceFieldUpgrade, enumForceFieldUpgrade.maxCountOnProjector);
+				registerUpgradeSlot(enumForceFieldUpgrade.getProjectorUpgradeSlot());
 			}
 		}
 	}
@@ -245,7 +245,8 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			soundTicks--;
 			if (soundTicks < 0) {
 				soundTicks = PROJECTOR_SOUND_UPDATE_TICKS;
-				if (!hasUpgrade(EnumForceFieldUpgrade.SILENCER)) {
+				assert EnumForceFieldUpgrade.SILENCER.getProjectorUpgradeSlot() != null;
+				if (!hasUpgrade(EnumForceFieldUpgrade.SILENCER.getProjectorUpgradeSlot())) {
 					world.playSound(null, pos, SoundEvents.PROJECTING, SoundCategory.BLOCKS, 1.0F, 0.85F + 0.15F * world.rand.nextFloat());
 				}
 			}
@@ -892,7 +893,8 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		case EAST : totalYaw = 180.0F; break;
 		default   : totalYaw =   0.0F; break;
 		}
-		if (hasUpgrade(EnumForceFieldUpgrade.ROTATION)) {
+		assert EnumForceFieldUpgrade.ROTATION.getProjectorUpgradeSlot() != null;
+		if (hasUpgrade(EnumForceFieldUpgrade.ROTATION.getProjectorUpgradeSlot())) {
 			totalYaw += rotationYaw;
 		}
 		return (totalYaw + 540.0F) % 360.0F - 180.0F; 
@@ -910,14 +912,16 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		case EAST : totalPitch =  -90.0F; break;
 		default   : totalPitch =    0.0F; break;
 		}
-		if (hasUpgrade(EnumForceFieldUpgrade.ROTATION)) {
+		assert EnumForceFieldUpgrade.ROTATION.getProjectorUpgradeSlot() != null;
+		if (hasUpgrade(EnumForceFieldUpgrade.ROTATION.getProjectorUpgradeSlot())) {
 			totalPitch += rotationPitch;
 		}
 		return (totalPitch + 540.0F) % 360.0F - 180.0F;
 	}
 	
 	public float getRotationRoll() {
-		if (hasUpgrade(EnumForceFieldUpgrade.ROTATION)) {
+		assert EnumForceFieldUpgrade.ROTATION.getProjectorUpgradeSlot() != null;
+		if (hasUpgrade(EnumForceFieldUpgrade.ROTATION.getProjectorUpgradeSlot())) {
 			return (rotationRoll + 540.0F) % 360.0F - 180.0F;
 		} else {
 			return 0.0F;
@@ -972,7 +976,8 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	}
 	
 	public Vector3 getTranslation() {
-		if (hasUpgrade(EnumForceFieldUpgrade.TRANSLATION)) {
+		assert EnumForceFieldUpgrade.TRANSLATION.getProjectorUpgradeSlot() != null;
+		if (hasUpgrade(EnumForceFieldUpgrade.TRANSLATION.getProjectorUpgradeSlot())) {
 			return v3Translation;
 		} else {
 			return new Vector3(0.0D, 0.0D, 0.0D);
@@ -988,21 +993,9 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	}
 	
 	@Override
-	public boolean mountUpgrade(final Object upgrade) {
-		if  (super.mountUpgrade(upgrade)) {
-			cache_forceFieldSetup = null;
-			return true;
-		}
-		return false;
-	}
-	
-	@Override
-	public boolean dismountUpgrade(final Object upgrade) {
-		if (super.dismountUpgrade(upgrade)) {
-			cache_forceFieldSetup = null;
-			return true;
-		}
-		return false;
+	protected void onUpgradeChanged(final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
+		super.onUpgradeChanged(upgradeSlot, countNew, isAdded);
+		cache_forceFieldSetup = null;
 	}
 	
 	@Nonnull

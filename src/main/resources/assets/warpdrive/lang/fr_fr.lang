@@ -707,6 +707,36 @@ warpdrive.tooltip.item_tag.breathing_helmet=Permet de §brespirer dans le vide§
 warpdrive.tooltip.item_tag.fly_in_space=Jetpack compatible avec une utilisation §bspatiale§r.
 warpdrive.tooltip.item_tag.no_fall_damage=§bAbsorbe les damages de chute§r.
 
+
+warpdrive.upgrade.description.base.computer_interface=Connecte avec un ordinateur.
+warpdrive.upgrade.description.chunk_loader.efficiency=Réduit le coût energétique.
+warpdrive.upgrade.description.chunk_loader.range=Augmente la portée max.
+warpdrive.upgrade.description.mining_laser.pumping=Enlève les fluides.
+warpdrive.upgrade.description.cloaking.transparency=Transparence complète.
+warpdrive.upgrade.description.capacitor.efficiency=Réduit les pertes de transfert.
+warpdrive.upgrade.description.transporter.energy_storage=Augmente la capacitée énergétique.
+warpdrive.upgrade.description.transporter.focus=Accélère le verrouillage.
+warpdrive.upgrade.description.transporter.range=Augmente la portée max.
+
+warpdrive.upgrade.description.force_field.attraction=Attire les items.
+warpdrive.upgrade.description.force_field.breaking=Casse les blocks.
+warpdrive.upgrade.description.force_field.camouflage=Déguise les blocs.
+warpdrive.upgrade.description.force_field.cooling=Refroidit blocs et entitées.
+warpdrive.upgrade.description.force_field.fusion=Fusionnes les champs.
+warpdrive.upgrade.description.force_field.heating=Echauffe blocs et entitées.
+warpdrive.upgrade.description.force_field.inversion=Change en zone volumique.
+warpdrive.upgrade.description.force_field.item_port=Connecte le stockage.
+warpdrive.upgrade.description.force_field.pumping=Pompe les fluides.
+warpdrive.upgrade.description.force_field.range=Augmente la portée max.
+warpdrive.upgrade.description.force_field.repulsion=Repousse entités et items.
+warpdrive.upgrade.description.force_field.rotation=Permet la rotation.
+warpdrive.upgrade.description.force_field.shock=Electrifie blocs et entitées.
+warpdrive.upgrade.description.force_field.silencer=Silence le bloc.
+warpdrive.upgrade.description.force_field.speed=Augmente la vitesse.
+warpdrive.upgrade.description.force_field.stabilization=Place les blocs.
+warpdrive.upgrade.description.force_field.thickness=Augmente l'épaisseur.
+warpdrive.upgrade.description.force_field.translation=Permet la translation.
+
 warpdrive.upgrade.result.no_upgrade_to_dismount=Aucune amélioration à démonter.
 warpdrive.upgrade.result.not_enough_upgrades=Il faut au moins 1 object pour améliorer ce bloc.
 warpdrive.upgrade.result.invalid_upgrade=This is not a valid item to upgrade this block.
@@ -716,6 +746,7 @@ warpdrive.upgrade.result.valid_upgrades=Valid upgrades for this block include: %
 warpdrive.upgrade.result.too_many_upgrades=Cette amélioration est déjà montée %1$s fois sur ce bloc, utilises un relais à la place.
 warpdrive.upgrade.result.dismounted=Amélioration %1$s démontée correctement.
 warpdrive.upgrade.result.mounted=Amélioration %1$s montée correctement.
+warpdrive.upgrade.result.spawn_denied=Spawn denied for %1$s.
 
 warpdrive.upgrade.result.wrong_shape_side=Il n'y a pas de projecteur électromagnétique sur cette face.
 warpdrive.upgrade.result.no_shape_to_dismount=Aucune forme à démonter.
@@ -724,8 +755,9 @@ warpdrive.upgrade.result.not_enough_shapes.single=Il faut au moins 1 object pour
 warpdrive.upgrade.result.shape_dismounted=Forme démontée correctement.
 warpdrive.upgrade.result.shape_mounted=Forme montée correctement.
 
-warpdrive.upgrade.status_line.none=Pas d'augmentation installée.
-warpdrive.upgrade.status_line.valid=Augmenté avec %1$s.
+warpdrive.upgrade.status_line.upgradeable=Tiens %1$s pour les améliorations.
+warpdrive.upgrade.status_line.header=Améliorations:
+
 
 warpdrive.video_channel.tooltip=Canal vidéo ajusté à %1$d.
 warpdrive.video_channel.get=Le canal vidéo %2$d a été recupéré depuis %1$s.
@@ -822,25 +854,6 @@ warpdrive.force_field.shape.status_line.cube=un cube
 warpdrive.force_field.shape.status_line.plane=un plan
 warpdrive.force_field.shape.status_line.tube=un tube
 warpdrive.force_field.shape.status_line.tunnel=un tunnel
-
-warpdrive.force_field.upgrade.status_line.attraction=attraction
-warpdrive.force_field.upgrade.status_line.breaking=casseur de bloc
-warpdrive.force_field.upgrade.status_line.camouflage=camouflage
-warpdrive.force_field.upgrade.status_line.cooling=refroidissement
-warpdrive.force_field.upgrade.status_line.fusion=fusion
-warpdrive.force_field.upgrade.status_line.heating=chauffage
-warpdrive.force_field.upgrade.status_line.inversion=inversion
-warpdrive.force_field.upgrade.status_line.item_port=port d'item
-warpdrive.force_field.upgrade.status_line.pumping=pompe
-warpdrive.force_field.upgrade.status_line.range=portée
-warpdrive.force_field.upgrade.status_line.repulsion=répulsion
-warpdrive.force_field.upgrade.status_line.rotation=rotation
-warpdrive.force_field.upgrade.status_line.shock=décharge électrique
-warpdrive.force_field.upgrade.status_line.silencer=silencieux
-warpdrive.force_field.upgrade.status_line.speed=vitesse
-warpdrive.force_field.upgrade.status_line.stabilization=stabilisation
-warpdrive.force_field.upgrade.status_line.thickness=épaisseur
-warpdrive.force_field.upgrade.status_line.translation=translation
 
 warpdrive.ic2_reactor_laser_cooler.no_reactor=Pas de réacteur IC2 trouvé!
 warpdrive.ic2_reactor_laser_cooler.reactor_found=Réacteur connecté au %1$s.

@@ -712,6 +712,36 @@ warpdrive.tooltip.item_tag.breathing_helmet=§b太空中呼吸§r消耗背包中
 warpdrive.tooltip.item_tag.fly_in_space=§b太空喷气背包§r.
 warpdrive.tooltip.item_tag.no_fall_damage=§b减少摔落伤害§r.
 
+
+warpdrive.upgrade.description.base.computer_interface=Enables computer connection.
+warpdrive.upgrade.description.chunk_loader.efficiency=Reduces energy cost.
+warpdrive.upgrade.description.chunk_loader.range=Increases maximum range.
+warpdrive.upgrade.description.mining_laser.pumping=Enables fluid removal.
+warpdrive.upgrade.description.cloaking.transparency=Enables full transparency.
+warpdrive.upgrade.description.capacitor.efficiency=Reduces energy transfer loss.
+warpdrive.upgrade.description.transporter.energy_storage=Increases energy storage.
+warpdrive.upgrade.description.transporter.focus=Increases locking speed.
+warpdrive.upgrade.description.transporter.range=Increases maximum range.
+
+warpdrive.upgrade.description.force_field.attraction=Pulls item drops for storage.
+warpdrive.upgrade.description.force_field.breaking=Breaks blocks.
+warpdrive.upgrade.description.force_field.camouflage=Disguises as another block.
+warpdrive.upgrade.description.force_field.cooling=Freezes blocks & entities.
+warpdrive.upgrade.description.force_field.fusion=Merges force fields.
+warpdrive.upgrade.description.force_field.heating=Heats up blocks and entities.
+warpdrive.upgrade.description.force_field.inversion=Changes to volume area.
+warpdrive.upgrade.description.force_field.item_port=Interfaces with storages.
+warpdrive.upgrade.description.force_field.pumping=Pumps fluids.
+warpdrive.upgrade.description.force_field.range=Increases maximum size.
+warpdrive.upgrade.description.force_field.repulsion=Pushs entities & items out.
+warpdrive.upgrade.description.force_field.rotation=Enables rotation.
+warpdrive.upgrade.description.force_field.shock=Electrifies blocks & entities.
+warpdrive.upgrade.description.force_field.silencer=Silences the block.
+warpdrive.upgrade.description.force_field.speed=Increases projection speed.
+warpdrive.upgrade.description.force_field.stabilization=Places blocks.
+warpdrive.upgrade.description.force_field.thickness=Increases thickness.
+warpdrive.upgrade.description.force_field.translation=Enables translation.
+
 warpdrive.upgrade.result.no_upgrade_to_dismount=没有可卸载的升级
 warpdrive.upgrade.result.not_enough_upgrades=你需要至少一个物品去升级这个方块
 warpdrive.upgrade.result.invalid_upgrade=这不是一个能够升级升级方块的有效物品
@@ -721,6 +751,7 @@ warpdrive.upgrade.result.valid_upgrades=这个方块所能加载的有效升级�
 warpdrive.upgrade.result.too_many_upgrades=这个 %1$d升级已经安装.
 warpdrive.upgrade.result.dismounted=升级 %1$s 已经被成功卸载.
 warpdrive.upgrade.result.mounted=升级 %1$s已被成功安装.
+warpdrive.upgrade.result.spawn_denied=Spawn denied for %1$s.
 
 warpdrive.upgrade.result.wrong_shape_side=这一边没有电磁投影仪。
 warpdrive.upgrade.result.no_shape_to_dismount=没有模型可供卸载
@@ -729,8 +760,9 @@ warpdrive.upgrade.result.not_enough_shapes.single=你需要至少一个物品去
 warpdrive.upgrade.result.shape_dismounted=模型卸载成功.
 warpdrive.upgrade.result.shape_mounted=模型加载成功.
 
-warpdrive.upgrade.status_line.none=没有安装升级
-warpdrive.upgrade.status_line.valid=用升级%1$s.
+warpdrive.upgrade.status_line.upgradeable=Hold %1$s for upgrades.
+warpdrive.upgrade.status_line.header=用升级:
+
 
 warpdrive.video_channel.tooltip-tbc=频道设置为%1$d.
 warpdrive.video_channel.get=视频频道 %2$d 已从频道 %1$s 断开.
@@ -827,25 +859,6 @@ warpdrive.force_field.shape.status_line.cube=立方体
 warpdrive.force_field.shape.status_line.plane=平面
 warpdrive.force_field.shape.status_line.tube=管道
 warpdrive.force_field.shape.status_line.tunnel=隧道
-
-warpdrive.force_field.upgrade.status_line.attraction=引力
-warpdrive.force_field.upgrade.status_line.breaking=采掘中
-warpdrive.force_field.upgrade.status_line.camouflage=伪装
-warpdrive.force_field.upgrade.status_line.cooling=冷却
-warpdrive.force_field.upgrade.status_line.fusion=融合
-warpdrive.force_field.upgrade.status_line.heating=加热
-warpdrive.force_field.upgrade.status_line.inversion=反向
-warpdrive.force_field.upgrade.status_line.item_port=物品端口
-warpdrive.force_field.upgrade.status_line.pumping=抽吸
-warpdrive.force_field.upgrade.status_line.range=提升范围
-warpdrive.force_field.upgrade.status_line.repulsion=斥力
-warpdrive.force_field.upgrade.status_line.rotation=旋转
-warpdrive.force_field.upgrade.status_line.shock=电击
-warpdrive.force_field.upgrade.status_line.silencer=消音
-warpdrive.force_field.upgrade.status_line.speed=速度
-warpdrive.force_field.upgrade.status_line.stabilization=稳定
-warpdrive.force_field.upgrade.status_line.thickness=厚度
-warpdrive.force_field.upgrade.status_line.translation=转化
 
 warpdrive.ic2_reactor_laser_cooler.no_reactor=未发现反应堆!
 warpdrive.ic2_reactor_laser_cooler.reactor_found=Reactor connected on %1$s.

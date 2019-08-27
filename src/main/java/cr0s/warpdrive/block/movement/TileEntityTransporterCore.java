@@ -28,6 +28,7 @@ import cr0s.warpdrive.data.StarMapRegistry;
 import cr0s.warpdrive.data.EnumStarMapEntryType;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
+import cr0s.warpdrive.item.ItemComponent;
 import cr0s.warpdrive.network.PacketHandler;
 
 import li.cil.oc.api.machine.Arguments;
@@ -82,6 +83,17 @@ import net.minecraftforge.fml.common.Optional;
 
 public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrController implements ITransporterCore, IBeamFrequency, IStarMapRegistryTileEntity {
 	
+	// global properties
+	private static final UpgradeSlot upgradeSlotEnergyStorage = new UpgradeSlot("transporter.energy_storage",
+	                                                                            ItemComponent.getItemStackNoCache(EnumComponentType.CAPACITIVE_CRYSTAL, 1),
+	                                                                            WarpDriveConfig.TRANSPORTER_ENERGY_STORED_UPGRADE_MAX_QUANTITY );
+	private static final UpgradeSlot upgradeSlotFocus = new UpgradeSlot("transporter.focus",
+	                                                                    ItemComponent.getItemStackNoCache(EnumComponentType.EMERALD_CRYSTAL, 1),
+	                                                                    WarpDriveConfig.TRANSPORTER_LOCKING_UPGRADE_MAX_QUANTITY );
+	private static final UpgradeSlot upgradeSlotRange = new UpgradeSlot("transporter.range",
+	                                                                    ItemComponent.getItemStackNoCache(EnumComponentType.ENDER_COIL, 1),
+	                                                                    WarpDriveConfig.TRANSPORTER_RANGE_UPGRADE_MAX_QUANTITY );
+	
 	// persistent properties
 	private UUID uuid = null;
 	private ArrayList<BlockPos> vLocalScanners = null;
@@ -129,9 +141,9 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		});
 		CC_scripts = Collections.singletonList("startup");
 		
-		setUpgradeMaxCount(EnumComponentType.ENDER_COIL, WarpDriveConfig.TRANSPORTER_RANGE_UPGRADE_MAX_QUANTITY);
-		setUpgradeMaxCount(EnumComponentType.CAPACITIVE_CRYSTAL, WarpDriveConfig.TRANSPORTER_ENERGY_STORED_UPGRADE_MAX_QUANTITY);
-		setUpgradeMaxCount(EnumComponentType.EMERALD_CRYSTAL, WarpDriveConfig.TRANSPORTER_LOCKING_UPGRADE_MAX_QUANTITY);
+		registerUpgradeSlot(upgradeSlotEnergyStorage);
+		registerUpgradeSlot(upgradeSlotFocus);
+		registerUpgradeSlot(upgradeSlotRange);
 	}
 	
 	@Override
@@ -1066,8 +1078,8 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 							// remember scanners coordinates
 							vScanners = ((TileEntityTransporterCore) tileEntity).vLocalScanners;
 							// remember upgrades
-							sumRangeUpgrades += ((TileEntityTransporterCore) tileEntity).getUpgradeCount(EnumComponentType.ENDER_COIL);
-							sumFocusUpgrades += ((TileEntityTransporterCore) tileEntity).getUpgradeCount(EnumComponentType.EMERALD_CRYSTAL);
+							sumRangeUpgrades += ((TileEntityTransporterCore) tileEntity).getUpgradeCount(upgradeSlotRange);
+							sumFocusUpgrades += ((TileEntityTransporterCore) tileEntity).getUpgradeCount(upgradeSlotFocus);
 						}
 					}
 				}
@@ -1478,15 +1490,15 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	}
 	
 	@Override
-	protected void onUpgradeChanged(final Object upgrade, final int countNew, final boolean isAdded) {
-		if (upgrade == EnumComponentType.CAPACITIVE_CRYSTAL) {
+	protected void onUpgradeChanged(final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
+		if (upgradeSlot == upgradeSlotEnergyStorage) {
 			refreshEnergyParameters();
 		}
-		super.onUpgradeChanged(upgrade, countNew, isAdded);
+		super.onUpgradeChanged(upgradeSlot, countNew, isAdded);
 	}
 	
 	private void refreshEnergyParameters() {
-		final int energyUpgrades = getUpgradeCount(EnumComponentType.CAPACITIVE_CRYSTAL);
+		final int energyUpgrades = getUpgradeCount(upgradeSlotEnergyStorage);
 		energy_setParameters(WarpDriveConfig.TRANSPORTER_MAX_ENERGY_STORED + energyUpgrades * WarpDriveConfig.TRANSPORTER_ENERGY_STORED_UPGRADE_BONUS,
 		                     4096, 0,
 		                     "HV", 2, "HV", 0);

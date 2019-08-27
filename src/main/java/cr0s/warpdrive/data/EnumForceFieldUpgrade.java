@@ -3,9 +3,12 @@ package cr0s.warpdrive.data;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IForceFieldUpgrade;
 import cr0s.warpdrive.api.IForceFieldUpgradeEffector;
+import cr0s.warpdrive.block.TileEntityAbstractBase.UpgradeSlot;
+import cr0s.warpdrive.item.ItemForceFieldUpgrade;
 import cr0s.warpdrive.network.PacketHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.HashMap;
 
@@ -66,6 +69,8 @@ public enum EnumForceFieldUpgrade implements IStringSerializable, IForceFieldUpg
 	private final float scanEnergyCost;
 	private final float placeEnergyCost;
 	private final float entityEffectEnergyCost;
+	private UpgradeSlot upgradeSlotProjector = null;
+	private UpgradeSlot upgradeSlotRelay = null;
 	
 	// cached values
 	public static final int length;
@@ -114,13 +119,33 @@ public enum EnumForceFieldUpgrade implements IStringSerializable, IForceFieldUpg
 		return name;
 	}
 	
+	@Nullable
+	public UpgradeSlot getProjectorUpgradeSlot() {
+		if (upgradeSlotProjector == null) {
+			upgradeSlotProjector = maxCountOnProjector == 0 ? null : new UpgradeSlot("force_field." + name,
+			                                                                         ItemForceFieldUpgrade.getItemStackNoCache(this, 1),
+			                                                                         maxCountOnProjector);
+		}
+		return upgradeSlotProjector;
+	}
+	
+	@Nullable
+	public UpgradeSlot getRelayUpgradeSlot() {
+		if (upgradeSlotRelay == null) {
+			upgradeSlotRelay = maxCountOnRelay == 0 ? null : new UpgradeSlot("force_field." + name,
+			                                                                 ItemForceFieldUpgrade.getItemStackNoCache(this, 1),
+			                                                                 maxCountOnRelay);
+		}
+		return upgradeSlotRelay;
+	}
+	
 	@Override
-	public IForceFieldUpgradeEffector getUpgradeEffector() {
+	public IForceFieldUpgradeEffector getUpgradeEffector(final Object container) {
 		return this;
 	}
 	
 	@Override
-	public float getUpgradeValue() {
+	public float getUpgradeValue(final Object container) {
 		return upgradeValue;
 	}
 	

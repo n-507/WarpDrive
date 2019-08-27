@@ -11,6 +11,7 @@ import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.SoundEvents;
 import cr0s.warpdrive.data.Vector3;
+import cr0s.warpdrive.item.ItemComponent;
 import cr0s.warpdrive.network.PacketHandler;
 
 import javax.annotation.Nonnull;
@@ -37,6 +38,10 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyCoreOrContro
 	private static final float[] innerCoilColor_r = { 1.00f, 1.00f, 1.00f, 1.00f, 0.75f, 0.25f, 0.00f, 0.00f, 0.00f, 0.00f, 0.50f, 1.00f };
 	private static final float[] innerCoilColor_g = { 0.00f, 0.25f, 0.75f, 1.00f, 1.00f, 1.00f, 1.00f, 1.00f, 0.50f, 0.25f, 0.00f, 0.00f };
 	private static final float[] innerCoilColor_b = { 0.25f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.50f, 1.00f, 1.00f, 1.00f, 1.00f, 0.75f };
+	
+	private static final UpgradeSlot upgradeSlotTransparency = new UpgradeSlot("cloaking.transparency",
+	                                                                           ItemComponent.getItemStackNoCache(EnumComponentType.DIAMOND_CRYSTAL, 6),
+	                                                                           1);
 	
 	// computed properties
 	// spatial cloaking field parameters
@@ -66,7 +71,7 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyCoreOrContro
 		// addMethods(new String[] {});
 		CC_scripts = Arrays.asList("enable", "disable");
 		
-		setUpgradeMaxCount(EnumComponentType.DIAMOND_CRYSTAL, 1);
+		registerUpgradeSlot(upgradeSlotTransparency);
 	}
 	
 	@Override
@@ -97,7 +102,7 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyCoreOrContro
 		
 		updateTicks--;
 		if (updateTicks <= 0) {
-			isFullyTransparent = hasUpgrade(EnumComponentType.DIAMOND_CRYSTAL);
+			isFullyTransparent = hasUpgrade(upgradeSlotTransparency);
 			updateTicks = ((!isFullyTransparent) ? 20 : 10) * WarpDriveConfig.CLOAKING_FIELD_REFRESH_INTERVAL_SECONDS; // resetting timer
 			
 			isCloaking = WarpDrive.cloaks.isAreaExists(world, pos);

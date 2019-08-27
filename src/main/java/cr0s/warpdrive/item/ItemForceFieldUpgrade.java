@@ -2,6 +2,8 @@ package cr0s.warpdrive.item;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.api.IForceFieldUpgrade;
+import cr0s.warpdrive.api.IForceFieldUpgradeEffector;
 import cr0s.warpdrive.block.forcefield.BlockForceFieldProjector;
 import cr0s.warpdrive.block.forcefield.BlockForceFieldRelay;
 import cr0s.warpdrive.data.EnumComponentType;
@@ -28,7 +30,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemForceFieldUpgrade extends ItemAbstractBase {
+public class ItemForceFieldUpgrade extends ItemAbstractBase implements IForceFieldUpgrade {
 	
 	private static ItemStack[] itemStackCache;
 	
@@ -94,6 +96,24 @@ public class ItemForceFieldUpgrade extends ItemAbstractBase {
 	public boolean doesSneakBypassUse(final ItemStack itemStack, final IBlockAccess blockAccess, final BlockPos blockPos, final EntityPlayer player) {
 		final Block block = blockAccess.getBlockState(blockPos).getBlock();
 		return block instanceof BlockForceFieldRelay || block instanceof BlockForceFieldProjector || super.doesSneakBypassUse(itemStack, blockAccess, blockPos, player);
+	}
+	
+	@Override
+	public IForceFieldUpgradeEffector getUpgradeEffector(final Object container) {
+		if (container instanceof ItemStack) {
+			return EnumForceFieldUpgrade.get(((ItemStack) container).getMetadata()).getUpgradeEffector(container);
+		}
+		assert false;
+		return null;
+	}
+	
+	@Override
+	public float getUpgradeValue(final Object container) {
+		if (container instanceof ItemStack) {
+			return EnumForceFieldUpgrade.get(((ItemStack) container).getMetadata()).getUpgradeValue(container);
+		}
+		assert false;
+		return 0;
 	}
 	
 	@Override

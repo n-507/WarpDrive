@@ -707,6 +707,36 @@ warpdrive.tooltip.item_tag.breathing_helmet=§Ademhalen in de ruimte§r consumee
 warpdrive.tooltip.item_tag.fly_in_space=§bJetpack Die werkt in de ruimte§r.
 warpdrive.tooltip.item_tag.no_fall_damage=§bAbsorbeert Schade van vallen§r.
 
+
+warpdrive.upgrade.description.base.computer_interface=Enables computer connection.
+warpdrive.upgrade.description.chunk_loader.efficiency=Reduces energy cost.
+warpdrive.upgrade.description.chunk_loader.range=Increases maximum range.
+warpdrive.upgrade.description.mining_laser.pumping=Enables fluid removal.
+warpdrive.upgrade.description.cloaking.transparency=Enables full transparency.
+warpdrive.upgrade.description.capacitor.efficiency=Reduces energy transfer loss.
+warpdrive.upgrade.description.transporter.energy_storage=Increases energy storage.
+warpdrive.upgrade.description.transporter.focus=Increases locking speed.
+warpdrive.upgrade.description.transporter.range=Increases maximum range.
+
+warpdrive.upgrade.description.force_field.attraction=Pulls item drops for storage.
+warpdrive.upgrade.description.force_field.breaking=Breaks blocks.
+warpdrive.upgrade.description.force_field.camouflage=Disguises as another block.
+warpdrive.upgrade.description.force_field.cooling=Freezes blocks & entities.
+warpdrive.upgrade.description.force_field.fusion=Merges force fields.
+warpdrive.upgrade.description.force_field.heating=Heats up blocks and entities.
+warpdrive.upgrade.description.force_field.inversion=Changes to volume area.
+warpdrive.upgrade.description.force_field.item_port=Interfaces with storages.
+warpdrive.upgrade.description.force_field.pumping=Pumps fluids.
+warpdrive.upgrade.description.force_field.range=Increases maximum size.
+warpdrive.upgrade.description.force_field.repulsion=Pushs entities & items out.
+warpdrive.upgrade.description.force_field.rotation=Enables rotation.
+warpdrive.upgrade.description.force_field.shock=Electrifies blocks & entities.
+warpdrive.upgrade.description.force_field.silencer=Silences the block.
+warpdrive.upgrade.description.force_field.speed=Increases projection speed.
+warpdrive.upgrade.description.force_field.stabilization=Places blocks.
+warpdrive.upgrade.description.force_field.thickness=Increases thickness.
+warpdrive.upgrade.description.force_field.translation=Enables translation.
+
 warpdrive.upgrade.result.no_upgrade_to_dismount=Geen upgrade om uit te schakelen
 warpdrive.upgrade.result.not_enough_upgrades=Je hebt tenminste 1 item nodig om dit blok te upgraden.
 warpdrive.upgrade.result.invalid_upgrade=Did is niet het correcte item om dit blok te upgraden.
@@ -716,6 +746,7 @@ warpdrive.upgrade.result.valid_upgrades=Geldige upgrades voor dit block zijn: %1
 warpdrive.upgrade.result.too_many_upgrades=Er zijn al %1$d upgrades geinstalleert.
 warpdrive.upgrade.result.dismounted=Upgrade %1$s is succesvol uitgeschakeld.
 warpdrive.upgrade.result.mounted=Upgrade %1$s is succesvol geplaatst.
+warpdrive.upgrade.result.spawn_denied=Spawn denied for %1$s.
 
 warpdrive.upgrade.result.wrong_shape_side=Er is geen elektromagnetische-projector aan deze kant.
 warpdrive.upgrade.result.no_shape_to_dismount=Geen vorm om uit te schakelen.
@@ -724,8 +755,9 @@ warpdrive.upgrade.result.not_enough_shapes.single=Je hebt tenminste 1 items nodi
 warpdrive.upgrade.result.shape_dismounted=Vorm succesvol uitgeschakeld.
 warpdrive.upgrade.result.shape_mounted=Vorm succesvol geplaatst.
 
-warpdrive.upgrade.status_line.none=Geen upgrade geinstalleerd.
-warpdrive.upgrade.status_line.valid=Geupgrade met1$s.
+warpdrive.upgrade.status_line.upgradeable=Hold %1$s for upgrades.
+warpdrive.upgrade.status_line.header=Geupgrade:
+
 
 warpdrive.video_channel.tooltip=Videokanaal is gezet naar %1$d.
 warpdrive.video_channel.get=Videokanaal %2$d is achterhaald door %1$s.
@@ -821,25 +853,6 @@ warpdrive.force_field.shape.status_line.cube=kubus
 warpdrive.force_field.shape.status_line.plane=Plat oppervlak
 warpdrive.force_field.shape.status_line.tube=tube
 warpdrive.force_field.shape.status_line.tunnel=tunnel
-
-warpdrive.force_field.upgrade.status_line.attraction=aantrekking
-warpdrive.force_field.upgrade.status_line.breaking=blokbreker
-warpdrive.force_field.upgrade.status_line.camouflage=camouflage
-warpdrive.force_field.upgrade.status_line.cooling=koeling
-warpdrive.force_field.upgrade.status_line.fusion=fusie
-warpdrive.force_field.upgrade.status_line.heating=verhitting
-warpdrive.force_field.upgrade.status_line.inversion=inversie
-warpdrive.force_field.upgrade.status_line.item_port=itempoort
-warpdrive.force_field.upgrade.status_line.pumping=pompen
-warpdrive.force_field.upgrade.status_line.range=vergroot bereik
-warpdrive.force_field.upgrade.status_line.repulsion=afstoting
-warpdrive.force_field.upgrade.status_line.rotation=rotatie
-warpdrive.force_field.upgrade.status_line.shock=schok
-warpdrive.force_field.upgrade.status_line.silencer=demper
-warpdrive.force_field.upgrade.status_line.speed=snelheid
-warpdrive.force_field.upgrade.status_line.stabilization=stabilizatie
-warpdrive.force_field.upgrade.status_line.thickness=dikte
-warpdrive.force_field.upgrade.status_line.translation=verandering
 
 warpdrive.ic2_reactor_laser_cooler.no_reactor=Geen reactor gevonden!
 warpdrive.ic2_reactor_laser_cooler.reactor_found=Reactor connected on %1$s.

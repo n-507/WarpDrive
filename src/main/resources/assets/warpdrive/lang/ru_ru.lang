@@ -707,6 +707,36 @@ warpdrive.tooltip.item_tag.breathing_helmet=§bSpace breathing§r consuming Air 
 warpdrive.tooltip.item_tag.fly_in_space=§bSpace compatible jetpack§r.
 warpdrive.tooltip.item_tag.no_fall_damage=§bAbsorbs fall damage§r.
 
+
+warpdrive.upgrade.description.base.computer_interface=Enables computer connection.
+warpdrive.upgrade.description.chunk_loader.efficiency=Reduces energy cost.
+warpdrive.upgrade.description.chunk_loader.range=Increases maximum range.
+warpdrive.upgrade.description.mining_laser.pumping=Enables fluid removal.
+warpdrive.upgrade.description.cloaking.transparency=Enables full transparency.
+warpdrive.upgrade.description.capacitor.efficiency=Reduces energy transfer loss.
+warpdrive.upgrade.description.transporter.energy_storage=Increases energy storage.
+warpdrive.upgrade.description.transporter.focus=Increases locking speed.
+warpdrive.upgrade.description.transporter.range=Increases maximum range.
+
+warpdrive.upgrade.description.force_field.attraction=Pulls item drops for storage.
+warpdrive.upgrade.description.force_field.breaking=Breaks blocks.
+warpdrive.upgrade.description.force_field.camouflage=Disguises as another block.
+warpdrive.upgrade.description.force_field.cooling=Freezes blocks & entities.
+warpdrive.upgrade.description.force_field.fusion=Merges force fields.
+warpdrive.upgrade.description.force_field.heating=Heats up blocks and entities.
+warpdrive.upgrade.description.force_field.inversion=Changes to volume area.
+warpdrive.upgrade.description.force_field.item_port=Interfaces with storages.
+warpdrive.upgrade.description.force_field.pumping=Pumps fluids.
+warpdrive.upgrade.description.force_field.range=Increases maximum size.
+warpdrive.upgrade.description.force_field.repulsion=Pushs entities & items out.
+warpdrive.upgrade.description.force_field.rotation=Enables rotation.
+warpdrive.upgrade.description.force_field.shock=Electrifies blocks & entities.
+warpdrive.upgrade.description.force_field.silencer=Silences the block.
+warpdrive.upgrade.description.force_field.speed=Increases projection speed.
+warpdrive.upgrade.description.force_field.stabilization=Places blocks.
+warpdrive.upgrade.description.force_field.thickness=Increases thickness.
+warpdrive.upgrade.description.force_field.translation=Enables translation.
+
 warpdrive.upgrade.result.no_upgrade_to_dismount=No upgrade to dismount.
 warpdrive.upgrade.result.not_enough_upgrades=You need at least 1 item to upgrade this block.
 warpdrive.upgrade.result.invalid_upgrade=This is not a valid item to upgrade this block.
@@ -716,6 +746,7 @@ warpdrive.upgrade.result.valid_upgrades=Valid upgrades for this block include: %
 warpdrive.upgrade.result.too_many_upgrades=There's already %1$d upgrades installed.
 warpdrive.upgrade.result.dismounted=Upgrade %1$s was dismounted successfully.
 warpdrive.upgrade.result.mounted=Upgrade %1$s was mounted successfully.
+warpdrive.upgrade.result.spawn_denied=Spawn denied for %1$s.
 
 warpdrive.upgrade.result.wrong_shape_side=There's no Electromagnetic projector on this side.
 warpdrive.upgrade.result.no_shape_to_dismount=No shape to dismount.
@@ -724,8 +755,9 @@ warpdrive.upgrade.result.not_enough_shapes.single=You need at least 1 item to se
 warpdrive.upgrade.result.shape_dismounted=Shape dismounted successfully.
 warpdrive.upgrade.result.shape_mounted=Shape mounted successfully.
 
-warpdrive.upgrade.status_line.none=No upgrade installed.
-warpdrive.upgrade.status_line.valid=Upgraded with %1$s.
+warpdrive.upgrade.status_line.upgradeable=Hold %1$s for upgrades.
+warpdrive.upgrade.status_line.header=Upgrades:
+
 
 warpdrive.video_channel.tooltip=Видеоканал установлен на %1$d.
 warpdrive.video_channel.get=Video channel %2$d has been retrieved from %1$s.
@@ -822,25 +854,6 @@ warpdrive.force_field.shape.status_line.cube=cube
 warpdrive.force_field.shape.status_line.plane=plane
 warpdrive.force_field.shape.status_line.tube=tube
 warpdrive.force_field.shape.status_line.tunnel=tunnel
-
-warpdrive.force_field.upgrade.status_line.attraction=attraction
-warpdrive.force_field.upgrade.status_line.breaking=block breaking
-warpdrive.force_field.upgrade.status_line.camouflage=camouflage
-warpdrive.force_field.upgrade.status_line.cooling=cooling
-warpdrive.force_field.upgrade.status_line.fusion=fusion
-warpdrive.force_field.upgrade.status_line.heating=heating
-warpdrive.force_field.upgrade.status_line.inversion=inversion
-warpdrive.force_field.upgrade.status_line.item_port=item port
-warpdrive.force_field.upgrade.status_line.pumping=pumping
-warpdrive.force_field.upgrade.status_line.range=increased range
-warpdrive.force_field.upgrade.status_line.repulsion=repulsion
-warpdrive.force_field.upgrade.status_line.rotation=rotation
-warpdrive.force_field.upgrade.status_line.shock=shock
-warpdrive.force_field.upgrade.status_line.silencer=silencer
-warpdrive.force_field.upgrade.status_line.speed=speed
-warpdrive.force_field.upgrade.status_line.stabilization=stabilization
-warpdrive.force_field.upgrade.status_line.thickness=thickness
-warpdrive.force_field.upgrade.status_line.translation=translation
 
 warpdrive.ic2_reactor_laser_cooler.no_reactor=Реактор не найден!
 warpdrive.ic2_reactor_laser_cooler.reactor_found=Reactor connected on %1$s.

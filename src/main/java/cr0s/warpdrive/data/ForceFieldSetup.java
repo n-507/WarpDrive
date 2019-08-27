@@ -5,6 +5,7 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IForceFieldShape;
 import cr0s.warpdrive.api.IForceFieldUpgrade;
 import cr0s.warpdrive.api.IForceFieldUpgradeEffector;
+import cr0s.warpdrive.block.TileEntityAbstractBase.UpgradeSlot;
 import cr0s.warpdrive.block.forcefield.TileEntityForceFieldProjector;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
@@ -139,7 +140,7 @@ public class ForceFieldSetup extends GlobalPosition {
 				continue;
 			}
 			// only consider same dimension
-			if ( tileEntity.getWorld() == null
+			if ( !tileEntity.hasWorld()
 			  || tileEntity.getWorld().provider.getDimension() != dimensionId ) {
 				continue;
 			}
@@ -156,15 +157,16 @@ public class ForceFieldSetup extends GlobalPosition {
 					v3Min = projector.getMin();
 					v3Max = projector.getMax();
 					v3Translation = projector.getTranslation();
-					for (final Entry<Object, Integer> entry : projector.getUpgradesOfType(null).entrySet()) {
-						if (entry.getKey() instanceof IForceFieldUpgrade) {
-							final IForceFieldUpgradeEffector upgradeEffector = ((IForceFieldUpgrade)entry.getKey()).getUpgradeEffector();
+					for (final Entry<UpgradeSlot, Integer> entry : projector.getUpgradesOfType(null).entrySet()) {
+						if (entry.getKey().itemStack.getItem() instanceof IForceFieldUpgrade) {
+							final IForceFieldUpgrade forceFieldUpgrade = (IForceFieldUpgrade) entry.getKey().itemStack.getItem();
+							final IForceFieldUpgradeEffector upgradeEffector = forceFieldUpgrade.getUpgradeEffector(entry.getKey().itemStack);
 							if (upgradeEffector != null) {
 								Float currentValue = upgradeValues.get(upgradeEffector);
 								if (currentValue == null) {
 									currentValue = 0.0F;
 								}
-								float addedValue = ((IForceFieldUpgrade)entry.getKey()).getUpgradeValue() * entry.getValue();
+								float addedValue = forceFieldUpgrade.getUpgradeValue(entry.getKey().itemStack) * entry.getValue();
 								addedValue *= 1 + (enumTier.getIndex() - 1) * FORCEFIELD_UPGRADE_BOOST_FACTOR_PER_PROJECTOR_TIER;
 								upgradeValues.put(upgradeEffector, currentValue + addedValue);
 							}
@@ -182,13 +184,13 @@ public class ForceFieldSetup extends GlobalPosition {
 			
 			// upgrade blocks (namely, relays)
 			if (tileEntity instanceof IForceFieldUpgrade) {
-				final IForceFieldUpgradeEffector upgradeEffector = ((IForceFieldUpgrade)tileEntity).getUpgradeEffector();
+				final IForceFieldUpgradeEffector upgradeEffector = ((IForceFieldUpgrade) tileEntity).getUpgradeEffector(tileEntity);
 				if (upgradeEffector != null) {
 					Float currentValue = upgradeValues.get(upgradeEffector);
 					if (currentValue == null) {
 						currentValue = 0.0F;
 					}
-					upgradeValues.put(upgradeEffector, currentValue + ((IForceFieldUpgrade)tileEntity).getUpgradeValue());
+					upgradeValues.put(upgradeEffector, currentValue + ((IForceFieldUpgrade) tileEntity).getUpgradeValue(tileEntity));
 					
 					// camouflage identification
 					if (upgradeEffector == EnumForceFieldUpgrade.CAMOUFLAGE) {

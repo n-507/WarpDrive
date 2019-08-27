@@ -1,10 +1,11 @@
 package cr0s.warpdrive.block.forcefield;
 
 import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.api.WarpDriveText;
+import cr0s.warpdrive.block.TileEntityAbstractBase.UpgradeSlot;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnumForceFieldShape;
 import cr0s.warpdrive.data.EnumForceFieldState;
-import cr0s.warpdrive.data.EnumForceFieldUpgrade;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.item.ItemForceFieldShape;
 import cr0s.warpdrive.item.ItemForceFieldUpgrade;
@@ -214,65 +215,49 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 		}
 		final TileEntityForceFieldProjector tileEntityForceFieldProjector = (TileEntityForceFieldProjector) tileEntity;
 		
-		EnumForceFieldUpgrade enumForceFieldUpgrade = EnumForceFieldUpgrade.NONE;
-		if ( !itemStackHeld.isEmpty()
-		  && itemStackHeld.getItem() instanceof ItemForceFieldUpgrade ) {
-			enumForceFieldUpgrade = EnumForceFieldUpgrade.get(itemStackHeld.getItemDamage());
-		}
+		final UpgradeSlot upgradeSlot = tileEntityForceFieldProjector.getUpgradeSlot(itemStackHeld);
 		
 		// sneaking with an empty hand or an upgrade/shape item in hand to dismount current upgrade/shape
 		if (entityPlayer.isSneaking()) {
 			// using an upgrade item or no shape defined means dismount upgrade, otherwise dismount shape
-			if ( ( !itemStackHeld.isEmpty()
-			    && itemStackHeld.getItem() instanceof ItemForceFieldUpgrade )
+			if ( upgradeSlot != null
 			  || (tileEntityForceFieldProjector.getShape() == EnumForceFieldShape.NONE)
-			  || (enumFacing != blockState.getValue(BlockProperties.FACING) && (!tileEntityForceFieldProjector.isDoubleSided || enumFacing.getOpposite() != blockState.getValue(BlockProperties.FACING))) ) {
-				// find a valid upgrade to dismount
-				if (!tileEntityForceFieldProjector.hasUpgrade(enumForceFieldUpgrade)) {
-					enumForceFieldUpgrade = (EnumForceFieldUpgrade) tileEntityForceFieldProjector.getFirstUpgradeOfType(EnumForceFieldUpgrade.class, EnumForceFieldUpgrade.NONE);
-				}
-				
-				if (enumForceFieldUpgrade == EnumForceFieldUpgrade.NONE) {
-					// no more force field upgrades to dismount, let's try common ones
-					return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
-				}
-				
-				if (!entityPlayer.capabilities.isCreativeMode) {
-					// dismount the current upgrade item
-					final ItemStack itemStackDrop = ItemForceFieldUpgrade.getItemStackNoCache(enumForceFieldUpgrade, 1);
-					final EntityItem entityItem = new EntityItem(world, entityPlayer.posX, entityPlayer.posY + 0.5D, entityPlayer.posZ, itemStackDrop);
-					entityItem.setNoPickupDelay();
-					world.spawnEntity(entityItem);
-				}
-				
-				tileEntityForceFieldProjector.dismountUpgrade(enumForceFieldUpgrade);
-				// upgrade dismounted
-				Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.dismounted", enumForceFieldUpgrade.name()));
-				return true;
+			  || ( enumFacing != blockState.getValue(BlockProperties.FACING)
+			    && ( !tileEntityForceFieldProjector.isDoubleSided
+			      || enumFacing.getOpposite() != blockState.getValue(BlockProperties.FACING) ) ) ) {
+				// user base handler
+				return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 				
 			} else {// default to dismount shape
 				if (tileEntityForceFieldProjector.getShape() != EnumForceFieldShape.NONE) {
-					if (enumFacing == blockState.getValue(BlockProperties.FACING) || (tileEntityForceFieldProjector.isDoubleSided && enumFacing.getOpposite() == blockState.getValue(BlockProperties.FACING))) {
+					if ( enumFacing == blockState.getValue(BlockProperties.FACING)
+					  || ( tileEntityForceFieldProjector.isDoubleSided
+					    && enumFacing.getOpposite() == blockState.getValue(BlockProperties.FACING) ) ) {
 						if (!entityPlayer.capabilities.isCreativeMode) {
 							// dismount the shape item(s)
 							final ItemStack itemStackDrop = ItemForceFieldShape.getItemStackNoCache(tileEntityForceFieldProjector.getShape(), tileEntityForceFieldProjector.isDoubleSided ? 2 : 1);
 							final EntityItem entityItem = new EntityItem(world, entityPlayer.posX, entityPlayer.posY + 0.5D, entityPlayer.posZ, itemStackDrop);
 							entityItem.setNoPickupDelay();
-							world.spawnEntity(entityItem);
+							final boolean isSuccess = world.spawnEntity(entityItem);
+							if (!isSuccess) {
+								Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.spawn_denied",
+								                                                       entityItem ));
+								return true;
+							}
 						}
 						
 						tileEntityForceFieldProjector.setShape(EnumForceFieldShape.NONE);
 						// shape dismounted
-						Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.shape_dismounted"));
+						Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleCorrect, "warpdrive.upgrade.result.shape_dismounted"));
 						
 					} else {
 						// wrong side
-						Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.wrong_shape_side"));
+						Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.wrong_shape_side"));
 					}
 					
 				} else {
 					// no shape to dismount
-					Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.no_shape_to_dismount"));
+					Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.no_shape_to_dismount"));
 				}
 				return true;
 			}
@@ -282,7 +267,9 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 			return true;
 			
 		} else if (itemStackHeld.getItem() instanceof ItemForceFieldShape) {// no sneaking and shape in hand => mounting a shape
-			if (enumFacing == blockState.getValue(BlockProperties.FACING) || (tileEntityForceFieldProjector.isDoubleSided && enumFacing.getOpposite() == blockState.getValue(BlockProperties.FACING))) {
+			if ( enumFacing == blockState.getValue(BlockProperties.FACING)
+			  || ( tileEntityForceFieldProjector.isDoubleSided
+			    && enumFacing.getOpposite() == blockState.getValue(BlockProperties.FACING) ) ) {
 				if (!entityPlayer.capabilities.isCreativeMode) {
 					// validate quantity
 					if (itemStackHeld.getCount() < (tileEntityForceFieldProjector.isDoubleSided ? 2 : 1)) {
@@ -301,52 +288,35 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 						final ItemStack itemStackDrop = ItemForceFieldShape.getItemStackNoCache(tileEntityForceFieldProjector.getShape(), tileEntityForceFieldProjector.isDoubleSided ? 2 : 1);
 						final EntityItem entityItem = new EntityItem(world, entityPlayer.posX, entityPlayer.posY + 0.5D, entityPlayer.posZ, itemStackDrop);
 						entityItem.setNoPickupDelay();
-						world.spawnEntity(entityItem);
+						final boolean isSuccess = world.spawnEntity(entityItem);
+						if (!isSuccess) {
+							Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.spawn_denied",
+							                                                       entityItem ));
+							return true;
+						}
 					}
 				}
 				
 				// mount the new shape item(s)
 				tileEntityForceFieldProjector.setShape(EnumForceFieldShape.get(itemStackHeld.getItemDamage()));
 				// shape mounted
-				Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.shape_mounted"));
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleCorrect, "warpdrive.upgrade.result.shape_mounted"));
 				
 			} else {
 				// wrong side
-				Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.wrong_shape_side"));
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.wrong_shape_side"));
 			}
 			return true;
 			
 		} else if (itemStackHeld.getItem() instanceof ItemForceFieldUpgrade) {// no sneaking and an upgrade in hand => mounting an upgrade
 			// validate type
-			if (tileEntityForceFieldProjector.getUpgradeMaxCount(enumForceFieldUpgrade) <= 0) {
-				// invalid upgrade type
-				Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.invalid_upgrade_for_projector"));
-				return true;
-			}
-			if (!tileEntityForceFieldProjector.canUpgrade(enumForceFieldUpgrade)) {
-				// too many upgrades
-				Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.too_many_upgrades",
-					tileEntityForceFieldProjector.getUpgradeMaxCount(enumForceFieldUpgrade)));
+			if (upgradeSlot == null) {
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.styleWarning, "warpdrive.upgrade.result.invalid_upgrade_for_projector"));
 				return true;
 			}
 			
-			if (!entityPlayer.capabilities.isCreativeMode) {
-				// validate quantity
-				if (itemStackHeld.getCount() < 1) {
-					// not enough upgrade items
-					Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.not_enough_upgrades"));
-					return true;
-				}
-				
-				// update player inventory
-				itemStackHeld.shrink(1);
-			}
-			
-			// mount the new upgrade item
-			tileEntityForceFieldProjector.mountUpgrade(enumForceFieldUpgrade);
-			// upgrade mounted
-			Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.upgrade.result.mounted", enumForceFieldUpgrade));
-			return true;
+			// revert to common upgrade handler
+			return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 		}
 		
 		return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
