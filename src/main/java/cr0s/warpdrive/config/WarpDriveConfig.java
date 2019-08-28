@@ -1565,7 +1565,7 @@ public class WarpDriveConfig {
 			CompatRefinedStorage.register();
 		}
 		
-		final boolean isSGCraftLoaded = Loader.isModLoaded("SGCraft");
+		final boolean isSGCraftLoaded = Loader.isModLoaded("sgcraft");
 		if (isSGCraftLoaded) {
 			CompatSGCraft.register();
 		}

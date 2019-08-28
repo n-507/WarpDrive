@@ -28,9 +28,9 @@ public class CompatSGCraft implements IBlockTransformer {
 	public static void register() {
 		try {
 			classBaseTileEntity = Class.forName("gcewing.sg.BaseTileEntity");
-			classDHDBlock = Class.forName("gcewing.sg.DHDBlock");
-			classSGBaseBlock = Class.forName("gcewing.sg.SGBaseBlock");
-			classSGBaseTE = Class.forName("gcewing.sg.SGBaseTE");
+			classDHDBlock = Class.forName("gcewing.sg.block.DHDBlock");
+			classSGBaseBlock = Class.forName("gcewing.sg.block.SGBaseBlock");
+			classSGBaseTE = Class.forName("gcewing.sg.tileentity.SGBaseTE");
 			methodSGBaseTE_sgStateDescription = classSGBaseTE.getMethod("sgStateDescription");
 			
 			WarpDriveConfig.registerBlockTransformer("SGCraft", new CompatSGCraft());
@@ -73,7 +73,9 @@ public class CompatSGCraft implements IBlockTransformer {
 		// nothing to do
 	}
 	
-	private static final byte[] mrotDHD = {  3,  0,  1,  2,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	//                                                        0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
+	private static final byte[] mrotSGBase               = {  3,  2,  0,  1,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	private static final int[]  rotFacingDirectionOfBase = {  3,  0,  1,  2,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
 	
 	@Override
 	public int rotate(final Block block, final int metadata, final NBTTagCompound nbtTileEntity, final ITransformation transformation) {
@@ -124,14 +126,33 @@ public class CompatSGCraft implements IBlockTransformer {
 			}
 		}
 		
-		if (classDHDBlock.isInstance(block) || classSGBaseBlock.isInstance(block)) {
+		// Ring renderer orientation
+		if (nbtTileEntity.hasKey("facingDirectionOfBase")) {
+			final int facing = nbtTileEntity.getByte("facingDirectionOfBase");
 			switch (rotationSteps) {
 			case 1:
-				return mrotDHD[metadata];
+				nbtTileEntity.setInteger("facingDirectionOfBase", rotFacingDirectionOfBase[facing]);
+				break;
 			case 2:
-				return mrotDHD[mrotDHD[metadata]];
+				nbtTileEntity.setInteger("facingDirectionOfBase", rotFacingDirectionOfBase[rotFacingDirectionOfBase[facing]]);
+				break;
 			case 3:
-				return mrotDHD[mrotDHD[mrotDHD[metadata]]];
+				nbtTileEntity.setInteger("facingDirectionOfBase", rotFacingDirectionOfBase[rotFacingDirectionOfBase[rotFacingDirectionOfBase[facing]]]);
+				break;
+			default:
+				break;
+			}
+		}
+		
+		if ( classDHDBlock.isInstance(block)
+		  || classSGBaseBlock.isInstance(block) ) {
+			switch (rotationSteps) {
+			case 1:
+				return mrotSGBase[metadata];
+			case 2:
+				return mrotSGBase[mrotSGBase[metadata]];
+			case 3:
+				return mrotSGBase[mrotSGBase[mrotSGBase[metadata]]];
 			default:
 				return metadata;
 			}

@@ -211,7 +211,9 @@ import javax.annotation.Nullable;
                   + "after:ic2;"
                   + "after:icbmclassic;"
                   + "after:metalchests@[v5.8.1,);"
-                  + "after:opencomputers;",
+                  + "after:opencomputers;"
+//                + "after:sgcraft@[2.0.0,);"
+		,
      certificateFingerprint = "f7be6b40743c6a8205df86c5e57547d578605d8a"
 )
 public class WarpDrive {
