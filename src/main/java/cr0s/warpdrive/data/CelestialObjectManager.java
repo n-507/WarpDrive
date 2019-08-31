@@ -2,11 +2,14 @@ package cr0s.warpdrive.data;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.InvalidXmlException;
 import cr0s.warpdrive.config.XmlFileManager;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,6 +25,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.border.WorldBorder;
 
 import net.minecraftforge.common.DimensionManager;
 
@@ -172,6 +176,14 @@ public class CelestialObjectManager extends XmlFileManager {
 		final CelestialObject celestialObjectPortal = get(world, blockPos.getX(), blockPos.getZ());
 		if (celestialObjectPortal != null) {
 			if (!celestialObjectPortal.isInsideBorder(blockPos.getX(), blockPos.getZ()) ) {
+				final EntityPlayer entityPlayer = world.getClosestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 10.0D, false);
+				if (entityPlayer != null) {
+					entityPlayer.sendStatusMessage(
+							new WarpDriveText(Commons.getStyleWarning(), "warpdrive.world_border.portal_denied"), true);
+				}
+				WarpDrive.logger.info(String.format("Nether portal opening cancelled %s for player %s: portal entry is outside the world border",
+				                                    entityPlayer == null ? "-null-" : entityPlayer.getName(),
+				                                    Commons.format(world, blockPos) ));
 				return false;
 			}
 			
@@ -187,6 +199,14 @@ public class CelestialObjectManager extends XmlFileManager {
 			final int zExit = (int) Math.floor(blockPos.getZ() * factor);
 			if ( Math.abs(xExit - celestialObjectExit.dimensionCenterX) > celestialObjectExit.borderRadiusX
 			  || Math.abs(zExit - celestialObjectExit.dimensionCenterZ) > celestialObjectExit.borderRadiusZ ) {
+				final EntityPlayer entityPlayer = world.getClosestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 10.0D, false);
+				if (entityPlayer != null) {
+					entityPlayer.sendStatusMessage(
+							new WarpDriveText(Commons.getStyleWarning(), "warpdrive.world_border.portal_denied"), true);
+				}
+				WarpDrive.logger.info(String.format("Nether portal opening cancelled for player %s %s: portal exit is outside the world border",
+				                                    entityPlayer == null ? "-null-" : entityPlayer.getName(),
+				                                    Commons.format(world, blockPos) ));
 				return false;
 			}
 		}
@@ -216,6 +236,22 @@ public class CelestialObjectManager extends XmlFileManager {
 	@SideOnly(Side.CLIENT)
 	public static CelestialObject[] getRenderStack() {
 		return CLIENT.celestialObjects;
+	}
+	
+	@SuppressWarnings("unused") // Core mod
+	@SideOnly(Side.CLIENT)
+	public static WorldBorder World_getWorldBorder(@Nonnull final World world) {
+		final WorldBorder worldBorder = world.getWorldBorder();
+		final EntityPlayer entityPlayer = Minecraft.getMinecraft().player;
+		if ( entityPlayer == null
+		  || entityPlayer.world != world ) {
+			return worldBorder;
+		}
+		final CelestialObject celestialObject = get(world, (int) entityPlayer.posX, (int) entityPlayer.posZ);
+		if (celestialObject == null) {
+			return worldBorder;
+		}
+		return celestialObject.getWorldBorder();
 	}
 	
 	// *** non-static methods ***

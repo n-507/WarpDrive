@@ -36,6 +36,7 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 	
 	private static final String GRAVITY_MANAGER_CLASS = "cr0s/warpdrive/data/GravityManager";
 	private static final String CLOAK_MANAGER_CLASS = "cr0s/warpdrive/data/CloakManager";
+	private static final String CELESTIAL_OBJECT_MANAGER_CLASS = "cr0s/warpdrive/data/CelestialObjectManager";
 	
 	private static final boolean debugLog = false;
 	private static final String ASM_DUMP_BEFORE = "asm/warpdrive.before";
@@ -69,6 +70,12 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 		nodeMap.put("ForgeHooks.class", "ForgeHooks");
 		nodeMap.put("loadAdvancements.name", "lambda$loadAdvancements$0");
 		nodeMap.put("loadAdvancements.desc", "(Lnet/minecraftforge/fml/common/ModContainer;Ljava/util/Map;Ljava/nio/file/Path;Ljava/nio/file/Path;)Ljava/lang/Boolean;");
+		
+		nodeMap.put("RenderGlobal.class", "buw");
+		nodeMap.put("renderWorldBorder.name", "func_180449_a");
+		nodeMap.put("renderWorldBorder.desc", "(Lnet/minecraft/entity/Entity;F)V");
+		nodeMap.put("getWorldBorder.name", "func_175723_af");
+		nodeMap.put("getWorldBorder.desc", "()Lnet/minecraft/world/border/WorldBorder;");
 	}
 	
 	@Override
@@ -117,6 +124,10 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 			
 		case "net.minecraftforge.common.ForgeHooks":
 			bytesNew = transformMinecraftForgeHooks(bytesOld);
+			break;
+			
+		case "net.minecraft.client.renderer.RenderGlobal":
+			bytesNew = transformMinecraftRenderGlobal(bytesOld);
 			break;
 			
 		default:
@@ -723,6 +734,62 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 								if (debugLog) { FMLLoadingPlugin.logger.info(String.format("Injecting into %s.%s %s", classNode.name, methodNode.name, methodNode.desc)); }
 								countTransformed++;
 							}
+						}
+					}
+					
+					indexInstruction++;
+				}
+			}
+		}
+		
+		if (countTransformed != countExpected) {
+			FMLLoadingPlugin.logger.error(String.format("Transformation failed for %s (%d/%d), aborting...", classNode.name, countTransformed, countExpected));
+			return bytes;
+		}
+		
+		final ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS); // | ClassWriter.COMPUTE_FRAMES);
+		classNode.accept(writer);
+		final byte[] bytesNew = writer.toByteArray();
+		FMLLoadingPlugin.logger.info(String.format("Successful injection in %s", classNode.name));
+		return bytesNew;
+	}
+	
+	private byte[] transformMinecraftRenderGlobal(@Nonnull final byte[] bytes) {
+		final ClassNode classNode = new ClassNode();
+		final ClassReader classReader = new ClassReader(bytes);
+		classReader.accept(classNode, 0);
+		
+		final int countExpected = 1;
+		int countTransformed = 0;
+		for (final MethodNode methodNode : classNode.methods) {
+			// if (debugLog) { FMLLoadingPlugin.logger.info(String.format("- Method %s %s", methodNode.name, methodNode.desc)); }
+			
+			if ( (methodNode.name.equals(nodeMap.get("renderWorldBorder.name")) || methodNode.name.equals("renderWorldBorder"))
+			  && methodNode.desc.equals(nodeMap.get("renderWorldBorder.desc")) ) {
+				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s",
+				                                            methodNode.name, methodNode.desc));
+				
+				int indexInstruction = 0;
+				
+				while (indexInstruction < methodNode.instructions.size()) {
+					final AbstractInsnNode abstractNode = methodNode.instructions.get(indexInstruction);
+					if (debugLog) { decompile(abstractNode); }
+					
+					// change    WorldBorder worldborder = this.field_72769_h.func_175723_af();
+					// into      WorldBorder worldborder = CelestiaObjectManager.getWorldBorder(world);
+					if (abstractNode instanceof MethodInsnNode) {
+						final MethodInsnNode nodeAt = (MethodInsnNode) abstractNode;
+						
+						if (nodeAt.name.equals(nodeMap.get("getWorldBorder.name")) || nodeAt.name.equals("getWorldBorder")) {
+							final MethodInsnNode overwriteNode = new MethodInsnNode(
+									Opcodes.INVOKESTATIC,
+									CELESTIAL_OBJECT_MANAGER_CLASS,
+									"World_getWorldBorder",
+									"(Lnet/minecraft/world/World;)Lnet/minecraft/world/border/WorldBorder;",
+									false);
+							methodNode.instructions.set(nodeAt, overwriteNode);
+							if (debugLog) { FMLLoadingPlugin.logger.info(String.format("Injecting into %s.%s %s", classNode.name, methodNode.name, methodNode.desc)); }
+							countTransformed++;
 						}
 					}
 					

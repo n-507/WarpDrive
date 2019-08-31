@@ -112,17 +112,17 @@ public class LivingHandler {
 			if ( Math.abs(distanceSquared) <= BORDER_WARNING_RANGE_BLOCKS_SQUARED
 			  && entityLivingBase instanceof EntityPlayer
 			  && entityLivingBase.ticksExisted % 40 == 0) {
-				Commons.addChatMessage( entityLivingBase,
-					new WarpDriveText(Commons.getStyleWarning(), "warpdrive.world_border.in_range",
-					                  (int) Math.sqrt(Math.abs(distanceSquared))) );
+				((EntityPlayer) entityLivingBase).sendStatusMessage(
+						new WarpDriveText(Commons.getStyleWarning(), "warpdrive.world_border.in_range",
+						                  (int) Math.sqrt(Math.abs(distanceSquared))), true );
 			}
 		} else {
 			if (entityLivingBase instanceof EntityPlayerMP) {
 				if (((EntityPlayerMP) entityLivingBase).capabilities.isCreativeMode) {
 					if (entityLivingBase.ticksExisted % 100 == 0) {
-						Commons.addChatMessage( entityLivingBase,
-							new WarpDriveText(Commons.getStyleWarning(), "warpdrive.world_border.outside",
-							                  (int) Math.sqrt(Math.abs(distanceSquared))) );
+						((EntityPlayer) entityLivingBase).sendStatusMessage(
+								new WarpDriveText(Commons.getStyleWarning(), "warpdrive.world_border.outside",
+								                  (int) Math.sqrt(Math.abs(distanceSquared))), true );
 					}
 					return;
 				}

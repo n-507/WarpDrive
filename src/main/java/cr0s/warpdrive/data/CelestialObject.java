@@ -24,6 +24,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.border.WorldBorder;
 
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -81,6 +82,7 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 	public CelestialObject parent;
 	private boolean isHyperspace;
 	
+	private WorldBorder cache_worldBorder;
 	private AxisAlignedBB cache_aabbWorldBorder;
 	private AxisAlignedBB cache_aabbAreaToReachParent;
 	private AxisAlignedBB cache_aabbAreaInParent;
@@ -483,6 +485,13 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 	// offset vector when moving from parent to this dimension
 	public VectorI getEntryOffset() {
 		return new VectorI(dimensionCenterX - parentCenterX, 0, dimensionCenterZ - parentCenterZ);
+	}
+	
+	public WorldBorder getWorldBorder() {
+		if (cache_worldBorder == null) {
+			cache_worldBorder = new CelestialBorder(dimensionCenterX, dimensionCenterZ, borderRadiusX, borderRadiusZ);
+		}
+		return cache_worldBorder;
 	}
 	
 	@Override
