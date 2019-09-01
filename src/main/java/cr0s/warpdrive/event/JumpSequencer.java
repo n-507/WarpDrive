@@ -82,6 +82,7 @@ public class JumpSequencer extends AbstractSequencer {
 	protected final World worldSource;
 	private Ticket ticketSourcePosition;
 	protected World worldTarget;
+	private Ticket ticketTargetAnchor;
 	private Ticket ticketTargetPosition;
 	
 	private boolean collisionDetected = false;
@@ -396,6 +397,24 @@ public class JumpSequencer extends AbstractSequencer {
 		return true;
 	}
 	
+	private boolean forceTargetAnchor(final WarpDriveText reason) {
+		LocalProfiler.start("Jump.forceTargetAnchor");
+		if (WarpDriveConfig.LOGGING_JUMP) {
+			WarpDrive.logger.info(String.format("%s Forcing target world %s",
+			                                    this, Commons.format(worldTarget)));
+		}
+		ticketTargetAnchor = ForgeChunkManager.requestTicket(WarpDrive.instance, worldTarget, Type.NORMAL);
+		if (ticketTargetAnchor == null) {
+			reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.chunkloading_rejected_in_target_world",
+			              Commons.format(worldTarget));
+			return false;
+		}
+		
+		ForgeChunkManager.forceChunk(ticketTargetAnchor, new ChunkPos(0, 0));
+		LocalProfiler.stop();
+		return true;
+	}
+	
 	private boolean forceTargetChunks(final WarpDriveText reason) {
 		LocalProfiler.start("Jump.forceTargetChunks");
 		if (WarpDriveConfig.LOGGING_JUMP) {
@@ -452,6 +471,12 @@ public class JumpSequencer extends AbstractSequencer {
 			}
 			ForgeChunkManager.releaseTicket(ticketSourcePosition);
 			ticketSourcePosition = null;
+		}
+		
+		if (ticketTargetAnchor != null) {
+			ForgeChunkManager.unforceChunk(ticketTargetAnchor, new ChunkPos(0, 0));
+			ForgeChunkManager.releaseTicket(ticketTargetAnchor);
+			ticketTargetAnchor = null;
 		}
 		
 		if (ticketTargetPosition != null) {
@@ -993,6 +1018,11 @@ public class JumpSequencer extends AbstractSequencer {
 			                                     shipMovementType));
 			reason.append(Commons.getStyleWarning(), "warpdrive.error.internal_check_console");
 			return false;
+		}
+		
+		// add a chunk loader to target world so it's not unloaded prematurely
+		if (worldTarget != worldSource) {
+			return forceTargetAnchor(reason);
 		}
 		
 		return true;
