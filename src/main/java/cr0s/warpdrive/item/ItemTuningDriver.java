@@ -71,7 +71,7 @@ public class ItemTuningDriver extends ItemAbstractBase implements IWarpTool {
 	@Nonnull
 	@SideOnly(Side.CLIENT)
 	@Override
-	public ModelResourceLocation getModelResourceLocation(final ItemStack itemStack) {
+	public ModelResourceLocation getModelResourceLocation(@Nonnull final ItemStack itemStack) {
 		final int damage = itemStack.getItemDamage();
 		ResourceLocation resourceLocation = getRegistryName();
 		assert resourceLocation != null;
@@ -94,7 +94,7 @@ public class ItemTuningDriver extends ItemAbstractBase implements IWarpTool {
 	
 	@Nonnull
 	@Override
-	public String getTranslationKey(final ItemStack itemStack) {
+	public String getTranslationKey(@Nonnull final ItemStack itemStack) {
 		final int damage = itemStack.getItemDamage();
 		switch (damage) {
 		case MODE_VIDEO_CHANNEL  : return getTranslationKey() + ".video_channel";
@@ -104,7 +104,7 @@ public class ItemTuningDriver extends ItemAbstractBase implements IWarpTool {
 		}
 	}
 	
-	public static int getVideoChannel(final ItemStack itemStack) {
+	public static int getVideoChannel(@Nonnull final ItemStack itemStack) {
 		if (!(itemStack.getItem() instanceof ItemTuningDriver)) {
 			return -1;
 		}
@@ -119,7 +119,8 @@ public class ItemTuningDriver extends ItemAbstractBase implements IWarpTool {
 		return -1;
 	}
 	
-	public static ItemStack setVideoChannel(final ItemStack itemStack, final int videoChannel) {
+	@Nonnull
+	public static ItemStack setVideoChannel(@Nonnull final ItemStack itemStack, final int videoChannel) {
 		if (!(itemStack.getItem() instanceof ItemTuningDriver) || videoChannel == -1) {
 			return itemStack;
 		}
@@ -132,7 +133,7 @@ public class ItemTuningDriver extends ItemAbstractBase implements IWarpTool {
 		return itemStack;
 	}
 	
-	public static int getBeamFrequency(final ItemStack itemStack) {
+	public static int getBeamFrequency(@Nonnull final ItemStack itemStack) {
 		if (!(itemStack.getItem() instanceof ItemTuningDriver)) {
 			return -1;
 		}
@@ -147,7 +148,8 @@ public class ItemTuningDriver extends ItemAbstractBase implements IWarpTool {
 		return -1;
 	}
 	
-	public static ItemStack setBeamFrequency(final ItemStack itemStack, final int beamFrequency) {
+	@Nonnull
+	public static ItemStack setBeamFrequency(@Nonnull final ItemStack itemStack, final int beamFrequency) {
 		if (!(itemStack.getItem() instanceof ItemTuningDriver) || beamFrequency == -1) {
 			return itemStack;
 		}
@@ -160,7 +162,7 @@ public class ItemTuningDriver extends ItemAbstractBase implements IWarpTool {
 		return itemStack;
 	}
 	
-	public static int getControlChannel(final ItemStack itemStack) {
+	public static int getControlChannel(@Nonnull final ItemStack itemStack) {
 		if (!(itemStack.getItem() instanceof ItemTuningDriver)) {
 			return -1;
 		}
@@ -175,7 +177,8 @@ public class ItemTuningDriver extends ItemAbstractBase implements IWarpTool {
 		return -1;
 	}
 	
-	public static ItemStack setControlChannel(final ItemStack itemStack, final int controlChannel) {
+	@Nonnull
+	public static ItemStack setControlChannel(@Nonnull final ItemStack itemStack, final int controlChannel) {
 		if (!(itemStack.getItem() instanceof ItemTuningDriver) || controlChannel == -1) {
 			return itemStack;
 		}
@@ -188,7 +191,8 @@ public class ItemTuningDriver extends ItemAbstractBase implements IWarpTool {
 		return itemStack;
 	}
 	
-	public static ItemStack setValue(final ItemStack itemStack, final int dye) {
+	@Nonnull
+	public static ItemStack setValue(@Nonnull final ItemStack itemStack, final int dye) {
 		switch (itemStack.getItemDamage()) {
 		case MODE_VIDEO_CHANNEL  : return setVideoChannel(itemStack, dye);
 		case MODE_BEAM_FREQUENCY : return setBeamFrequency(itemStack, dye);
@@ -199,7 +203,7 @@ public class ItemTuningDriver extends ItemAbstractBase implements IWarpTool {
 	
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(final World world, final EntityPlayer entityPlayer, @Nonnull final EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(@Nonnull final World world, @Nonnull final EntityPlayer entityPlayer, @Nonnull final EnumHand hand) {
 		// get context
 		final ItemStack itemStackHeld = entityPlayer.getHeldItem(hand);
 		
@@ -339,7 +343,7 @@ public class ItemTuningDriver extends ItemAbstractBase implements IWarpTool {
 	}
 	
 	@Override
-	public boolean doesSneakBypassUse(final ItemStack itemStack, final IBlockAccess blockAccess, final BlockPos blockPos, final EntityPlayer player) {
+	public boolean doesSneakBypassUse(@Nonnull final ItemStack itemStack, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, final EntityPlayer player) {
 		final Block block = blockAccess.getBlockState(blockPos).getBlock();
 		return block instanceof BlockCapacitor || super.doesSneakBypassUse(itemStack, blockAccess, blockPos, player);
 	}
@@ -349,7 +353,6 @@ public class ItemTuningDriver extends ItemAbstractBase implements IWarpTool {
 	public void addInformation(@Nonnull final ItemStack itemStack, @Nullable final World world,
 	                           @Nonnull final List<String> list, @Nullable final ITooltipFlag advancedItemTooltips) {
 		super.addInformation(itemStack, world, list, advancedItemTooltips);
-		
 		
 		final WarpDriveText textTooltip = new WarpDriveText();
 		textTooltip.append(null, "warpdrive.video_channel.tooltip",

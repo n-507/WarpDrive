@@ -7,7 +7,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
@@ -30,18 +29,19 @@ public class RecipeTuningDriver implements IRecipe {
 	private final int size;
 	private final ResourceLocation group;
 	
-	public RecipeTuningDriver(@Nonnull final ResourceLocation group, final ItemStack itemStackTool, final ItemStack itemStackConsumable, final int countDyes, final String suffix) {
+	public RecipeTuningDriver(@Nonnull final ResourceLocation group, @Nonnull final ItemStack itemStackTool,
+	                          @Nonnull final ItemStack itemStackConsumable, final int countDyesExpected, @Nonnull final String suffix) {
 		this.group = group;
 		this.itemStackTool = itemStackTool.copy();
 		this.itemStackConsumable = itemStackConsumable.copy();
-		this.countDyesExpected = countDyes;
+		this.countDyesExpected = countDyesExpected;
 		this.size = 1 + (itemStackConsumable.isEmpty() ? 0 : 1) + countDyesExpected;
 		
 		// add lower priority vanilla Shaped recipe for NEI support
 		final Object[] recipe = new Object[size];
 		recipe[0] = itemStackTool;
 		recipe[1] = itemStackConsumable;
-		for (int index = 0; index < countDyes; index++) {
+		for (int index = 0; index < countDyesExpected; index++) {
 			recipe[2 + index] = "dye";
 		}
 		WarpDrive.register(new ShapelessOreRecipe(group, itemStackTool, recipe), suffix);
@@ -152,8 +152,7 @@ public class RecipeTuningDriver implements IRecipe {
 		}
 		
 		// build result
-		itemStackResult = itemStackInput.copy();
-		ItemTuningDriver.setValue(itemStackResult, dye);
+		itemStackResult = ItemTuningDriver.setValue(itemStackInput.copy(), dye);
 		
 		return true;
 	}

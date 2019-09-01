@@ -73,7 +73,7 @@ public class DeploySequencer extends JumpSequencer {
 		  && isRequesterCaptain ) {
 			final EntityPlayerMP entityPlayerMP = Commons.getOnlinePlayerByName(playerNameRequester);
 			if (entityPlayerMP != null) {
-				final TileEntity tileEntity = targetWorld.getTileEntity(new BlockPos(destX, destY, destZ));
+				final TileEntity tileEntity = worldTarget.getTileEntity(new BlockPos(destX, destY, destZ));
 				if (tileEntity instanceof TileEntityShipCore) {
 					final boolean isSuccess = ((TileEntityShipCore) tileEntity).summonOwnerOnDeploy(entityPlayerMP);
 					if (isSuccess) {

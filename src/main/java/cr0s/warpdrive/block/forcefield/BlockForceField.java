@@ -374,7 +374,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	}
 	
 	@Override
-	public float getExplosionResistance(final World world, final BlockPos blockPos, @Nullable final Entity exploder, final Explosion explosion) {
+	public float getExplosionResistance(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nullable final Entity exploder, @Nonnull final Explosion explosion) {
 		previous_exploderId = exploder == null ? -1 : exploder.getEntityId();
 		final long tickWorld = world.getTotalWorldTime();
 		final Vec3d vExplosion = explosion.getPosition();

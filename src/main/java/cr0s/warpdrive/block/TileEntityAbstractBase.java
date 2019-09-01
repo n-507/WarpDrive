@@ -552,8 +552,9 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	
 	}
 	
+	// apply EMP effect
 	public void onEMP(final float efficiency) {
-	
+		// no operation
 	}
 	
 	@Override

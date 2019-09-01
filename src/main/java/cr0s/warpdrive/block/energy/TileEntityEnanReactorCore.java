@@ -402,13 +402,13 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 							isFirstException = false;
 						}
 						WarpDrive.logger.error(String.format("%s tileEntity is %s",
-						                                     this, tileEntity));
+						                                     this, tileEntity ));
 					}
 					statusLasers.append(String.format("\n- face %s has reached instability %.2f while laser has %d energy available with %d laser medium(s)",
 					                                  reactorFace.name,
 					                                  instabilityValues[reactorFace.indexStability],
 					                                  energyStored,
-					                                  countLaserMediums));
+					                                  countLaserMediums ));
 				} else {
 					statusLasers.append(String.format("\n- face %s has reached instability %.2f while laser is missing in action",
 					                                 reactorFace.name,
@@ -422,6 +422,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 			                                    lasersReceived,
 			                                    isEnabled ? "ENABLED" : "DISABLED",
 			                                    statusLasers.toString()));
+			                                    statusLasers.toString() ));
 			isEnabled = false;
 		}
 		return exploding;

@@ -604,7 +604,6 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		              nameOnlineCrew);
 		reason.append(Commons.getStyleCommand(), "warpdrive.builder.guide.deployment_area_occupied_by_online_player2");
 		return false;
-		
 	}
 	
 	@Override
