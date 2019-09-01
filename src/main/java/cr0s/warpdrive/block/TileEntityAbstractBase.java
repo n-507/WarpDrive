@@ -10,7 +10,11 @@ import cr0s.warpdrive.api.IVideoChannel;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.api.computer.ICoreSignature;
 import cr0s.warpdrive.data.CameraRegistryItem;
+import cr0s.warpdrive.data.EnumComponentType;
+import cr0s.warpdrive.data.EnumForceFieldUpgrade;
 import cr0s.warpdrive.data.EnumTier;
+import cr0s.warpdrive.item.ItemComponent;
+import cr0s.warpdrive.item.ItemForceFieldUpgrade;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -223,8 +227,10 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		if (!upgradeSlots.isEmpty()) {
 			final NBTTagCompound nbtTagCompoundUpgrades = new NBTTagCompound();
 			for (final Entry<UpgradeSlot, Integer> entry : upgradeSlots.entrySet()) {
-				final String key = entry.getKey().toString();
-				nbtTagCompoundUpgrades.setByte(key, (byte)(int) entry.getValue());
+				if (entry.getValue() != 0) {
+					final String key = entry.getKey().toString();
+					nbtTagCompoundUpgrades.setByte(key, (byte) (int) entry.getValue());
+				}
 			}
 			tagCompound.setTag("upgrades", nbtTagCompoundUpgrades);
 		}
@@ -453,6 +459,18 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 			if (upgradeSlot.name.equals(name)) {
 				return upgradeSlot;
 			}
+		}
+		try {
+			final EnumComponentType componentType = EnumComponentType.valueOf(name);
+			return getUpgradeSlot(ItemComponent.getItemStackNoCache(componentType, 1));
+		} catch (final IllegalArgumentException exception) {
+			// ignore for now
+		}
+		try {
+			final EnumForceFieldUpgrade forceFieldUpgrade = EnumForceFieldUpgrade.valueOf(name);
+			return getUpgradeSlot(ItemForceFieldUpgrade.getItemStackNoCache(forceFieldUpgrade, 1));
+		} catch (final IllegalArgumentException exception) {
+			// ignore for now
 		}
 		return null;
 	}
