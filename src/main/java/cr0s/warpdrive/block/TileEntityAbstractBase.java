@@ -232,7 +232,9 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 					nbtTagCompoundUpgrades.setByte(key, (byte) (int) entry.getValue());
 				}
 			}
-			tagCompound.setTag("upgrades", nbtTagCompoundUpgrades);
+			if (!nbtTagCompoundUpgrades.isEmpty()) {
+				tagCompound.setTag("upgrades", nbtTagCompoundUpgrades);
+			}
 		}
 		
 		return tagCompound;

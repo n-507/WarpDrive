@@ -265,6 +265,15 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		energyStabilizationRequest = tagCompound.getInteger("energyStabilizationRequest");
 	}
 	
+	@Override
+	public NBTTagCompound writeItemDropNBT(NBTTagCompound tagCompound) {
+		tagCompound = super.writeItemDropNBT(tagCompound);
+		
+		tagCompound.removeTag("reactorFace");
+		tagCompound.removeTag("energyStabilizationRequest");
+		return tagCompound;
+	}
+	
 	
 	// Common OC/CC methods
 	@Override
