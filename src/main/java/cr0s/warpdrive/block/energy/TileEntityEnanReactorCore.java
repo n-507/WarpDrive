@@ -416,12 +416,12 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 				}
 			}
 			
-			WarpDrive.logger.info(String.format("%s Explosion triggered\nEnergy stored is %d, Laser received is %.2f, reactor is %s%s",
+			WarpDrive.logger.info(String.format("%s Explosion triggered\n" +
+			                                    "Energy stored is %d, Laser received is %.2f, Reactor is %s\n" +
+			                                    "Output mode %s %d, Stability target %.1f, Laser amount %d%s",
 			                                    this,
-			                                    containedEnergy,
-			                                    lasersReceived,
-			                                    isEnabled ? "ENABLED" : "DISABLED",
-			                                    statusLasers.toString()));
+			                                    containedEnergy, lasersReceived, isEnabled ? "ENABLED" : "DISABLED",
+			                                    enumReactorOutputMode, outputThreshold, 100.0D - instabilityTarget, stabilizerEnergy,
 			                                    statusLasers.toString() ));
 			isEnabled = false;
 		}
@@ -436,9 +436,8 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		                                   * factorEnergy );
 		final double chanceOfRemoval = WarpDriveConfig.ENAN_REACTOR_EXPLOSION_MAX_REMOVAL_CHANCE_BY_TIER[enumTier.getIndex()]
 		                             * factorEnergy;
-		if (WarpDriveConfig.LOGGING_ENERGY) {
-			WarpDrive.logger.info(this + " Explosion radius is " + radius + ", Chance of removal is " + chanceOfRemoval);
-		}
+		WarpDrive.logger.info(String.format("%s Explosion radius is %d, Chance of removal is %.3f",
+		                                    this, radius, chanceOfRemoval ));
 		if (radius > 1) {
 			final MutableBlockPos mutableBlockPos = new MutableBlockPos(pos);
 			final float explosionResistanceThreshold = Blocks.OBSIDIAN.getExplosionResistance(world, mutableBlockPos, null, null);
@@ -448,8 +447,11 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 						if (z != pos.getZ() || y != pos.getY() || x != pos.getX()) {
 							if (world.rand.nextDouble() < chanceOfRemoval) {
 								mutableBlockPos.setPos(x, y, z);
-								final float explosionResistanceActual = world.getBlockState(mutableBlockPos).getBlock().getExplosionResistance(world, mutableBlockPos, null, null);
+								final IBlockState blockState = world.getBlockState(mutableBlockPos);
+								final float explosionResistanceActual = blockState.getBlock().getExplosionResistance(world, mutableBlockPos, null, null);
 								if (explosionResistanceActual >= explosionResistanceThreshold) {
+									WarpDrive.logger.debug(String.format("%s De-materializing %s %s",
+									                                     this, blockState, Commons.format(world, mutableBlockPos) ));
 									world.setBlockToAir(mutableBlockPos);
 								}
 							}
