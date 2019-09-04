@@ -10,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
@@ -230,6 +231,13 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 		         && itemStackHeld.getItem() == Item.getItemFromBlock(Blocks.REDSTONE_TORCH) ) {// redstone torch on a machine to toggle it on/off
 			final TileEntityAbstractMachine tileEntityAbstractMachine = (TileEntityAbstractMachine) tileEntityAbstractBase;
 			tileEntityAbstractMachine.setIsEnabled(!tileEntityAbstractMachine.getIsEnabled());
+			Commons.addChatMessage(entityPlayer, tileEntityAbstractBase.getStatus());
+			return true;
+			
+		} else if ( !world.isRemote
+		         && itemStackHeld.getItem() == Items.DIAMOND
+		         && entityPlayer.isCreative() ) {// diamond on an block to set debug values
+			tileEntityAbstractBase.setDebugValues();
 			Commons.addChatMessage(entityPlayer, tileEntityAbstractBase.getStatus());
 			return true;
 		}

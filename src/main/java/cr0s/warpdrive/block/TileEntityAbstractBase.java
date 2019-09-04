@@ -572,6 +572,11 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	
 	}
 	
+	// apply debug/creative values
+	public void setDebugValues() {
+		// no operation
+	}
+	
 	// apply EMP effect
 	public void onEMP(final float efficiency) {
 		// no operation

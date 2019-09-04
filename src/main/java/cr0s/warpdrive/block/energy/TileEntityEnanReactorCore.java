@@ -833,4 +833,13 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		
 		readFromNBT(tagCompound);
 	}
+	
+	@Override
+	public void setDebugValues() {
+		super.setDebugValues();
+		containedEnergy = energyStored_max;
+		for (final ReactorFace reactorFace : ReactorFace.getLasers(enumTier)) {
+			instabilityValues[reactorFace.indexStability] = 50.0D;
+		}
+	}
 }

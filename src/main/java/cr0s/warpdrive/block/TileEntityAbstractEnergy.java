@@ -414,6 +414,12 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 	}
 	
 	@Override
+	public void setDebugValues() {
+		super.setDebugValues();
+		energyStored_internal = energyMaxStorage;
+	}
+	
+	@Override
 	protected WarpDriveText getEnergyStatusText() {
 		final WarpDriveText text = new WarpDriveText();
 		// skip when energy is non applicable
