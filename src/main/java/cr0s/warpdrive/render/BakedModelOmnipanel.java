@@ -18,6 +18,8 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 
 public class BakedModelOmnipanel extends BakedModelAbstractBase {
 	
+	private static final List<BakedQuad> EMPTY = new ArrayList<>(0);
+	
 	private IExtendedBlockState extendedBlockStateDefault;
 	
 	public BakedModelOmnipanel() {
@@ -87,6 +89,11 @@ public class BakedModelOmnipanel extends BakedModelAbstractBase {
 				extendedBlockState = extendedBlockStateDefault;
 				
 			}
+		}
+		
+		// normal model has no facing
+		if (enumFacing != null) {
+			return EMPTY;
 		}
 		
 		// get color
