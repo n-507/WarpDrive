@@ -328,7 +328,7 @@ function ship_page_setDimensions()
   w.setColorHelp()
   w.writeFullLine(" Enter ship size in blocks (0-9).")
   w.writeFullLine(" First block next to Ship counts as 1.")
-  w.writeFullLine(" Ship controller counts as 'Front = 1'.")
+  w.writeFullLine(" ")
   w.writeFullLine(" Press Enter to save your selection.")
   
   w.setCursorPos(1, 3)
