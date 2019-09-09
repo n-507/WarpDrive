@@ -3,13 +3,13 @@ package cr0s.warpdrive.block.forcefield;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBeamFrequency;
-import cr0s.warpdrive.block.TileEntityAbstractBase;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.ForceFieldSetup;
 import cr0s.warpdrive.data.VectorI;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -19,7 +19,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
-public class TileEntityForceField extends TileEntityAbstractBase {
+public class TileEntityForceField extends TileEntity {
 	
 	private VectorI vProjector;
 	
@@ -36,6 +36,7 @@ public class TileEntityForceField extends TileEntityAbstractBase {
 		super();
 	}
 	
+	// saved properties
 	@Override
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
@@ -101,6 +102,12 @@ public class TileEntityForceField extends TileEntityAbstractBase {
 		tagCompound.removeTag(IBeamFrequency.BEAM_FREQUENCY_TAG);
 		
 		return tagCompound;
+	}
+	
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(pos, getBlockMetadata(), getUpdateTag());
 	}
 	
 	@Override
