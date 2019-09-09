@@ -45,6 +45,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 
@@ -113,16 +114,22 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 			return;
 		}
 		
-		// @TODO implement ShipScanner.isEnabled
+		final IBlockState blockState = world.getBlockState(pos);
+		updateBlockState(blockState, BlockProperties.ACTIVE, enumShipScannerState != EnumShipScannerState.IDLE);
 		
 		// Trigger deployment by player, provided setup is done
+		if (!isEnabled) {
+			enumShipScannerState = EnumShipScannerState.IDLE; // disable scanner
+			return;
+		}
+		
 		final boolean isSetupDone = targetX != 0 || targetY != 0 || targetZ != 0;
 		if (isSetupDone) {
 			if (enumShipScannerState == EnumShipScannerState.IDLE) {
 				checkPlayerForShipToken();
 			}
 			if (enumShipScannerState != EnumShipScannerState.DEPLOYING) {
-				setState(EnumShipScannerState.IDLE); // disable scanner
+				enumShipScannerState = EnumShipScannerState.IDLE; // disable scanner
 				return;
 			}
 			
@@ -176,7 +183,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 			
 			scanTicks++;
 			if (scanTicks > 20 * (1 + shipCore.shipMass / WarpDriveConfig.SS_SCAN_BLOCKS_PER_SECOND)) {
-				setState(EnumShipScannerState.IDLE); // disable scanner
+				enumShipScannerState = EnumShipScannerState.IDLE; // disable scanner
 			}
 			break;
 			
@@ -204,33 +211,15 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 				// timeout in sequencer?
 				WarpDrive.logger.info(this + " Deployment timeout?");
 				deployTicks = 0;
-				setState(EnumShipScannerState.IDLE); // disable scanner
+				enumShipScannerState = EnumShipScannerState.IDLE; // disable scanner
 				shipToken_nextUpdate_ticks = SHIP_TOKEN_UPDATE_PERIOD_TICKS * 3;
 			}
 			break;
 			
 		default:
 			WarpDrive.logger.error("Invalid ship scanner state, forcing to IDLE...");
-			setState(EnumShipScannerState.IDLE);
+			enumShipScannerState = EnumShipScannerState.IDLE;
 			break;
-		}
-	}
-	
-	private void setState(final EnumShipScannerState newState) {
-		if (enumShipScannerState == newState) {
-			return;
-		}
-		enumShipScannerState = newState;
-		if (Commons.isSafeThread()) {
-			if (blockCamouflage == null) {
-				updateBlockState(null, BlockProperties.ACTIVE, newState != EnumShipScannerState.IDLE);
-			} else {
-				if (getBlockMetadata() != metadataCamouflage) {
-					world.setBlockState(pos, getBlockType().getStateFromMeta(metadataCamouflage), 2);
-				}
-			}
-		} else {
-			WarpDrive.logger.error("Bad multithreading!");
 		}
 	}
 	
@@ -244,7 +233,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 //			break;
 		
 		case DEPLOYING:// active and deploying
-			setState(EnumShipScannerState.IDLE); // disable scanner
+			enumShipScannerState = EnumShipScannerState.IDLE; // disable scanner
 			if (WarpDriveConfig.LOGGING_BUILDING) {
 				WarpDrive.logger.info(this + " Deployment done");
 			}
@@ -254,7 +243,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		default:
 			WarpDrive.logger.error(String.format("%s Invalid ship scanner state, forcing to IDLE...",
 			                                     this));
-			setState(EnumShipScannerState.IDLE);
+			enumShipScannerState = EnumShipScannerState.IDLE;
 			break;
 		}
 	}
@@ -414,7 +403,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 	// Begins ship scan
 	private boolean scanShip(final WarpDriveText reason) {
 		// Enable scanner
-		setState(EnumShipScannerState.SCANNING);
+		enumShipScannerState = EnumShipScannerState.SCANNING;
 		final File file = new File(WarpDriveConfig.G_SCHEMATICS_LOCATION);
 		if (!file.exists() || !file.isDirectory()) {
 			if (!file.mkdirs()) {
@@ -511,13 +500,19 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 				// Check specified area for occupation by blocks
 				// If specified area is occupied, break deployment with error message
 				int occupiedBlockCount = 0;
+				final MutableBlockPos mutableBlockPos = new MutableBlockPos();
 				for (int x = targetLocationMin.getX(); x <= targetLocationMax.getX(); x++) {
 					for (int y = targetLocationMin.getY(); y <= targetLocationMax.getY(); y++) {
 						for (int z = targetLocationMin.getZ(); z <= targetLocationMax.getZ(); z++) {
-							if (!world.isAirBlock(new BlockPos(x, y, z))) {
+							mutableBlockPos.setPos(x, y, z);
+							if (!world.isAirBlock(mutableBlockPos)) {
 								occupiedBlockCount++;
 								if (occupiedBlockCount == 1 || (occupiedBlockCount <= 100 && world.rand.nextInt(10) == 0)) {
-									world.newExplosion(null, x, y, z, 1, false, false);
+									PacketHandler.sendSpawnParticlePacket(world, "explosionLarge", (byte) 5,
+									                                      new Vector3(mutableBlockPos), new Vector3(0, 0, 0),
+									                                      0.70F + 0.25F * world.rand.nextFloat(), 0.70F + 0.25F * world.rand.nextFloat(), 0.20F + 0.30F * world.rand.nextFloat(),
+									                                      0.10F + 0.10F * world.rand.nextFloat(), 0.10F + 0.20F * world.rand.nextFloat(), 0.10F + 0.30F * world.rand.nextFloat(),
+									                                      WarpDriveConfig.SS_MAX_DEPLOY_RADIUS_BLOCKS);
 								}
 								if (WarpDriveConfig.LOGGING_BUILDING) {
 									WarpDrive.logger.info(String.format("Deployment collision detected %s",
@@ -539,7 +534,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		deployTicks = 0;
 		
 		isShipToken = isForced;
-		setState(EnumShipScannerState.DEPLOYING);
+		enumShipScannerState = EnumShipScannerState.DEPLOYING;
 		reason.append(Commons.getStyleCorrect(), "warpdrive.builder.guide.deploying_ship",
 		              fileName);
 		return true;
@@ -553,8 +548,11 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		}
 		
 		if (!(blockState.getBlock() instanceof BlockShipCore)) {
-			world.newExplosion(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(),
-			                   1, false, false);
+			PacketHandler.sendSpawnParticlePacket(world, "explosionLarge", (byte) 5,
+			                                      new Vector3(blockPos), new Vector3(0, 0, 0),
+			                                      0.70F + 0.25F * world.rand.nextFloat(), 0.70F + 0.25F * world.rand.nextFloat(), 0.20F + 0.30F * world.rand.nextFloat(),
+			                                      0.10F + 0.10F * world.rand.nextFloat(), 0.10F + 0.20F * world.rand.nextFloat(), 0.10F + 0.30F * world.rand.nextFloat(),
+			                                      WarpDriveConfig.SS_MAX_DEPLOY_RADIUS_BLOCKS);
 			reason.append(Commons.getStyleWarning(), "warpdrive.builder.guide.deployment_area_occupied_by_block",
 			              blockState.getBlock().getLocalizedName(),
 			              blockPos.getX(), blockPos.getY(), blockPos.getZ());
@@ -568,8 +566,11 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 			reason.append(Commons.getStyleCommand(), "warpdrive.builder.guide.contact_an_admin",
 			              Commons.format(world, blockPos));
 			WarpDrive.logger.error(reason.toString());
-			world.newExplosion(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(),
-			                   1, false, false);
+			PacketHandler.sendSpawnParticlePacket(world, "explosionLarge", (byte) 5,
+			                                      new Vector3(blockPos), new Vector3(0, 0, 0),
+			                                      0.70F + 0.25F * world.rand.nextFloat(), 0.70F + 0.25F * world.rand.nextFloat(), 0.20F + 0.30F * world.rand.nextFloat(),
+			                                      0.10F + 0.10F * world.rand.nextFloat(), 0.10F + 0.20F * world.rand.nextFloat(), 0.10F + 0.30F * world.rand.nextFloat(),
+			                                      WarpDriveConfig.SS_MAX_DEPLOY_RADIUS_BLOCKS);
 			return false;
 		}
 		
@@ -748,6 +749,10 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 				                                    this, Commons.format(arguments)));
 			}
 			return new Object[] { false, "Invalid argument format, you need <.schematic file name>, <offsetX>, <offsetY>, <offsetZ>, <rotationSteps>!" };
+		}
+		
+		if (enumShipScannerState != EnumShipScannerState.IDLE) {
+			return new Object[] { false, String.format("Invalid state, expecting IDLE, found %s", enumShipScannerState.toString()) };
 		}
 		
 		final WarpDriveText reason = new WarpDriveText();

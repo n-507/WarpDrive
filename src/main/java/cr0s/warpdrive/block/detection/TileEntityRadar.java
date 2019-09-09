@@ -200,7 +200,6 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 		scanning_radius = radius;
 		scanning_countdown_ticks = calculateScanDuration(radius);
 		isScanning = true;
-		updateBlockState(null, BlockRadar.MODE, EnumRadarMode.SCANNING);
 		if (WarpDriveConfig.LOGGING_RADAR) {
 			WarpDrive.logger.info(String.format("%s Starting scan over radius %d for %s %s, results expected in %s ticks",
 			                                    this, scanning_radius,
