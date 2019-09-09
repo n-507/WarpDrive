@@ -41,6 +41,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
@@ -212,6 +213,12 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	@Override
 	public EnumBlockRenderType getRenderType(final IBlockState blockState) {
 		return EnumBlockRenderType.MODEL;
+	}
+	
+	@Nonnull
+	@Override
+	public BlockRenderLayer getRenderLayer() {
+		return BlockRenderLayer.TRANSLUCENT;
 	}
 	
 	@SuppressWarnings("deprecation")
