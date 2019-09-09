@@ -519,6 +519,9 @@ public class StarMapRegistry {
 	// do not call during tileEntity construction (readFromNBT and validate)
 	private static boolean isExceptionReported = false;
 	private void cleanup() {
+		if (Commons.throttleMe("Starmap registry cleanup", 180000)) {
+			return;
+		}
 		LocalProfiler.start("Starmap registry cleanup");
 		
 		boolean isValid;

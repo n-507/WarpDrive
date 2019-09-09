@@ -818,9 +818,12 @@ public class Commons {
 	
 	private static final ConcurrentHashMap<String, Long> throttle_timePreviousForKey_ms = new ConcurrentHashMap<>(16);
 	public static boolean throttleMe(final String keyword) {
+		return throttleMe(keyword,WarpDriveConfig.LOGGING_THROTTLE_MS);
+	}
+	public static boolean throttleMe(final String keyword, final long delay_ms) {
 		final Long timeLastLog_ms = throttle_timePreviousForKey_ms.getOrDefault(keyword, Long.MIN_VALUE);
 		final long timeCurrent_ms = System.currentTimeMillis();
-		if (timeCurrent_ms > timeLastLog_ms + WarpDriveConfig.LOGGING_THROTTLE_MS) {
+		if (timeCurrent_ms > timeLastLog_ms + delay_ms) {
 			throttle_timePreviousForKey_ms.put(keyword, timeCurrent_ms);
 			return true;
 		}
