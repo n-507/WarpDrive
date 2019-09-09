@@ -27,6 +27,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -440,7 +441,8 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		                                    this, radius, chanceOfRemoval ));
 		if (radius > 1) {
 			final MutableBlockPos mutableBlockPos = new MutableBlockPos(pos);
-			final float explosionResistanceThreshold = Blocks.OBSIDIAN.getExplosionResistance(world, mutableBlockPos, null, null);
+			final Explosion explosion = new Explosion(world, null, vCenter.x, vCenter.y, vCenter.z, radius, true, true);
+			final float explosionResistanceThreshold = Blocks.OBSIDIAN.getExplosionResistance(world, mutableBlockPos, null, explosion);
 			for (int x = pos.getX() - radius; x <= pos.getX() + radius; x++) {
 				for (int y = pos.getY() - radius; y <= pos.getY() + radius; y++) {
 					for (int z = pos.getZ() - radius; z <= pos.getZ() + radius; z++) {
@@ -448,7 +450,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 							if (world.rand.nextDouble() < chanceOfRemoval) {
 								mutableBlockPos.setPos(x, y, z);
 								final IBlockState blockState = world.getBlockState(mutableBlockPos);
-								final float explosionResistanceActual = blockState.getBlock().getExplosionResistance(world, mutableBlockPos, null, null);
+								final float explosionResistanceActual = blockState.getBlock().getExplosionResistance(world, mutableBlockPos, null, explosion);
 								if (explosionResistanceActual >= explosionResistanceThreshold) {
 									WarpDrive.logger.debug(String.format("%s De-materializing %s %s",
 									                                     this, blockState, Commons.format(world, mutableBlockPos) ));

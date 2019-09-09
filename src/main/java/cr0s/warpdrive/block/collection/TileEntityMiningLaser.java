@@ -31,6 +31,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.world.Explosion;
 
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -63,6 +64,7 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	
 	// computed properties
 	private float explosionResistanceMax = 10000.0F;
+	private Explosion explosion;
 	private float viscosityMax = 0.0F;
 	private int radiusX_actual = 0;
 	private int radiusZ_actual = 0;
@@ -96,7 +98,8 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	@Override
 	protected void onFirstUpdateTick() {
 		super.onFirstUpdateTick();
-		explosionResistanceMax = Blocks.OBSIDIAN.getExplosionResistance(world, pos, null, null);
+		explosion = new Explosion(world, null, pos.getX(), pos.getY(), pos.getZ(), 1, true, true);
+		explosionResistanceMax = Blocks.OBSIDIAN.getExplosionResistance(world, pos, null, explosion);
 		updateParameters();
 	}
 	
@@ -346,7 +349,7 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 			return true;
 		}
 		// check default (explosion resistance is used to test for force fields and reinforced blocks, basically preventing mining a base or ship)
-		final float explosionResistance = blockState.getBlock().getExplosionResistance(world, blockPos, null, null);
+		final float explosionResistance = blockState.getBlock().getExplosionResistance(world, blockPos, null, explosion);
 		if (explosionResistance <= explosionResistanceMax) {
 			return true;
 		}

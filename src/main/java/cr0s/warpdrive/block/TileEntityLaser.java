@@ -42,6 +42,7 @@ import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 import net.minecraftforge.fml.common.Optional;
@@ -358,7 +359,8 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 				final IBlockState blockState = world.getBlockState(scanResult_position);
 				scanResult_blockUnlocalizedName = blockState.getBlock().getTranslationKey();
 				scanResult_blockMetadata = blockState.getBlock().getMetaFromState(blockState);
-				scanResult_blockResistance = blockState.getBlock().getExplosionResistance(world, scanResult_position, null, null);
+				final Explosion explosion = new Explosion(world, null, pos.getX(), pos.getY(), pos.getZ(), 1, true, true);
+				scanResult_blockResistance = blockState.getBlock().getExplosionResistance(world, scanResult_position, null, explosion);
 				PacketHandler.sendBeamPacket(world, vSource, new Vector3(mopResult.hitVec), r, g, b, 50, energy, 200);
 			} else {
 				scanResult_type = ScanResultType.NONE;
