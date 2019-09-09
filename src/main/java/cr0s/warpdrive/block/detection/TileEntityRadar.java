@@ -118,8 +118,8 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 		return tagCompound;
 	}
 	
-	private int calculateEnergyRequired(final int parRadius) {
-		return (int) Math.round(Math.max(WarpDriveConfig.RADAR_SCAN_MIN_ENERGY_COST,
+	private long calculateEnergyRequired(final int parRadius) {
+		return Math.round(Math.max(WarpDriveConfig.RADAR_SCAN_MIN_ENERGY_COST,
 				  WarpDriveConfig.RADAR_SCAN_ENERGY_COST_FACTORS[0]
 				+ WarpDriveConfig.RADAR_SCAN_ENERGY_COST_FACTORS[1] * parRadius
 				+ WarpDriveConfig.RADAR_SCAN_ENERGY_COST_FACTORS[2] * parRadius * parRadius
@@ -191,7 +191,7 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 			radius = 0;
 			return new Object[] { false, "Invalid radius" };
 		}
-		final int energyRequired = calculateEnergyRequired(radius);
+		final long energyRequired = calculateEnergyRequired(radius);
 		if (!energy_consume(energyRequired, false)) {
 			return new Object[] { false, "Insufficient energy" };
 		}
