@@ -1019,7 +1019,7 @@ public class Recipes {
 			WarpDrive.register(new RecipeParticleShapedOre(groupComponents,
 			                                               itemStackAntimatterExplosive, "aaa", "ana", "aaa",
 			                                               'a', ItemElectromagneticCell.getItemStackNoCache(EnumTier.ADVANCED, ParticleRegistry.ANTIMATTER, 1000),
-			                                               'n', WarpDriveConfig.getItemStackOrFire("icbmclassic:icbmCExplosive", 15)));
+			                                               'n', WarpDriveConfig.getItemStackOrFire("icbmclassic:explosives", 15)));
 			
 			// red matter
 			final ItemStack itemStackRedMatterExplosive = WarpDriveConfig.getItemStackOrFire("icbmclassic:explosives", 23); // Red Matter Explosive
@@ -1027,7 +1027,7 @@ public class Recipes {
 			WarpDrive.register(new RecipeParticleShapedOre(groupComponents,
 			                                               itemStackRedMatterExplosive, "sss", "sas", "sss",
 			                                               's', ItemElectromagneticCell.getItemStackNoCache(EnumTier.ADVANCED, ParticleRegistry.STRANGE_MATTER, 1000),
-			                                               'a', WarpDriveConfig.getItemStackOrFire("icbmclassic:icbmCExplosive", 22)));
+			                                               'a', WarpDriveConfig.getItemStackOrFire("icbmclassic:explosives", 22)));
 		}
 	}
 	
