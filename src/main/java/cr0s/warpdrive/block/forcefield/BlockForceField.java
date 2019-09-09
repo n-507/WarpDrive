@@ -365,9 +365,10 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		final int exploderId = exploder == null ? -1 : exploder.getEntityId();
 		if ( exploderId != previous_exploderId
 		  && Commons.isServerThread() ) {
-			new RuntimeException(String.format("Invalid call to deprecated getExplosionResistance(%s)", exploder)).printStackTrace();
-			WarpDrive.logger.error(String.format("Invalid call to getExplosionResistance from %s",
-			                                     exploder));
+			if (Commons.throttleMe("getExplosionResistance")) {
+				new RuntimeException(String.format("Invalid call to deprecated getExplosionResistance(%s)",
+				                                   exploder)).printStackTrace();
+			}
 			return Float.MAX_VALUE;
 		}
 		return super.getExplosionResistance(exploder);
