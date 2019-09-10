@@ -961,7 +961,14 @@ public class Recipes {
 		                                       'M', "blockElectromagnet3"));
 		
 		// Lower tier coil is iron, copper or coil
-		final Object ironIngotOrCopperIngotOrCoil = WarpDriveConfig.getOreOrItemStack(
+		final Object ironIngotOrCopperIngotOrCoil1 = WarpDriveConfig.getOreOrItemStack(
+				"ic2:crafting", 5,                         // IC2 Coil
+				"immersiveengineering:wirecoil", 1,        // ImmersiveEngineering MV wire coil
+				"enderio:item_power_conduit", 1,           // EnderIO Enhanced energy conduit
+				"ore:ingotCopper", 0,
+				"ore:ingotSteel", 0,
+				"minecraft:iron_ingot", 0 );
+		final Object ironIngotOrCopperIngotOrCoil2 = WarpDriveConfig.getOreOrItemStack(
 				"gregtech:wire_coil", 0,                   // GregTech Cupronickel Coil block
 				"ic2:crafting", 5,                         // IC2 Coil
 				"thermalfoundation:material", 513,         // ThermalFoundation Redstone reception coil
@@ -973,8 +980,9 @@ public class Recipes {
 		
 		// Normal electromagnets
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockElectromagnets_plain[EnumTier.BASIC.getIndex()], 4), "   ", "ccc", "Cmt",
-		                                       'c', ironIngotOrCopperIngotOrCoil,
+		                                       new ItemStack(WarpDrive.blockElectromagnets_plain[EnumTier.BASIC.getIndex()], 4), "   ", "cdc", "Cmt",
+		                                       'c', ironIngotOrCopperIngotOrCoil1,
+		                                       'd', ironIngotOrCopperIngotOrCoil2,
 		                                       't', ItemComponent.getItemStack(EnumComponentType.GLASS_TANK),
 		                                       'm', itemStackMotors[0],
 		                                       'C', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL)));
