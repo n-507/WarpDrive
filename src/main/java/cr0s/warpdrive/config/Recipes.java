@@ -807,13 +807,13 @@ public class Recipes {
 		// Tuning driver configuration
 		WarpDrive.register(new RecipeTuningDriver(groupTools,
 		                                          new ItemStack(WarpDrive.itemTuningDriver, 1, ItemTuningDriver.MODE_VIDEO_CHANNEL),
-		                                          new ItemStack(Items.REDSTONE), 7, "_video1"), "_video2");
+		                                          new ItemStack(Items.REDSTONE), 7, "_video2"), "_video1");
 		WarpDrive.register(new RecipeTuningDriver(groupTools,
 		                                          new ItemStack(WarpDrive.itemTuningDriver, 1, ItemTuningDriver.MODE_BEAM_FREQUENCY),
-		                                          new ItemStack(Items.REDSTONE), 4, "_bream_frequency1"), "_bream_frequency2");
+		                                          new ItemStack(Items.REDSTONE), 4, "_bream_frequency2"), "_bream_frequency1");
 		WarpDrive.register(new RecipeTuningDriver(groupTools,
 		                                          new ItemStack(WarpDrive.itemTuningDriver, 1, ItemTuningDriver.MODE_CONTROL_CHANNEL),
-		                                          new ItemStack(Items.REDSTONE), 7, "_control_channel1"), "_control_channel2");
+		                                          new ItemStack(Items.REDSTONE), 7, "_control_channel2"), "_control_channel1");
 	}
 	
 	public static void initDynamic() {

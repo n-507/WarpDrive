@@ -108,7 +108,7 @@ public class RecipeTuningDriver implements IRecipe {
 				}
 				itemStackInput = itemStackSlot;
 				
-			} else if (OreDictionary.itemMatches(itemStackSlot, itemStackConsumable, false)) {
+			} else if (OreDictionary.itemMatches(itemStackSlot, itemStackConsumable, true)) {
 				// too many consumables?
 				if (isConsumableFound) {
 					return false;
@@ -119,7 +119,7 @@ public class RecipeTuningDriver implements IRecipe {
 				// find a matching dye from ore dictionary
 				boolean matched = false;
 				for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
-					final List<ItemStack> itemStackDyes = OreDictionary.getOres("dye" + enumDyeColor.getTranslationKey());
+					final List<ItemStack> itemStackDyes = OreDictionary.getOres(Recipes.oreDyes.get(enumDyeColor));
 					for (final ItemStack itemStackDye : itemStackDyes) {
 						if (OreDictionary.itemMatches(itemStackSlot, itemStackDye, true)) {
 							// match found, update dye combination
