@@ -9,14 +9,14 @@ import net.minecraft.util.text.TextComponentBase;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
-public class WarpDriveText extends TextComponentBase {
+public class WarpDriveText extends TextComponentString {
 	
 	public WarpDriveText() {
-		super();
+		super("");
 	}
 	
 	public WarpDriveText(@Nullable final Style style, final long value) {
-		super();
+		super("");
 		
 		final ITextComponent textComponent = new TextComponentString(String.format("%d", value));
 		if (style != null) {
@@ -26,7 +26,7 @@ public class WarpDriveText extends TextComponentBase {
 	}
 	
 	public WarpDriveText(@Nullable final Style style, @Nonnull final String translationKey, final Object... args) {
-		super();
+		super("");
 		
 		final ITextComponent textComponent = new TextComponentTranslation(translationKey, args);
 		if (style != null) {
@@ -43,7 +43,7 @@ public class WarpDriveText extends TextComponentBase {
 	
 	@Nonnull
 	@Override
-	public ITextComponent createCopy() {
+	public TextComponentString createCopy() {
 		final WarpDriveText warpDriveText = new WarpDriveText();
 		warpDriveText.setStyle(getStyle().createShallowCopy());
 		
