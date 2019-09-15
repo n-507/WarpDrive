@@ -148,8 +148,6 @@ public class JumpShip {
 			jumpShip.minZ = vOrigin.z;
 			jumpShip.maxZ = vOrigin.z + length - 1;
 			jumpShip.jumpBlocks = new JumpBlock[width * height * length];
-			WarpDrive.logger.info(String.format("vCore %s vOrigin %s => shipCore %s",
-			                                    vCore, vOrigin, jumpShip.core ));
 			
 			// Read blocks from NBT to internal storage array
 			// Before 1.13, WorldEdit uses Blocks for LSB, an optional AddBlocks for MSB.
