@@ -604,9 +604,10 @@ public class Vector3 implements Cloneable {
 		}
 		
 		for (final Entity entityHit : entitiesHit) {
-			if (entityHit != null && entityHit.canBeCollidedWith() && entityHit.getCollisionBoundingBox() != null) {
+			if ( entityHit != null
+			  && entityHit.canBeCollidedWith() ) {
 				final float border = entityHit.getCollisionBorderSize();
-				final AxisAlignedBB aabb = entityHit.getCollisionBoundingBox().expand(border, border, border);
+				final AxisAlignedBB aabb = entityHit.getEntityBoundingBox().expand(border, border, border);
 				final RayTraceResult hitMOP = aabb.calculateIntercept(startingPosition, reachPoint);
 				
 				if (hitMOP != null) {

@@ -663,14 +663,13 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 		final HashMap<Double, RayTraceResult> entityHits = new HashMap<>(entities.size());
 		for (final Entity entity : entities) {
 			if ( entity != null
-			  && entity.canBeCollidedWith()
-			  && entity.getCollisionBoundingBox() != null ) {
+			  && entity.canBeCollidedWith() ) {
 				final double border = entity.getCollisionBorderSize();
-				final AxisAlignedBB aabbEntity = entity.getCollisionBoundingBox().expand(border, border, border);
+				final AxisAlignedBB aabbEntity = entity.getEntityBoundingBox().expand(border, border, border);
 				final RayTraceResult hitMOP = aabbEntity.calculateIntercept(vec3Source, vec3Target);
 				if (WarpDriveConfig.LOGGING_WEAPON) {
 					WarpDrive.logger.info(String.format("Checking %s boundingBox %s border %s aabbEntity %s hitMOP %s",
-					                                    entity, entity.getCollisionBoundingBox(), border, aabbEntity, hitMOP));
+					                                    entity, aabbEntity, border, aabbEntity, hitMOP));
 				}
 				if (hitMOP != null) {
 					final RayTraceResult mopEntity = new RayTraceResult(entity);
