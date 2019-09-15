@@ -129,7 +129,18 @@ public class MessageSpawnParticle implements IMessage, IMessageHandler<MessageSp
 			switch (type) {
 			default:
 				WarpDrive.logger.error(String.format("Invalid particle type '%s' at %s", type, origin.toString()));
-			case "explode":
+				
+			case "explosionHuge":
+				particle = mc.effectRenderer.spawnEffectParticle(EnumParticleTypes.EXPLOSION_HUGE.getParticleID(),
+				                                                 origin.x, origin.y, origin.z, directionRandomized.x, directionRandomized.y, directionRandomized.z);
+				break;
+			
+			case "explosionLarge":
+				particle = mc.effectRenderer.spawnEffectParticle(EnumParticleTypes.EXPLOSION_LARGE.getParticleID(),
+				                                                 origin.x, origin.y, origin.z, directionRandomized.x, directionRandomized.y, directionRandomized.z);
+				break;
+			
+			case "explosionNormal":
 				particle = mc.effectRenderer.spawnEffectParticle(EnumParticleTypes.EXPLOSION_NORMAL.getParticleID(),
 						origin.x, origin.y, origin.z, directionRandomized.x, directionRandomized.y, directionRandomized.z);
 				break;
@@ -148,12 +159,12 @@ public class MessageSpawnParticle implements IMessage, IMessageHandler<MessageSp
 						origin.x, origin.y, origin.z, directionRandomized.x, directionRandomized.y, directionRandomized.z);
 				break;
 			
-			case "snowballpoof":
+			case "snowball":
 				particle = mc.effectRenderer.spawnEffectParticle(EnumParticleTypes.SNOWBALL.getParticleID(),
 						origin.x, origin.y, origin.z, directionRandomized.x, directionRandomized.y, directionRandomized.z);
 				break;
 			
-			case "snowshovel":
+			case "snowShovel":
 				particle = mc.effectRenderer.spawnEffectParticle(EnumParticleTypes.SNOW_SHOVEL.getParticleID(),
 						origin.x, origin.y, origin.z, directionRandomized.x, directionRandomized.y, directionRandomized.z);
 				break;
@@ -197,7 +208,6 @@ public class MessageSpawnParticle implements IMessage, IMessageHandler<MessageSp
 			if (baseRed >= 0.0F && baseGreen >= 0.0F && baseBlue >= 0.0F) {
 				particle.setRBGColorF(baseRed, baseGreen, baseBlue);
 			}
-			mc.effectRenderer.addEffect(particle);
 		}
 	}
 	

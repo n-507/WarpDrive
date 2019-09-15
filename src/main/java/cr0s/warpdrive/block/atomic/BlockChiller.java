@@ -117,7 +117,7 @@ public class BlockChiller extends BlockAbstractAccelerator {
 		
 		// visual effect
 		v3Direction.scale(0.20D);
-		PacketHandler.sendSpawnParticlePacket(world, "snowshovel", (byte) 5, v3Entity, v3Direction,
+		PacketHandler.sendSpawnParticlePacket(world, "snowShovel", (byte) 5, v3Entity, v3Direction,
 			0.90F + 0.10F * world.rand.nextFloat(), 0.35F + 0.25F * world.rand.nextFloat(), 0.30F + 0.15F * world.rand.nextFloat(),
 			0.0F, 0.0F, 0.0F, 32);
 	}

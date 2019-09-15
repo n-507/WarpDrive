@@ -589,7 +589,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 			
 		} else {
 			for (int countParticles = 0; countParticles < 5; countParticles++) {
-				PacketHandler.sendSpawnParticlePacket(world, "explode", (byte) 5,
+				PacketHandler.sendSpawnParticlePacket(world, "explosionNormal", (byte) 5,
 					new Vector3(trajectoryPointCollider.x + 0.5D + 2.5D * world.rand.nextGaussian(),
 					            trajectoryPointCollider.y + 0.5D + 2.5D * world.rand.nextGaussian(),
 					            trajectoryPointCollider.z + 0.5D + 2.5D * world.rand.nextGaussian()),

@@ -583,7 +583,7 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 				-0.2D * vDirection.x + 0.05 * (world.rand.nextFloat() - world.rand.nextFloat()),
 				-0.2D * vDirection.y + 0.05 * (world.rand.nextFloat() - world.rand.nextFloat()),
 				-0.2D * vDirection.z + 0.05 * (world.rand.nextFloat() - world.rand.nextFloat()));
-			PacketHandler.sendSpawnParticlePacket(world, "explode", (byte) 5, origin, direction, r, g, b, r, g, b, 96);
+			PacketHandler.sendSpawnParticlePacket(world, "explosionNormal", (byte) 5, origin, direction, r, g, b, r, g, b, 96);
 			
 			// apply custom damages
 			if (blockState.getBlock() instanceof IDamageReceiver) {
