@@ -17,7 +17,6 @@ import cr0s.warpdrive.config.WarpDriveDataFixer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -64,6 +63,11 @@ import net.minecraft.world.World;
 
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.relauncher.Side;
+
+import ic2.api.network.INetworkDataProvider;
+import ic2.api.network.INetworkManager;
+import ic2.api.network.NetworkHelper;
 
 public class JumpBlock {
 	
@@ -426,62 +430,25 @@ public class JumpBlock {
 				                                    teClass,
 				                                    teClass.getSuperclass()));
 			}
+			
+			// is it required?
+			tileEntity.updateContainingBlockInfo();
+			
 			final String className = teClass.getName();
 			try {
-				final String superClassName = teClass.getSuperclass().getName();
-				final boolean isIC2 = superClassName.contains("ic2.core.block");
-				if (isIC2 || superClassName.contains("advsolar.common.tiles")) {// IC2
-					final Method onUnloaded = teClass.getMethod("onUnloaded");
-					final Method onLoaded = teClass.getMethod("onLoaded");
-					if (onUnloaded != null && onLoaded != null) {
-						onUnloaded.invoke(tileEntity);
-						onLoaded.invoke(tileEntity);
-					} else {
-						WarpDrive.logger.error(String.format("Missing IC2 (un)loaded events for TileEntity %s %s. Please report this issue!",
-						                                     className,
-						                                     Commons.format(world, blockPos)));
-					}
-					
-					tileEntity.updateContainingBlockInfo();
-				}
-				
-				if (isIC2) {// IC2
-					// required in SSP during same dimension jump to update client with rotation data
-					if (className.equals("ic2.core.block.wiring.TileEntityCable")) {
-						NetworkHelper_updateTileEntityField(tileEntity, "color");
-						NetworkHelper_updateTileEntityField(tileEntity, "foamColor");
-						NetworkHelper_updateTileEntityField(tileEntity, "foamed");
-					} else {
-						NetworkHelper_updateTileEntityField(tileEntity, "active");
-						NetworkHelper_updateTileEntityField(tileEntity, "facing");
-						if (className.equals("ic2.core.block.reactor.TileEntityNuclearReactorElectric")) {
-							NetworkHelper_updateTileEntityField(tileEntity, "heat");	// not working, probably an IC2 bug here...
-						}
-						// not needed: if ic2.core.block.machine.tileentity.TileEntityMatter then updated "state"
-					}
-				} else if ( !className.contains("$")
-				         && !superClassName.contains("$")
-				         && !superClassName.startsWith("mekanism.")
-				         && !superClassName.startsWith("micdoodle8.") ) {// IC2 extensions without network optimization (transferring all fields)
-					try {
-						final Method getNetworkedFields = teClass.getMethod("getNetworkedFields");
-						@SuppressWarnings("unchecked")
-						final List<String> fields = (List<String>) getNetworkedFields.invoke(tileEntity);
+				if (WarpDriveConfig.isIndustrialCraft2Loaded) {
+					if (tileEntity instanceof INetworkDataProvider) {
+						final List<String> fields = ((INetworkDataProvider) tileEntity).getNetworkedFields();
 						if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
 							WarpDrive.logger.info(String.format("Tile has %d networked fields: %s",
-							                                    fields.size(), fields));
+							                                    fields.size(), fields ));
 						}
+						final INetworkManager networkManager = NetworkHelper.getNetworkManager(Side.SERVER);
 						for (final String field : fields) {
-							NetworkHelper_updateTileEntityField(tileEntity, field);
-						}
-					} catch (final NoSuchMethodException exception) {
-						// WarpDrive.logger.info("Tile has no getNetworkedFields method");
-					} catch (final NoClassDefFoundError exception) {
-						if (WarpDriveConfig.LOGGING_JUMP) {
-							WarpDrive.logger.info(String.format("TileEntity %s %s is missing a class definition",
-							                                    className, Commons.format(world, blockPos)));
-							if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
-								exception.printStackTrace();
+							try {
+								networkManager.updateTileEntityField(tileEntity, field);
+							} catch (final Exception exception) {
+								throw new RuntimeException(exception);
 							}
 						}
 					}
@@ -696,32 +663,6 @@ public class JumpBlock {
 			}
 		}
 	}
-	
-	// IC2 support for updating tile entity fields
-	private static Object NetworkManager_instance;
-	private static Method NetworkManager_updateTileEntityField;
-	
-	private static void NetworkHelper_init() {
-		try {
-			NetworkManager_updateTileEntityField = Class.forName("ic2.core.network.NetworkManager").getMethod("updateTileEntityField", TileEntity.class, String.class);
-			
-			NetworkManager_instance = Class.forName("ic2.core.IC2").getDeclaredField("network").get(null);
-		} catch (final Exception exception) {
-			throw new RuntimeException(exception);
-		}
-	}
-	
-	private static void NetworkHelper_updateTileEntityField(final TileEntity tileEntity, final String field) {
-		try {
-			if (NetworkManager_instance == null) {
-				NetworkHelper_init();
-			}
-			NetworkManager_updateTileEntityField.invoke(NetworkManager_instance, tileEntity, field);
-		} catch (final Exception exception) {
-			throw new RuntimeException(exception);
-		}
-	}
-	// IC2 support ends here
 	
 	@Override
 	public String toString() {
