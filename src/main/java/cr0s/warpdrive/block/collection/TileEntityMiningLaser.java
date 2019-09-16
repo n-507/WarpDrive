@@ -494,26 +494,26 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	}
 	
 	// OpenComputers callback methods
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] state(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);
 		return state();
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] offset(final Context context, final Arguments arguments) {
 		return offset(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] onlyOres(final Context context, final Arguments arguments) {
 		return onlyOres(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] silktouch(final Context context, final Arguments arguments) {
 		return silktouch(OC_convertArgumentsAndLogCall(context, arguments));

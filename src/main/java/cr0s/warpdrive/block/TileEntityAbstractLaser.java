@@ -227,21 +227,21 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractEnergyBa
 	}
 	
 	// OpenComputers callback methods
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getEnergyRequired(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);
 		return getEnergyRequired();
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] laserMediumDirection(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);
 		return laserMediumDirection();
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] laserMediumCount(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);

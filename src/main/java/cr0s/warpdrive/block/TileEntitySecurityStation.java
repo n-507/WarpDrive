@@ -146,7 +146,7 @@ public class TileEntitySecurityStation extends TileEntityAbstractMachine impleme
 	}
 	
 	// OpenComputers callback methods
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getAttachedPlayers(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);

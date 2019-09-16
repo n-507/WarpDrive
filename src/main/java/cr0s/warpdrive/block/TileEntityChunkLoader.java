@@ -201,13 +201,13 @@ public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
 	}
 	
 	// OpenComputers callback methods
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] bounds(final Context context, final Arguments arguments) {
 		return bounds(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] radius(final Context context, final Arguments arguments) {
 		return radius(OC_convertArgumentsAndLogCall(context, arguments));

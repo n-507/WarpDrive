@@ -309,13 +309,13 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	}
 	
 	// OpenComputers callback methods
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] stabilize(final Context context, final Arguments arguments) {
 		return stabilize(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] side(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);

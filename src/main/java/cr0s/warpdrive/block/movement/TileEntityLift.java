@@ -255,7 +255,7 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 	}
 	
 	// OpenComputers callback methods
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] mode(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);
@@ -266,7 +266,7 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 		);
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] state(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);

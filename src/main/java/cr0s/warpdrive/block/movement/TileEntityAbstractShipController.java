@@ -373,72 +373,72 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	}
 	
 	// OpenComputers callback methods
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getOrientation(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);
 		return getOrientation();
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] isInSpace(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);
 		return isInSpace();
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] isInHyperspace(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);
 		return isInHyperspace();
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] dim_positive(final Context context, final Arguments arguments) {
 		return dim_positive(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] dim_negative(final Context context, final Arguments arguments) {
 		return dim_negative(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] command(final Context context, final Arguments arguments) {
 		return command(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getShipSize(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);
 		return getShipSize();
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getMaxJumpDistance(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);
 		return getMaxJumpDistance();
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] movement(final Context context, final Arguments arguments) {
 		return movement(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] rotationSteps(final Context context, final Arguments arguments) {
 		return rotationSteps(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] targetName(final Context context, final Arguments arguments) {
 		return targetName(OC_convertArgumentsAndLogCall(context, arguments));

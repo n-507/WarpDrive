@@ -1773,45 +1773,45 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	}
 	
 	// OpenComputers callback methods
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] beamFrequency(final Context context, final Arguments arguments) {
 		return beamFrequency(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] state(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);
 		return state();
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] remoteLocation(final Context context, final Arguments arguments) {
 		return remoteLocation(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] lock(final Context context, final Arguments arguments) {
 		return lock(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] energyFactor(final Context context, final Arguments arguments) {
 		return energyFactor(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getLockStrength(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);
 		return getLockStrength();
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] energize(final Context context, final Arguments arguments) {
 		return energize(OC_convertArgumentsAndLogCall(context, arguments));

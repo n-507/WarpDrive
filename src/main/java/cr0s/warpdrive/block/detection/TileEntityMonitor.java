@@ -104,7 +104,7 @@ public class TileEntityMonitor extends TileEntityAbstractMachine implements IVid
 	}
 	
 	// OpenComputers callback methods
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] videoChannel(final Context context, final Arguments arguments) {
 		return videoChannel(OC_convertArgumentsAndLogCall(context, arguments));

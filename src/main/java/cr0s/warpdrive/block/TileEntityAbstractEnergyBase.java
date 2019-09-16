@@ -97,13 +97,13 @@ public abstract class TileEntityAbstractEnergyBase extends TileEntityAbstractMac
 	public abstract Object[] getEnergyStatus();
 	
 	// OpenComputers callback methods
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] energyDisplayUnits(final Context context, final Arguments arguments) {
 		return energyDisplayUnits(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] getEnergyStatus(final Context context, final Arguments arguments) {
 		OC_convertArgumentsAndLogCall(context, arguments);

@@ -173,7 +173,7 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 	}
 	
 	// OpenComputers callback methods
-	@Callback
+	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] isActive(final Context context, final Arguments arguments) {
 		return isActive(OC_convertArgumentsAndLogCall(context, arguments));
