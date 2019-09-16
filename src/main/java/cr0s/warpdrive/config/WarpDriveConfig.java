@@ -278,7 +278,7 @@ public class WarpDriveConfig {
 	// Ship
 	public static int[]            SHIP_MAX_ENERGY_STORED_BY_TIER = { 0, 500000, 10000000, 100000000 };
 	public static int[]            SHIP_MASS_MAX_BY_TIER = { 2000000, 3456, 13824, 110592 };
-	public static int[]            SHIP_MASS_MIN_BY_TIER = {       0,   64,  2592,  10368 };
+	public static int[]            SHIP_MASS_MIN_BY_TIER = {       0,   64,  1728,   6912 };
 	public static int              SHIP_MASS_MAX_ON_PLANET_SURFACE = 3000;
 	public static int              SHIP_MASS_MIN_FOR_HYPERSPACE = 4000;
 	public static int[]            SHIP_SIZE_MAX_PER_SIDE_BY_TIER = { 127, 24, 48, 96 };
