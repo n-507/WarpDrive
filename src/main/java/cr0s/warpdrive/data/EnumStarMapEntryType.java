@@ -15,7 +15,7 @@ public enum EnumStarMapEntryType implements IStringSerializable {
 	STRUCTURE  (5, "structure"  , true ), // a structure from WorldGeneration (moon, asteroid field, etc.)
 	WARP_ECHO  (6, "warp_echo"  , true ), // remains of a warp
 	ACCELERATOR(7, "accelerator", false), // an accelerator setup
-	TRANSPORTER(8, "transporter", true ); // a transporter room
+	TRANSPORTER(8, "transporter", false); // a transporter room
 	
 	private final int id;
 	private final String name;
