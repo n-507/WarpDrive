@@ -220,7 +220,8 @@ public class WarpDrive {
 	public static final String MODID = "warpdrive";
 	public static final String VERSION = "@version@";
 	@SuppressWarnings("ConstantConditions")
-	public static final boolean isDev = VERSION.equals("@" + "version" + "@") || VERSION.contains("-dev");
+	public static final boolean isDev = java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0
+	                                 || VERSION.contains("-dev");
 	public static GameProfile gameProfile = new GameProfile(UUID.nameUUIDFromBytes("[WarpDrive]".getBytes()), "[WarpDrive]");
 	
 	// common blocks and items
