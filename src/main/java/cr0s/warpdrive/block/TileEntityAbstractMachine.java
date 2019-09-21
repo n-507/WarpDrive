@@ -112,6 +112,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	public WarpDriveText getStatus() {
 		final WarpDriveText textStatus = super.getStatus();
 		if ( world != null
+		  && !world.isRemote
 		  && !textValidityIssues.isEmpty() ) {
 			textStatus.append(textValidityIssues);
 		}

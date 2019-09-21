@@ -370,20 +370,24 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		}
 		
 		if (isUpgradeable()) {
-			// show updates details in the world or while sneaking in the inventory
-			boolean showDetails = hasWorld();
-			if (Commons.isClientThread()) {
-				final int keyCodeSneak = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
-				final String keyName = Minecraft.getMinecraft().gameSettings.keyBindSneak.getDisplayName();
-				showDetails = Keyboard.isKeyDown(keyCodeSneak);
-				if (!showDetails) {
-					message.append(null, "warpdrive.upgrade.status_line.upgradeable",
-					               new WarpDriveText(Commons.getStyleCommand(), "%1$s", keyName) );
+			// hide upgrades in the world on client side (server side will do it)
+			if ( !hasWorld()
+			  || !world.isRemote ) {
+				// show updates details in the world or while sneaking in the inventory
+				boolean showDetails = hasWorld();
+				if (Commons.isClientThread()) {
+					final int keyCodeSneak = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
+					final String keyName = Minecraft.getMinecraft().gameSettings.keyBindSneak.getDisplayName();
+					showDetails = Keyboard.isKeyDown(keyCodeSneak);
+					if (!showDetails) {
+						message.append(null, "warpdrive.upgrade.status_line.upgradeable",
+						               new WarpDriveText(Commons.getStyleCommand(), "%1$s", keyName));
+					}
 				}
-			}
-			if (showDetails) {
-				// show animation only in the inventory (i.e. no world defined)
-				message.append(getUpgradeStatus(!hasWorld()));
+				if (showDetails) {
+					// show animation only in the inventory (i.e. no world defined)
+					message.append(getUpgradeStatus(!hasWorld()));
+				}
 			}
 		}
 		
