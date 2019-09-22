@@ -57,8 +57,7 @@ public class BlockMonitor extends BlockAbstractRotatingContainer {
 			if (tileEntity instanceof TileEntityMonitor) {
 				// validate video channel
 				final int videoChannel = ((TileEntityMonitor) tileEntity).getVideoChannel();
-				if ( videoChannel < IVideoChannel.VIDEO_CHANNEL_MIN
-				  || videoChannel > IVideoChannel.VIDEO_CHANNEL_MAX ) {
+				if ( !IVideoChannel.isValid(videoChannel) ) {
 					Commons.addChatMessage(entityPlayer, ((TileEntityMonitor) tileEntity).getStatus());
 					return true;
 				}

@@ -41,7 +41,7 @@ public abstract class TileEntityAbstractForceField extends TileEntityAbstractEne
 	@Override
 	protected void onFirstUpdateTick() {
 		super.onFirstUpdateTick();
-		if (beamFrequency >= 0 && beamFrequency <= IBeamFrequency.BEAM_FREQUENCY_MAX) {
+		if ( IBeamFrequency.isValid(beamFrequency) ) {
 			ForceFieldRegistry.updateInRegistry(this);
 		}
 	}
@@ -55,7 +55,7 @@ public abstract class TileEntityAbstractForceField extends TileEntityAbstractEne
 		}
 		
 		// Frequency is not set
-		final boolean new_isConnected = beamFrequency > 0 && beamFrequency <= IBeamFrequency.BEAM_FREQUENCY_MAX;
+		final boolean new_isConnected = IBeamFrequency.isValid(beamFrequency);
 		if (isConnected != new_isConnected) {
 			isConnected = new_isConnected;
 			markDirty();
@@ -82,7 +82,8 @@ public abstract class TileEntityAbstractForceField extends TileEntityAbstractEne
 	
 	@Override
 	public void setBeamFrequency(final int parBeamFrequency) {
-		if (beamFrequency != parBeamFrequency && (parBeamFrequency <= BEAM_FREQUENCY_MAX) && (parBeamFrequency > BEAM_FREQUENCY_MIN)) {
+		if ( beamFrequency != parBeamFrequency
+		  && IBeamFrequency.isValid(parBeamFrequency) ) {
 			if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 				WarpDrive.logger.info(String.format("%s Beam frequency set from %d to %d",
 				                                    this, beamFrequency, parBeamFrequency));

@@ -93,7 +93,7 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 		super.update();
 		
 		// Frequency is not set
-		if (beamFrequency <= 0 || beamFrequency > IBeamFrequency.BEAM_FREQUENCY_MAX) {
+		if ( !IBeamFrequency.isValid(beamFrequency) ) {
 			return;
 		}
 		
@@ -696,7 +696,8 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 	
 	@Override
 	public void setBeamFrequency(final int parBeamFrequency) {
-		if (beamFrequency != parBeamFrequency && (parBeamFrequency <= BEAM_FREQUENCY_MAX) && (parBeamFrequency > BEAM_FREQUENCY_MIN)) {
+		if ( beamFrequency != parBeamFrequency
+		  && IBeamFrequency.isValid(parBeamFrequency) ) {
 			if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 				WarpDrive.logger.info(this + " Beam frequency set from " + beamFrequency + " to " + parBeamFrequency);
 			}

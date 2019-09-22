@@ -9,6 +9,11 @@ public interface IBeamFrequency {
 	int BEAM_FREQUENCY_MAX = 65000;
 	String BEAM_FREQUENCY_TAG = "beamFrequency";
 	
+	static boolean isValid(final int beamFrequency) {
+		return beamFrequency <= BEAM_FREQUENCY_MAX
+		    && beamFrequency >  BEAM_FREQUENCY_MIN; 
+	}
+	
 	// get beam frequency, return -1 if invalid 
 	int getBeamFrequency();
 	

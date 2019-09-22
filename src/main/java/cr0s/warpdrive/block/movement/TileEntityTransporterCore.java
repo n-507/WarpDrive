@@ -494,16 +494,19 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	}
 	
 	@Override
-	public void setBeamFrequency(final int beamFrequency) {
-		if (this.beamFrequency != beamFrequency && (beamFrequency <= BEAM_FREQUENCY_MAX) && (beamFrequency > BEAM_FREQUENCY_MIN)) {
-			if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
-				WarpDrive.logger.info(this + " Beam frequency set from " + this.beamFrequency + " to " + beamFrequency);
-			}
+	public void setBeamFrequency(final int parBeamFrequency) {
+		if ( beamFrequency != parBeamFrequency
+		  && IBeamFrequency.isValid(parBeamFrequency) ) {
+			final int beamFrequencyOld = beamFrequency;
 			if (hasWorld()) {
 				ForceFieldRegistry.removeFromRegistry(this);
 			}
-			this.beamFrequency = beamFrequency;
+			beamFrequency = parBeamFrequency;
 			markDirtyParameters();
+			if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
+				WarpDrive.logger.info(String.format("%s Beam frequency set from %d to %d",
+				                                    this, beamFrequencyOld, beamFrequency ));
+			}
 		}
 		markDirty();
 	}

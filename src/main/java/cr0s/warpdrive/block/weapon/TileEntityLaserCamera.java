@@ -69,7 +69,9 @@ public class TileEntityLaserCamera extends TileEntityLaser implements IVideoChan
 	
 	@Override
 	public void setVideoChannel(final int parVideoChannel) {
-		if (videoChannel != parVideoChannel && (parVideoChannel <= VIDEO_CHANNEL_MAX) && (parVideoChannel > VIDEO_CHANNEL_MIN)) {
+		if ( videoChannel != parVideoChannel
+		  && IVideoChannel.isValid(parVideoChannel) ) {
+			final int videoChannelOld = videoChannel;
 			videoChannel = parVideoChannel;
 			if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 				WarpDrive.logger.info(String.format("%s Video channel updated from %d to %d",
