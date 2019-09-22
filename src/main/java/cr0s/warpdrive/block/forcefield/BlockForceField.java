@@ -32,7 +32,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
@@ -267,6 +267,23 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		}
 	}
 	
+	private boolean isAccessGranted(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final ForceFieldSetup forceFieldSetup) {
+		boolean isAccessGranted = false;
+		final List<EntityPlayer> entities = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(
+				blockPos.getX() - 1.0D, blockPos.getY() - 1.0D, blockPos.getZ() - 1.0D,
+				blockPos.getX() + 2.0D, blockPos.getY() + 2.0D, blockPos.getZ() + 2.0D));
+		for (final EntityPlayer entityPlayer : entities) {
+			if (entityPlayer != null && !entityPlayer.isSneaking()) {
+				if ( entityPlayer.capabilities.isCreativeMode
+				  || forceFieldSetup.isAccessGranted(entityPlayer, EnumPermissionNode.SNEAK_THROUGH) ) {
+					isAccessGranted = true;
+					break;
+				}
+			}
+		}
+		return isAccessGranted;
+	}
+	
 	@SuppressWarnings("deprecation")
 	@Nullable
 	@Override
@@ -274,27 +291,37 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		final ForceFieldSetup forceFieldSetup = getForceFieldSetup(blockAccess, blockPos);
 		if ( forceFieldSetup != null
 		  && blockAccess instanceof World ) {// @TODO lag when placing force field due to permission checks?
-			final List<EntityPlayer> entities = ((World) blockAccess).getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(
-				blockPos.getX(), blockPos.getY(), blockPos.getZ(),
-				blockPos.getX() + 1.0D, blockPos.getY() + 1.0D, blockPos.getZ() + 1.0D));
-			
-			for (final EntityPlayer entityPlayer : entities) {
-				if (entityPlayer != null && entityPlayer.isSneaking()) {
-					if ( entityPlayer.capabilities.isCreativeMode 
-					  || forceFieldSetup.isAccessGranted(entityPlayer, EnumPermissionNode.SNEAK_THROUGH)) {
-							return null;
-					}
-				}
+			if (isAccessGranted((World) blockAccess, blockPos, forceFieldSetup)) {
+				return NULL_AABB;
 			}
 		}
 		
 		return AABB_FORCEFIELD;
 	}
 	
+	// onEntityCollision() only works when crossing the surface, once it's inside, it won't trigger anymore.
+	// Consequently, we double with the water check through isEntityInsideMaterial().
+	// As such, we can have 3+ calls to doEntityCollision per tick.
+	// practically, forceFieldSetup.onEntityEffect will only keep the first one per tick and entity damage has a cooldown.
+	// Note: we don't want pushing the entity since there's already an upgrade for that.
+	@Nullable
+	@Override
+	public Boolean isEntityInsideMaterial(final IBlockAccess blockAccess, final BlockPos blockPos, final IBlockState iblockstate,
+	                                      final Entity entity, final double yToTest, final Material materialIn, final boolean testingHead) {
+		if (blockAccess instanceof World) {
+			doEntityCollision((World) blockAccess, blockPos, entity);
+		}
+		return super.isEntityInsideMaterial(blockAccess, blockPos, iblockstate, entity, yToTest, materialIn, testingHead);
+	}
+	
 	@Override
 	public void onEntityCollision(final World world, final BlockPos blockPos, final IBlockState blockState, final Entity entity) {
 		super.onEntityCollision(world, blockPos, blockState, entity);
 		
+		doEntityCollision(world, blockPos, entity);
+	}
+	
+	private void doEntityCollision(final World world, final BlockPos blockPos, final Entity entity) {
 		if (world.isRemote) {
 			return;
 		}
@@ -302,30 +329,41 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		final ForceFieldSetup forceFieldSetup = getForceFieldSetup(world, blockPos);
 		if (forceFieldSetup != null) {
 			forceFieldSetup.onEntityEffect(world, blockPos, entity);
-			final double distance2 = new Vector3(blockPos).translate(0.5F).distanceTo_square(entity);
-			if (entity instanceof EntityLiving && distance2 < 0.26D) {
-				boolean hasPermission = false;
-				
-				final List<EntityPlayer> entities = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(
-					blockPos.getX(), blockPos.getY(), blockPos.getZ(),
-					blockPos.getX() + 1.0D, blockPos.getY() + 0.9D, blockPos.getZ() + 1.0D));
-				for (final EntityPlayer entityPlayer : entities) {
-					if (entityPlayer != null && entityPlayer.isSneaking()) {
-						if ( entityPlayer.capabilities.isCreativeMode
-						  || forceFieldSetup.isAccessGranted(entityPlayer, EnumPermissionNode.SNEAK_THROUGH) ) {
-							hasPermission = true;
-							break;
-						}
+			if ( entity instanceof EntityLivingBase
+			  && entity.isEntityAlive() ) {
+				final Vector3 vCenter = new Vector3(blockPos).translate(0.5F);
+				final AxisAlignedBB aabbEntity = entity.getEntityBoundingBox();
+				final RayTraceResult rayTraceResult = aabbEntity.calculateIntercept(vCenter.toVec3d(), entity.getPositionVector());
+				if (rayTraceResult != null) {
+					
+					final double distanceToCollision = rayTraceResult.hitVec.distanceTo(vCenter.toVec3d());
+					final double distanceToCenter = Math.sqrt(vCenter.distanceTo_square(entity));
+					final double distanceMin = Math.min(distanceToCenter, distanceToCollision);
+					
+					// always slowdown
+					if (distanceMin > 1.0D) {// keep it light when a bit away
+						((EntityLivingBase) entity).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 10, 0));
+						return;
 					}
-				}
-				
-				// always slowdown
-				((EntityLiving) entity).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 20, 1));
-				
-				if (!hasPermission) {
-					((EntityLiving) entity).addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 80, 3));
-					if (distance2 < 0.24D) {
-						entity.attackEntityFrom(WarpDrive.damageShock, 5);
+					((EntityLivingBase) entity).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 20, 1));
+					
+					// check the whitelist
+					final boolean isAccessGranted = isAccessGranted(world, blockPos, forceFieldSetup);
+					if (!isAccessGranted) {
+						if (distanceMin < 0.50D - BOUNDING_TOLERANCE) {
+							if (Commons.throttleMe("ForceFieldEntry" + entity.getEntityId())) {
+								WarpDrive.logger.info(String.format("ForceField entry detected at %.3f m for %s %s",
+								                                    distanceMin, entity, Commons.format(world, blockPos) ));
+							}
+							entity.attackEntityFrom(DamageSource.OUT_OF_WORLD, 6666.0F);
+						} else {
+							if ( entity instanceof EntityPlayer
+							  && Commons.throttleMe("ForceFieldProximity" + entity.getEntityId()) ) {
+								WarpDrive.logger.info(String.format("ForceField proximity detected at %.3f m for %s %s",
+								                                    distanceMin, entity, Commons.format(world, blockPos)) );
+							}
+							((EntityLivingBase) entity).addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 80, 3));
+						}
 					}
 				}
 			}
