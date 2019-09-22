@@ -219,14 +219,14 @@ public class ItemTuningDriver extends ItemAbstractBase implements IWarpTool {
 		if (entityPlayer.isSneaking() && entityPlayer.capabilities.isCreativeMode) {
 			switch (itemStackHeld.getItemDamage()) {
 			case MODE_VIDEO_CHANNEL:
-				setVideoChannel(itemStackHeld, world.rand.nextInt(IVideoChannel.VIDEO_CHANNEL_MAX));
+				setVideoChannel(itemStackHeld, 1 + world.rand.nextInt(IVideoChannel.VIDEO_CHANNEL_MAX));
 				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.video_channel.get",
 					entityPlayer.getName(),
 					getVideoChannel(itemStackHeld)));
 				return new ActionResult<>(EnumActionResult.SUCCESS, itemStackHeld);
 			
 			case MODE_BEAM_FREQUENCY:
-				setBeamFrequency(itemStackHeld, world.rand.nextInt(IBeamFrequency.BEAM_FREQUENCY_MAX));
+				setBeamFrequency(itemStackHeld, 1 + world.rand.nextInt(IBeamFrequency.BEAM_FREQUENCY_MAX));
 				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.beam_frequency.get",
 					entityPlayer.getName(),
 					getBeamFrequency(itemStackHeld)));
