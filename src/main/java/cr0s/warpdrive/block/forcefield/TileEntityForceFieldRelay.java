@@ -9,8 +9,6 @@ import cr0s.warpdrive.data.ForceFieldSetup;
 import cr0s.warpdrive.item.ItemForceFieldUpgrade;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.text.Style;
 
 import javax.annotation.Nonnull;
@@ -68,20 +66,6 @@ public class TileEntityForceFieldRelay extends TileEntityAbstractForceField impl
 		tagCompound = super.writeToNBT(tagCompound);
 		tagCompound.setByte("upgrade", (byte) getUpgrade().ordinal());
 		return tagCompound;
-	}
-	
-	@Nonnull
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		final NBTTagCompound tagCompound = new NBTTagCompound();
-		writeToNBT(tagCompound);
-		return tagCompound;
-	}
-	
-	@Override
-	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
-		final NBTTagCompound tagCompound = packet.getNbtCompound();
-		readFromNBT(tagCompound);
 	}
 	
 	@Override

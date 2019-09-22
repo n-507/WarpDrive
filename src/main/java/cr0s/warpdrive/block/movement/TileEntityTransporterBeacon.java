@@ -21,8 +21,6 @@ import java.util.UUID;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -258,21 +256,6 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 		tagCompound = super.writeItemDropNBT(tagCompound);
 		tagCompound.removeTag("tickDeploying");
 		return tagCompound;
-	}
-	
-	@Nonnull
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		final NBTTagCompound tagCompound = new NBTTagCompound();
-		writeToNBT(tagCompound);
-		
-		return tagCompound;
-	}
-	
-	@Override
-	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
-		final NBTTagCompound tagCompound = packet.getNbtCompound();
-		readFromNBT(tagCompound);
 	}
 	
 	@Override

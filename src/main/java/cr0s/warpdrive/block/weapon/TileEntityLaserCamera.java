@@ -15,8 +15,6 @@ import li.cil.oc.api.machine.Context;
 import javax.annotation.Nonnull;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 
 import net.minecraftforge.fml.common.Optional;
 
@@ -94,22 +92,6 @@ public class TileEntityLaserCamera extends TileEntityLaser implements IVideoChan
 		tagCompound = super.writeToNBT(tagCompound);
 		tagCompound.setInteger(VIDEO_CHANNEL_TAG, videoChannel);
 		return tagCompound;
-	}
-	
-	@Nonnull
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		final NBTTagCompound tagCompound = new NBTTagCompound();
-		// (beam frequency is server side only)
-		tagCompound.setInteger(VIDEO_CHANNEL_TAG, videoChannel);
-		return tagCompound;
-	}
-	
-	@Override
-	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
-		final NBTTagCompound tagCompound = packet.getNbtCompound();
-		// (beam frequency is server side only)
-		setVideoChannel(tagCompound.getInteger(VIDEO_CHANNEL_TAG));
 	}
 	
 	@Override

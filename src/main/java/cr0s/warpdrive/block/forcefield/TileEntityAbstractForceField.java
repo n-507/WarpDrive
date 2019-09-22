@@ -14,8 +14,6 @@ import li.cil.oc.api.machine.Context;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -122,16 +120,11 @@ public abstract class TileEntityAbstractForceField extends TileEntityAbstractEne
 	@Nonnull
 	@Override
 	public NBTTagCompound getUpdateTag() {
-		final NBTTagCompound tagCompound = new NBTTagCompound();
-		writeToNBT(tagCompound);
-		tagCompound.setBoolean("isConnected", isConnected);
+		final NBTTagCompound tagCompound = super.getUpdateTag();
+		
+		tagCompound.removeTag(IBeamFrequency.BEAM_FREQUENCY_TAG);
+		
 		return tagCompound;
-	}
-	
-	@Override
-	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
-		final NBTTagCompound tagCompound = packet.getNbtCompound();
-		readFromNBT(tagCompound);
 	}
 	
 	// Common OC/CC methods

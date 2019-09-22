@@ -43,8 +43,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
@@ -1085,19 +1083,6 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		
 		tagCompound.setBoolean("isPowered", isPowered);
 		return tagCompound;
-	}
-	
-	@Nonnull
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		final NBTTagCompound tagCompound = super.getUpdateTag();
-		return writeToNBT(tagCompound);
-	}
-	
-	@Override
-	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
-		final NBTTagCompound tagCompound = packet.getNbtCompound();
-		readFromNBT(tagCompound);
 	}
 	
 	public ForceFieldSetup getForceFieldSetup() {

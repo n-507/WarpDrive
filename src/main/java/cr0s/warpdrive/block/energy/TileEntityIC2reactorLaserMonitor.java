@@ -18,8 +18,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -164,20 +162,6 @@ public class TileEntityIC2reactorLaserMonitor extends TileEntityAbstractLaser {
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		ticks = tagCompound.getInteger("ticks");
-	}
-	
-	@Nonnull
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		final NBTTagCompound tagCompound = new NBTTagCompound();
-		writeToNBT(tagCompound);
-		return tagCompound;
-	}
-	
-	@Override
-	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
-		final NBTTagCompound tagCompound = packet.getNbtCompound();
-		readFromNBT(tagCompound);
 	}
 	
 	@Override

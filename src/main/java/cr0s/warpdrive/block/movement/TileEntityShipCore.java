@@ -1132,7 +1132,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	@Nonnull
 	@Override
 	public NBTTagCompound getUpdateTag() {
-		final NBTTagCompound tagCompound = writeToNBT(super.getUpdateTag());
+		final NBTTagCompound tagCompound = super.getUpdateTag();
 		tagCompound.setInteger("minX", minX);
 		tagCompound.setInteger("maxX", maxX);
 		tagCompound.setInteger("minY", minY);
@@ -1144,8 +1144,10 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	
 	@Override
 	public void onDataPacket(final NetworkManager networkManager, @Nonnull final SPacketUpdateTileEntity packet) {
+		super.onDataPacket(networkManager, packet);
+		
 		final NBTTagCompound tagCompound = packet.getNbtCompound();
-		readFromNBT(tagCompound);
+		
 		minX = tagCompound.getInteger("minX");
 		maxX = tagCompound.getInteger("maxX");
 		minY = tagCompound.getInteger("minY");

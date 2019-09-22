@@ -780,16 +780,19 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	@Nonnull
 	@Override
 	public NBTTagCompound getUpdateTag() {
-		final NBTTagCompound tagCompound = new NBTTagCompound();
-		writeToNBT(tagCompound);
+		final NBTTagCompound tagCompound = super.getUpdateTag();
+		
 		tagCompound.setBoolean("isPowered", isPowered);
+		
 		return tagCompound;
 	}
 	
 	@Override
 	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
+		super.onDataPacket(networkManager, packet);
+		
 		final NBTTagCompound tagCompound = packet.getNbtCompound();
-		readFromNBT(tagCompound);
+		
 		isPowered = tagCompound.getBoolean("isPowered");
 	}
 	

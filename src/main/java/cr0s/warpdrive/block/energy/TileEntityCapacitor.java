@@ -11,8 +11,6 @@ import cr0s.warpdrive.item.ItemComponent;
 import javax.annotation.Nonnull;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 
 public class TileEntityCapacitor extends TileEntityAbstractEnergy {
@@ -157,8 +155,13 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 		if (bytes.length != 6) {
 			modeSide = MODE_DEFAULT_SIDES.clone();
 		} else {
+			boolean isUpdated = false;
 			for (final EnumFacing enumFacing : EnumFacing.values()) {
+				isUpdated |= modeSide[enumFacing.ordinal()] != EnumDisabledInputOutput.get(bytes[enumFacing.ordinal()]);
 				modeSide[enumFacing.ordinal()] = EnumDisabledInputOutput.get(bytes[enumFacing.ordinal()]);
+			}
+			if (isUpdated) {
+				world.markBlockRangeForRenderUpdate(pos, pos);
 			}
 		}
 	}
@@ -167,21 +170,6 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 	public NBTTagCompound writeItemDropNBT(NBTTagCompound tagCompound) {
 		tagCompound = super.writeItemDropNBT(tagCompound);
 		return tagCompound;
-	}
-
-	@Nonnull
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		final NBTTagCompound tagCompound = new NBTTagCompound();
-		writeToNBT(tagCompound);
-		return tagCompound;
-	}
-	
-	@Override
-	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
-		final NBTTagCompound tagCompound = packet.getNbtCompound();
-		readFromNBT(tagCompound);
-		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
 	@Override

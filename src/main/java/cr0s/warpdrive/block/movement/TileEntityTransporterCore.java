@@ -61,8 +61,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -1622,20 +1620,13 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	@Nonnull
 	@Override
 	public NBTTagCompound getUpdateTag() {
-		final NBTTagCompound tagCompound = new NBTTagCompound();
-		writeToNBT(tagCompound);
+		final NBTTagCompound tagCompound = super.getUpdateTag();
 		
 		tagCompound.removeTag(ICoreSignature.UUID_MOST_TAG);
 		tagCompound.removeTag(ICoreSignature.UUID_LEAST_TAG);
 		tagCompound.removeTag(IBeamFrequency.BEAM_FREQUENCY_TAG);
 		
 		return tagCompound;
-	}
-	
-	@Override
-	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
-		final NBTTagCompound tagCompound = packet.getNbtCompound();
-		readFromNBT(tagCompound);
 	}
 	
 	@Override

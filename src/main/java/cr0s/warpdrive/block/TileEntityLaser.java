@@ -733,6 +733,16 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 		return tagCompound;
 	}
 	
+	@Nonnull
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		final NBTTagCompound tagCompound = super.getUpdateTag();
+		
+		tagCompound.removeTag(IBeamFrequency.BEAM_FREQUENCY_TAG);
+		
+		return tagCompound;
+	}
+	
 	// Common OC/CC methods
 	@Override
 	public Object[] getEnergyRequired() {
