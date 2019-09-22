@@ -3,7 +3,9 @@ package cr0s.warpdrive.block.detection;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IVideoChannel;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.BlockAbstractRotatingContainer;
+import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.CameraRegistryItem;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.render.ClientCameraHandler;
@@ -18,7 +20,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 public class BlockMonitor extends BlockAbstractRotatingContainer {
@@ -40,20 +41,17 @@ public class BlockMonitor extends BlockAbstractRotatingContainer {
 	                                final EntityPlayer entityPlayer, final EnumHand enumHand,
 	                                final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
 		// Monitor is only reacting client side
-		if (!world.isRemote) {
+		if ( !world.isRemote
+		  || enumHand != EnumHand.MAIN_HAND ) {
 			return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
-		}
-		
-		if (enumHand != EnumHand.MAIN_HAND) {
-			return true;
 		}
 		
 		// get context
 		final ItemStack itemStackHeld = entityPlayer.getHeldItem(enumHand);
 		
-		if (itemStackHeld.isEmpty()) {
+		if ( itemStackHeld.isEmpty()
+		  && enumFacing == blockState.getValue(BlockProperties.FACING) ) {
 			final TileEntity tileEntity = world.getTileEntity(blockPos);
-			
 			if (tileEntity instanceof TileEntityMonitor) {
 				// validate video channel
 				final int videoChannel = ((TileEntityMonitor) tileEntity).getVideoChannel();
@@ -70,15 +68,16 @@ public class BlockMonitor extends BlockAbstractRotatingContainer {
 					return true;
 				}
 				
-				Commons.addChatMessage(entityPlayer, new TextComponentTranslation("warpdrive.monitor.viewing_camera",
-						videoChannel,
-						camera.blockPos.getX(),
-						camera.blockPos.getY(),
-						camera.blockPos.getZ() ));
+				Commons.addChatMessage(entityPlayer, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.monitor.viewing_camera",
+				                                                       new WarpDriveText(Commons.getStyleValue(), videoChannel),
+				                                                       camera.blockPos.getX(),
+				                                                       camera.blockPos.getY(),
+				                                                       camera.blockPos.getZ() ));
 				ClientCameraHandler.setupViewpoint(
 						camera.type, entityPlayer, entityPlayer.rotationYaw, entityPlayer.rotationPitch,
 						blockPos, blockState,
 						camera.blockPos, world.getBlockState(camera.blockPos));
+				return true;
 			}
 		}
 		
