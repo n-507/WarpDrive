@@ -7,7 +7,6 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 
 import javax.annotation.Nonnull;
 
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -215,13 +214,7 @@ public class TooltipHandler {
 		if (WarpDriveConfig.TOOLTIP_ADD_BLOCK_MATERIAL.isEnabled(isSneaking, isCreativeMode)) {
 			try {
 				final Material material = blockState.getMaterial();
-				String name = material.toString();
-				for (final Field field : Material.class.getDeclaredFields()) {
-					if (field.get(null) == material) {
-						name = field.getName();
-						break;
-					}
-				}
+				final String name = Commons.format(material);
 				Commons.addTooltip(event.getToolTip(), String.format("§8Material is %s",
 				                                                     name ));
 			} catch (final Exception exception) {

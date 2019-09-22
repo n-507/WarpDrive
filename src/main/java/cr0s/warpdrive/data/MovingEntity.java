@@ -93,7 +93,7 @@ public class MovingEntity {
 		try {
 			final DataOutputLength dataOutputLength = new DataOutputLength();
 			CompressedStreamTools.write(tagCompound, dataOutputLength);
-			if (WarpDrive.isDev) {
+			if (WarpDrive.isDev && WarpDriveConfig.LOGGING_TRANSPORTER) {
 				WarpDrive.logger.info(String.format("Entity %s estimated mass is %d",
 				                                    entity, dataOutputLength.getLength()));
 			}

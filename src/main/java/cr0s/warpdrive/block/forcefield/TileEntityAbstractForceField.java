@@ -100,10 +100,10 @@ public abstract class TileEntityAbstractForceField extends TileEntityAbstractEne
 	}
 	
 	@Override
-		public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
-		setBeamFrequency(tagCompound.getInteger(BEAM_FREQUENCY_TAG));
+		setBeamFrequency(tagCompound.getInteger(IBeamFrequency.BEAM_FREQUENCY_TAG));
 		isConnected = tagCompound.getBoolean("isConnected");
 	}
 	
@@ -112,7 +112,7 @@ public abstract class TileEntityAbstractForceField extends TileEntityAbstractEne
 	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
-		tagCompound.setInteger(BEAM_FREQUENCY_TAG, beamFrequency);
+		tagCompound.setInteger(IBeamFrequency.BEAM_FREQUENCY_TAG, beamFrequency);
 		tagCompound.setBoolean("isConnected", isConnected);
 		return tagCompound;
 	}

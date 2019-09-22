@@ -676,15 +676,15 @@ public class Dictionary {
 			      || block instanceof BlockHullStairs
 			      || BLOCKS_ANCHOR.contains(block) ) ) {
 				WarpDrive.logger.warn(String.format("Warning: non-anchor block with high blast resistance %s %s (%.2f)",
-				                                    resourceLocation, block, blastResistance));
+				                                    resourceLocation, block, blastResistance ));
 				block.setResistance(WarpDriveConfig.G_BLAST_RESISTANCE_CAP * 5.0F / 3.0F);
 				final float blastResistance_new = block.getExplosionResistance(null);
 				if (blastResistance_new <= WarpDriveConfig.G_BLAST_RESISTANCE_CAP) {
 					WarpDrive.logger.warn(String.format("Adjusted blast resistance of %s %s from %.2f to %.2f",
-					                                    resourceLocation, block, blastResistance, blastResistance_new));
+					                                    resourceLocation, block, blastResistance, blastResistance_new ));
 				} else {
 					WarpDrive.logger.error(String.format("Blacklisting block with high blast resistance %s %s (%.2f)",
-					                                     resourceLocation, block, blastResistance));
+					                                     resourceLocation, block, blastResistance ));
 					BLOCKS_ANCHOR.add(block);
 					BLOCKS_STOPMINING.add(block);
 				}

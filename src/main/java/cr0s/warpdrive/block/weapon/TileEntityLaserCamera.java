@@ -54,7 +54,8 @@ public class TileEntityLaserCamera extends TileEntityLaser implements IVideoChan
 			if (registryUpdateTicks <= 0) {
 				registryUpdateTicks = REGISTRY_UPDATE_INTERVAL_TICKS;
 				if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
-					WarpDrive.logger.info(this + " Updating registry (" + videoChannel + ")");
+					WarpDrive.logger.info(String.format("%s Updating registry (%d)",
+					                                    this, videoChannel ));
 				}
 				WarpDrive.cameras.updateInRegistry(world, pos, videoChannel, EnumCameraType.LASER_CAMERA);
 			}
@@ -71,7 +72,8 @@ public class TileEntityLaserCamera extends TileEntityLaser implements IVideoChan
 		if (videoChannel != parVideoChannel && (parVideoChannel <= VIDEO_CHANNEL_MAX) && (parVideoChannel > VIDEO_CHANNEL_MIN)) {
 			videoChannel = parVideoChannel;
 			if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
-				WarpDrive.logger.info(this + " Video channel updated from " + videoChannel + " to " + parVideoChannel);
+				WarpDrive.logger.info(String.format("%s Video channel updated from %d to %d",
+				                                    this, videoChannelOld, parVideoChannel ));
 			}
 			markDirty();
 			// force update through main thread since CC & OC are running outside the main thread

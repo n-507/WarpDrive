@@ -21,7 +21,6 @@ import java.util.Set;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
@@ -307,12 +306,14 @@ public class ForceFieldSetup extends GlobalPosition {
 		int countdown = 0;
 		final TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 		if (tileEntity instanceof TileEntityForceFieldProjector) {
-			if (((TileEntityForceFieldProjector)tileEntity).onEntityInteracted(entity.getUniqueID())) {
+			if (((TileEntityForceFieldProjector) tileEntity).onEntityInteracted(entity.getUniqueID())) {
 				for (final Map.Entry<IForceFieldUpgradeEffector, Float> entry : upgrades.entrySet()) {
 					Float value = entry.getValue();
-					if (entry.getKey() == EnumForceFieldUpgrade.COOLING || entry.getKey() == EnumForceFieldUpgrade.HEATING) {
+					if ( entry.getKey() == EnumForceFieldUpgrade.COOLING
+					  || entry.getKey() == EnumForceFieldUpgrade.HEATING ) {
 						value = temperatureLevel;
-					} else if (entry.getKey() == EnumForceFieldUpgrade.ATTRACTION || entry.getKey() == EnumForceFieldUpgrade.REPULSION) {
+					} else if ( entry.getKey() == EnumForceFieldUpgrade.ATTRACTION
+					         || entry.getKey() == EnumForceFieldUpgrade.REPULSION ) {
 						value = accelerationLevel;
 					}
 					countdown += entry.getKey().onEntityEffect(value, world, x, y, z, blockPos, entity);

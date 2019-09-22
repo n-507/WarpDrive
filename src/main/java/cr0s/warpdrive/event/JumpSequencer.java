@@ -585,9 +585,6 @@ public class JumpSequencer extends AbstractSequencer {
 			schematic.setTag("ship", tagCompoundShip);
 			WarpDrive.logger.info(this + " Saving ship state prior to jump in " + schematicFileName);
 			Commons.writeNBTToFile(schematicFileName, schematic);
-			if (WarpDriveConfig.LOGGING_JUMP && WarpDrive.isDev) {
-				WarpDrive.logger.info(this + " Ship saved as " + schematicFileName);
-			}
 		} catch (final Exception exception) {
 			exception.printStackTrace();
 		}

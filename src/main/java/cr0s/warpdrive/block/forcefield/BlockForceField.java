@@ -400,12 +400,11 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 				                                     Commons.format(world, blockPos), exploder, explosion ));
 				new ConcurrentModificationException().printStackTrace();
 			}
-			WarpDrive.logger.error(String.format("Explosion check %s from exploder %s explosion %s",
+			WarpDrive.logger.info(String.format("Explosion check %s from exploder %s explosion %s",
 			                                     Commons.format(world, blockPos), exploder, explosion ));
 		}
 		
 		// find explosion strength, defaults to no effect
-		double strength = 0.0D;
 		if ( exploder == null
 		  && vExplosion.x == Math.rint(vExplosion.x)
 		  && vExplosion.y == Math.rint(vExplosion.y)
@@ -423,6 +422,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 			return 2.0F * super.getExplosionResistance(world, blockPos, exploder, explosion);
 		}
 		
+		double strength = 0.0D;
 		if (exploder != null) {
 			final String nameExploder = exploder.getClass().toString();
 			switch (nameExploder) {
@@ -430,7 +430,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 			case "class net.minecraft.entity.item.EntityEnderCrystal": strength = 6.0D; break;
 			case "class net.minecraft.entity.item.EntityMinecartTNT": strength = 4.0D; break;
 			case "class net.minecraft.entity.item.EntityTNTPrimed": strength = 5.0D; break;
-			case "class net.minecraft.entity.monster.EntityCreeper": strength = 3.0D; break;  // *2 for powered ones
+			case "class net.minecraft.entity.monster.EntityCreeper": strength = 3.0D; break;  // Normal is 3.0, powered ones is *2
 			
 			// Applied Energistics Tiny TNT
 			case "class appeng.entity.EntityTinyTNTPrimed": strength = 0.2D; break;

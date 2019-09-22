@@ -99,8 +99,8 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 		
 		delayTicks++;
 		if ( isEmitting
-		  && ( (beamFrequency != BEAM_FREQUENCY_SCANNING && delayTicks > WarpDriveConfig.LASER_CANNON_EMIT_FIRE_DELAY_TICKS)
-		    || (beamFrequency == BEAM_FREQUENCY_SCANNING && delayTicks > WarpDriveConfig.LASER_CANNON_EMIT_SCAN_DELAY_TICKS))) {
+		  && ( (beamFrequency != IBeamFrequency.BEAM_FREQUENCY_SCANNING && delayTicks > WarpDriveConfig.LASER_CANNON_EMIT_FIRE_DELAY_TICKS)
+		    || (beamFrequency == IBeamFrequency.BEAM_FREQUENCY_SCANNING && delayTicks > WarpDriveConfig.LASER_CANNON_EMIT_SCAN_DELAY_TICKS) )) {
 			delayTicks = 0;
 			isEmitting = false;
 			final int beamEnergy = Math.min(
@@ -346,7 +346,7 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 		playSoundCorrespondsEnergy(energy);
 		
 		// This is a scanning beam, do not deal damage to block nor entity
-		if (beamFrequency == BEAM_FREQUENCY_SCANNING) {
+		if (beamFrequency == IBeamFrequency.BEAM_FREQUENCY_SCANNING) {
 			final RayTraceResult mopResult = rayTraceBlocks(world, vSource.toVec3d(), vReachPoint.toVec3d(), beamFrequency,
 			                                                false, true, false);
 			
@@ -385,7 +385,7 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 		
 		if (WarpDriveConfig.LOGGING_WEAPON) {
 			WarpDrive.logger.info(String.format("Entity hits are (%d) %s",
-			                                    (entityHits == null) ? 0 : entityHits.size(), entityHits));
+			                                    (entityHits == null) ? 0 : entityHits.size(), entityHits ));
 		}
 		
 		Vector3 vHitPoint = vReachPoint.clone();
@@ -481,7 +481,6 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 			}
 			
 			final IBlockState blockState = world.getBlockState(blockHit.getBlockPos());
-			// int blockMeta = world.getBlockMetadata(hit.blockX, hit.blockY, hit.blockZ);
 			// get hardness and blast resistance
 			float hardness = -2.0F;
 			if (WarpDrive.fieldBlockHardness != null) {
@@ -722,14 +721,14 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 	@Override
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
-		setBeamFrequency(tagCompound.getInteger(BEAM_FREQUENCY_TAG));
+		setBeamFrequency(tagCompound.getInteger(IBeamFrequency.BEAM_FREQUENCY_TAG));
 	}
 	
 	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
-		tagCompound.setInteger(BEAM_FREQUENCY_TAG, beamFrequency);
+		tagCompound.setInteger(IBeamFrequency.BEAM_FREQUENCY_TAG, beamFrequency);
 		return tagCompound;
 	}
 	

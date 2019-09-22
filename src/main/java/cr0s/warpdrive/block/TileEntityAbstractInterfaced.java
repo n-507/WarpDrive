@@ -316,7 +316,8 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	@Override
 	public Integer[] getVersion() {
 		if (WarpDriveConfig.LOGGING_LUA) {
-			WarpDrive.logger.info(String.format("Version is %s isDev %s", WarpDrive.VERSION, WarpDrive.isDev));
+			WarpDrive.logger.info(String.format("Version is %s isDev %s",
+			                                    WarpDrive.VERSION, WarpDrive.isDev ));
 		}
 		String[] strings = WarpDrive.VERSION.split("-");
 		if (WarpDrive.isDev) {

@@ -764,7 +764,7 @@ public class WarpDriveConfig {
 		G_ENTITY_CAMERA_ID = Commons.clamp(Integer.MIN_VALUE, Integer.MAX_VALUE,
 				config.get("general", "entity_camera_id", G_ENTITY_CAMERA_ID, "Entity camera ID").getInt());
 		G_ENTITY_PARTICLE_BUNCH_ID = Commons.clamp(Integer.MIN_VALUE, Integer.MAX_VALUE,
-			config.get("general", "entity_particle_bunch_id", G_ENTITY_PARTICLE_BUNCH_ID, "Entity particle bunch ID").getInt());
+				config.get("general", "entity_particle_bunch_id", G_ENTITY_PARTICLE_BUNCH_ID, "Entity particle bunch ID").getInt());
 		
 		G_LUA_SCRIPTS = Commons.clamp(0, 2,
 				config.get("general", "lua_scripts", G_LUA_SCRIPTS,

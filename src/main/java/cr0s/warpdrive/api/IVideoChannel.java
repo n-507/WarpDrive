@@ -1,6 +1,7 @@
 package cr0s.warpdrive.api;
 
 public interface IVideoChannel {
+	
 	int VIDEO_CHANNEL_MIN = 0;
 	int VIDEO_CHANNEL_MAX = 0xFFFFFFF;    // 268435455
 	String VIDEO_CHANNEL_TAG = "videoChannel";

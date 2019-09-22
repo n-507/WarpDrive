@@ -16,6 +16,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.EntitySelector;
@@ -496,6 +497,21 @@ public class Commons {
 				return blockState.toString();
 			}
 		}
+	}
+	
+	public static String format(@Nonnull final Material material) {
+		String name = material.toString();
+		try {
+			for (final Field field : Material.class.getDeclaredFields()) {
+				if (field.get(null) == material) {
+					name = field.getName();
+					break;
+				}
+			}
+		} catch (final Exception exception) {
+			// no operation
+		}
+		return name;
 	}
 	
 	@Nonnull

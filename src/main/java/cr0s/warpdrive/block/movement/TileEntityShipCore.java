@@ -1133,12 +1133,14 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	@Override
 	public NBTTagCompound getUpdateTag() {
 		final NBTTagCompound tagCompound = super.getUpdateTag();
+		
 		tagCompound.setInteger("minX", minX);
 		tagCompound.setInteger("maxX", maxX);
 		tagCompound.setInteger("minY", minY);
 		tagCompound.setInteger("maxY", maxY);
 		tagCompound.setInteger("minZ", minZ);
 		tagCompound.setInteger("maxZ", maxZ);
+		
 		return tagCompound;
 	}
 	
@@ -1154,6 +1156,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		maxY = tagCompound.getInteger("maxY");
 		minZ = tagCompound.getInteger("minZ");
 		maxZ = tagCompound.getInteger("maxZ");
+		
 		cache_aabbArea = null;
 	}
 	

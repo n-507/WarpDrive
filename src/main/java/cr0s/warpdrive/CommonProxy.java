@@ -45,7 +45,7 @@ public class CommonProxy {
 		return null;
 	}
 	
-	public static EntityPlayer getFakePlayer(final UUID uuidPlayer, final WorldServer world, final BlockPos blockPos) {
+	public static EntityPlayer getFakePlayer(@Nullable final UUID uuidPlayer, @Nonnull final WorldServer world, @Nonnull final BlockPos blockPos) {
 		final EntityPlayer entityPlayer = uuidPlayer == null ? null : getPlayer(world, uuidPlayer);
 		final GameProfile gameProfile = entityPlayer == null ? WarpDrive.gameProfile : entityPlayer.getGameProfile();
 		WeakReference<EntityPlayer> weakFakePlayer = fakePlayers.get(gameProfile);

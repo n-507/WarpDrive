@@ -55,7 +55,7 @@ public class RenderCommons {
 	
 	public static int drawSplashAlarm(final int scaledWidth, final int scaledHeight, final String title, final String message) {
 		// compute animation clock
-		final double cycle = ((System.nanoTime() / 1000) % 0x200000) / (double) 0x200000;
+		final double cycle = ((System.nanoTime() / 1000L) % 0x200000) / (double) 0x200000;
 		
 		// start rendering
 		GlStateManager.pushMatrix();
@@ -66,7 +66,7 @@ public class RenderCommons {
 		// bold title, single line, centered, with shadows
 		final String textTitle = Commons.updateEscapeCodes("§l" + new TextComponentTranslation(title).getFormattedText());
 		minecraft.fontRenderer.drawString(textTitle,
-		                                  scaledWidth / 4 - minecraft.fontRenderer.getStringWidth(textTitle) / 2,
+		                                  scaledWidth / 4.0F - minecraft.fontRenderer.getStringWidth(textTitle) / 2.0F,
 		                                  y - minecraft.fontRenderer.FONT_HEIGHT,
 		                                     Commons.colorARGBtoInt(230, 255, 32, 24),
 		                                  true);
@@ -75,11 +75,10 @@ public class RenderCommons {
 		final String textMessage = Commons.updateEscapeCodes(new TextComponentTranslation(message).getFormattedText());
 		final int alpha = 160 + (int) (85.0D * Math.sin(cycle * 2 * Math.PI));
 		
-		@SuppressWarnings("unchecked")
 		final List<String> listMessages = minecraft.fontRenderer.listFormattedStringToWidth(textMessage, scaledWidth / 2);
 		for (final String textLine : listMessages) {
 			minecraft.fontRenderer.drawString(textLine,
-			                                  scaledWidth / 4 - minecraft.fontRenderer.getStringWidth(textLine) / 2,
+			                                  scaledWidth / 4.0F - minecraft.fontRenderer.getStringWidth(textLine) / 2.0F,
 			                                  y,
 			                                  Commons.colorARGBtoInt(alpha, 192, 64, 48),
 			                                  false);
@@ -100,7 +99,6 @@ public class RenderCommons {
 		final String text_formatted = Commons.updateEscapeCodes(formatPrefix + new TextComponentTranslation(text).getFormattedText());
 		final int scaled_box_width = Math.max(widthTextMin, Math.round(widthTextRatio * screen_width)) + 2 * TEXT_BORDER;
 		
-		@SuppressWarnings("unchecked")
 		final List<String> listLines = minecraft.fontRenderer.listFormattedStringToWidth(text_formatted, scaled_box_width - 2 * TEXT_BORDER);
 		final int scaled_box_height = listLines.size() * minecraft.fontRenderer.FONT_HEIGHT + 2 * TEXT_BORDER;
 		
@@ -148,18 +146,16 @@ public class RenderCommons {
 	
 	public static void drawText(final int screen_width, final int screen_height, final String textHeader, final String textContent,
 	                           final float scale, final String formatHeader, final int colorBackground, final int colorText, final boolean hasHeaderShadow,
-	                           final EnumDisplayAlignment enumScreenAnchor, final int xOffset, final int yOffset,
-	                           final EnumDisplayAlignment enumTextAlignment, final float widthTextRatio, final int widthTextMin) {
+	                            @Nonnull final EnumDisplayAlignment enumScreenAnchor, final int xOffset, final int yOffset,
+	                            @Nonnull final EnumDisplayAlignment enumTextAlignment, final float widthTextRatio, final int widthTextMin) {
 		// prepare the string box content and dimensions
 		final String header_formatted  = Commons.updateEscapeCodes(new TextComponentTranslation(textHeader, formatHeader).getFormattedText());
 		final String content_formatted = Commons.updateEscapeCodes(new TextComponentTranslation(textContent).getFormattedText());
 		final int scaled_box_width = Math.max(widthTextMin, Math.round(widthTextRatio * screen_width)) + 2 * TEXT_BORDER;
 		
-		@SuppressWarnings("unchecked")
 		final List<String> listHeaderLines = 
 			header_formatted.isEmpty() ? new ArrayList<>(0)
 			                           : minecraft.fontRenderer.listFormattedStringToWidth(header_formatted, scaled_box_width - 2 * TEXT_BORDER);
-		@SuppressWarnings("unchecked")
 		final List<String> listContentLines =
 			content_formatted.isEmpty() ? new ArrayList<>(0)
 		                                : minecraft.fontRenderer.listFormattedStringToWidth(content_formatted, scaled_box_width - 2 * TEXT_BORDER);
