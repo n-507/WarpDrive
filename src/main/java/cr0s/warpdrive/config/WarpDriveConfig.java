@@ -250,6 +250,7 @@ public class WarpDriveConfig {
 	public static boolean LOGGING_CHUNK_LOADING = true;
 	public static boolean LOGGING_ENTITY_FX = false;
 	public static boolean LOGGING_CLIENT_SYNCHRONIZATION = false;
+	public static boolean LOGGING_GRAVITY = false;
 	
 	// Energy
 	public static String           ENERGY_DISPLAY_UNITS = "RF";
@@ -906,6 +907,7 @@ public class WarpDriveConfig {
 		LOGGING_CHUNK_HANDLER = config.get("logging", "enable_chunk_handler_logs", LOGGING_CHUNK_HANDLER, "Detailed chunk data logs to help debug the mod.").getBoolean(false);
 		LOGGING_CHUNK_LOADING = config.get("logging", "enable_chunk_loading_logs", LOGGING_CHUNK_LOADING, "Chunk loading logs, enable it to report chunk loaders updates").getBoolean(false);
 		LOGGING_ENTITY_FX = config.get("logging", "enable_entity_fx_logs", LOGGING_ENTITY_FX, "EntityFX logs, enable it to dump entityFX registry updates").getBoolean(false);
+		LOGGING_GRAVITY = config.get("logging", "enable_gravity_logs", LOGGING_GRAVITY, "Gravity logs, enable it before reporting fall damage and related issues").getBoolean(false);
 		
 		// Energy handling
 		ENERGY_DISPLAY_UNITS = config.get("energy", "display_units", ENERGY_DISPLAY_UNITS, "display units for energy (EU, RF, FE, \u0230I)").getString();

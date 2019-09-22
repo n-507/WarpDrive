@@ -291,7 +291,8 @@ public class LivingHandler {
 		}
 		if (motionY > -0.65170D) {
 			event.setCanceled(true); // Don't damage entity
-			if (WarpDrive.isDev && entityLivingBase instanceof EntityPlayerMP) {
+			if ( WarpDriveConfig.LOGGING_GRAVITY
+			  && entityLivingBase instanceof EntityPlayerMP ) {
 				WarpDrive.logger.warn(String.format("(low speed     ) Entity fall damage at motionY %.3f from distance %.3f of %s, isCancelled %s",
 				                                    motionY, event.getDistance(), entityLivingBase, event.isCanceled()));
 			}
@@ -305,14 +306,15 @@ public class LivingHandler {
 		// ignore small jumps
 		if (check <= 0) {
 			event.setCanceled(true); // Don't damage entity
-			if (WarpDrive.isDev && entityLivingBase instanceof EntityPlayerMP) {
+			if ( WarpDriveConfig.LOGGING_GRAVITY
+			  && entityLivingBase instanceof EntityPlayerMP ) {
 				WarpDrive.logger.warn(String.format("(short distance) Entity fall damage at motionY %.3f from distance %.3f of %s, isCancelled %s",
 				                                    motionY, event.getDistance(), entityLivingBase, event.isCanceled()));
 			}
 			return;
 		}
 		
-		if (WarpDrive.isDev) {
+		if (WarpDriveConfig.LOGGING_GRAVITY) {
 			WarpDrive.logger.warn(String.format("Entity fall damage at motionY %.3f from distance %.3f of %s, isCancelled %s",
 			                                    motionY, event.getDistance(), entityLivingBase, event.isCanceled()));
 		}
@@ -335,7 +337,8 @@ public class LivingHandler {
 		
 		// adjust distance to 'vanilla' scale and let it fall...
 		event.setDistance( (float) (-6.582D + 4.148D * Math.exp(1.200D * Math.abs(motionY))) );
-		if (WarpDrive.isDev && entityLivingBase instanceof EntityPlayerMP) {
+		if ( WarpDriveConfig.LOGGING_GRAVITY
+		  && entityLivingBase instanceof EntityPlayerMP ) {
 			WarpDrive.logger.warn(String.format("(full damage   ) Entity fall damage at motionY %.3f from distance %.3f of %s, isCancelled %s",
 			                                    motionY, event.getDistance(), entityLivingBase, event.isCanceled()));
 		}
