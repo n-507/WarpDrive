@@ -49,12 +49,13 @@ public class AcceleratorSetup extends GlobalPosition {
 	private HashMap<VectorI, TrajectoryPoint> trajectoryTransfer;
 	
 	// computed values
+	private boolean isDirty = false;
 	private final int[] countMagnets = new int[3];
 	private final int[] countChillers = new int[3];
 	private final HashMap<VectorI, Integer> controlPoints = new HashMap<>();
 	
-	public final HashSet<VectorI> setChillers = new HashSet<>();
-	public final Set<TileEntityCapacitor> setCapacitors = new HashSet<>();
+	public final HashSet<BlockPos> setChillers = new HashSet<>();
+	public final HashSet<BlockPos> setCapacitors = new HashSet<>();
 	public final int energy_maxStorage;
 	public final Set<VectorI> setJammed = new HashSet<>();
 	public final TreeMap<Integer, VectorI> mapInjectors = new TreeMap<>();
@@ -88,14 +89,22 @@ public class AcceleratorSetup extends GlobalPosition {
 		LocalProfiler.start(String.format("[AcceleratorSetup] Scanning @ DIM%d (%d %d %d)",
 		                                  dimensionId, x, y, z));
 		
-		refresh();
+		final WorldServer world = getWorldServerIfLoaded();
+		if (world == null) {
+			if (WarpDriveConfig.LOGGING_ACCELERATOR) {
+				WarpDrive.logger.warn(String.format("Accelerator scan cancelled: Dimension %d isn't loaded", dimensionId));
+			}
+		} else {
+			refresh(world);
+		}
 		
 		// cache energy stats
-		if (setCapacitors.isEmpty()) {
+		if ( world == null
+		  || setCapacitors.isEmpty() ) {
 			energy_maxStorage = 0;
 		} else {
 			int maxStorage = 0;
-			for (final TileEntityCapacitor tileEntityCapacitor : setCapacitors) {
+			for (final TileEntityCapacitor tileEntityCapacitor : getCapacitors()) {
 				maxStorage += tileEntityCapacitor.energy_getMaxStorage();
 			}
 			energy_maxStorage = maxStorage;
@@ -134,14 +143,7 @@ public class AcceleratorSetup extends GlobalPosition {
 		vMax.z = Math.max(vMax.z, vector.z + range);
 	}
 	
-	private void refresh() {
-		final WorldServer world = getWorldServerIfLoaded();
-		if (world == null) {
-			if (WarpDriveConfig.LOGGING_ACCELERATOR) {
-				WarpDrive.logger.warn(String.format("Accelerator scan cancelled: Dimension %d isn't loaded", dimensionId));
-			}
-			return;
-		}
+	private void refresh(final WorldServer world) {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
 			WarpDrive.logger.warn("Accelerator scan cancelled: client side");
 			return;
@@ -410,12 +412,12 @@ public class AcceleratorSetup extends GlobalPosition {
 			final Block block = vector.getBlock(world);
 			if (block instanceof BlockChiller) {
 				final EnumTier enumTier = ((BlockChiller) block).getTier(ItemStack.EMPTY);
-				setChillers.add(vector);
+				setChillers.add(vector.getBlockPos());
 				countChillers[enumTier.getIndex() - 1]++;
 			} else if (block instanceof BlockCapacitor) {
 				final TileEntity tileEntity = vector.getTileEntity(world);
 				if (tileEntity instanceof TileEntityCapacitor) {
-					setCapacitors.add((TileEntityCapacitor) tileEntity);
+					setCapacitors.add(vector.getBlockPos());
 				} else {
 					WarpDrive.logger.error(String.format("Invalid tile entity detected for subspace capacitor at %s", vector));
 				}
@@ -452,7 +454,7 @@ public class AcceleratorSetup extends GlobalPosition {
 		boolean checkCornerConnection = false;
 		// check explicit inclusions
 		if (block instanceof BlockChiller) {
-			if (setChillers.contains(vector)) {
+			if (setChillers.contains(vector.getBlockPos())) {
 				return true;
 			}
 			checkCornerConnection = true;
@@ -479,7 +481,7 @@ public class AcceleratorSetup extends GlobalPosition {
 		} else if (block instanceof BlockCapacitor) {
 			final TileEntity tileEntity = vector.getTileEntity(world);
 			if (tileEntity instanceof TileEntityCapacitor) {
-				if (setCapacitors.contains(tileEntity)) {
+				if (setCapacitors.contains(vector.getBlockPos())) {
 					return true;
 				}
 			}
@@ -546,12 +548,7 @@ public class AcceleratorSetup extends GlobalPosition {
 		if (trajectoryAccelerator == null) {
 			return false;
 		}
-		for (final TileEntityCapacitor tileEntityCapacitor : setCapacitors) {
-			if (tileEntityCapacitor.isInvalid()) {
-				return false;
-			}
-		}
-		return true;
+		return isDirty;
 	}
 	
 	public boolean getAssemblyStatus(@Nonnull final WarpDriveText textReason) {
@@ -560,9 +557,33 @@ public class AcceleratorSetup extends GlobalPosition {
 	}
 	
 	// Pseudo-API for energy
+	@Nonnull
+	private HashSet<TileEntityCapacitor> getCapacitors() {
+		final HashSet<TileEntityCapacitor> setTileEntityCapacitors = new HashSet<>(setCapacitors.size());
+		final World world = getWorldServerIfLoaded();
+		if (world == null) {
+			WarpDrive.logger.warn(String.format("%s World is no longer loaded, please report to mod author",
+			                                    this));
+			if (Commons.throttleMe("AcceleratorSetup.getCapacitors")) {
+				new RuntimeException().printStackTrace();
+			}
+			return setTileEntityCapacitors;
+		}
+		for (final BlockPos blockPosCapacitor : setCapacitors) {
+			final TileEntity tileEntity = world.getTileEntity(blockPosCapacitor);
+			if (tileEntity instanceof TileEntityCapacitor) {
+				final TileEntityCapacitor tileEntityCapacitor = (TileEntityCapacitor) tileEntity;
+				setTileEntityCapacitors.add(tileEntityCapacitor);
+			} else {
+				isDirty = true;
+			}
+		}
+		return setTileEntityCapacitors;
+	}
+	
 	public long energy_getEnergyStored() {
 		long energyStored = 0;
-		for (final TileEntityCapacitor tileEntityCapacitor : setCapacitors) {
+		for (final TileEntityCapacitor tileEntityCapacitor : getCapacitors()) {
 			energyStored += tileEntityCapacitor.energy_getEnergyStored();
 		}
 		return energyStored;
@@ -570,7 +591,7 @@ public class AcceleratorSetup extends GlobalPosition {
 	
 	public int energy_getPotentialOutput() {
 		long potentialOutput = 0;
-		for (final TileEntityCapacitor tileEntityCapacitor : setCapacitors) {
+		for (final TileEntityCapacitor tileEntityCapacitor : getCapacitors()) {
 			potentialOutput = Math.min(potentialOutput + tileEntityCapacitor.energy_getPotentialOutput(), Integer.MAX_VALUE);
 		}
 		return (int) potentialOutput;
@@ -585,7 +606,8 @@ public class AcceleratorSetup extends GlobalPosition {
 		final int energyMean = amount_internal / setCapacitors.size();
 		int energyConsumed = 0;
 		int energyLeft = amount_internal - energyMean * setCapacitors.size();
-		for (final TileEntityCapacitor tileEntityCapacitor : setCapacitors) {
+		final HashSet<TileEntityCapacitor> setTileEntityCapacitors = getCapacitors();
+		for (final TileEntityCapacitor tileEntityCapacitor : setTileEntityCapacitors) {
 			final int energyToConsume = Math.min(tileEntityCapacitor.energy_getPotentialOutput(), energyMean + energyLeft);
 			tileEntityCapacitor.energy_consume(energyToConsume);
 			energyConsumed += energyToConsume;
@@ -594,7 +616,7 @@ public class AcceleratorSetup extends GlobalPosition {
 		assert energyConsumed + energyLeft == amount_internal;
 		// then, draw remaining in no special order
 		if (energyLeft > 0) {
-			for (final TileEntityCapacitor tileEntityCapacitor : setCapacitors) {
+			for (final TileEntityCapacitor tileEntityCapacitor : setTileEntityCapacitors) {
 				final int energyToConsume = Math.min(tileEntityCapacitor.energy_getPotentialOutput(), energyLeft);
 				tileEntityCapacitor.energy_consume(energyToConsume);
 				energyConsumed += energyToConsume;

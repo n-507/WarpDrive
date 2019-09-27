@@ -69,6 +69,12 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 	
 	@Override
 	public int energy_getPotentialOutput() {
+		if (enumTier == null) {
+			if (Commons.throttleMe("TileEntityCapacitor.notier")) {
+				new RuntimeException(String.format("%s no tier defined yet, probably an invalid call, please report to mod author", this)).printStackTrace();
+			}
+			return (int) Math.round(energy_getEnergyStored() * getEfficiency());
+		}
 		return (int) Math.round(Math.min(energy_getEnergyStored() * getEfficiency(), WarpDriveConfig.CAPACITOR_FLUX_RATE_OUTPUT_BY_TIER[enumTier.getIndex()]));
 	}
 	

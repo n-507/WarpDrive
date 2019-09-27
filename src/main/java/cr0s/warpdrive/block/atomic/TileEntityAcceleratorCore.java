@@ -350,17 +350,16 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		}
 		
 		if (!acceleratorSetup.setChillers.isEmpty()) {
-			for (final VectorI vector : acceleratorSetup.setChillers) {
-				final BlockPos blockPos = vector.getBlockPos();
+			for (final BlockPos blockPos : acceleratorSetup.setChillers) {
 				if (!isChunkLoading) {
 					if (!(world.isBlockLoaded(blockPos))) {// chunk is not loaded, skip it
 						continue;
 					}
-					if (!world.getChunk(vector.x >> 4, vector.z >> 4).isLoaded()) {// chunk is unloading, skip it
+					if (!world.getChunk(blockPos.getX() >> 4, blockPos.getZ() >> 4).isLoaded()) {// chunk is unloading, skip it
 						continue;
 					}
 				}
-				final IBlockState blockState = vector.getBlockState(world);
+				final IBlockState blockState = world.getBlockState(blockPos);
 				
 				if (blockState.getBlock() instanceof BlockChiller) {
 					if (!blockState.getProperties().containsKey(BlockProperties.ACTIVE)) {
