@@ -13,7 +13,7 @@ import cr0s.warpdrive.compat.CompatBotania;
 import cr0s.warpdrive.compat.CompatBuildCraft;
 import cr0s.warpdrive.compat.CompatCarpentersBlocks;
 import cr0s.warpdrive.compat.CompatComputerCraft;
-import cr0s.warpdrive.compat.CompatCustomNpcs;
+import cr0s.warpdrive.compat.CompatCustomNPCs;
 import cr0s.warpdrive.compat.CompatDecocraft;
 import cr0s.warpdrive.compat.CompatDeepResonance;
 import cr0s.warpdrive.compat.CompatDraconicEvolution;
@@ -52,6 +52,7 @@ import cr0s.warpdrive.compat.CompatThaumcraft;
 import cr0s.warpdrive.compat.CompatThermalDynamics;
 import cr0s.warpdrive.compat.CompatThermalExpansion;
 import cr0s.warpdrive.compat.CompatUndergroundBiomes;
+import cr0s.warpdrive.compat.CompatVariedCommodities;
 import cr0s.warpdrive.compat.CompatWarpDrive;
 import cr0s.warpdrive.compat.CompatWoot;
 import cr0s.warpdrive.compat.CompatYABBA;
@@ -1442,9 +1443,9 @@ public class WarpDriveConfig {
 			CompatCarpentersBlocks.register();
 		}
 		
-		final boolean isCustomNpcsLoaded = Loader.isModLoaded("customnpcs");
-		if (isCustomNpcsLoaded) {
-			CompatCustomNpcs.register();
+		final boolean isCustomNPCsLoaded = Loader.isModLoaded("customnpcs");
+		if (isCustomNPCsLoaded) {
+			CompatCustomNPCs.register();
 		}
 		
 		final boolean isDecocraftLoaded = Loader.isModLoaded("props");
@@ -1605,6 +1606,11 @@ public class WarpDriveConfig {
 		final boolean isUndergroundBiomesLoaded = Loader.isModLoaded("undergroundbiomes");
 		if (isUndergroundBiomesLoaded) {
 			CompatUndergroundBiomes.register();
+		}
+		
+		final boolean isVariedCommoditiesLoaded = Loader.isModLoaded("variedcommodities");
+		if (isVariedCommoditiesLoaded) {
+			CompatVariedCommodities.register();
 		}
 		
 		final boolean isWootloaded = Loader.isModLoaded("woot");
