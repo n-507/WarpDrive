@@ -1,0 +1,66 @@
+if not term.isColor() then
+  print("Advanced computer required")
+  error()
+end
+
+local noExit = true
+local filter = "warpdrive"
+local args = {...}
+if #args > 0 then
+  if args[1] == "help" or args[1] == "?" then
+    print("Usage: disable [<machineName>]")
+    print()
+    print("Disable all machines which contains that name.")
+    print("Name is case insensitive, try AirGenerator, Medium, Farm, ForceField, etc.")
+    print("Default is warpdrive which is all machines.")
+    print("Related machines requires Computer interfaces.")
+    print()
+    noExit = false
+  else
+    filter = args[1]
+  end
+end
+
+if noExit then
+  print("Disabling " .. filter .. " machines:")
+  filter = string.upper(filter)
+  local sides = peripheral.getNames()
+  local count = 0
+  for _, side in pairs(sides) do
+    if string.find(string.upper(peripheral.getType(side)), filter) ~= nil then
+      local machine = peripheral.wrap(side)
+      if machine.isInterfaced() ~= true then
+        term.setBackgroundColor(colors.black)
+        term.setTextColor(colors.red)
+        term.write(side .. " has no computer interface")
+      else
+        count = count + 1
+        local isEnabled = machine.enable()
+        if isEnabled then
+          machine.enable(false)
+          term.setBackgroundColor(colors.black)
+          term.setTextColor(colors.green)
+        else
+          term.setBackgroundColor(colors.black)
+          term.setTextColor(colors.gray)
+        end
+        term.write(side .. " is disabled")
+      end
+      term.setBackgroundColor(colors.black)
+      term.setTextColor(colors.white)
+      print()
+    end
+  end
+  
+  if count == 0 then
+    term.setBackgroundColor(colors.red)
+    term.setTextColor(colors.white)
+    print("No machine detected")
+    
+    noExit = false
+  end
+end
+
+term.setBackgroundColor(colors.black)
+term.setTextColor(colors.white)
+print()
