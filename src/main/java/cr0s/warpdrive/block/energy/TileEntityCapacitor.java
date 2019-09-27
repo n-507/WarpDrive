@@ -166,7 +166,10 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 				isUpdated |= modeSide[enumFacing.ordinal()] != EnumDisabledInputOutput.get(bytes[enumFacing.ordinal()]);
 				modeSide[enumFacing.ordinal()] = EnumDisabledInputOutput.get(bytes[enumFacing.ordinal()]);
 			}
-			if (isUpdated) {
+			// refresh client side rendering has needed
+			if ( isUpdated
+			  && hasWorld()
+			  && world.isRemote ) {
 				world.markBlockRangeForRenderUpdate(pos, pos);
 			}
 		}
