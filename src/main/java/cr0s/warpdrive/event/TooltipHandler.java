@@ -367,7 +367,7 @@ public class TooltipHandler {
 				
 				// just report in dev if a mandatory value was null
 				if (WarpDrive.isDev && (world == null || entityLivingBase == null)) {
-					WarpDrive.logger.error(String.format("Exception getting block state from block %s (%s %d): %s",
+					WarpDrive.logger.debug(String.format("Exception getting block state from block %s (%s %d): %s",
 					                                     block,
 					                                     block.getRegistryName(),
 					                                     metadata,
