@@ -5,8 +5,8 @@ import cr0s.warpdrive.block.BlockAbstractBase;
 import cr0s.warpdrive.block.BlockAbstractContainer;
 import cr0s.warpdrive.block.forcefield.BlockForceField;
 import cr0s.warpdrive.block.hull.BlockHullGlass;
-import cr0s.warpdrive.block.hull.BlockHullSlab;
 import cr0s.warpdrive.block.hull.BlockHullStairs;
+import cr0s.warpdrive.world.FakeWorld;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.util.ResourceLocation;
@@ -24,9 +25,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Explosion;
 
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -630,57 +634,50 @@ public class Dictionary {
 		/**/
 		
 		// scan blocks registry
+		final FakeWorld fakeWorld = new FakeWorld(null);
 		for (final ResourceLocation resourceLocation : Block.REGISTRY.getKeys()) {
 			final Block block = Block.REGISTRY.getObject(resourceLocation);
 			WarpDrive.logger.debug(String.format("Checking block registry for %s: %s",
 			                                     resourceLocation, block));
 			
 			// get hardness and blast resistance
-			float hardness = -2.0F;
-			if (WarpDrive.fieldBlockHardness != null) {
-				// WarpDrive.fieldBlockHardness.setAccessible(true);
-				try {
-					hardness = (float) WarpDrive.fieldBlockHardness.get(block);
-				} catch (final IllegalArgumentException | IllegalAccessException exception) {
-					exception.printStackTrace();
-					WarpDrive.logger.error(String.format("Unable to access block hardness value %s %s",
-					                                     resourceLocation, block));
-				}
-			}
-			
-			final float blastResistance = block.getExplosionResistance(null);
+			final IBlockState blockState = block.getDefaultState();
+			fakeWorld.setBlockState(BlockPos.ORIGIN, blockState);
+			final float hardness = Math.max(block.blockHardness, blockState.getBlockHardness(fakeWorld, BlockPos.ORIGIN));
+			final Explosion explosion = new Explosion(fakeWorld, null, 0, 0, 0, 1, true, true);
+			final float blastResistance = Math.max(block.getExplosionResistance(null), block.getExplosionResistance(fakeWorld, BlockPos.ORIGIN, null, explosion));
 			
 			// check actual values
-			if (hardness != -2.0F) {// (we could get it)
-				if ( hardness < 0
-				  && (!BLOCKS_ANCHOR.contains(block))
-				  && !(block instanceof BlockForceField) ) {// unbreakable block
-					WarpDrive.logger.warn(String.format("Warning: non-anchor block with unbreakable hardness %s %s (%.2f)",
-					                                    resourceLocation, block, hardness));
-				} else if ( hardness > WarpDriveConfig.HULL_HARDNESS[1]
-				         && !( block instanceof BlockAbstractBase
-				            || block instanceof BlockAbstractContainer
-				            || block instanceof BlockHullGlass
-				            || block instanceof BlockHullSlab
-				            || block instanceof BlockHullStairs
-				            || BLOCKS_ANCHOR.contains(block) ) ) {
-					WarpDrive.logger.warn(String.format("Warning: non-hull block with high hardness %s %s (%.2f)",
-					                                    resourceLocation, block, hardness));
-				}
+			if ( hardness < 0
+			  && (!BLOCKS_ANCHOR.contains(block))
+			  && !(block instanceof BlockForceField) ) {// unbreakable block
+				WarpDrive.logger.warn(String.format("Found a non-anchor block with unbreakable hardness %s %s (%.2f)",
+				                                    resourceLocation, block, hardness));
+			} else if ( hardness > WarpDriveConfig.HULL_HARDNESS[1]
+			         && !( block instanceof BlockAbstractBase
+			            || block instanceof BlockAbstractContainer
+			            || block instanceof BlockHullGlass
+			            || block instanceof BlockHullStairs
+			            || block instanceof IFluidBlock
+			            || BLOCKS_ANCHOR.contains(block) ) ) {
+				WarpDrive.logger.warn(String.format("Found a non-hull block with high hardness %s %s (%.2f)",
+				                                    resourceLocation, block, hardness));
 			}
+			
 			if ( blastResistance > WarpDriveConfig.G_BLAST_RESISTANCE_CAP
 			   && !( block instanceof BlockAbstractBase
 			      || block instanceof BlockAbstractContainer
 			      || block instanceof BlockHullGlass
-			      || block instanceof BlockHullSlab
 			      || block instanceof BlockHullStairs
 			      || BLOCKS_ANCHOR.contains(block) ) ) {
-				WarpDrive.logger.warn(String.format("Warning: non-anchor block with high blast resistance %s %s (%.2f)",
-				                                    resourceLocation, block, blastResistance ));
+				if (WarpDriveConfig.LOGGING_DICTIONARY) {
+					WarpDrive.logger.warn(String.format("Found a non-anchor block with high blast resistance %s %s (%.2f)",
+					                                    resourceLocation, block, blastResistance));
+				}
 				block.setResistance(WarpDriveConfig.G_BLAST_RESISTANCE_CAP * 5.0F / 3.0F);
-				final float blastResistance_new = block.getExplosionResistance(null);
+				final float blastResistance_new = Math.max(block.getExplosionResistance(null), block.getExplosionResistance(fakeWorld, BlockPos.ORIGIN, null, null));
 				if (blastResistance_new <= WarpDriveConfig.G_BLAST_RESISTANCE_CAP) {
-					WarpDrive.logger.warn(String.format("Adjusted blast resistance of %s %s from %.2f to %.2f",
+					WarpDrive.logger.info(String.format("Adjusted blast resistance of %s %s from %.2f to %.2f",
 					                                    resourceLocation, block, blastResistance, blastResistance_new ));
 				} else {
 					WarpDrive.logger.error(String.format("Blacklisting block with high blast resistance %s %s (%.2f)",
@@ -691,10 +688,10 @@ public class Dictionary {
 			}
 			
 			if (WarpDriveConfig.LOGGING_DICTIONARY) {
-				WarpDrive.logger.info(String.format("Block registry for %s; Block %s with hardness %s resistance %.2f",
+				WarpDrive.logger.info(String.format("Block registry for %s; Block %s with hardness %.2f resistance %.2f",
 				                                    resourceLocation, block,
-				                                    (WarpDrive.fieldBlockHardness != null ? String.format("%.2f", hardness) : "-"),
-				                                    blastResistance));
+				                                    hardness,
+				                                    blastResistance ));
 			}
 		}
 	}

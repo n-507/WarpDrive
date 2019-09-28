@@ -4,6 +4,7 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.world.FakeWorld;
 
 import javax.annotation.Nonnull;
 
@@ -262,14 +263,35 @@ public class TooltipHandler {
 		}
 		
 		if (WarpDriveConfig.TOOLTIP_ADD_HARDNESS.isEnabled(isSneaking, isCreativeMode)) {
+			final FakeWorld fakeWorld = new FakeWorld(blockState);
 			try {
-				Commons.addTooltip(event.getToolTip(), String.format("§8Hardness is %.1f",
-				                                                     (float) WarpDrive.fieldBlockHardness.get(block)));
+				final float hardness1 = blockState.getBlockHardness(fakeWorld, BlockPos.ORIGIN);
+				final float hardness2 = block.blockHardness;
+				if ( hardness2 == 0.0F
+				  || hardness1 == hardness2 ) {
+					Commons.addTooltip(event.getToolTip(), String.format("§8Hardness is %.1f",
+					                                                     hardness1 ));
+				} else {
+					Commons.addTooltip(event.getToolTip(), String.format("§8Hardness is %.1f (%.1f)",
+					                                                     hardness1, hardness2 ));
+				}
 			} catch (final Exception exception) {
 				// no operation
 			}
-			Commons.addTooltip(event.getToolTip(), String.format("§8Explosion resistance is %.1f",
-			                                                     block.getExplosionResistance(null)));
+			try {
+				final float resistance1 = block.getExplosionResistance(fakeWorld, BlockPos.ORIGIN, null, null);
+				final float resistance2 = block.getExplosionResistance(null);
+				if ( resistance2 == 0.0F
+				  || resistance1 == resistance2 ) {
+					Commons.addTooltip(event.getToolTip(), String.format("§8Explosion resistance is %.1f",
+					                                                     resistance1 ));
+				} else {
+					Commons.addTooltip(event.getToolTip(), String.format("§8Explosion resistance is %.1f (%.1f)",
+					                                                     resistance1, resistance2 ));
+				}
+			} catch (final Exception exception) {
+				// no operation
+			}
 		}
 		
 		// flammability

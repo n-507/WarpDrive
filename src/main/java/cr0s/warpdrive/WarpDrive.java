@@ -339,7 +339,6 @@ public class WarpDrive {
 	@SuppressWarnings("FieldCanBeLocal")
 	private CommonWorldGenerator commonWorldGenerator;
 	
-	public static Field fieldBlockHardness = null;
 	public static Method methodBlock_getSilkTouch = null;
 	
 	// Client settings
@@ -369,8 +368,6 @@ public class WarpDrive {
 		
 		WarpDriveConfig.onFMLpreInitialization(event.getModConfigurationDirectory().getAbsolutePath());
 		
-		// open access to Block.blockHardness
-		fieldBlockHardness = Commons.getField(Block.class, "blockHardness", "field_149782_v");
 		methodBlock_getSilkTouch = ReflectionHelper.findMethod(Block.class, "getSilkTouchDrop", "func_180643_i", IBlockState.class);
 		
 		// common blocks and items

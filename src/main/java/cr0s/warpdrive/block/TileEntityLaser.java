@@ -483,13 +483,13 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 			final IBlockState blockState = world.getBlockState(blockHit.getBlockPos());
 			// get hardness and blast resistance
 			float hardness = -2.0F;
-			if (WarpDrive.fieldBlockHardness != null) {
-				// WarpDrive.fieldBlockHardness.setAccessible(true);
-				try {
-					hardness = (float) WarpDrive.fieldBlockHardness.get(blockState.getBlock());
-				} catch (final IllegalArgumentException | IllegalAccessException exception) {
+			try {
+				hardness = blockState.getBlockHardness(world, blockHit.getBlockPos());
+			} catch (final Exception exception) {
+				if (Commons.throttleMe("TileEntityLaser.getBlockHardness")) {
+					WarpDrive.logger.error(String.format("Unable to access block hardness value of %s",
+					                                     blockState.getBlock() ));
 					exception.printStackTrace();
-					WarpDrive.logger.error(String.format("Unable to access block hardness value of %s", blockState.getBlock()));
 				}
 			}
 			if (blockState.getBlock() instanceof IDamageReceiver) {
