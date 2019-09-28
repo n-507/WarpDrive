@@ -206,7 +206,9 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 		final NBTTagCompound tagCompound = new NBTTagCompound();
 		if (tileEntity instanceof TileEntityAbstractBase) {
 			((TileEntityAbstractBase) tileEntity).writeItemDropNBT(tagCompound);
-			itemStack.setTagCompound(tagCompound);
+			if (!tagCompound.isEmpty()) {
+				itemStack.setTagCompound(tagCompound);
+			}
 		}
 		return itemStack;
 	}
