@@ -13,6 +13,7 @@ import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.ForceFieldSetup;
 import cr0s.warpdrive.data.SoundEvents;
 import cr0s.warpdrive.data.Vector3;
+import cr0s.warpdrive.entity.EntityLaserExploder;
 import cr0s.warpdrive.network.PacketHandler;
 
 import li.cil.oc.api.machine.Arguments;
@@ -345,6 +346,8 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 		
 		playSoundCorrespondsEnergy(energy);
 		
+		final Entity entityExploder = new EntityLaserExploder(world, pos);
+		
 		// This is a scanning beam, do not deal damage to block nor entity
 		if (beamFrequency == IBeamFrequency.BEAM_FREQUENCY_SCANNING) {
 			final RayTraceResult mopResult = rayTraceBlocks(world, vSource.toVec3d(), vReachPoint.toVec3d(), beamFrequency,
@@ -359,8 +362,10 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 				final IBlockState blockState = world.getBlockState(scanResult_position);
 				scanResult_blockUnlocalizedName = blockState.getBlock().getTranslationKey();
 				scanResult_blockMetadata = blockState.getBlock().getMetaFromState(blockState);
-				final Explosion explosion = new Explosion(world, null, pos.getX(), pos.getY(), pos.getZ(), 1, true, true);
-				scanResult_blockResistance = blockState.getBlock().getExplosionResistance(world, scanResult_position, null, explosion);
+				final Explosion explosion = new Explosion(world, entityExploder,
+				                                          scanResult_position.getX(), scanResult_position.getY(), scanResult_position.getZ(),
+				                                          1, true, true);
+				scanResult_blockResistance = blockState.getBlock().getExplosionResistance(world, scanResult_position, entityExploder, explosion);
 				PacketHandler.sendBeamPacket(world, vSource, new Vector3(mopResult.hitVec), r, g, b, 50, energy, 200);
 			} else {
 				scanResult_type = ScanResultType.NONE;
@@ -459,7 +464,8 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 					if (energy > WarpDriveConfig.LASER_CANNON_ENTITY_HIT_EXPLOSION_ENERGY_THRESHOLD) {
 						final float strength = (float) Commons.clamp(0.0D, WarpDriveConfig.LASER_CANNON_ENTITY_HIT_EXPLOSION_MAX_STRENGTH,
 							  WarpDriveConfig.LASER_CANNON_ENTITY_HIT_EXPLOSION_BASE_STRENGTH + energy / (double) WarpDriveConfig.LASER_CANNON_ENTITY_HIT_EXPLOSION_ENERGY_PER_STRENGTH);
-						world.newExplosion(null, mopEntity.entityHit.posX, mopEntity.entityHit.posY, mopEntity.entityHit.posZ, strength, true, true);
+						world.newExplosion(entityExploder, mopEntity.entityHit.posX, mopEntity.entityHit.posY, mopEntity.entityHit.posZ,
+						                   strength, true, true);
 					}
 					
 					// remove entity from hit list
@@ -530,7 +536,8 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 				if (WarpDriveConfig.LOGGING_WEAPON) {
 					WarpDrive.logger.info(String.format("Explosion triggered with strength %.1f", strength));
 				}
-				world.newExplosion(null, blockHit.getBlockPos().getX(), blockHit.getBlockPos().getY(), blockHit.getBlockPos().getZ(), strength, true, true);
+				world.newExplosion(entityExploder, blockHit.hitVec.x, blockHit.hitVec.y, blockHit.hitVec.z,
+				                   strength, true, true);
 				vHitPoint = new Vector3(blockHit.hitVec);
 				break;
 			}
@@ -602,8 +609,9 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 				if (WarpDriveConfig.LOGGING_WEAPON) {
 					WarpDrive.logger.info(String.format("Explosion triggered with strength %.1f", strength));
 				}
-				world.newExplosion(null, blockHit.getBlockPos().getX(), blockHit.getBlockPos().getY(), blockHit.getBlockPos().getZ(), strength, true, true);
-				world.setBlockState(blockHit.getBlockPos(), (world.rand.nextBoolean()) ? Blocks.FIRE.getDefaultState() : Blocks.AIR.getDefaultState());
+				world.newExplosion(entityExploder, blockHit.hitVec.x, blockHit.hitVec.y, blockHit.hitVec.z,
+				                   strength, true, true);
+				world.setBlockState(blockHit.getBlockPos(), world.rand.nextBoolean() ? Blocks.FIRE.getDefaultState() : Blocks.AIR.getDefaultState());
 			} else {
 				world.setBlockToAir(blockHit.getBlockPos());
 			}

@@ -117,6 +117,7 @@ import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumHullPlainType;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.StarMapRegistry;
+import cr0s.warpdrive.entity.EntityLaserExploder;
 import cr0s.warpdrive.entity.EntityParticleBunch;
 import cr0s.warpdrive.event.ChunkHandler;
 import cr0s.warpdrive.event.ChunkLoadingHandler;
@@ -1087,6 +1088,13 @@ public class WarpDrive {
 		                                .entity(EntityParticleBunch.class).factory(EntityParticleBunch::new)
 		                                .tracker(300, 1, false)
 		                                .id("entityParticleBunch", WarpDriveConfig.G_ENTITY_PARTICLE_BUNCH_ID).name("EntityParticleBunch")
+		                                .build();
+		event.getRegistry().register(entityEntry);
+		
+		entityEntry = EntityEntryBuilder.create()
+		                                .entity(EntityLaserExploder.class).factory(EntityLaserExploder::new)
+		                                .tracker(8, 1000, false)
+		                                .id("entityLaserExploder", WarpDriveConfig.G_ENTITY_LASER_EXPLODER_ID).name("entityLaserExploder")
 		                                .build();
 		event.getRegistry().register(entityEntry);
 		

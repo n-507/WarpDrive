@@ -165,6 +165,7 @@ public class WarpDriveConfig {
 	public static int                  G_ENTITY_STAR_CORE_ID = 242;
 	public static int                  G_ENTITY_CAMERA_ID = 243;
 	public static int                  G_ENTITY_PARTICLE_BUNCH_ID = 244;
+	public static int                  G_ENTITY_LASER_EXPLODER_ID = 245;
 	
 	public static final int            LUA_SCRIPTS_NONE = 0;
 	public static final int            LUA_SCRIPTS_TEMPLATES = 1;
@@ -767,6 +768,8 @@ public class WarpDriveConfig {
 				config.get("general", "entity_camera_id", G_ENTITY_CAMERA_ID, "Entity camera ID").getInt());
 		G_ENTITY_PARTICLE_BUNCH_ID = Commons.clamp(Integer.MIN_VALUE, Integer.MAX_VALUE,
 				config.get("general", "entity_particle_bunch_id", G_ENTITY_PARTICLE_BUNCH_ID, "Entity particle bunch ID").getInt());
+		G_ENTITY_LASER_EXPLODER_ID = Commons.clamp(Integer.MIN_VALUE, Integer.MAX_VALUE,
+				config.get("general", "entity_laser_exploder_id", G_ENTITY_LASER_EXPLODER_ID, "Entity laser exploder ID").getInt());
 		
 		G_LUA_SCRIPTS = Commons.clamp(0, 2,
 				config.get("general", "lua_scripts", G_LUA_SCRIPTS,
