@@ -185,7 +185,7 @@ public class WarpDriveConfig {
 	// Client
 	public static boolean              CLIENT_BREATHING_OVERLAY_FORCED = false;
 	public static float                CLIENT_LOCATION_SCALE = 1.0F;
-	public static String               CLIENT_LOCATION_FORMAT_TITLE = "§l%1$s";
+	public static String               CLIENT_LOCATION_NAME_PREFIX = "§l";
 	public static int                  CLIENT_LOCATION_BACKGROUND_COLOR = Commons.colorARGBtoInt(64, 48, 48, 48);
 	public static int                  CLIENT_LOCATION_TEXT_COLOR = Commons.colorARGBtoInt(230, 180, 180, 240);
 	public static boolean              CLIENT_LOCATION_HAS_SHADOW = true;
@@ -798,8 +798,8 @@ public class WarpDriveConfig {
 		CLIENT_LOCATION_SCALE = Commons.clamp(0.25F, 4.0F, (float) config.get("client", "location_scale", CLIENT_LOCATION_SCALE,
 		                                   "Scale for location text font").getDouble() );
 		
-		CLIENT_LOCATION_FORMAT_TITLE = config.get("client", "location_prefix", CLIENT_LOCATION_FORMAT_TITLE, 
-		                                          "Format for location title").getString();
+		CLIENT_LOCATION_NAME_PREFIX = config.get("client", "location_name_prefix", CLIENT_LOCATION_NAME_PREFIX,
+		                                           "Prefix for location name, useful to add formatting").getString();
 		{
 			String stringValue = config.get("client", "location_background_color", String.format("0x%6X", CLIENT_LOCATION_BACKGROUND_COLOR),
 			                                      "Hexadecimal color code for location background (0xAARRGGBB where AA is alpha, RR is Red, GG is Green and BB is Blue component)").getString();

@@ -145,11 +145,11 @@ public class RenderCommons {
 	}
 	
 	public static void drawText(final int screen_width, final int screen_height, final String textHeader, final String textContent,
-	                           final float scale, final String formatHeader, final int colorBackground, final int colorText, final boolean hasHeaderShadow,
+	                            final float scale, final String prefixHeader, final int colorBackground, final int colorText, final boolean hasHeaderShadow,
 	                            @Nonnull final EnumDisplayAlignment enumScreenAnchor, final int xOffset, final int yOffset,
 	                            @Nonnull final EnumDisplayAlignment enumTextAlignment, final float widthTextRatio, final int widthTextMin) {
 		// prepare the string box content and dimensions
-		final String header_formatted  = Commons.updateEscapeCodes(new TextComponentTranslation(textHeader, formatHeader).getFormattedText());
+		final String header_formatted  = Commons.updateEscapeCodes(prefixHeader + new TextComponentTranslation(textHeader).getFormattedText());
 		final String content_formatted = Commons.updateEscapeCodes(new TextComponentTranslation(textContent).getFormattedText());
 		final int scaled_box_width = Math.max(widthTextMin, Math.round(widthTextRatio * screen_width)) + 2 * TEXT_BORDER;
 		
