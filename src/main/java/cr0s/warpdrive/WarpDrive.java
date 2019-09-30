@@ -205,7 +205,6 @@ import javax.annotation.Nullable;
                   + "after:appliedenergistics;"
                   + "after:cofhcore;"
                   + "after:ccturtle;"
-                  + "after:defensetech;"
                   + "after:computercraft@[1.82.1,);"
                   + "after:enderio;"
                   + "after:gregtech;"

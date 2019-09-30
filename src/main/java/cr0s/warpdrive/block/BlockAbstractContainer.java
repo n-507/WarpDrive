@@ -42,10 +42,7 @@ import javax.annotation.Nullable;
 import java.util.ConcurrentModificationException;
 import java.util.Random;
 
-@Optional.InterfaceList({
-	@Optional.Interface(iface = "defense.api.IEMPBlock", modid = "defensetech"),
-})
-public abstract class BlockAbstractContainer extends BlockContainer implements IBlockBase, defense.api.IEMPBlock {
+public abstract class BlockAbstractContainer extends BlockContainer implements IBlockBase {
 	
 	private static long timeUpdated = -1L;
 	private static int dimensionIdUpdated = Integer.MAX_VALUE;
@@ -282,31 +279,6 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 		}
 		if (tileEntity instanceof IBlockUpdateDetector) {
 			((IBlockUpdateDetector) tileEntity).onBlockUpdateDetected();
-		}
-	}
-	
-	@Override
-	@Optional.Method(modid = "defensetech")
-	public void onEMP(final World world, final int x, final int y, final int z, final defense.api.IExplosion explosiveEMP) {
-		if (WarpDriveConfig.LOGGING_WEAPON) {
-			WarpDrive.logger.info(String.format("EMP received %s from %s with energy %d and radius %.1f",
-			                                    Commons.format(world, x, y, z),
-			                                    explosiveEMP, explosiveEMP.getEnergy(), explosiveEMP.getRadius()));
-		}
-		// EMP explosive = 3k Energy, 50 radius
-		// EMP tower = 3k Energy, 60 radius adjustable
-		if (explosiveEMP.getRadius() == 50.0F) {
-			onEMP(world, new BlockPos(x, y, z), 0.70F);
-		} else if (explosiveEMP.getRadius() > 0.0F) {// compensate tower stacking effect
-			onEMP(world, new BlockPos(x, y, z), Math.min(1.0F, explosiveEMP.getRadius() / 60.0F) * 0.02F);
-		} else {
-			if (Commons.throttleMe("BlockAbstractContainer Invalid EMP radius")) {
-				WarpDrive.logger.warn(String.format("EMP received %s from %s with energy %d and unsupported radius %.1f",
-				                                    Commons.format(world, x, y, z),
-				                                    explosiveEMP, explosiveEMP.getEnergy(), explosiveEMP.getRadius()));
-				Commons.dumpAllThreads();
-			}
-			onEMP(world, new BlockPos(x, y, z), 0.02F);
 		}
 	}
 	

@@ -433,13 +433,23 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 			previous_tickWorld = tickWorld;
 			previous_idDimension = world.provider.getDimension();
 			previous_vExplosion = new Vec3d(vExplosion.x, vExplosion.y, vExplosion.z);
-			if (!Commons.isSafeThread())  {
+			WarpDrive.logger.info(String.format("Force field %s %s: explosion check of size %.3f from exploder %s %s %s explosion %s",
+			                                    enumTier,
+			                                    Commons.format(world, blockPos),
+			                                    explosion.size,
+			                                    exploder != null ? EntityList.getKey(exploder) : "-",
+			                                    exploder != null ? exploder.getClass().toString() : "-",
+			                                    exploder,
+			                                    explosion ));
+		}
+		if (!Commons.isSafeThread())  {
+			if (isFirstHit) {
 				WarpDrive.logger.error(String.format("Bad multithreading detected %s from exploder %s explosion %s",
 				                                     Commons.format(world, blockPos), exploder, explosion ));
 				new ConcurrentModificationException().printStackTrace();
+			} else {
+				return Float.MAX_VALUE;
 			}
-			WarpDrive.logger.info(String.format("Explosion check %s from exploder %s explosion %s",
-			                                     Commons.format(world, blockPos), exploder, explosion ));
 		}
 		
 		// find explosion strength, defaults to no effect
@@ -451,83 +461,65 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 			// IC2 Reactor blowing up => block is already air
 			final IBlockState blockState = world.getBlockState(blockPosExplosion);
 			final TileEntity tileEntity = world.getTileEntity(blockPosExplosion);
-			if (isFirstHit && !WarpDriveConfig.LOGGING_FORCE_FIELD) {
-				WarpDrive.logger.info(String.format("Force field %s: explosion from %s %s with tileEntity %s",
-				                                    Commons.format(world, blockPos),
+			if (isFirstHit) {
+				WarpDrive.logger.info(String.format("Force field %s %s: explosion from %s %s with tileEntity %s",
+				                                    enumTier, Commons.format(world, blockPos),
 				                                    blockState.getBlock(), blockState.getBlock().getRegistryName(), tileEntity ));
 			}
 			// explosion with no entity and block removed, hence we can't compute the energy impact => boosting explosion resistance
-			return 2.0F * super.getExplosionResistance(world, blockPos, exploder, explosion);
+			return Float.MAX_VALUE;
 		}
 		
-		double strength = 0.0D;
-		if (exploder != null) {
-			final String nameExploder = exploder.getClass().toString();
-			switch (nameExploder) {
-			// Vanilla explosive
-			case "class net.minecraft.entity.item.EntityEnderCrystal": strength = 6.0D; break;
-			case "class net.minecraft.entity.item.EntityMinecartTNT": strength = 4.0D; break;
-			case "class net.minecraft.entity.item.EntityTNTPrimed": strength = 5.0D; break;
-			case "class net.minecraft.entity.monster.EntityCreeper": strength = 3.0D; break;  // Normal is 3.0, powered ones is *2
-			
-			// Applied Energistics Tiny TNT
-			case "class appeng.entity.EntityTinyTNTPrimed": strength = 0.2D; break;
-			
-			// Blood Arsenal Blood TNT
-			case "class com.arc.bloodarsenal.common.entity.EntityBloodTNT": strength = 1.0D; break;
-			
-			// IC2 explosives
-			case "class ic2.core.block.EntityItnt": strength = 5.5D; break; 
-			case "class ic2.core.block.EntityNuke": strength = 0.02D; break;
-			case "class ic2.core.block.EntityDynamite": strength = 1.0D; break;
-			case "class ic2.core.block.EntityStickyDynamite": strength = 1.0D; break;
-			
-			// ICBM Classic & DefenseTech S-mine (initial explosion)
-			case "class defense.common.entity.EntityExplosion": strength = 1.0D; break;
-			case "class icbm.classic.content.entity.EntityExplosion": strength = 1.0D; break;
-			
-			// ICBM Classic & DefenseTech Condensed, Incendiary, Repulsive, Attractive, Fragmentation, Sonic, Breaching, Thermobaric, Nuclear,
-			// Exothermic, Endothermic, Anti-gravitational, Hypersonic, (Antimatter?)
-			case "class defense.common.entity.EntityExplosive": strength = 15.0D; break;
-			case "class icbm.classic.content.entity.EntityExplosive": strength = 15.0D; break;
-			
-			// ICBM Classic & DefenseTechFragmentation, S-mine fragments
-			case "class defense.common.entity.EntityFragments": strength = 0.02D; break;
-			case "class icbm.classic.content.entity.EntityFragments": strength = 0.02D; break;
-			
-			// ICBM Classic & DefenseTech Conventional, Attractive, Repulsive, Sonic, Breaching, Thermobaric, Nuclear, 
-			// Exothermic, Endothermic, Anti-Gravitational, Hypersonic missile, (Antimatter?), (Red matter?), (Homing?), (Anti-Ballistic?)
-			case "class defense.common.entity.EntityMissile": strength = 15.0D; break;
-			case "class icbm.classic.content.entity.EntityMissile": strength = 15.0D; break;
-			
-			// ICBM Classic & DefenseTech Conventional/Incendiary/Repulsive grenade
-			case "class defense.common.entity.EntityGrenade": strength = 3.0D; break;
-			case "class icbm.classic.content.entity.EntityGrenade": strength = 3.0D; break;
-			
-			// Tinker's Construct SDX explosives
-			case "class tconstruct.mechworks.entity.item.ExplosivePrimed": strength = 5.0D; break;
-			
-			default:
-				if (isFirstHit) {
-					WarpDrive.logger.error(String.format("Unknown exploder instance %s %s %s",
-					                                     EntityList.getKey(exploder), nameExploder, exploder ));
-				}
-				break;
-			}
-		}
+		double strength = explosion.size;
 		
-		if (strength == 0.0D) {// (no exploder or not a valid one, let's check the explosion itself)
+		// Typical size/strength values
+		// Vanilla
+		// net.minecraft.entity.item.EntityEnderCrystal 6.0        As of 1.12.2, there's no exploder, just a generic Explosion object
+		// net.minecraft.entity.item.EntityMinecartTNT  4.0
+		// net.minecraft.entity.item.EntityTNTPrimed    4.0 or 5.0 ?
+		// net.minecraft.entity.monster.EntityCreeper   Normal is 3.0, powered ones are *2
+		
+		// WarpDrive
+		// cr0s.warpdrive.entity.EntityLaserExploder    variable    Laser energy level at target is used to compute the explosion strength
+		
+		// Applied Energistics
+		// appeng.entity.EntityTinyTNTPrimed            0.2
+		
+		// IC2
+		// ic2.core.block.EntityItnt                    5.5 
+		// ic2.core.block.EntityNuke                    5.0 to 60.0   Loadout does define the size
+		// ic2.core.block.EntityDynamite                1.0
+		// ic2.core.block.EntityStickyDynamite          1.0
+		
+		// ICBM Classic S-mine (initial explosion)
+		// icbm.classic.content.entity.EntityExplosion  1.5
+		
+		// ICBM Classic Condensed, Incendiary, Repulsive, Attractive, Fragmentation, Sonic, Breaching, Thermobaric, Nuclear,
+		// Exothermic, Endothermic, Anti-gravitational, Hypersonic, (Antimatter?)
+		// icbm.classic.content.entity.EntityExplosive  10.0
+		
+		// ICBM Classic Fragmentation, S-mine fragments
+		// icbm.classic.content.entity.EntityFragments  1.5
+		// case "class icbm.classic.content.entity.EntityFragments": strength = 0.02D; break;
+		
+		// ICBM Classic Conventional, Attractive, Repulsive, Sonic, Breaching, Thermobaric, Nuclear, 
+		// Exothermic, Endothermic, Anti-Gravitational, Hypersonic missile, (Antimatter?), (Red matter?), (Homing?), (Anti-Ballistic?)
+		// icbm.classic.content.entity.EntityMissile    15.0 tbc
+		
+		// ICBM Classic Conventional/Incendiary/Repulsive grenade
+		// icbm.classic.content.entity.EntityGrenade    3.0 tbc
+		
+		if (strength == 0.0D) {// (explosion with no size defined, let's check the explosion itself)
 			final String nameExplosion = explosion.getClass().toString();
 			switch (nameExplosion) {
-			// Vanilla explosive
 			case "class icbm.classic.content.explosive.blast.threaded.BlastNuclear": strength = 15.0D; break;
 			
 			default:
 				if (isFirstHit) {
-					WarpDrive.logger.error(String.format("Unknown explosion instance %s %s %s",
+					WarpDrive.logger.error(String.format("Blocking invalid explosion instance %s %s %s",
 					                                     vExplosion, nameExplosion, explosion ));
 				}
-				break;
+				return Float.MAX_VALUE;
 			}
 		}
 		
@@ -547,10 +539,10 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		}
 		
 		assert damageLeft >= 0;
-		if (isFirstHit && !WarpDriveConfig.LOGGING_FORCE_FIELD) {
-			WarpDrive.logger.info(String.format("Force field %s %s involved in explosion %s strength %.3f magnitude %.3f damageLevel %.3f damageLeft %.3f",
+		if (isFirstHit && WarpDriveConfig.LOGGING_FORCE_FIELD) {
+			WarpDrive.logger.info(String.format("Force field %s %s: explosion from %s strength %.3f magnitude %.3f damageLevel %.3f damageLeft %.3f",
 			                                    enumTier, Commons.format(world, blockPos),
-			                                    ((exploder != null) ? String.format("from %s", exploder) : String.format("from %s at %s", explosion, vExplosion)),
+			                                    vExplosion,
 			                                    strength, magnitude, damageLevel, damageLeft));
 		}
 		return super.getExplosionResistance(world, blockPos, exploder, explosion);
@@ -568,10 +560,11 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	
 	@Override
 	public void onBlockExploded(final World world, @Nonnull final BlockPos blockPos, @Nonnull final Explosion explosion) {
-		// weapon mods should be intercepted earlier, so we'll spam the console for now...
-		WarpDrive.logger.warn(String.format("Force field %s %s has exploded in explosion %s at %s, please report to mod author",
-		                                    enumTier, Commons.format(world, blockPos),
-		                                    explosion, explosion.getPosition() ));
+		if (WarpDriveConfig.LOGGING_WEAPON) {
+			WarpDrive.logger.warn(String.format("Force field %s %s has exploded in explosion %s at %s",
+			                                    enumTier, Commons.format(world, blockPos),
+			                                    explosion, explosion.getPosition()));
+		}
 		downgrade(world, blockPos);
 		super.onBlockExploded(world, blockPos, explosion);
 	}
