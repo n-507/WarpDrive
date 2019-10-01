@@ -234,7 +234,9 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			if (updateTicks <= 0) {
 				updateTicks = PROJECTOR_PROJECTION_UPDATE_TICKS;
 				if (!isCalculated()) {
-					calculation_start();
+					if (forceFieldSetup.shapeProvider != EnumForceFieldShape.NONE) {
+						calculation_start();
+					}
 				} else {
 					projectForceField();
 				}
@@ -258,8 +260,9 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 				markDirty();
 				cooldownTicks = PROJECTOR_COOLDOWN_TICKS;
 				guideTicks = 0;
+				
+				destroyForceField();
 			}
-			destroyForceField();
 			
 			if (isEnabledAndValid) {
 				if (guideTicks <= 0) {
@@ -766,66 +769,34 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			return;
 		}
 		
-		// invalidate() can be multi-threaded, so we're delaying the destruction
-		if (!Commons.isSafeThread()) {
-			vForceFields_forRemoval.addAll(vForceFields);
-			vForceFields.clear();
-			
-			// add calculated blocks only once
-			if ( isCalculated()
-			  && vForceFields_forRemoval.size() < calculated_forceField.size() ) {
-				vForceFields_forRemoval.addAll(calculated_forceField);
+		final int countPlaced = vForceFields != null ? vForceFields.size() : 0;
+		final int countCalculated = calculated_forceField != null ? calculated_forceField.size() : 0;
+		if (countPlaced + countCalculated > 0) {
+			WarpDrive.logger.info(String.format("%s destroying force field of %d placed out of %d calculated blocks",
+			                                    this, countPlaced, countCalculated));
+			if (WarpDriveConfig.LOGGING_FORCE_FIELD) {
+				new RuntimeException().printStackTrace();
 			}
-			
-			// force a reboot
-			legacy_isOn = false;
-			
-			return;
 		}
 		
-		if (!vForceFields.isEmpty()) {
-			final VectorI[] vForceFields_cache = vForceFields.toArray(new VectorI[0]);
+		if (countPlaced > 0) {
+			vForceFields_forRemoval.addAll(vForceFields);
 			vForceFields.clear();
-			
-			for (final VectorI vector : vForceFields_cache) {
-				final IBlockState blockState = vector.getBlockState(world);
-				if (blockState.getBlock() == WarpDrive.blockForceFields[enumTier.getIndex()]) {
-					world.setBlockToAir(vector.getBlockPos());
-				}
-			}
-			
-			if (isCalculated()) {
-				for (final VectorI vector : calculated_forceField) {
-					final Block block = vector.getBlock(world);
-					
-					if (block == WarpDrive.blockForceFields[enumTier.getIndex()]) {
-						final TileEntity tileEntity = world.getTileEntity(vector.getBlockPos());
-						if ( tileEntity instanceof TileEntityForceField
-						  && (((TileEntityForceField) tileEntity).getProjector() == this) ) {
-							world.setBlockToAir(vector.getBlockPos());
-						}
-					}
-				}
-			}
-			
-			if (isCalculated()) {
-				for (final VectorI vector : calculated_forceField) {
-					final Block block = vector.getBlock(world);
-					
-					if (block == WarpDrive.blockForceFields[enumTier.getIndex()]) {
-						final BlockPos blockPos = vector.getBlockPos();
-						final TileEntity tileEntity = world.getTileEntity(blockPos);
-						if ( tileEntity instanceof TileEntityForceField
-						  && (((TileEntityForceField) tileEntity).getProjector() == this) ) {
-							world.setBlockToAir(blockPos);
-						}
-					}
-				}
-			}
+		}
+		
+		// add calculated blocks only once
+		if ( isCalculated()
+		  && vForceFields_forRemoval.size() < calculated_forceField.size() ) {
+			vForceFields_forRemoval.addAll(calculated_forceField);
 		}
 		
 		// force a reboot
 		legacy_isOn = false;
+		
+		// invalidate() can be multi-threaded, so we're delaying the destruction
+		if (Commons.isSafeThread()) {
+			doScheduledForceFieldRemoval();
+		}
 	}
 	
 	private void doScheduledForceFieldRemoval() {
@@ -836,10 +807,10 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		vForceFields_forRemoval.clear();
 		
 		for (final VectorI vector : vForceFields_cache) {
-			final IBlockState blockState = vector.getBlockState(world);
-			
+			final BlockPos blockPos = vector.getBlockPos();
+			final IBlockState blockState = world.getBlockState(blockPos);
 			if (blockState.getBlock() == WarpDrive.blockForceFields[enumTier.getIndex()]) {
-				final TileEntity tileEntity = world.getTileEntity(vector.getBlockPos());
+				final TileEntity tileEntity = world.getTileEntity(blockPos);
 				if ( tileEntity instanceof TileEntityForceField
 				  && (((TileEntityForceField) tileEntity).getProjector() == this) ) {
 					world.setBlockToAir(vector.getBlockPos());
@@ -1280,6 +1251,14 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 				  && projector.isAssemblyValid ) {
 					// collect what we need, then release the object
 					final ForceFieldSetup forceFieldSetup = projector.getForceFieldSetup();
+					if (forceFieldSetup.shapeProvider == EnumForceFieldShape.NONE) {
+						if (WarpDriveConfig.LOGGING_FORCE_FIELD) {
+							WarpDrive.logger.warn(String.format("%s Calculation aborted (no shape)",
+							                                    this));
+						}
+						projector.calculation_done(null, null);
+						return;
+					}
 					final int heightWorld = projector.world.getHeight();
 					projector = null;
 					
