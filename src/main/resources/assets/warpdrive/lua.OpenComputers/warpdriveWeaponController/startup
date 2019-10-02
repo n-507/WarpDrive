@@ -78,7 +78,7 @@ function laser_getDescription(address)
     return "~not defined~"
   end
   local laser = w.device_get(address)
-  if laser == nil or laser.position == nil then
+  if laser == nil or laser.getLocalPosition == nil then
     return "~invalid~"
   end
   local x, y, z = laser.getLocalPosition()
@@ -249,7 +249,7 @@ function laser_battery_config()
     return
   end
   w.page_begin(w.data_getName() .. " - Laser battery configuration")
-  w.setCursorPos(1, 4)
+  w.setCursorPos(1, 5)
   w.setColorHelp()
   w.writeFullLine(" Press enter to validate.")
   w.setCursorPos(1, 3)
@@ -259,6 +259,7 @@ function laser_battery_config()
   w.setCursorPos(1, 3)
   w.clearLine()
   w.writeLn("Battery name set to " .. laserbattery.name)
+  w.setCursorPos(1, 5)
   w.clearLine()
   
   if laserbattery.head == nil then
@@ -359,7 +360,7 @@ function laser_battery_linkLasers()
   local key = 1
   local addressCurrent = nil
   repeat
-    w.setCursorPos(1, 10 + (key % 5))
+    w.setCursorPos(1, 10 + (key % 7))
     w.setColorNormal()
     w.write("Booster #" .. key)
     addressCurrent = nil
@@ -568,7 +569,7 @@ function laser_station_config()
     return
   end
   w.page_begin(w.data_getName() .. " - Laser station configuration")
-  w.setCursorPos(1, 4)
+  w.setCursorPos(1, 5)
   w.setColorHelp()
   w.writeFullLine(" Press enter to validate.")
   w.setCursorPos(1, 3)
@@ -578,6 +579,7 @@ function laser_station_config()
   w.setCursorPos(1, 3)
   w.clearLine()
   w.writeLn("Laser station name set to " .. laserstation.name)
+  w.setCursorPos(1, 5)
   w.clearLine()
   
   if laserstation.camera == nil then
@@ -597,7 +599,7 @@ function laser_station_config()
   repeat
     w.setCursorPos(1, 7)
     w.setColorNormal()
-    w.write("Camera video channel (" .. w.format_integer(camVideoChannel, 5) .. "): ")
+    w.write("Camera video channel (" .. w.format_integer(camVideoChannel, 9) .. "): ")
     channel = w.input_readInteger(camVideoChannel)
     if channel ~= 0 and (channel < 0 or channel > 268435455) then
       w.status_showWarning("This is not a valid video channel. Try again.")
