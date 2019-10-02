@@ -10,6 +10,7 @@ import cr0s.warpdrive.api.computer.IMultiBlockCore;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 import net.minecraft.block.state.IBlockState;
@@ -142,6 +143,7 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 	
 	// writeItemDropNBT
 	
+	@Nullable
 	@Override
 	public UUID getSignatureUUID() {
 		return uuid;

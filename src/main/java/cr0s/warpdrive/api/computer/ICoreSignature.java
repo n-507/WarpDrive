@@ -1,5 +1,6 @@
 package cr0s.warpdrive.api.computer;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public interface ICoreSignature {
@@ -9,6 +10,7 @@ public interface ICoreSignature {
 	String UUID_MOST_TAG = "uuidMost";
 	
 	// get the unique id
+	@Nullable
 	UUID getSignatureUUID();
 	
 	// get the name for Friend-or-Foe

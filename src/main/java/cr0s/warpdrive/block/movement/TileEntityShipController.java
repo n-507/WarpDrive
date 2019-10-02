@@ -58,7 +58,8 @@ public class TileEntityShipController extends TileEntityAbstractShipController {
 		TileEntityShipCore tileEntityShipCore = tileEntityShipCoreWeakReference != null ? tileEntityShipCoreWeakReference.get() : null;
 		if ( tileEntityShipCore == null
 		  || tileEntityShipCore.isInvalid()
-		  || !tileEntityShipCore.getSignatureUUID().equals(uuid) ) {
+		  || uuid == null
+		  || !uuid.equals(tileEntityShipCore.getSignatureUUID()) ) {
 			tileEntityShipCore = null;
 			tileEntityShipCoreWeakReference = null;
 		}
@@ -79,7 +80,8 @@ public class TileEntityShipController extends TileEntityAbstractShipController {
 			final TileEntity tileEntity = worldServer.getTileEntity(starMapRegistryItem.getBlockPos());
 			if ( !(tileEntity instanceof TileEntityShipCore)
 			  || tileEntity.isInvalid()
-			  || !((TileEntityShipCore) tileEntity).getSignatureUUID().equals(uuid) ) {
+			  || uuid == null
+			  || !uuid.equals(((TileEntityShipCore) tileEntity).getSignatureUUID()) ) {
 				textReason.append(Commons.getStyleWarning(), "warpdrive.core_signature.status_line.unknown_core_signature");
 				return false;
 			}
