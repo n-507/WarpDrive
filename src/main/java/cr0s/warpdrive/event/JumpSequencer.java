@@ -1163,21 +1163,29 @@ public class JumpSequencer extends AbstractSequencer {
 					WarpDrive.logger.info(String.format("Moving externals from (%d %d %d) of %s@%d",
 					                                    jumpBlock.x, jumpBlock.y, jumpBlock.z, jumpBlock.block, jumpBlock.blockMeta));
 				}
-				final TileEntity tileEntitySource = jumpBlock.getTileEntity(worldSource);
-				final BlockPos blockPosTarget = transformation.apply(jumpBlock.x, jumpBlock.y, jumpBlock.z);
-				final IBlockState blockStateTarget = worldTarget.getBlockState(blockPosTarget);
-				for (final Entry<String, NBTBase> external : jumpBlock.externals.entrySet()) {
-					final IBlockTransformer blockTransformer = WarpDriveConfig.blockTransformers.get(external.getKey());
-					if (blockTransformer != null) {
-						if ( shipMovementType != EnumShipMovementType.INSTANTIATE
-						  && shipMovementType != EnumShipMovementType.RESTORE ) {
-							blockTransformer.removeExternals(worldSource, jumpBlock.x, jumpBlock.y, jumpBlock.z,
-							                                 jumpBlock.block, jumpBlock.blockMeta, tileEntitySource);
+				try {
+					final TileEntity tileEntitySource = jumpBlock.getTileEntity(worldSource);
+					final BlockPos blockPosTarget = transformation.apply(jumpBlock.x, jumpBlock.y, jumpBlock.z);
+					final IBlockState blockStateTarget = worldTarget.getBlockState(blockPosTarget);
+					for (final Entry<String, NBTBase> external : jumpBlock.externals.entrySet()) {
+						final IBlockTransformer blockTransformer = WarpDriveConfig.blockTransformers.get(external.getKey());
+						if (blockTransformer != null) {
+							if ( shipMovementType != EnumShipMovementType.INSTANTIATE
+							  && shipMovementType != EnumShipMovementType.RESTORE ) {
+								blockTransformer.removeExternals(worldSource, jumpBlock.x, jumpBlock.y, jumpBlock.z,
+								                                 jumpBlock.block, jumpBlock.blockMeta, tileEntitySource);
+							}
+							
+							final TileEntity tileEntityTarget = jumpBlock.weakTileEntity == null ? null : worldTarget.getTileEntity(blockPosTarget);
+							blockTransformer.restoreExternals(worldTarget, blockPosTarget,
+							                                  blockStateTarget, tileEntityTarget, transformation, external.getValue());
 						}
-						
-						final TileEntity tileEntityTarget = jumpBlock.weakTileEntity == null ? null : worldTarget.getTileEntity(blockPosTarget);
-						blockTransformer.restoreExternals(worldTarget, blockPosTarget,
-						                                  blockStateTarget, tileEntityTarget, transformation, external.getValue());
+					}
+				} catch (final Exception exception) {
+					WarpDrive.logger.info(String.format("Exception while moving external %s@%d at (%d %d %d)",
+					                                    jumpBlock.block, jumpBlock.blockMeta, jumpBlock.x, jumpBlock.y, jumpBlock.z));
+					if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
+						exception.printStackTrace();
 					}
 				}
 				index++;
