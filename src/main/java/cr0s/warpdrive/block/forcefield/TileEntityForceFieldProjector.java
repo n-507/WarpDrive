@@ -1106,10 +1106,10 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	}
 	
 	public boolean consumeEnergy(final double amount_internal, final boolean simulate) {
-		final int intAmount = (int)Math.floor(amount_internal + consumptionLeftOver);
-		final boolean bResult = super.energy_consume(intAmount, simulate);
+		final long longAmount = (long) Math.min(energy_getEnergyStored(), Math.floor(amount_internal + consumptionLeftOver));
+		final boolean bResult = energy_consume(longAmount, simulate);
 		if (!simulate) {
-			consumptionLeftOver = amount_internal + consumptionLeftOver - intAmount;
+			consumptionLeftOver = amount_internal + consumptionLeftOver - longAmount;
 		}
 		return bResult;
 	}
