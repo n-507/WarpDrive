@@ -184,8 +184,24 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		// remove from main thread
 		doScheduledForceFieldRemoval();
 		
-		// Powered ?
+		// resolve interactions
 		final ForceFieldSetup forceFieldSetup = getForceFieldSetup();
+		final int countEntityInteractions = setInteractedEntities.size();
+		if (countEntityInteractions > 0) {
+			setInteractedEntities.clear();
+			consumeEnergy(forceFieldSetup.getEntityEnergyCost(countEntityInteractions), false);
+		}
+		
+		if (damagesEnergyCost > 0.0D) {
+			if (WarpDriveConfig.LOGGING_WEAPON) {
+				WarpDrive.logger.info(String.format("%s damages received, energy lost %.2f / %d",
+				                                    this, damagesEnergyCost, energy_getEnergyStored() ));
+			}
+			consumeEnergy(damagesEnergyCost, false);
+			damagesEnergyCost = 0.0D;
+		}
+		
+		// Powered ?
 		final int energyRequired;
 		if (!legacy_isOn) {
 			energyRequired = (int) Math.round(forceFieldSetup.startupEnergyCost + forceFieldSetup.placeEnergyCost * forceFieldSetup.placeSpeed * PROJECTOR_PROJECTION_UPDATE_TICKS / 20.0F);
@@ -214,20 +230,6 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 				markDirty();
 			}
 			cooldownTicks = 0;
-			
-			final int countEntityInteractions = setInteractedEntities.size();
-			if (countEntityInteractions > 0) {
-				setInteractedEntities.clear();
-				consumeEnergy(forceFieldSetup.getEntityEnergyCost(countEntityInteractions), false);
-			}
-			
-			if (damagesEnergyCost > 0.0D) {
-				if (WarpDriveConfig.LOGGING_WEAPON) {
-					WarpDrive.logger.info(String.format("%s damages received, energy lost: %.6f", toString(), damagesEnergyCost));
-				}
-				consumeEnergy(damagesEnergyCost, false);
-				damagesEnergyCost = 0.0D;
-			}
 			
 			updateTicks--;
 			if (updateTicks <= 0) {
