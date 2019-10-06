@@ -329,9 +329,12 @@ public class ForceFieldSetup extends GlobalPosition {
 		if (tileEntity instanceof TileEntityForceFieldProjector) {
 			final double scaledDamage;
 			if (damageSource.damageType.contains("explosion")) {
-				scaledDamage = damageLevel / 1000.0D + entityEnergyCost * 0.1D;
+				scaledDamage = damageLevel / WarpDriveConfig.FORCE_FIELD_PROJECTOR_EXPLOSION_SCALE + entityEnergyCost * 0.1D;
 			} else if (damageSource.damageType.contains("laser")) {
-				scaledDamage = damageLevel / 500.0D + entityEnergyCost * 5.0D;
+				final double scaleLaserEnergyPerFullProjector = WarpDriveConfig.FORCE_FIELD_PROJECTOR_MAX_LASER_REQUIRED
+				                                              * (WarpDriveConfig.LASER_CANNON_MAX_LASER_ENERGY - WarpDriveConfig.LASER_CANNON_BLOCK_HIT_ENERGY_MAX)
+				                                              / WarpDriveConfig.FORCE_FIELD_PROJECTOR_MAX_ENERGY_STORED_BY_TIER[EnumTier.SUPERIOR.getIndex()];
+				scaledDamage = damageLevel / scaleLaserEnergyPerFullProjector + entityEnergyCost * 5.0D;
 			} else {
 				WarpDrive.logger.warn(String.format("%s Unknown damage source %s '%s' %.1f",
 				                                    this, damageSource, damageSource.getDamageType(), damageLevel));

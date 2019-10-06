@@ -512,6 +512,8 @@ public class WarpDriveConfig {
 	
 	// Enantiomorphic power reactor
 	public static int[]            FORCE_FIELD_PROJECTOR_MAX_ENERGY_STORED_BY_TIER = { 20000000, 30000, 90000, 150000 }; // 30000 * (1 + 2 * tier)
+	public static double           FORCE_FIELD_PROJECTOR_EXPLOSION_SCALE = 1000.0D;
+	public static double           FORCE_FIELD_PROJECTOR_MAX_LASER_REQUIRED = 10.0D;
 	
 	// Subspace capacitor
 	public static int[]            CAPACITOR_MAX_ENERGY_STORED_BY_TIER = { 20000000, 800000, 4000000, 20000000 };
@@ -1249,6 +1251,18 @@ public class WarpDriveConfig {
 		ENAN_REACTOR_GENERATION_MAX_RF_BY_TIER =
 				config.get("enantiomorphic_reactor", "max_generation_RF_by_tier", ENAN_REACTOR_GENERATION_MAX_RF_BY_TIER, "Maximum energy added to the core when enabled, measured in RF/t, for a given tier").getIntList();
 		clampByTier(1, Integer.MAX_VALUE, ENAN_REACTOR_GENERATION_MAX_RF_BY_TIER);
+		
+		// Force field projector
+		FORCE_FIELD_PROJECTOR_MAX_ENERGY_STORED_BY_TIER = config.get("force_field", "projector_max_energy_stored_by_tier", FORCE_FIELD_PROJECTOR_MAX_ENERGY_STORED_BY_TIER, "Maximum energy stored for each projector tier").getIntList();
+		clampByTier(0, Integer.MAX_VALUE, FORCE_FIELD_PROJECTOR_MAX_ENERGY_STORED_BY_TIER);
+		
+		FORCE_FIELD_PROJECTOR_EXPLOSION_SCALE = Commons.clamp(1.0D, 1000.0D,
+				config.get("force_field", "projector_explosion_scale", FORCE_FIELD_PROJECTOR_EXPLOSION_SCALE,
+				           "Scale applied to explosion strength, increase the value to reduce explosion impact on a force field. Enable weapon logs to see the damage level.").getDouble(FORCE_FIELD_PROJECTOR_EXPLOSION_SCALE));
+		
+		FORCE_FIELD_PROJECTOR_MAX_LASER_REQUIRED = Commons.clamp(1.0D, 1000.0D,
+				config.get("force_field", "projector_max_laser_required", FORCE_FIELD_PROJECTOR_MAX_LASER_REQUIRED,
+				           "Number of maxed out laser cannons required to break a superior force field.").getDouble(FORCE_FIELD_PROJECTOR_MAX_LASER_REQUIRED));
 		
 		// Subspace capacitor
 		CAPACITOR_MAX_ENERGY_STORED_BY_TIER = config.get("capacitor", "max_energy_stored_by_tier", CAPACITOR_MAX_ENERGY_STORED_BY_TIER, "Maximum energy stored for each subspace capacitor tier").getIntList();
