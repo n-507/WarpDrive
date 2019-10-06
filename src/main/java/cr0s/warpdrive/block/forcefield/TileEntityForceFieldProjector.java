@@ -58,7 +58,6 @@ import net.minecraftforge.fml.common.Optional;
 
 public class TileEntityForceFieldProjector extends TileEntityAbstractForceField {
 	
-	private static final int PROJECTOR_MAX_ENERGY_STORED = 30000;
 	private static final int PROJECTOR_COOLDOWN_TICKS = 300;
 	public static final int PROJECTOR_PROJECTION_UPDATE_TICKS = 8;
 	private static final int PROJECTOR_SETUP_TICKS = 20;
@@ -132,7 +131,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	protected void onConstructed() {
 		super.onConstructed();
 		
-		energy_setParameters(PROJECTOR_MAX_ENERGY_STORED * (1 + 2 * enumTier.getIndex()), 4096, 0,
+		energy_setParameters(WarpDriveConfig.FORCE_FIELD_PROJECTOR_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()], 4096, 0,
 		                     "EV", 2, "EV", 0);
 	}
 	

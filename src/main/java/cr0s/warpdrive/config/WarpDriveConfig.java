@@ -510,6 +510,9 @@ public class WarpDriveConfig {
 	public static float[]          ENAN_REACTOR_EXPLOSION_STRENGTH_MIN_BY_TIER = { 4.0F, 4.0F, 5.0F, 6.0F };
 	public static float[]          ENAN_REACTOR_EXPLOSION_STRENGTH_MAX_BY_TIER = { 7.0F, 7.0F, 9.0F, 11.0F };
 	
+	// Enantiomorphic power reactor
+	public static int[]            FORCE_FIELD_PROJECTOR_MAX_ENERGY_STORED_BY_TIER = { 20000000, 30000, 90000, 150000 }; // 30000 * (1 + 2 * tier)
+	
 	// Subspace capacitor
 	public static int[]            CAPACITOR_MAX_ENERGY_STORED_BY_TIER = { 20000000, 800000, 4000000, 20000000 };
 	public static String[]         CAPACITOR_IC2_SINK_TIER_NAME_BY_TIER = { "MaxV", "MV", "HV", "EV" };
