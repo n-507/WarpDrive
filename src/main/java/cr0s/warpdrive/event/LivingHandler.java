@@ -45,6 +45,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class LivingHandler {
 	
 	private static final HashMap<UUID, Integer> player_cloakTicks = new HashMap<>();
+	private static final HashMap<UUID, Integer> player_borderBypassTicks = new HashMap<>();
 	private static final HashMap<Long, Double> entity_yMotion = new HashMap<>();
 	
 	private static final int CLOAK_CHECK_TIMEOUT_TICKS = 100;
@@ -53,6 +54,7 @@ public class LivingHandler {
 	private static final int BORDER_BYPASS_RANGE_BLOCKS_SQUARED = 32 * 32;
 	private static final int BORDER_BYPASS_PULL_BACK_BLOCKS = 16;
 	private static final int BORDER_BYPASS_DAMAGES_PER_TICK = 9000;
+	private static final int BORDER_BYPASS_DELAY_TICK = 10 * 20;
 	
 	private static final int PURGE_PERIOD_TICKS = 6000; // 5 mn
 	
@@ -108,17 +110,21 @@ public class LivingHandler {
 		}
 		final double distanceSquared = celestialObject.getSquareDistanceOutsideBorder(x, z);
 		if (distanceSquared <= 0.0D) {
-			// are we close to the border?
-			if ( Math.abs(distanceSquared) <= BORDER_WARNING_RANGE_BLOCKS_SQUARED
-			  && entityLivingBase instanceof EntityPlayer
-			  && entityLivingBase.ticksExisted % 40 == 0) {
-				((EntityPlayer) entityLivingBase).sendStatusMessage(
-						new WarpDriveText(Commons.getStyleWarning(), "warpdrive.world_border.in_range",
-						                  (int) Math.sqrt(Math.abs(distanceSquared))), true );
+			if (entityLivingBase instanceof EntityPlayer) {
+				// are we close to the border?
+				if ( Math.abs(distanceSquared) <= BORDER_WARNING_RANGE_BLOCKS_SQUARED
+				  && entityLivingBase.ticksExisted % 40 == 0) {
+					((EntityPlayer) entityLivingBase).sendStatusMessage(
+							new WarpDriveText(Commons.getStyleWarning(), "warpdrive.world_border.in_range",
+							                  (int) Math.sqrt(Math.abs(distanceSquared))), true );
+				}
+				// clear bypass counter
+				player_borderBypassTicks.remove(entityLivingBase.getUniqueID());
 			}
+			
 		} else {
-			if (entityLivingBase instanceof EntityPlayerMP) {
-				if (((EntityPlayerMP) entityLivingBase).capabilities.isCreativeMode) {
+			if (entityLivingBase instanceof EntityPlayer) {
+				if (((EntityPlayer) entityLivingBase).capabilities.isCreativeMode) {
 					if (entityLivingBase.ticksExisted % 100 == 0) {
 						((EntityPlayer) entityLivingBase).sendStatusMessage(
 								new WarpDriveText(Commons.getStyleWarning(), "warpdrive.world_border.outside",
@@ -139,14 +145,21 @@ public class LivingHandler {
 			// entity.isAirBorne = true;
 			Commons.moveEntity(entityLivingBase, entityLivingBase.world, new Vector3(newEntityX, newEntityY, newEntityZ));
 			
-			// spam chat if it's a player
+			// give a survival chance for players, notably when switching dimension
+			boolean isDelayed = false;
 			if (entityLivingBase instanceof EntityPlayer && !entityLivingBase.isDead && entityLivingBase.deathTime <= 0) {
-				Commons.addChatMessage( entityLivingBase,
-					new WarpDriveText(Commons.getStyleWarning(), "warpdrive.world_border.reached"));
+				// spam player's chat
+				Commons.addChatMessage(entityLivingBase, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.world_border.reached"));
+				
+				// check the instant death delay
+				final int borderBypassTicks = player_borderBypassTicks.getOrDefault(entityLivingBase.getUniqueID(), 0);
+				player_borderBypassTicks.put(entityLivingBase.getUniqueID(), borderBypassTicks + 1);
+				isDelayed = borderBypassTicks < BORDER_BYPASS_DELAY_TICK;
 			}
 			
 			// delay damage for 'fast moving' players
-			if (distanceSquared < BORDER_BYPASS_RANGE_BLOCKS_SQUARED) {
+			if ( distanceSquared < BORDER_BYPASS_RANGE_BLOCKS_SQUARED
+			  || isDelayed ) {
 				// just set on fire
 				entityLivingBase.setFire(1);
 			} else {
