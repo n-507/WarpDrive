@@ -5,12 +5,15 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Biomes;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.EmptyChunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.storage.WorldInfo;
 
@@ -43,8 +46,17 @@ public class FakeWorld extends World {
 	
 	@Nonnull
 	@Override
+	public Chunk getChunk(final int chunkX, final int chunkZ) {
+		return new FakeChunk(this, 0, 0);
+	}
+	
+	@Nonnull
+	@Override
 	public IBlockState getBlockState(@Nonnull final BlockPos blockPos) {
-		return blockState;
+		if (blockPos == BlockPos.ORIGIN) {
+			return blockState;
+		}
+		return Blocks.AIR.getDefaultState();
 	}
 	
 	@Override
