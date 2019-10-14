@@ -90,7 +90,7 @@ public class Dictionary {
 					+ "- Expandable: this block will be squished/ignored in case of collision.\n"
 					+ "- Mining: this block is mineable (default: all 'ore' blocks from the ore dictionary).\n"
 					+ "- SkipMining: this block is ignored from mining (default: bedrock).\n"
-					+ "- StopMining: this block will prevent mining through it (default: command/creative, bedrock, force fields).\n"
+					+ "- StopMining: this block will prevent mining through it (default: command/creative, force fields).\n"
 					+ "- PlaceEarliest: this block will be removed last and placed first (default: ship hull and projectors).\n"
 					+ "- PlaceEarlier: this block will be placed fairly soon (default: force field blocks).\n"
 					+ "- PlaceNormal: this block will be removed and placed with non-tile entities.\n"

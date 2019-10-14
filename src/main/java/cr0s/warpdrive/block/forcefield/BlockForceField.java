@@ -248,7 +248,8 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		return null;
 	}
 	
-	private ForceFieldSetup getForceFieldSetup(final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+	@Nullable
+	private ForceFieldSetup getForceFieldSetup(@Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
 		if (tileEntity instanceof TileEntityForceField) {
 			return ((TileEntityForceField) tileEntity).getForceFieldSetup();
@@ -374,7 +375,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	public int getLightValue(@Nonnull final IBlockState blockState, final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
 		if (tileEntity instanceof TileEntityForceField) {
-			return ((TileEntityForceField)tileEntity).cache_lightCamouflage;
+			return ((TileEntityForceField) tileEntity).cache_lightCamouflage;
 		}
 		
 		return 0;

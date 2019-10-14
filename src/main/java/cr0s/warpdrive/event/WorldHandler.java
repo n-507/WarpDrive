@@ -101,7 +101,7 @@ public class WorldHandler {
 	public void onPlayerChangedDimension(final PlayerChangedDimensionEvent event) {
 		WarpDrive.logger.info(String.format("onPlayerChangedDimension %s %d -> %d (%.1f %.1f %.1f)",
 		                                    event.player.getName(), event.fromDim, event.toDim,
-		                                     event.player.posX, event.player.posY, event.player.posZ ));
+		                                    event.player.posX, event.player.posY, event.player.posZ ));
 		WarpDrive.cloaks.onPlayerJoinWorld((EntityPlayerMP) event.player, ((EntityPlayerMP) event.player).world);
 	}
 	
