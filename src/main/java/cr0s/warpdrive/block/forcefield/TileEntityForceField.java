@@ -18,10 +18,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 
 public class TileEntityForceField extends TileEntity {
 	
-	private VectorI vProjector;
+	private BlockPos blockPosProjector;
 	
 	// cache parameters used for rendering, force projector check for others
 	private int cache_beamFrequency;
@@ -42,10 +43,10 @@ public class TileEntityForceField extends TileEntity {
 		super.readFromNBT(tagCompound);
 		
 		if (tagCompound.hasKey("projector")) {// are we server side and is it a valid force field block?
-			vProjector = VectorI.createFromNBT(tagCompound.getCompoundTag("projector"));
+			blockPosProjector = Commons.createBlockPosFromNBT(tagCompound.getCompoundTag("projector"));
 			cache_beamFrequency = tagCompound.getInteger(IBeamFrequency.BEAM_FREQUENCY_TAG);
 		} else {
-			vProjector = null;
+			blockPosProjector = null;
 			cache_beamFrequency = -1;
 		}
 		if (tagCompound.hasKey("camouflage")) {
@@ -77,8 +78,8 @@ public class TileEntityForceField extends TileEntity {
 	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
-		if (vProjector != null) {
-			tagCompound.setTag("projector", vProjector.writeToNBT(new NBTTagCompound()));
+		if (blockPosProjector != null) {
+			tagCompound.setTag("projector", Commons.writeBlockPosToNBT(blockPosProjector, new NBTTagCompound()));
 			tagCompound.setInteger(IBeamFrequency.BEAM_FREQUENCY_TAG, cache_beamFrequency);
 			if (cache_blockStateCamouflage != null && cache_blockStateCamouflage.getBlock() != Blocks.AIR) {
 				final NBTTagCompound nbtCamouflage = new NBTTagCompound();
@@ -116,8 +117,8 @@ public class TileEntityForceField extends TileEntity {
 		readFromNBT(tagCompound);
 	}
 	
-	public void setProjector(final VectorI vectorI) {
-		vProjector = vectorI;
+	public void setProjector(final BlockPos blockPos) {
+		blockPosProjector = blockPos.toImmutable();
 		final ForceFieldSetup forceFieldSetup = getForceFieldSetup();
 		if (forceFieldSetup != null) {
 			cache_beamFrequency = forceFieldSetup.beamFrequency;
@@ -134,8 +135,8 @@ public class TileEntityForceField extends TileEntity {
 	}
 	
 	public TileEntityForceFieldProjector getProjector() {
-		if (vProjector != null) {
-			final TileEntity tileEntity = vProjector.getTileEntity(world);
+		if (blockPosProjector != null) {
+			final TileEntity tileEntity = world.getTileEntity(blockPosProjector);
 			if (tileEntity instanceof TileEntityForceFieldProjector) {
 				final TileEntityForceFieldProjector tileEntityForceFieldProjector = (TileEntityForceFieldProjector) tileEntity;
 				if (world.isRemote) {

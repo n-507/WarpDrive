@@ -12,7 +12,6 @@ import cr0s.warpdrive.data.EnumPermissionNode;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.ForceFieldSetup;
 import cr0s.warpdrive.data.Vector3;
-import cr0s.warpdrive.data.VectorI;
 import cr0s.warpdrive.event.ModelBakeEventHandler;
 import cr0s.warpdrive.render.BakedModelCamouflage;
 
@@ -252,7 +251,15 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	private ForceFieldSetup getForceFieldSetup(@Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
 		if (tileEntity instanceof TileEntityForceField) {
-			return ((TileEntityForceField) tileEntity).getForceFieldSetup();
+			try {
+				return ((TileEntityForceField) tileEntity).getForceFieldSetup();
+			} catch (final Exception exception) {
+				if (Commons.throttleMe("BlockForceField.getForceFieldSetup")) {
+					WarpDrive.logger.error(String.format("Exception trying to get force field setup %s",
+					                                     Commons.format(blockAccess, blockPos) ));
+					exception.printStackTrace();
+				}
+			}
 		}
 		return null;
 	}
@@ -390,7 +397,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 			if (tileEntityForceFieldProjector != null) {
 				final TileEntity tileEntity = world.getTileEntity(blockPos);
 				if (tileEntity instanceof TileEntityForceField) {
-					((TileEntityForceField) tileEntity).setProjector(new VectorI(tileEntityForceFieldProjector));
+					((TileEntityForceField) tileEntity).setProjector(tileEntityForceFieldProjector.getPos());
 				}
 			}
 			

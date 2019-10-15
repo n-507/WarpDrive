@@ -26,6 +26,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.World;
 
 public class BreathingManager {
@@ -47,9 +48,10 @@ public class BreathingManager {
 	private static final HashMap<UUID, Integer> player_airTank = new HashMap<>();
 	
 	public static boolean hasAirBlock(final EntityLivingBase entityLivingBase, final int x, final int y, final int z) {
+		final MutableBlockPos mutableBlockPos = new MutableBlockPos();
 		for (final VectorI vOffset : vAirOffsets) {
-			final VectorI vPosition = new VectorI(x + vOffset.x, y + vOffset.y, z + vOffset.z);
-			final Block block = vPosition.getBlockState(entityLivingBase.world).getBlock();
+			mutableBlockPos.setPos(x + vOffset.x, y + vOffset.y, z + vOffset.z);
+			final Block block = entityLivingBase.world.getBlockState(mutableBlockPos).getBlock();
 			if (isAirBlock(block)) {
 				return true;
 			}
@@ -91,27 +93,27 @@ public class BreathingManager {
 		
 		// find an air block
 		final UUID uuidEntity = entityLivingBase.getUniqueID();
-		VectorI vAirBlock = null;
+		boolean notInVacuum = false;
+		final MutableBlockPos mutableBlockPos = new MutableBlockPos();
 		IBlockState blockState;
 		Block block;
 		for (final VectorI vOffset : vAirOffsets) {
-			final VectorI vPosition = new VectorI(x + vOffset.x, y + vOffset.y, z + vOffset.z);
-			blockState = vPosition.getBlockState(entityLivingBase.world);
+			mutableBlockPos.setPos(x + vOffset.x, y + vOffset.y, z + vOffset.z);
+			blockState = entityLivingBase.world.getBlockState(mutableBlockPos);
 			block = blockState.getBlock();
 			if (isAirBlock(block)) {
-				vAirBlock = vPosition;
+				notInVacuum = true;
 				break;
 			} else if (block != Blocks.AIR) {
-				final StateAir stateAir = ChunkHandler.getStateAir(entityLivingBase.world, vPosition.x, vPosition.y, vPosition.z);
+				final StateAir stateAir = ChunkHandler.getStateAir(entityLivingBase.world, mutableBlockPos.getX(), mutableBlockPos.getY(), mutableBlockPos.getZ());
 				if ( stateAir == null
 				  || stateAir.concentration > 0 ) {
-					vAirBlock = vPosition;
+					notInVacuum = true;
 					break;
 				}
 			}
 		}
 		
-		final boolean notInVacuum = vAirBlock != null;
 		Integer air = entity_airBlock.get(uuidEntity);
 		if (notInVacuum) {// no atmosphere with air blocks
 			if (air == null) {

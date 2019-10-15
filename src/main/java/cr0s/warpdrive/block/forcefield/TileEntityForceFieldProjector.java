@@ -488,7 +488,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 							if (tileEntityForceFieldProjector == null) {
 								// orphan force field, probably from an explosion
 								// => recover it
-								tileEntityForceField.setProjector(new VectorI(this));
+								tileEntityForceField.setProjector(pos);
 								tileEntityForceField.cache_blockStateCamouflage = forceFieldSetup.getCamouflageBlockState();
 								// world.setBlockState(vector.getBlockPos(), tileEntityForceField.cache_blockStateCamouflage, 2);
 								
@@ -550,7 +550,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 						
 						final TileEntity tileEntity = world.getTileEntity(vector.getBlockPos());
 						if (tileEntity instanceof TileEntityForceField) {
-							((TileEntityForceField) tileEntity).setProjector(new VectorI(this));
+							((TileEntityForceField) tileEntity).setProjector(pos);
 						}
 						
 						vForceFields.add(vector);
@@ -627,7 +627,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			
 			final TileEntity tileEntity = world.getTileEntity(vector.getBlockPos());
 			if (tileEntity instanceof TileEntityForceField) {
-				((TileEntityForceField) tileEntity).setProjector(new VectorI(this));
+				((TileEntityForceField) tileEntity).setProjector(pos);
 			}
 			
 			vForceFields.add(vector);
