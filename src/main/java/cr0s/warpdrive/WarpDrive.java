@@ -201,7 +201,7 @@ import javax.annotation.Nullable;
      name = "WarpDrive",
      version = WarpDrive.VERSION,
      dependencies = ""
-                  + "required-after:forge@[14.23.5.2816,);"
+                  + "required-after:forge@[14.23.5.2817,);"
                   + "after:appliedenergistics;"
                   + "after:cofhcore;"
                   + "after:ccturtle;"
