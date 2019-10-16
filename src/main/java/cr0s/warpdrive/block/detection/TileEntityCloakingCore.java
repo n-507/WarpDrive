@@ -106,7 +106,7 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyCoreOrContro
 			updateTicks = ((!isFullyTransparent) ? 20 : 10) * WarpDriveConfig.CLOAKING_FIELD_REFRESH_INTERVAL_SECONDS; // resetting timer
 			
 			isCloaking = WarpDrive.cloaks.isAreaExists(world, pos);
-			final boolean hasEnoughPower = energy_consume(energyRequired, (!isAssemblyValid && isEnabled));
+			final boolean hasEnoughPower = energy_consume(energyRequired, !isAssemblyValid || !isEnabled);
 			final boolean shouldBeCloaking = isAssemblyValid && isEnabled && hasEnoughPower;
 			
 			if (!isCloaking) {
