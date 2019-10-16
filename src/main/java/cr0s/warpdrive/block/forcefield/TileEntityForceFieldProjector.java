@@ -349,7 +349,9 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	}
 	
 	boolean isPartOfForceField(final VectorI vector) {
-		if (!isEnabled || !isAssemblyValid) {
+		if ( vForceFields_forRemoval.isEmpty()
+		  && ( !isEnabled
+		    || !isAssemblyValid ) ) {
 			return false;
 		}
 		if (!isCalculated()) {
@@ -805,7 +807,6 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			WarpDrive.logger.warn("Removing force field blocks outside main thread, bad things may happen...");
 		}
 		final VectorI[] vForceFields_cache = vForceFields_forRemoval.toArray(new VectorI[0]);
-		vForceFields_forRemoval.clear();
 		
 		for (final VectorI vector : vForceFields_cache) {
 			final BlockPos blockPos = vector.getBlockPos();
@@ -818,6 +819,8 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 				}
 			}
 		}
+		
+		vForceFields_forRemoval.clear();
 	}
 	
 	public IForceFieldShape getShapeProvider() {
