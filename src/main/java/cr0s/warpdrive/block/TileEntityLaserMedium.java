@@ -67,4 +67,10 @@ public class TileEntityLaserMedium extends TileEntityAbstractEnergy {
 	public boolean energy_canInput(final EnumFacing from) {
 		return true;
 	}
+	
+	// WarpDrive overrides
+	@Override
+	public void onEMP(final float efficiency) {
+		// no effect
+	}
 }
