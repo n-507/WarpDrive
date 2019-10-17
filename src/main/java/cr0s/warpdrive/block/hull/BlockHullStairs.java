@@ -32,6 +32,8 @@ public class BlockHullStairs extends BlockStairs implements IBlockBase, IDamageR
 	public BlockHullStairs(final String registryName, final EnumTier enumTier, final IBlockState blockStateHull) {
 		super(blockStateHull);
 		
+		this.useNeighborBrightness = true;
+		
 		this.blockStateHull = blockStateHull;
 		this.enumTier = enumTier;
 		setCreativeTab(WarpDrive.creativeTabHull);
