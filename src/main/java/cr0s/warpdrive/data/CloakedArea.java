@@ -67,7 +67,7 @@ public class CloakedArea {
 					addPlayer(player.getUniqueID());
 				}
 			} catch (final Exception exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 			}
 		}
 		

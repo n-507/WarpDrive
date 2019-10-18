@@ -394,12 +394,12 @@ public class ChunkHandler {
 			}
 			
 		} catch (final ConcurrentModificationException exception) {
+			exception.printStackTrace(WarpDrive.printStreamError);
 			WarpDrive.logger.error(String.format("%s world %s had some chunks changed outside main thread? (size %d -> %d, loaded %d, removed %d, index 0x%X x %d z %d)",
 			                                     world.isRemote ? "Client" : "Server",
 			                                     Commons.format(world),
 			                                     sizeBefore, mapRegistryItems.size(), countLoaded, countRemoved,
-			                                     indexCurrent, indexCurrent & 0xFFFFFFFFL, (indexCurrent >> 32) & 0xFFFFFFFFL));
-			exception.printStackTrace();
+			                                     indexCurrent, indexCurrent & 0xFFFFFFFFL, (indexCurrent >> 32) & 0xFFFFFFFFL ));
 			LocalProfiler.printCallStats();
 		}
 		

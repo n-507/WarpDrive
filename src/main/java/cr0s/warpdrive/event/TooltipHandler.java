@@ -401,10 +401,10 @@ public class TooltipHandler {
 				                                     block.getRegistryName(),
 				                                     metadata,
 				                                     throwable1 ));
-				throwable1.printStackTrace();
+				throwable1.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.error(String.format("followed by %s",
 				                                     throwable2 ));
-				throwable2.printStackTrace();
+				throwable2.printStackTrace(WarpDrive.printStreamError);
 				// Final fallback to default
 				blockState = block.getDefaultState();
 			}

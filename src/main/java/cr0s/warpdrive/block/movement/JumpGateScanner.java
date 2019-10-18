@@ -1,5 +1,6 @@
 package cr0s.warpdrive.block.movement;
 
+import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
@@ -69,7 +70,7 @@ class JumpGateScanner {
 				}
 			}
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 		}
 		return false;
 	}

@@ -1,6 +1,7 @@
 package cr0s.warpdrive.block.energy;
 
 import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.TileEntityAbstractEnergy;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnumComponentType;
@@ -71,7 +72,9 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 	public int energy_getPotentialOutput() {
 		if (enumTier == null) {
 			if (Commons.throttleMe("TileEntityCapacitor.notier")) {
-				new RuntimeException(String.format("%s no tier defined yet, probably an invalid call, please report to mod author", this)).printStackTrace();
+				new RuntimeException(String.format("%s no tier defined yet, probably an invalid call, please report to mod author",
+				                                   this ))
+						.printStackTrace(WarpDrive.printStreamError);
 			}
 			return (int) Math.round(energy_getEnergyStored() * getEfficiency());
 		}

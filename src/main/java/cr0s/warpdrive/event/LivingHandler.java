@@ -281,7 +281,7 @@ public class LivingHandler {
 				player_cloakTicks.put(player.getUniqueID(), cloakTicks + 1);
 			}
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 		}
 	}
 	

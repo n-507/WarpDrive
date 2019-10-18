@@ -189,6 +189,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import com.mojang.authlib.GameProfile;
@@ -357,6 +358,9 @@ public class WarpDrive {
 	private static WarpDrivePeripheralHandler peripheralHandler = null;
 	
 	public static Logger logger;
+	public static LoggerPrintStream printStreamError;
+	public static LoggerPrintStream printStreamWarn;
+	public static LoggerPrintStream printStreamInfo;
 	
 	public WarpDrive() {
 	}
@@ -364,6 +368,9 @@ public class WarpDrive {
 	@EventHandler
 	public void onFMLPreInitialization(@Nonnull final FMLPreInitializationEvent event) {
 		logger = event.getModLog();
+		printStreamError = new LoggerPrintStream(Level.ERROR);
+		printStreamWarn = new LoggerPrintStream(Level.WARN);
+		printStreamInfo = new LoggerPrintStream(Level.INFO);
 		
 		WarpDriveConfig.onFMLpreInitialization(event.getModConfigurationDirectory().getAbsolutePath());
 		

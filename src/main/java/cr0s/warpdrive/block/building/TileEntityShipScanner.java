@@ -374,7 +374,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 								
 								tileEntitiesList.appendTag(tagTileEntity);
 							} catch (final Exception exception) {
-								exception.printStackTrace();
+								exception.printStackTrace(WarpDrive.printStreamError);
 							}
 						}
 					}
@@ -626,7 +626,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 					lightCamouflage = 0;
 				}
 			} catch (final Exception exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 			}
 		} else {
 			blockCamouflage = null;

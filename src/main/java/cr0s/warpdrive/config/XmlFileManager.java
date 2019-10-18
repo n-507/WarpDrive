@@ -51,9 +51,9 @@ public abstract class XmlFileManager {
 					parseRootElement(location, element);
 				}
 			} catch (final Exception exception) {
+				exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.error(String.format("Error loading file %s: %s",
-				                                     file.getName(), exception.getMessage()));
-				exception.printStackTrace();
+				                                     file.getName(), exception.getMessage() ));
 			}
 		}
 	}

@@ -98,7 +98,7 @@ public class Commons {
 			                                                                         int.class);
 			methodThrowable_getStackTraceElement.setAccessible(true);
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 		}
 	}
 	
@@ -367,7 +367,7 @@ public class Commons {
 			try {
 				fieldToReturn = clazz.getDeclaredField(obfuscatedName);
 			} catch (final Exception exception2) {
-				exception2.printStackTrace();
+				exception2.printStackTrace(WarpDrive.printStreamError);
 				final StringBuilder map = new StringBuilder();
 				for (final Field fieldDeclared : clazz.getDeclaredFields()) {
 					if (map.length() > 0) {
@@ -421,7 +421,7 @@ public class Commons {
 		try {
 			saveFolder = world.provider.getSaveFolder();
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 			saveFolder = "<Exception DIM" + world.provider.getDimension() + ">";
 		}
 		if (saveFolder == null || saveFolder.isEmpty()) {
@@ -896,7 +896,7 @@ public class Commons {
 					new Throwable(), depth + 1);
 			return stackTraceElement.getMethodName();
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 			return "-?-";
 		}
 	}
@@ -920,7 +920,7 @@ public class Commons {
 			
 			fileoutputstream.close();
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 		}
 	}
 	
@@ -942,7 +942,7 @@ public class Commons {
 			
 			return tagCompound;
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 		}
 		
 		return null;
@@ -1082,7 +1082,7 @@ public class Commons {
 				                                     exception.getMessage(),
 				                                     dimensionId));
 				if (WarpDrive.isDev) {
-					exception.printStackTrace();
+					exception.printStackTrace(WarpDrive.printStreamError);
 				}
 				worldServer = null;
 			}

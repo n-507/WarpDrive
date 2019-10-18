@@ -276,7 +276,7 @@ public class WorldGenStructure {
 								                                     inventory ));
 							}
 						} catch (final Exception exception) {
-							exception.printStackTrace();
+							exception.printStackTrace(WarpDrive.printStreamError);
 							WarpDrive.logger.error(String.format("Exception while filling inventory with LootSet %s %s: loot %s from %s in slot %d of inventory %s reported %s",
 							                                     group,
 							                                     Commons.format(world, blockPos),

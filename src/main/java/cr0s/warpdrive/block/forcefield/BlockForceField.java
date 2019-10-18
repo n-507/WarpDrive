@@ -103,7 +103,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 				return blockStateCamouflage.getMapColor(blockAccess, blockPos);
 			} catch (final Exception exception) {
 				if (!Dictionary.BLOCKS_NOCAMOUFLAGE.contains(blockStateCamouflage.getBlock())) {
-					exception.printStackTrace();
+					exception.printStackTrace(WarpDrive.printStreamError);
 					WarpDrive.logger.error(String.format("Exception trying to get MapColor for %s",
 					                                     blockStateCamouflage));
 					Dictionary.BLOCKS_NOCAMOUFLAGE.add(blockStateCamouflage.getBlock());
@@ -257,7 +257,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 				if (Commons.throttleMe("BlockForceField.getForceFieldSetup")) {
 					WarpDrive.logger.error(String.format("Exception trying to get force field setup %s",
 					                                     Commons.format(blockAccess, blockPos) ));
-					exception.printStackTrace();
+					exception.printStackTrace(WarpDrive.printStreamError);
 				}
 			}
 		}
@@ -420,7 +420,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		  && Commons.isServerThread() ) {
 			if (Commons.throttleMe("getExplosionResistance")) {
 				new RuntimeException(String.format("Invalid call to deprecated getExplosionResistance(%s)",
-				                                   exploder)).printStackTrace();
+				                                   exploder )).printStackTrace(WarpDrive.printStreamError);
 			}
 			return Float.MAX_VALUE;
 		}
@@ -452,9 +452,9 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		}
 		if (!Commons.isSafeThread())  {
 			if (isFirstHit) {
-				WarpDrive.logger.error(String.format("Bad multithreading detected %s from exploder %s explosion %s",
-				                                     Commons.format(world, blockPos), exploder, explosion ));
-				new ConcurrentModificationException().printStackTrace();
+				new ConcurrentModificationException(String.format("Bad multithreading detected %s from exploder %s explosion %s",
+				                                                  Commons.format(world, blockPos), exploder, explosion ))
+						.printStackTrace(WarpDrive.printStreamError);
 			} else {
 				return Float.MAX_VALUE;
 			}

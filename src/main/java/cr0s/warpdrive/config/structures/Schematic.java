@@ -45,7 +45,7 @@ public class Schematic extends AbstractStructure {
 				replacements[replacementIndexOut].loadFromXmlElement(elementReplacement);
 				replacementIndexOut++;
 			} catch (final InvalidXmlException exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.error(String.format("Skipping invalid replacement %s",
 				                                     blockState));
 			}
@@ -63,7 +63,7 @@ public class Schematic extends AbstractStructure {
 				insertions[insertionIndexOut].loadFromXmlElement(elementInsertion);
 				insertionIndexOut++;
 			} catch (final InvalidXmlException exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.error(String.format("Skipping invalid insertion %s",
 				                                     blockState));
 			}
@@ -144,7 +144,7 @@ public class Schematic extends AbstractStructure {
 					replacement.loadFrom(fillerSet);
 				}
 			} catch (final Exception exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.error(String.format("Failed to instantiate replacement %s from structure %s",
 				                                     name, parentFullName));
 			}
@@ -244,7 +244,7 @@ public class Schematic extends AbstractStructure {
 					insertion.loadFrom(lootSet);
 				}
 			} catch (final Exception exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.error(String.format("Failed to instantiate insertion %s from structure %s",
 				                                     name, parentFullName));
 			}

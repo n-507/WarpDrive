@@ -121,7 +121,7 @@ public class ExtendedProperties {
 			
 			return byteArrayOutputStream.toByteArray();
 		} catch (final IOException exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 			WarpDrive.logger.error(String.format("Exception while saving extended properties for entity %s",
 			                                     entityLivingBase));
 		}
@@ -155,7 +155,7 @@ public class ExtendedProperties {
 			
 			return true;
 		} catch (final IOException exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 			WarpDrive.logger.error(String.format("Exception while reading extended properties for entity %s of %d bytes",
 			                                     entityLivingBase, data.length));
 			return false;

@@ -1,5 +1,6 @@
 package cr0s.warpdrive.render;
 
+import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnumCameraType;
 
@@ -78,7 +79,7 @@ public class RenderOverlayCamera {
 				                                     0xFF008F, true);
 			}
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 		}
 		
 		GlStateManager.depthMask(true);

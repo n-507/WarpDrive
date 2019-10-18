@@ -40,7 +40,7 @@ public class BakedModelCamouflage extends BakedModelAbstractBase {
 					final IBakedModel bakedModelResult = blockModelShapes.getModelForState(blockStateReference);
 					return bakedModelResult.getQuads(blockStateReference, enumFacing, rand);
 				} catch(final Exception exception) {
-					exception.printStackTrace();
+					exception.printStackTrace(WarpDrive.printStreamError);
 					WarpDrive.logger.error(String.format("Failed to render camouflage for block state %s, updating dictionary with %s = NOCAMOUFLAGE dictionary to prevent further errors",
 					                                     blockStateReference,
 					                                     blockStateReference.getBlock().getRegistryName()));

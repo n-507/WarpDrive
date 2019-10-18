@@ -413,7 +413,7 @@ public class JumpBlock {
 			return target;
 			
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 			WarpDrive.logger.error(String.format("Deploy failed from (%d %d %d) of %s:%d",
 			                                     x, y, z, block, blockMeta));
 		}
@@ -454,9 +454,9 @@ public class JumpBlock {
 					}
 				}
 			} catch (final Exception exception) {
+				exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.info(String.format("Exception involving TileEntity %s %s",
 				                                    className, Commons.format(world, blockPos)));
-				exception.printStackTrace();
 			}
 		}
 	}

@@ -90,7 +90,7 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 					}
 				}
 			} catch (final Exception exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 			}
 		}
 	}

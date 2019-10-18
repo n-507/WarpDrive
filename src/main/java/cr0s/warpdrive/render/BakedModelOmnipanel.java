@@ -42,9 +42,9 @@ public class BakedModelOmnipanel extends BakedModelAbstractBase {
 			if (extendedBlockStateDefault == null) {
 				if (!(blockStateDefault instanceof IExtendedBlockState)) {
 					if (Commons.throttleMe("BakedModelOmnipanel Invalid default")) {
-						WarpDrive.logger.error(String.format("Invalid default blockstate %s for model %s",
-						                                     blockStateDefault, modelResourceLocation));
-						(new RuntimeException()).printStackTrace();
+						new RuntimeException(String.format("Invalid default blockstate %s for model %s",
+						                                   blockStateDefault, modelResourceLocation ))
+								.printStackTrace(WarpDrive.printStreamError);
 					}
 					return bakedModelOriginal.getQuads(null, enumFacing, rand);
 				}
@@ -74,17 +74,17 @@ public class BakedModelOmnipanel extends BakedModelAbstractBase {
 				
 			} else if (!(blockState instanceof IExtendedBlockState)) {
 				if (Commons.throttleMe("BakedModelOmnipanel Invalid non-extended")) {
-					WarpDrive.logger.error(String.format("Invalid non-extended blockstate %s for model %s",
-					                                     blockStateDefault, modelResourceLocation));
-					(new RuntimeException()).printStackTrace();
+					new RuntimeException(String.format("Invalid non-extended blockstate %s for model %s",
+					                                   blockStateDefault, modelResourceLocation ))
+							.printStackTrace(WarpDrive.printStreamError);
 				}
 				return bakedModelOriginal.getQuads(null, enumFacing, rand);
 				
 			} else {// it's an extended state without values
 				if (Commons.throttleMe("BakedModelOmnipanel Invalid extended")) {
-					WarpDrive.logger.error(String.format("Invalid extended blockstate %s for model %s",
-					                                     blockStateDefault, modelResourceLocation));
-					(new RuntimeException()).printStackTrace();
+					new RuntimeException(String.format("Invalid extended blockstate %s for model %s",
+					                                   blockStateDefault, modelResourceLocation ))
+							.printStackTrace(WarpDrive.printStreamError);
 				}
 				extendedBlockState = extendedBlockStateDefault;
 				

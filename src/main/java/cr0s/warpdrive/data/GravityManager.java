@@ -1,5 +1,6 @@
 package cr0s.warpdrive.data;
 
+import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.Dictionary;
 
 import javax.annotation.Nonnull;
@@ -44,7 +45,7 @@ public class GravityManager {
 					classGravityHandler = Class.forName("zmaster587.advancedRocketry.util.GravityHandler");
 					methodIPlanetaryProvider_applyGravity = classGravityHandler.getMethod("applyGravity", Entity.class);
 				} catch (final ClassNotFoundException | NoSuchMethodException exception) {
-					exception.printStackTrace();
+					exception.printStackTrace(WarpDrive.printStreamError);
 					classGravityHandler = null;
 				}
 			}
@@ -53,7 +54,7 @@ public class GravityManager {
 				try {
 					methodIPlanetaryProvider_applyGravity.invoke(null, entityItem);
 				} catch (final InvocationTargetException | IllegalAccessException  exception) {// report and prevent further calls
-					exception.printStackTrace();
+					exception.printStackTrace(WarpDrive.printStreamError);
 					classGravityHandler = null;
 				}
 				return;

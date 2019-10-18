@@ -565,7 +565,7 @@ public class AcceleratorSetup extends GlobalPosition {
 			WarpDrive.logger.warn(String.format("%s World is no longer loaded, please report to mod author",
 			                                    this));
 			if (Commons.throttleMe("AcceleratorSetup.getCapacitors")) {
-				new RuntimeException().printStackTrace();
+				new RuntimeException().printStackTrace(WarpDrive.printStreamWarn);
 			}
 			return setTileEntityCapacitors;
 		}

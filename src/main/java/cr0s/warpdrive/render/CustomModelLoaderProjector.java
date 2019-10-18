@@ -118,9 +118,9 @@ public enum CustomModelLoaderProjector implements ICustomModelLoader {
 			EnumForceFieldShape enumForceFieldShape = exState != null ? exState.getValue(BlockForceFieldProjector.SHAPE) : EnumForceFieldShape.NONE;
 			if (enumForceFieldShape == null) {
 				if (Commons.throttleMe("CustomModelLoaderProjector Invalid shape")) {
-					new RuntimeException("Invalid shape").printStackTrace();
-					WarpDrive.logger.error(String.format("Invalid shape for %s facing %s",
-					                                     blockState, enumFacing));
+					new RuntimeException(String.format("Invalid shape for %s facing %s",
+					                                   blockState, enumFacing ))
+							.printStackTrace(WarpDrive.printStreamError);
 				}
 				enumForceFieldShape = EnumForceFieldShape.NONE;
 			}

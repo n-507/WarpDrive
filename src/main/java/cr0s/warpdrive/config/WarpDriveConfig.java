@@ -580,7 +580,7 @@ public class WarpDriveConfig {
 			itemStack.setTagCompound(tagCompound);
 		} catch (final NBTException exception) {
 			WarpDrive.logger.error(exception.getMessage());
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 			WarpDrive.logger.error(String.format("Invalid NBT for %s@%d %s",
 			                                     registryName, meta, stringNBT));
 			return ItemStack.EMPTY;
@@ -619,9 +619,9 @@ public class WarpDriveConfig {
 			try {
 				itemStack.setItemDamage(meta);
 			} catch (final Exception exception) {
+				exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.error(String.format("Failed to get mod item for %s@%d",
-				                                     registryName, meta));
-				exception.printStackTrace();
+				                                     registryName, meta ));
 				return null;
 			}
 		}
@@ -1663,7 +1663,7 @@ public class WarpDriveConfig {
 			IC2_Resin = getItemStackOrFire("ic2:misc_resource", 4);
 		} catch (final Exception exception) {
 			WarpDrive.logger.error("Error loading IndustrialCraft2 classes");
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 		}
 	}
 	
@@ -1673,27 +1673,26 @@ public class WarpDriveConfig {
 			final ErrorHandler xmlErrorHandler = new ErrorHandler() {
 				@Override
 				public void warning(final SAXParseException exception) {
+					// exception.printStackTrace(WarpDrive.printStreamError);
 					WarpDrive.logger.warn(String.format("XML warning at line %d: %s",
 					                                    exception.getLineNumber(),
 					                                    exception.getLocalizedMessage() ));
-					// exception.printStackTrace();
 				}
 				
 				@Override
 				public void fatalError(final SAXParseException exception) {
+					// exception.printStackTrace(WarpDrive.printStreamError);
 					WarpDrive.logger.warn(String.format("XML fatal error at line %d: %s",
 					                      exception.getLineNumber(),
 					                      exception.getLocalizedMessage() ));
-					// exception.printStackTrace();
 				}
 				
 				@Override
 				public void error(final SAXParseException exception) {
+					// exception.printStackTrace(WarpDrive.printStreamError);
 					WarpDrive.logger.warn(String.format("XML error at line %d: %s",
 					                                    exception.getLineNumber(),
 					                                    exception.getLocalizedMessage() ));
-					
-					// exception.printStackTrace();
 				}
 			};
 			
@@ -1706,7 +1705,7 @@ public class WarpDriveConfig {
 			try {
 				xmlDocumentBuilder = documentBuilderFactory.newDocumentBuilder();
 			} catch (final ParserConfigurationException exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 			}
 			xmlDocumentBuilder.setErrorHandler(xmlErrorHandler);
 		}
@@ -1753,8 +1752,9 @@ public class WarpDriveConfig {
 			inputStream.close();
 			outputStream.close();
 		} catch (final Exception exception) {
-			WarpDrive.logger.error(String.format("Failed to unpack resource '%s' into '%s'", resourceName, destination));
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
+			WarpDrive.logger.error(String.format("Failed to unpack resource '%s' into '%s'",
+			                                     resourceName, destination ));
 		}
 	}
 }

@@ -68,7 +68,7 @@ public abstract class BakedModelAbstractBase implements IMyBakedModel {
 				}
 			}
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 			WarpDrive.logger.error(String.format("Exception trying to retrieve format for %s original baked model %s, defaulting to forge",
 			                                     modelResourceLocation, bakedModelOriginal));
 			format = DefaultVertexFormats.ITEM;

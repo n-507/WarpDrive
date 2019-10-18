@@ -352,7 +352,7 @@ public class StarMapRegistry {
 			try {
 				return Integer.parseInt(stringDimension);
 			} catch (final Exception exception) {
-				// exception.printStackTrace();
+				// exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.info(String.format("Invalid dimension %s, expecting integer or overworld/nether/end/theend/space/hyper/hyperspace",
 				                                    stringDimension));
 			}
@@ -543,9 +543,9 @@ public class StarMapRegistry {
 							isLoaded = chunk != null && chunk.isLoaded();
 						} catch (final NoSuchFieldError exception) {
 							if (!isExceptionReported) {
+								exception.printStackTrace(WarpDrive.printStreamError);
 								WarpDrive.logger.info(String.format("Unable to check non-loaded chunks for star map entry %s",
 								                                    registryItem));
-								exception.printStackTrace();
 								isExceptionReported = true;
 							}
 							isLoaded = chunkProviderServer.chunkExists(registryItem.x >> 4, registryItem.z >> 4);

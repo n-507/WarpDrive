@@ -58,9 +58,9 @@ public class BakedModelCapacitor extends BakedModelAbstractBase {
 			final EnumDisabledInputOutput enumDisabledInputOutput = getEnumDisabledInputOutput(extendedBlockState, enumFacing);
 			if (enumDisabledInputOutput == null) {
 				if (Commons.throttleMe("BakedModelCapacitor invalid extended")) {
-					new RuntimeException("Invalid extended property").printStackTrace();
-					WarpDrive.logger.error(String.format("%s Invalid extended property for %s enumFacing %s\n%s",
-					                                     this, extendedBlockState, enumFacing, formatDetails()));
+					new RuntimeException(String.format("%s Invalid extended property for %s enumFacing %s\n%s",
+					                                   this, extendedBlockState, enumFacing, formatDetails() ))
+							.printStackTrace(WarpDrive.printStreamError);
 				}
 				return getDefaultQuads(enumFacing, rand);
 			}

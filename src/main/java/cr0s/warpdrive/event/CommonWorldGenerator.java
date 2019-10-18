@@ -1,5 +1,6 @@
 package cr0s.warpdrive.event;
 
+import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.GenericSet;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.config.WarpDriveConfig;
@@ -47,7 +48,7 @@ public class CommonWorldGenerator implements IWorldGenerator {
 			structureGroup.generate(world, random, x, y, z);
 			
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 		}
 	}
 	

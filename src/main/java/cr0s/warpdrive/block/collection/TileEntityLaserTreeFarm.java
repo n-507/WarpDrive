@@ -126,7 +126,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 				indexValuable = 0;
 			} catch (final Exception exception) {
 				// not so supposed to happen, so just dump logs for now
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.error(String.format("%s Calculation failed, please report to mod author %s",
 				                                     this, exception.getMessage() ));
 				// retry with a slight delay
@@ -1089,7 +1089,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 				blockPosSoils = null;
 				blockStatePosValuables = null;
 				if (!(exception instanceof ExceptionChunkNotLoaded)) {
-					exception.printStackTrace();
+					exception.printStackTrace(WarpDrive.printStreamError);
 					WarpDrive.logger.error(String.format("%s Calculation failed for %s",
 					                                     this, stringTileEntity ));
 				} else {

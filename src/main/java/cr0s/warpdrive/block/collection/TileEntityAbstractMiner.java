@@ -91,7 +91,7 @@ public abstract class TileEntityAbstractMiner extends TileEntityAbstractLaser {
 			try {
 				isSilkHarvestable = blockState.getBlock().canSilkHarvest(world, blockPos, blockState, null);
 			} catch (final Exception exception) {// protect in case the mined block is corrupted
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 			}
 			if (isSilkHarvestable) {
 				// intended code if AccessTransformer was working with gradlew:
@@ -115,7 +115,7 @@ public abstract class TileEntityAbstractMiner extends TileEntityAbstractLaser {
 				blockState.getBlock().getDrops(itemStackDrops, world, blockPos, blockState, 0);
 			}
 		} catch (final Exception exception) {// protect in case the mined block is corrupted
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 			return null;
 		}
 		

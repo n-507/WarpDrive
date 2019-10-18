@@ -177,7 +177,7 @@ public class XmlPreprocessor {
 				transformer.transform(input, output);
 				outputCount.incrementAndGet();
 			} catch (final Exception exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 			}
 		}
 	}

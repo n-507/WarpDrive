@@ -446,7 +446,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 		} catch (final Exception exception) {
 			if ( WarpDriveConfig.LOGGING_LUA
 			  || Commons.throttleMe("LUA exception") ) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 			}
 			
 			throw new LuaException(String.format("Internal exception %s from %d:%s to %s.%s(%s)\nCheck server logs for details.",
@@ -521,7 +521,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 					}
 				}
 			} catch (final Exception exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.error(String.format("Failed to mount ComputerCraft scripts for %s %s, isFirstTick %s",
 				                                     peripheralName,
 				                                     Commons.format(world, pos),
@@ -578,7 +578,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 					computerAccess.unmount(pathLUA);
 				}
 			} catch (final Exception exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.error(String.format("Failed to unmount ComputerCraft scripts for %s %s, isFirstTick %s",
 				                                     peripheralName,
 				                                     Commons.format(world, pos),

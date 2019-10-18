@@ -397,7 +397,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 						countLaserMediums = ((TileEntityEnanReactorLaser) tileEntity).laserMedium_getCount();
 					} catch (final Exception exception) {
 						if (isFirstException) {
-							exception.printStackTrace();
+							exception.printStackTrace(WarpDrive.printStreamError);
 							isFirstException = false;
 						}
 						WarpDrive.logger.error(String.format("%s tileEntity is %s",

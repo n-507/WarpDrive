@@ -61,7 +61,7 @@ public class TileEntityForceField extends TileEntity {
 					cache_lightCamouflage = 0;
 				}
 			} catch (final Exception exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 				cache_blockStateCamouflage = null;
 				cache_colorMultiplierCamouflage = 0;
 				cache_lightCamouflage = 0;

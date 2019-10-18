@@ -65,8 +65,9 @@ public class MessageClientSync implements IMessage, IMessageHandler<MessageClien
 			Dictionary.ITEMS_FLYINSPACE       = Dictionary.readItemsFromNBT(messageClientSync.tagCompound.getTagList("items_flyInSpace"     , NBT.TAG_STRING));
 			Dictionary.ITEMS_NOFALLDAMAGE     = Dictionary.readItemsFromNBT(messageClientSync.tagCompound.getTagList("items_noFallDamage"   , NBT.TAG_STRING));
 		} catch (final Exception exception) {
-			exception.printStackTrace();
-			WarpDrive.logger.error(String.format("Fails to parse client synchronization packet %s", messageClientSync.tagCompound));
+			exception.printStackTrace(WarpDrive.printStreamError);
+			WarpDrive.logger.error(String.format("Fails to parse client synchronization packet %s",
+			                                     messageClientSync.tagCompound ));
 		}
 		
 		return new MessageClientValidation();

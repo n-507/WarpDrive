@@ -216,7 +216,7 @@ public class PacketHandler {
 		try {
 			return (Packet) EntityTrackerEntry_getPacketForThisEntity.invoke(entry);
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 		}
 		WarpDrive.logger.error(String.format("Unable to get packet for entity %s",
 		                                     entity));
@@ -287,7 +287,7 @@ public class PacketHandler {
 				}
 			}
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 		}
 	}
 }

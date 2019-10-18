@@ -45,7 +45,7 @@ public class ModelBakeEventHandler {
 				bakedModelNew.setModelResourceLocation(entry.getKey());
 				bakedModelNew.setOriginalBakedModel(bakedModelExisting);
 			} catch (final Exception exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.error(String.format("Failed to update baked model through %s of %s",
 				                                     entry.getKey(), entry.getValue()));
 				continue;

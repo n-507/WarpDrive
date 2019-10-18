@@ -54,7 +54,7 @@ public class MessageClientValidation implements IMessage, IMessageHandler<Messag
 				printWriter.close();
 			}
 		} catch (final IOException exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 			WarpDrive.logger.error("Exception while saving client validation to disk");
 		}
 	}

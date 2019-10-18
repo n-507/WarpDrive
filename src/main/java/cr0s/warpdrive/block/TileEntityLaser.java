@@ -493,9 +493,9 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 				hardness = blockState.getBlockHardness(world, blockHit.getBlockPos());
 			} catch (final Exception exception) {
 				if (Commons.throttleMe("TileEntityLaser.getBlockHardness")) {
+					exception.printStackTrace(WarpDrive.printStreamError);
 					WarpDrive.logger.error(String.format("Unable to access block hardness value of %s",
 					                                     blockState.getBlock() ));
-					exception.printStackTrace();
 				}
 			}
 			if (blockState.getBlock() instanceof IDamageReceiver) {
@@ -805,7 +805,7 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 				initiateBeamEmission(newYaw, newPitch);
 			}
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 			return new Object[] { false };
 		}
 		return new Object[] { true };
@@ -824,7 +824,7 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 				scanResult_blockResistance = -2;
 				return info;
 			} catch (final Exception exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 				return new Object[] { COMPUTER_ERROR_TAG, 0, 0, 0, null, 0, -3 };
 			}
 		} else {

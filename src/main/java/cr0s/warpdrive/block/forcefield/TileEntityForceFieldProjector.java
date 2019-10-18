@@ -294,7 +294,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		try {
 			doScheduledForceFieldRemoval();
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 		}
 		super.onBlockBroken(world, blockPos, blockState);
 	}
@@ -741,7 +741,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		try {
 			itemStacks = blockState.getBlock().getDrops(world, vector.getBlockPos(), blockState, 0);
 		} catch (final Exception exception) {// protect in case the mined block is corrupted
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 			itemStacks = null;
 		}
 		
@@ -778,7 +778,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			WarpDrive.logger.info(String.format("%s destroying force field of %d placed out of %d calculated blocks",
 			                                    this, countPlaced, countCalculated));
 			if (WarpDriveConfig.LOGGING_FORCE_FIELD) {
-				new RuntimeException().printStackTrace();
+				new RuntimeException().printStackTrace(WarpDrive.printStreamInfo);
 			}
 		}
 		
@@ -1322,7 +1322,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			} catch (final Exception exception) {
 				vInteriorBlocks = null;
 				vPerimeterBlocks = null;
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.error(String.format("%s Calculation failed for %s",
 				                                     this, stringProjector));
 			}

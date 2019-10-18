@@ -382,9 +382,9 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 				return Math.min(gravity, 1.0D);
 			}
 		} catch (final Exception exception) {
+			exception.printStackTrace(WarpDrive.printStreamError);
 			WarpDrive.logger.error(String.format("Invalid gravity value, expecting none, legacySpace, legacyHyperspace, normal or a positive double. Found %s",
-			                                     stringGravity));
-			exception.printStackTrace();
+			                                     stringGravity ));
 			return 1.0D;
 		}
 	}
@@ -789,8 +789,9 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 				green = Commons.clamp(0.0F, 1.0F, Float.parseFloat(elementColor.getAttribute("green")));
 				blue = Commons.clamp(0.0F, 1.0F, Float.parseFloat(elementColor.getAttribute("blue")));
 			} catch (final Exception exception) {
-				exception.printStackTrace();
-				WarpDrive.logger.error(String.format("Exception while parsing Color element at %s", location));
+				exception.printStackTrace(WarpDrive.printStreamError);
+				WarpDrive.logger.error(String.format("Exception while parsing Color element at %s",
+				                                     location ));
 				red = 0.5F;
 				green = 0.5F;
 				blue = 0.5F;
@@ -834,9 +835,9 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 				blue = Commons.clamp(0.0F, 1.0F, Float.parseFloat(elementRender.getAttribute("blue")));
 				alpha = Commons.clamp(0.0F, 1.0F, Float.parseFloat(elementRender.getAttribute("alpha")));
 			} catch (final Exception exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.error(String.format("Exception while parsing Render element RGBA attributes at %s",
-				                                     location));
+				                                     location ));
 				red = 0.5F;
 				green = 0.5F;
 				blue = 0.5F;
@@ -859,7 +860,7 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 						periodU = Commons.clampMantisse(0.001D, 1000000.0D, Double.parseDouble(stringPeriodU));
 					} catch (final NumberFormatException exception) {
 						throw new InvalidXmlException(String.format("Invalid periodU attribute '%s' at %s",
-						                                            stringPeriodU, location));
+						                                            stringPeriodU, location ));
 					}
 				}
 				
@@ -870,7 +871,7 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 						periodV = Commons.clampMantisse(0.001D, 1000000.0D, Double.parseDouble(stringPeriodV));
 					} catch (final NumberFormatException exception) {
 						throw new InvalidXmlException(String.format("Invalid periodV attribute '%s' at %s",
-						                                            stringPeriodV, location));
+						                                            stringPeriodV, location ));
 					}
 				}
 				

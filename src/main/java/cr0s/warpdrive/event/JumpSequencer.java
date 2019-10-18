@@ -586,7 +586,7 @@ public class JumpSequencer extends AbstractSequencer {
 			WarpDrive.logger.info(this + " Saving ship state prior to jump in " + schematicFileName);
 			Commons.writeNBTToFile(schematicFileName, schematic);
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 		}
 		
 		msCounter = System.currentTimeMillis();
@@ -1182,11 +1182,11 @@ public class JumpSequencer extends AbstractSequencer {
 						}
 					}
 				} catch (final Exception exception) {
+					if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
+						exception.printStackTrace(WarpDrive.printStreamError);
+					}
 					WarpDrive.logger.info(String.format("Exception while moving external %s@%d at (%d %d %d)",
 					                                    jumpBlock.block, jumpBlock.blockMeta, jumpBlock.x, jumpBlock.y, jumpBlock.z));
-					if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
-						exception.printStackTrace();
-					}
 				}
 				index++;
 			}
@@ -1306,11 +1306,11 @@ public class JumpSequencer extends AbstractSequencer {
 						}
 					}
 				} catch (final Exception exception) {
+					if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
+						exception.printStackTrace(WarpDrive.printStreamError);
+					}
 					WarpDrive.logger.info(String.format("Exception while removing %s@%d at (%d %d %d)",
 					                                    jumpBlock.block, jumpBlock.blockMeta, jumpBlock.x, jumpBlock.y, jumpBlock.z));
-					if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
-						exception.printStackTrace();
-					}
 				}
 			}
 			
@@ -1346,8 +1346,9 @@ public class JumpSequencer extends AbstractSequencer {
 			removeDuplicates(worldTarget.loadedTileEntityList);
 		} catch (final Exception exception) {
 			if (WarpDriveConfig.LOGGING_JUMP) {
-				WarpDrive.logger.info(String.format("Exception while checking for TE duplicates: %s", exception.getMessage()));
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
+				WarpDrive.logger.info(String.format("Exception while checking for TE duplicates: %s",
+				                                    exception.getMessage() ));
 			}
 		}
 		

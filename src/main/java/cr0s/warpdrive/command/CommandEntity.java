@@ -91,7 +91,7 @@ public class CommandEntity extends AbstractCommand {
 				kill = par.equals("y") || par.equals("yes") || par.equals("1");
 			}
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 			Commons.addChatMessage(commandSender, new TextComponentString(getUsage(commandSender)));
 			return;
 		}

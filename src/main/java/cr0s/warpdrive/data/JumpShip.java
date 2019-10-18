@@ -597,7 +597,7 @@ public class JumpShip {
 			}
 			actualMass = newMass;
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 			final WarpDriveText textComponent = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.save_exception",
 			                                                      Commons.format(world, blockPos));
 			WarpDrive.logger.error(textComponent.getUnformattedText());

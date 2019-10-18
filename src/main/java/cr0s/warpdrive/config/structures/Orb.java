@@ -42,7 +42,7 @@ public class Orb extends AbstractStructure {
 				orbShells[shellIndexOut].loadFromXmlElement(elementShell);
 				shellIndexOut++;
 			} catch (final InvalidXmlException exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.error(String.format("Skipping invalid shell %s", orbShellName));
 			}
 		}
@@ -149,7 +149,7 @@ public class Orb extends AbstractStructure {
 					orbShell.loadFrom(fillerSet);
 				}
 			} catch (final Exception exception) {
-				exception.printStackTrace();
+				exception.printStackTrace(WarpDrive.printStreamError);
 				WarpDrive.logger.error(String.format("Failed to instantiate shell %s from structure %s",
 				                                     name, group));
 			}

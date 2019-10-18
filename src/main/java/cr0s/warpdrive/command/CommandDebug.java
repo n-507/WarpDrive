@@ -59,7 +59,7 @@ public class CommandDebug extends AbstractCommand {
 			metadata = Integer.parseInt(args[5]);
 			actions = args[6];
 		} catch (final Exception exception) {
-			exception.printStackTrace();
+			exception.printStackTrace(WarpDrive.printStreamError);
 			Commons.addChatMessage(commandSender, new TextComponentString(getUsage(commandSender)));
 			return;
 		}
