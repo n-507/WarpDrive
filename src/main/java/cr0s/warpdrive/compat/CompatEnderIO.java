@@ -1,21 +1,22 @@
 package cr0s.warpdrive.compat;
 
+import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBlockTransformer;
 import cr0s.warpdrive.api.ITransformation;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -25,12 +26,11 @@ import net.minecraftforge.common.util.Constants;
 public class CompatEnderIO implements IBlockTransformer {
 	
 	private static Class<?> classTileEntityEIO;
-	private static Class<?> classBlockReservoir;
 	
 	public static void register() {
 		try {
 			classTileEntityEIO = Class.forName("crazypants.enderio.base.TileEntityEio");
-			classBlockReservoir = Class.forName("crazypants.enderio.machines.machine.reservoir.BlockReservoirBase");
+			
 			WarpDriveConfig.registerBlockTransformer("enderio", new CompatEnderIO());
 		} catch(final ClassNotFoundException exception) {
 			exception.printStackTrace();
@@ -60,43 +60,99 @@ public class CompatEnderIO implements IBlockTransformer {
 		// nothing to do
 	}
 	
-	private static final short[] mrot = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	/*
+	As of EnderIO-1.12.2-5.1.52
+	
+	Non tile entities: anvil, door, bars, trap door, timed levers, antenna extender?
+	
+	enderio:tile_omni_reservoir
+	enderio:tile_reservoir
+	enderio:tile_wireless_charger
+		metadata 0
+	
+	enderio:tile_enderman_skull
+		float   yaw -315 to +0 / +90 per rotation step
+	
+	enderio:tile_tele_pad
+		metadata    1 / 2 4 6 8 / 3 5 7 9
+	
+	enderio:tile_dialing_device
+		int facing          3
+		int dialerFacing    0 3 1 2 / 4 7 5 6 / 8 20 13 17 / 9 21 12 16 / 10 22 14 18 / 11 23 15 19
+	
+	enderio:tile_travel_anchor
+	enderio:tile_lava_generator
+	enderio:tile_soul_binder
+	enderio:tile_combustion_generator_enhanced
+	enderio:tile_alloy_smelter_furnace
+	enderio:tile_alloy_smelter
+	enderio:tile_alloy_smelter_enhanced
+		int     facing      2 5 3 4
+		int[3]  faceModes   3, 0, 0x004c0 0x1a000 0x00680 0x13000
+							actually it's EnumMap<EnumFacing, IoMode> where IoMode can be NONE, PULL, PUSH, PUSH_PULL, DISABLED
+							this is coded by sequence of 3 bits
+	
+	enderio:tile_cap_bank
+		int[3]  faceModes           3, 0, 0x004c0 0x1a000 0x00680 0x13000
+		int[3]  faceDisplayTypes    3, 0, 0x00080 0x10000 0x00400 0x02000 0b010010010010010010
+	                                      0x000c0 0x00600 0x03000 0x18000 0b011011011011000000
+	                                      0x00140 0x00a00 0x05000 0x28000 0b101101101101000000
+	
+	enderio:tile_conduit_bundle
+		compound    conduits
+			int         size
+			compound    0 / 1 / 2 / etc.
+				int[0 to 6] connections            0 / 1 / 2 5 3 4
+				int[0 to 6] externalConnections    0 / 1 / 2 5 3 4
+				byte[6]     conModes
+				byte[6]     forcedConnections
+				byte[6]     outputSignalColors
+				byte[6]     signalColors
+				byte[6]     signalStrengths
+				tagCompound functionUpgrades.NORTH/SOUTH/EAST/WEST
+				tagCompound inFilts.NORTH/SOUTH/EAST/WEST
+				tagCompound inputFilterUpgrades.NORTH/SOUTH/EAST/WEST
+				tagCompound outFilts.NORTH/SOUTH/EAST/WEST
+				tagCompound outputFilterUpgrades.NORTH/SOUTH/EAST/WEST
+				short       extRM.WEST          is it rsModes or extractionModes ?
+				short       extSC.WEST          is it rsColors or extractionColors ?
+				short       inSC.WEST           is it inputColors ?
+				short       outSC.WEST          is it outputColors ?
+				int         priority.WEST
+				boolean     roundRobin.WEST
+				boolean     selfFeed.WEST
+	
+	 */
 	private static final Map<String, String> rotSideNames;
-	private static final Map<String, String> rotFaceNames;
 	static {
-		Map<String, String> map = new HashMap<>();
+		final Map<String, String> map = new HashMap<>();
 		map.put("EAST", "SOUTH");
 		map.put("SOUTH", "WEST");
 		map.put("WEST", "NORTH");
 		map.put("NORTH", "EAST");
 		rotSideNames = Collections.unmodifiableMap(map);
-		map = new HashMap<>();
-		map.put("face2", "face5");
-		map.put("face5", "face3");
-		map.put("face3", "face4");
-		map.put("face4", "face2");
-		map.put("faceDisplay2", "faceDisplay5");
-		map.put("faceDisplay5", "faceDisplay3");
-		map.put("faceDisplay3", "faceDisplay4");
-		map.put("faceDisplay4", "faceDisplay2");
-		rotFaceNames = Collections.unmodifiableMap(map);
 	}
-	private static final short[] rotFront         = {  0,  1,  5,  3,  4,  2,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-	private static final short[] rotRight         = {  0,  1,  4,  3,  2,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-	private static final short[] rotPosHorizontal = {  1,  3,  0,  2,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	private static final String[] nameEnumMapEnumFacings = {
+			"faceModes",
+			"faceDisplayTypes"
+	};
+	private static final int[] rotFacing          = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	//                                                 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23
+	private static final int[] rotDialerFacing    = {  3,  2,  0,  1,  7,  6,  4,  5, 20, 21, 22, 23, 16, 17, 18, 19,  9,  8, 10, 11, 13, 12, 14, 15 };
+	private static final int[] mrotTelePad        = {  0,  1,  4,  5,  6,  7,  8,  9,  2,  3, 10, 11, 12, 13, 14, 15 };
 	
-	private byte[] rotate_byteArray(final byte rotationSteps, final byte[] data) {
+	private byte[] rotate_byteArray(final byte rotationSteps, @Nonnull final byte[] data) {
 		final byte[] newData = data.clone();
 		for (int index = 0; index < data.length; index++) {
 			switch (rotationSteps) {
 			case 1:
-				newData[mrot[index]] = data[index];
+				newData[rotFacing[index]] = data[index];
 				break;
 			case 2:
-				newData[mrot[mrot[index]]] = data[index];
+				newData[rotFacing[rotFacing[index]]] = data[index];
 				break;
 			case 3:
-				newData[mrot[mrot[mrot[index]]]] = data[index];
+				newData[rotFacing[rotFacing[rotFacing[index]]]] = data[index];
 				break;
 			default:
 				break;
@@ -104,6 +160,39 @@ public class CompatEnderIO implements IBlockTransformer {
 		}
 		return newData;
 	}
+	
+	private int[] rotate_enumFacing(final byte rotationSteps, @Nonnull final int[] data) {
+		// we only support 3 bits encoding
+		if ( data.length != 3
+		  || data[0] != 3
+		  || data[1] != 0 ) {
+			WarpDrive.logger.error(String.format("Invalid EnumFacing encoding [%s], please report to mod author",
+			                                     Commons.formatHexadecimal(data) ));
+			return data;
+		}
+		
+		// extract into a byte array
+		final int[] newData = data.clone();
+		final byte[] bytes = new byte[6];
+		int value = data[2];
+		for (int index = 0; index < 6; index++) {
+			bytes[index] = (byte) (value & 0b111);
+			value = value >> 3;
+		}
+		
+		// rotate
+		final byte[] newBytes = rotate_byteArray(rotationSteps, bytes);
+		
+		// encode back
+		int newValue = 0;
+		for (int index = 5; index >= 0; index--) {
+			newValue = (newValue << 3) | (newBytes[index] & 0b111);
+		}
+		newData[2] = newValue;
+		
+		return newData;
+	}
+	
 	private NBTTagCompound rotate_conduit(final byte rotationSteps, final NBTTagCompound nbtConduit) {
 		final NBTTagCompound nbtNewConduit = new NBTTagCompound();
 		final Set<String> keys = nbtConduit.getKeySet();
@@ -116,13 +205,13 @@ public class CompatEnderIO implements IBlockTransformer {
 				for (int index = 0; index < data.length; index++) {
 					switch (rotationSteps) {
 					case 1:
-						newData[index] = mrot[data[index]];
+						newData[index] = rotFacing[data[index]];
 						break;
 					case 2:
-						newData[index] = mrot[mrot[data[index]]];
+						newData[index] = rotFacing[rotFacing[data[index]]];
 						break;
 					case 3:
-						newData[index] = mrot[mrot[mrot[data[index]]]];
+						newData[index] = rotFacing[rotFacing[rotFacing[data[index]]]];
 						break;
 					default:
 						break;
@@ -131,7 +220,7 @@ public class CompatEnderIO implements IBlockTransformer {
 				nbtNewConduit.setIntArray(key, newData);
 				break;
 				
-			case Constants.NBT.TAG_BYTE_ARRAY:	// "conModes", "signalColors", "forcedConnections", "signalStrengths"
+			case Constants.NBT.TAG_BYTE_ARRAY:	// "conModes", "forcedConnections", "outputSignalColors", "signalColors", "signalStrengths"
 				nbtNewConduit.setByteArray(key, rotate_byteArray(rotationSteps, nbtConduit.getByteArray(key)));
 				break;
 				
@@ -161,152 +250,98 @@ public class CompatEnderIO implements IBlockTransformer {
 		return nbtNewConduit;
 	}
 	
-	private void rotateReservoir(final NBTTagCompound nbtTileEntity, final ITransformation transformation, final byte rotationSteps) {
-		if (nbtTileEntity.hasKey("front")) {
-			final short front = nbtTileEntity.getShort("front");
-			switch (rotationSteps) {
-			case 1:
-				nbtTileEntity.setShort("front", rotFront[front]);
-				break;
-			case 2:
-				nbtTileEntity.setShort("front", rotFront[rotFront[front]]);
-				break;
-			case 3:
-				nbtTileEntity.setShort("front", rotFront[rotFront[rotFront[front]]]);
-				break;
-			default:
-				break;
-			}
-		}
-		if (nbtTileEntity.hasKey("right")) {
-			final short right = nbtTileEntity.getShort("right");
-			switch (rotationSteps) {
-			case 1:
-				nbtTileEntity.setShort("right", rotRight[right]);
-				break;
-			case 2:
-				nbtTileEntity.setShort("right", rotRight[rotRight[right]]);
-				break;
-			case 3:
-				nbtTileEntity.setShort("right", rotRight[rotRight[rotRight[right]]]);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		// Multiblock
-		if (nbtTileEntity.hasKey("multiblock") && nbtTileEntity.hasKey("pos")) {
-			final int[] oldCoords = nbtTileEntity.getIntArray("multiblock");
-			final BlockPos[] targets = new BlockPos[oldCoords.length / 3];
-			for (int index = 0; index < oldCoords.length / 3; index++) {
-				targets[index] = transformation.apply(oldCoords[3 * index], oldCoords[3 * index + 1], oldCoords[3 * index + 2]);
-			}
-			if (targets[0].getY() == targets[1].getY() && targets[1].getY() == targets[2].getY() && targets[2].getY() == targets[3].getY()) {
-				final short pos = nbtTileEntity.getShort("pos");
-				switch (rotationSteps) {
-				case 1:
-					nbtTileEntity.setShort("pos", rotPosHorizontal[pos]);
-					break;
-				case 2:
-					nbtTileEntity.setShort("pos", rotPosHorizontal[rotPosHorizontal[pos]]);
-					break;
-				case 3:
-					nbtTileEntity.setShort("pos", rotPosHorizontal[rotPosHorizontal[rotPosHorizontal[pos]]]);
-					break;
-				default:
-					break;
-				}
-			} else {
-				final BlockPos newPos = transformation.apply(nbtTileEntity.getInteger("x"), nbtTileEntity.getInteger("y"), nbtTileEntity.getInteger("z"));
-				if (targets[0].getX() == targets[1].getX() && targets[1].getX() == targets[2].getX() && targets[2].getX() == targets[3].getX()) {
-					final int minZ = Math.min(targets[0].getZ(), Math.min(targets[1].getZ(), targets[2].getZ()));
-					final short pos = (short) ((nbtTileEntity.getShort("pos") & 2) + (newPos.getZ() == minZ ? 1 : 0));	// 2 & 3 are for bottom
-					nbtTileEntity.setShort("pos", pos);
-				} else {
-					final int minX = Math.min(targets[0].getX(), Math.min(targets[1].getX(), targets[2].getX()));
-					final short pos = (short) ((nbtTileEntity.getShort("pos") & 2) + (newPos.getZ() == minX ? 1 : 0));	// 2 & 3 are for bottom
-					nbtTileEntity.setShort("pos", pos);
-				}
-			}
-			
-			final int[] newCoords = new int[oldCoords.length];
-			for (int index = 0; index < oldCoords.length / 3; index++) {
-				newCoords[3 * index    ] = targets[index].getX();
-				newCoords[3 * index + 1] = targets[index].getY();
-				newCoords[3 * index + 2] = targets[index].getZ();
-			}
-			nbtTileEntity.setIntArray("multiblock", newCoords);
-		}
-	}
-	
 	@Override
 	public int rotate(final Block block, final int metadata, final NBTTagCompound nbtTileEntity, final ITransformation transformation) {
 		final byte rotationSteps = transformation.getRotationSteps();
 		
-		if (nbtTileEntity.hasKey("facing")) {
-			final short facing = nbtTileEntity.getShort("facing");
+		// Telepad are just metadata rotation
+		if (nbtTileEntity.getString("id").equals("enderio:tile_tele_pad")) {
 			switch (rotationSteps) {
 			case 1:
-				nbtTileEntity.setShort("facing", mrot[facing]);
+				return mrotTelePad[metadata];
+			case 2:
+				return mrotTelePad[mrotTelePad[metadata]];
+			case 3:
+				return mrotTelePad[mrotTelePad[mrotTelePad[metadata]]];
+			default:
+				return metadata;
+			}
+		}
+		
+		// dialerFacing takes priority on facing, nothing else, so we do it in advance and return
+		if (nbtTileEntity.hasKey("dialerFacing")) {
+			final int dialerFacing = nbtTileEntity.getInteger("dialerFacing");
+			switch (rotationSteps) {
+			case 1:
+				nbtTileEntity.setInteger("dialerFacing", rotDialerFacing[dialerFacing]);
 				return metadata;
 			case 2:
-				nbtTileEntity.setShort("facing", mrot[mrot[facing]]);
+				nbtTileEntity.setInteger("dialerFacing", rotDialerFacing[rotDialerFacing[dialerFacing]]);
 				return metadata;
 			case 3:
-				nbtTileEntity.setShort("facing", mrot[mrot[mrot[facing]]]);
+				nbtTileEntity.setInteger("dialerFacing", rotDialerFacing[rotDialerFacing[rotDialerFacing[dialerFacing]]]);
 				return metadata;
 			default:
 				return metadata;
 			}
 		}
 		
-		// Reservoir
-		if (classBlockReservoir.isInstance(block)) {
-			rotateReservoir(nbtTileEntity, transformation, rotationSteps);
+		// rotation is for pressure plates, nothing else, so we return
+		if (nbtTileEntity.hasKey("rotation")) {
+			final short rotation = nbtTileEntity.getShort("rotation");
+			switch (rotationSteps) {
+			case 1:
+				nbtTileEntity.setInteger("rotation", rotFacing[rotation]);
+				return metadata;
+			case 2:
+				nbtTileEntity.setInteger("rotation", rotFacing[rotFacing[rotation]]);
+				return metadata;
+			case 3:
+				nbtTileEntity.setInteger("rotation", rotFacing[rotFacing[rotFacing[rotation]]]);
+				return metadata;
+			default:
+				return metadata;
+			}
+		}
+		
+		// facing is common, sometime with more behind
+		if (nbtTileEntity.hasKey("facing")) {
+			final short facing = nbtTileEntity.getShort("facing");
+			switch (rotationSteps) {
+			case 1:
+				nbtTileEntity.setInteger("facing", rotFacing[facing]);
+				break;
+			case 2:
+				nbtTileEntity.setInteger("facing", rotFacing[rotFacing[facing]]);
+				break;
+			case 3:
+				nbtTileEntity.setInteger("facing", rotFacing[rotFacing[rotFacing[facing]]]);
+				break;
+			default:
+				break;
+			}
 		}
 		
 		// Faces
-		final Map<String, Short> map = new HashMap<>();
-		for (final String key : rotFaceNames.keySet()) {
-			if (nbtTileEntity.hasKey(key)) {
-				final short face = nbtTileEntity.getShort(key);
-				switch (rotationSteps) {
-				case 1:
-					map.put(rotFaceNames.get(key), face);
-					break;
-				case 2:
-					map.put(rotFaceNames.get(rotFaceNames.get(key)), face);
-					break;
-				case 3:
-					map.put(rotFaceNames.get(rotFaceNames.get(rotFaceNames.get(key))), face);
-					break;
-				default:
-					map.put(key, face);
-					break;
-				}
-				nbtTileEntity.removeTag(key);
-			}
-		}
-		if (!map.isEmpty()) {
-			for (final Entry<String, Short> entry : map.entrySet()) {
-				nbtTileEntity.setShort(entry.getKey(), entry.getValue());
+		for (final String nameEnumFacing : nameEnumMapEnumFacings) {
+			if (nbtTileEntity.hasKey(nameEnumFacing)) {
+				final int[] ints  = nbtTileEntity.getIntArray(nameEnumFacing);
+				final int[] intsNew = rotate_enumFacing(rotationSteps, ints);
+				nbtTileEntity.setIntArray(nameEnumFacing, intsNew);
 			}
 		}
 		
 		// Conduits
 		if (nbtTileEntity.hasKey("conduits")) {
-			final NBTTagList nbtConduits = nbtTileEntity.getTagList("conduits", Constants.NBT.TAG_COMPOUND);
-			final NBTTagList nbtNewConduits = new NBTTagList(); 
-			for (int index = 0; index < nbtConduits.tagCount(); index++) {
-				final NBTTagCompound conduitTypeAndContent = nbtConduits.getCompoundTagAt(index);
-				final NBTTagCompound newConduitTypeAndContent = new NBTTagCompound();
-				newConduitTypeAndContent.setString("conduitType", conduitTypeAndContent.getString("conduitType"));
-				newConduitTypeAndContent.setTag("conduit", rotate_conduit(rotationSteps, conduitTypeAndContent.getCompoundTag("conduit")));
-				nbtNewConduits.appendTag(newConduitTypeAndContent);
+			final NBTTagCompound nbtConduits = nbtTileEntity.getCompoundTag("conduits");
+			final int size = nbtConduits.getInteger("size");
+			for (int index = 0; index < size; index++) {
+				final String key = Integer.toString(index);
+				final NBTTagCompound nbtConduit = nbtConduits.getCompoundTag(key);
+				nbtConduits.setTag(key, rotate_conduit(rotationSteps, nbtConduit));
 			}
-			nbtTileEntity.setTag("conduits", nbtNewConduits);
 		}
+		
 		return metadata;
 	}
 	

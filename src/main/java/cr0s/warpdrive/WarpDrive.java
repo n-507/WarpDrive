@@ -206,7 +206,7 @@ import javax.annotation.Nullable;
                   + "after:cofhcore;"
                   + "after:ccturtle;"
                   + "after:computercraft@[1.82.1,);"
-                  + "after:enderio;"
+                  + "after:enderio@[5.1.52,);"
                   + "after:gregtech;"
                   + "after:ic2;"
                   + "after:icbmclassic;"

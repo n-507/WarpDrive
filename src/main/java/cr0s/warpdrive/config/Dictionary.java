@@ -141,7 +141,13 @@ public class Dictionary {
 			config.get("block_tags", "draconicevolution:chaos_crystal"                      , "Anchor SkipMining").getString(); // static
 			config.get("block_tags", "draconicevolution:portal"                             , "Anchor StopMining").getString(); // lore
 			config.get("block_tags", "enderio:block_creative_spawner"                       , "Anchor SkipMining").getString(); // creative
-			config.get("block_tags", "enderio:block_transceiver"                            , "Anchor").getString(); // not supported
+			config.get("block_tags", "enderio:block_killer_joe"                             , "Anchor").getString(); // high blast resistance
+			config.get("block_tags", "enderio:block_enhanced_alloy_smelter_top"             , "Anchor SkipMining").getString(); // high blast resistance
+			config.get("block_tags", "enderio:block_enhanced_combustion_generator_top"      , "Anchor SkipMining").getString(); // high blast resistance
+			config.get("block_tags", "enderio:block_enhanced_sag_mill_top"                  , "Anchor SkipMining").getString(); // high blast resistance
+			config.get("block_tags", "enderio:block_enhanced_vat_top"                       , "Anchor SkipMining").getString(); // high blast resistance
+			config.get("block_tags", "enderio:block_enhanced_wired_charger_top"             , "Anchor SkipMining").getString(); // high blast resistance
+			config.get("block_tags", "enderio:block_transceiver"                            , "Anchor").getString(); // Dimensional transceiver is not supported
 			config.get("block_tags", "extrautils2:creativechest"                            , "Anchor SkipMining").getString(); // creative
 			config.get("block_tags", "extrautils2:creativeenergy"                           , "Anchor SkipMining").getString(); // creative
 			config.get("block_tags", "extrautils2:creativeharvest"                          , "Anchor SkipMining").getString(); // creative

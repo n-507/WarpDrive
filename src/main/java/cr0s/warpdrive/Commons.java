@@ -409,6 +409,20 @@ public class Commons {
 	}
 	
 	@Nonnull
+	public static String formatHexadecimal(final int[] ints) {
+		final StringBuilder result = new StringBuilder();
+		if (ints != null && ints.length > 0) {
+			for (final int value : ints) {
+				if (result.length() > 0) {
+					result.append(", ");
+				}
+				result.append(String.format("0x%8x", value));
+			}
+		}
+		return result.toString();
+	}
+	
+	@Nonnull
 	public static String format(final World world) {
 		if (world == null) {
 			return "~NULL~";
