@@ -192,6 +192,11 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		final int energyPotential = acceleratorSetup.energy_getPotentialOutput();
 		isPowered = energyRequired > 0 && energyPotential >= energyRequired;
 		
+		if (!acceleratorSetup.isLoaded()) {
+			cooldownTicks = ACCELERATOR_COOLDOWN_TICKS;
+			return;
+		}
+		
 		final boolean isEnabledAndValid = isEnabled && isAssemblyValid;
 		final boolean isOn = isEnabledAndValid && cooldownTicks <= 0 && isPowered;
 		updateBlockState(null, BlockProperties.ACTIVE, isOn);

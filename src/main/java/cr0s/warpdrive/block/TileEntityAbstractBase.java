@@ -90,6 +90,12 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		isConstructed = true;
 	}
 	
+	public void finishConstruction() {
+		if (!isConstructed) {
+			onConstructed();
+		}
+	}
+	
 	protected void onFirstUpdateTick() {
 		// No operation
 		assert isConstructed;

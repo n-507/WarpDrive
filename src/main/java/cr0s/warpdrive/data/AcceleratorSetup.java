@@ -82,6 +82,7 @@ public class AcceleratorSetup extends GlobalPosition {
 	
 	protected boolean isAssemblyValid = true;
 	protected WarpDriveText textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "-undefined accelerator setup-");
+	private boolean isLoaded = true;
 	
 	public AcceleratorSetup(final int dimensionId, @Nonnull final BlockPos blockPos) {
 		super(dimensionId, blockPos.getX(), blockPos.getY(), blockPos.getZ());
@@ -556,6 +557,11 @@ public class AcceleratorSetup extends GlobalPosition {
 		return isAssemblyValid;
 	}
 	
+	@Override
+	public boolean isLoaded() {
+		return super.isLoaded() && isLoaded;
+	}
+	
 	// Pseudo-API for energy
 	@Nonnull
 	private HashSet<TileEntityCapacitor> getCapacitors() {
@@ -567,31 +573,42 @@ public class AcceleratorSetup extends GlobalPosition {
 			if (Commons.throttleMe("AcceleratorSetup.getCapacitors")) {
 				new RuntimeException().printStackTrace(WarpDrive.printStreamWarn);
 			}
+			isLoaded = false;
 			return setTileEntityCapacitors;
 		}
 		for (final BlockPos blockPosCapacitor : setCapacitors) {
 			final TileEntity tileEntity = world.getTileEntity(blockPosCapacitor);
 			if (tileEntity instanceof TileEntityCapacitor) {
 				final TileEntityCapacitor tileEntityCapacitor = (TileEntityCapacitor) tileEntity;
+				tileEntityCapacitor.finishConstruction();
 				setTileEntityCapacitors.add(tileEntityCapacitor);
 			} else {
 				isDirty = true;
 			}
 		}
+		isLoaded = true;
 		return setTileEntityCapacitors;
 	}
 	
 	public long energy_getEnergyStored() {
+		final HashSet<TileEntityCapacitor> capacitors = getCapacitors();
+		if (!isLoaded()) {
+			return Integer.MAX_VALUE;
+		}
 		long energyStored = 0;
-		for (final TileEntityCapacitor tileEntityCapacitor : getCapacitors()) {
+		for (final TileEntityCapacitor tileEntityCapacitor : capacitors) {
 			energyStored += tileEntityCapacitor.energy_getEnergyStored();
 		}
 		return energyStored;
 	}
 	
 	public int energy_getPotentialOutput() {
+		final HashSet<TileEntityCapacitor> capacitors = getCapacitors();
+		if (!isLoaded()) {
+			return Integer.MAX_VALUE;
+		}
 		long potentialOutput = 0;
-		for (final TileEntityCapacitor tileEntityCapacitor : getCapacitors()) {
+		for (final TileEntityCapacitor tileEntityCapacitor : capacitors) {
 			potentialOutput = Math.min(potentialOutput + tileEntityCapacitor.energy_getPotentialOutput(), Integer.MAX_VALUE);
 		}
 		return (int) potentialOutput;
@@ -602,6 +619,8 @@ public class AcceleratorSetup extends GlobalPosition {
 	}
 	
 	public void energy_consume(final int amount_internal) {
+		assert isLoaded;
+		
 		// first, draw average from all
 		final int energyMean = amount_internal / setCapacitors.size();
 		int energyConsumed = 0;
