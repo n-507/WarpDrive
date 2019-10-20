@@ -889,7 +889,7 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
-		tagCompound.setLong(EnergyWrapper.TAG_ENERGY, energy_getEnergyStored());
+		tagCompound.setLong(EnergyWrapper.TAG_ENERGY, energyStored_internal);
 		return tagCompound;
 	}
 	
