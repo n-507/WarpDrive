@@ -21,8 +21,8 @@ public class FakeWorld extends World {
 	private IBlockState blockState;
 	private TileEntity tileEntity;
 	
-	public FakeWorld(final IBlockState blockState) {
-		super(null, new WorldInfo(new NBTTagCompound()), new FakeWorldProvider(), null, true);
+	public FakeWorld(final IBlockState blockState, final boolean isRemote) {
+		super(null, new WorldInfo(new NBTTagCompound()), new FakeWorldProvider(), null, isRemote);
 		this.blockState = blockState;
 	}
 	
@@ -74,6 +74,11 @@ public class FakeWorld extends World {
 		  && blockState.getBlock().hasTileEntity(blockState) ) {
 			if (tileEntity == null) {
 				tileEntity = blockState.getBlock().createTileEntity(this, blockState);
+				if (tileEntity != null) {
+					tileEntity.setPos(blockPos);
+					tileEntity.setWorld(this);
+					tileEntity.validate();
+				}
 			}
 			return tileEntity;
 		}

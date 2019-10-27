@@ -640,7 +640,7 @@ public class Dictionary {
 		/**/
 		
 		// scan blocks registry
-		final FakeWorld fakeWorld = new FakeWorld(null);
+		final FakeWorld fakeWorld = new FakeWorld(null, false);
 		for (final ResourceLocation resourceLocation : Block.REGISTRY.getKeys()) {
 			final Block block = Block.REGISTRY.getObject(resourceLocation);
 			WarpDrive.logger.debug(String.format("Checking block registry for %s: %s",

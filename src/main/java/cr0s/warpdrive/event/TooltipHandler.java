@@ -263,7 +263,7 @@ public class TooltipHandler {
 		}
 		
 		if (WarpDriveConfig.TOOLTIP_ADD_HARDNESS.isEnabled(isSneaking, isCreativeMode)) {
-			final FakeWorld fakeWorld = new FakeWorld(blockState);
+			final FakeWorld fakeWorld = new FakeWorld(blockState, true);
 			try {
 				final float hardness1 = blockState.getBlockHardness(fakeWorld, BlockPos.ORIGIN);
 				final float hardness2 = block.blockHardness;
