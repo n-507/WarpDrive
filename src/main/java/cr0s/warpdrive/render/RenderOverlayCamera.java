@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -90,22 +89,26 @@ public class RenderOverlayCamera {
 	@SubscribeEvent
 	public void onRender(final RenderGameOverlayEvent.Pre event) {
 		if (ClientCameraHandler.isOverlayEnabled) {
-			if (event.getType() == ElementType.HELMET) {
+			switch (event.getType()) {
+			case HELMET:
 				renderOverlay(event.getResolution().getScaledWidth(), event.getResolution().getScaledHeight());
-			} else if ( event.getType() == ElementType.AIR
-			         || event.getType() == ElementType.ARMOR
-			         || event.getType() == ElementType.BOSSHEALTH
-			         || event.getType() == ElementType.CROSSHAIRS
-			         || event.getType() == ElementType.EXPERIENCE
-			         || event.getType() == ElementType.FOOD
-			         || event.getType() == ElementType.HEALTH
-			         || event.getType() == ElementType.HEALTHMOUNT
-			         || event.getType() == ElementType.HOTBAR
-			         || event.getType() == ElementType.TEXT ) {
+				break;
+				
+			case AIR:
+			case ARMOR:
+			case BOSSHEALTH:
+			case CROSSHAIRS:
+			case EXPERIENCE:
+			case FOOD:
+			case HEALTH:
+			case HEALTHMOUNT:
+			case HOTBAR:
+			case TEXT:
 				// Don't render other GUI parts
 				if (event.isCancelable()) {
 					event.setCanceled(true);
 				}
+				break;
 			}
 		}
 	}

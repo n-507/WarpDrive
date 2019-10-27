@@ -81,10 +81,9 @@ public class CommandEntity extends AbstractCommand {
 					radius = Integer.parseInt(par);
 				}
 			}
-			if (args.length > 1) {
-				if (!args[1].equalsIgnoreCase("*")) {
-					filter = args[1];
-				}
+			if ( args.length > 1
+			  && !args[1].equalsIgnoreCase("*") ) {
+				filter = args[1];
 			}
 			if (args.length > 2) {
 				final String par = args[2].toLowerCase();
@@ -95,9 +94,9 @@ public class CommandEntity extends AbstractCommand {
 			Commons.addChatMessage(commandSender, new TextComponentString(getUsage(commandSender)));
 			return;
 		}
-
+		
 		WarpDrive.logger.info(String.format("/%s %d '*%s*' %s", getName(), radius, filter, kill));
-
+		
 		final List<Entity> entities;
 		if (radius <= 0) {
 			final World world;

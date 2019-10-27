@@ -32,6 +32,8 @@ public class EMPReceiver implements IEMPReceiver, ICapabilityProvider {
 	
 	public static final ResourceLocation resourceLocation = new ResourceLocation(WarpDrive.MODID, "EMPReceiver");
 	
+	private final TileEntityAbstractBase tileEntityAbstractBase;
+	
 	@SubscribeEvent
 	@Optional.Method(modid = "icbmclassic")
 	public static void onAttachCapability(final AttachCapabilitiesEvent<TileEntity> event) {
@@ -40,8 +42,6 @@ public class EMPReceiver implements IEMPReceiver, ICapabilityProvider {
 			event.addCapability(resourceLocation, new EMPReceiver((TileEntityAbstractBase) tileEntity));
 		}
 	}
-	
-	private final TileEntityAbstractBase tileEntityAbstractBase;
 	
 	private EMPReceiver(final TileEntityAbstractBase tileEntityAbstractBase) {
 		super();

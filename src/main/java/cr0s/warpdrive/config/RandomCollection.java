@@ -25,15 +25,15 @@ import net.minecraftforge.common.util.Constants.NBT;
  **/
 public class RandomCollection<E extends IStringSerializable> {
 	
-	public interface StringDeserializable<E extends IStringSerializable> {
-		E deserialize(final String name);
-	}
-	
 	private final NavigableMap<Integer, E> weightMap = new TreeMap<>();
 	private int totalWeight = 0;
 	private final NavigableMap<Double, E> ratioMap = new TreeMap<>();
 	private double totalRatio = 0;
 	private final ArrayList<E> list = new ArrayList<>();
+	
+	public interface StringDeserializable<E extends IStringSerializable> {
+		E deserialize(final String name);
+	}
 	
 	public void loadFromNBT(final NBTTagCompound tagCompound, final StringDeserializable<E> deserializer) {
 		final NBTTagList tagListWeights = tagCompound.getTagList("weights", NBT.TAG_COMPOUND);

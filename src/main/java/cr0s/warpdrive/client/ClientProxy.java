@@ -9,7 +9,12 @@ import cr0s.warpdrive.entity.EntityParticleBunch;
 import cr0s.warpdrive.event.ClientHandler;
 import cr0s.warpdrive.event.ModelBakeEventHandler;
 import cr0s.warpdrive.event.TooltipHandler;
-import cr0s.warpdrive.render.*;
+import cr0s.warpdrive.render.ClientCameraHandler;
+import cr0s.warpdrive.render.CustomModelLoaderProjector;
+import cr0s.warpdrive.render.RenderEntityParticleBunch;
+import cr0s.warpdrive.render.RenderOverlayAir;
+import cr0s.warpdrive.render.RenderOverlayCamera;
+import cr0s.warpdrive.render.RenderOverlayLocation;
 
 import javax.annotation.Nonnull;
 

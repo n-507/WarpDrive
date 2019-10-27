@@ -591,7 +591,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		return false;
 	}
 	
-	protected void onUpgradeChanged(final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
+	protected void onUpgradeChanged(@Nonnull final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
 	
 	}
 	

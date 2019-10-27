@@ -32,13 +32,6 @@ public class RenderSpaceSky extends IRenderHandler {
 	
 	private static RenderSpaceSky INSTANCE = null;
 	
-	public static RenderSpaceSky getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new RenderSpaceSky();
-		}
-		return INSTANCE;
-	}
-	
 	public static final int callListStars = GLAllocation.generateDisplayLists(3);
 	private static float starBrightness = 0.0F;
 	private static final float ALPHA_TOLERANCE = 1.0F / 256.0F;
@@ -80,6 +73,13 @@ public class RenderSpaceSky extends IRenderHandler {
 		}
 		tessellator.draw();
 		GlStateManager.glEndList();
+	}
+	
+	public static RenderSpaceSky getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new RenderSpaceSky();
+		}
+		return INSTANCE;
 	}
 	
 	@Override

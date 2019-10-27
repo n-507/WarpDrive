@@ -61,7 +61,7 @@ public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
 	}
 	
 	@Override
-	protected void onUpgradeChanged(final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
+	protected void onUpgradeChanged(@Nonnull final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
 		super.onUpgradeChanged(upgradeSlot, countNew, isAdded);
 		if (isAdded) {
 			final int maxRange = getMaxRange();

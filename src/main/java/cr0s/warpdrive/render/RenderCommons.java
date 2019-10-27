@@ -29,13 +29,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class RenderCommons {
 	
 	private static final Minecraft minecraft = Minecraft.getMinecraft();
+	private static final int TEXT_BORDER = 2;
+	private static final float SCALE_UV = 0.00390625F;  // 1/256
 	
 	protected static int colorGradient(final float gradient, final int start, final int end) {
 		return Math.max(0, Math.min(255, start + Math.round(gradient * (end - start))));
 	}
 	
 	// from net.minecraft.client.gui.Gui
-	private static final float scaleUV = 0.00390625F;  // 1/256
 	protected static void drawTexturedModalRect(final int x, final int y, final int u, final int v,
 	                                            final int sizeX, final int sizeY, final int zLevel) {
 		drawTexturedModalRect(x, y, u, v, sizeX, sizeY, zLevel, 1.0F, 1.0F, 1.0F, 1.0F);
@@ -46,10 +47,10 @@ public class RenderCommons {
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder vertexBuffer = tessellator.getBuffer();
 		vertexBuffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-		vertexBuffer.pos( x         , (y + sizeY), zLevel).tex(scaleUV * u          , scaleUV * (v + sizeY)).color(red, green, blue, alpha).endVertex();
-		vertexBuffer.pos((x + sizeX), (y + sizeY), zLevel).tex(scaleUV * (u + sizeX), scaleUV * (v + sizeY)).color(red, green, blue, alpha).endVertex();
-		vertexBuffer.pos((x + sizeX),  y         , zLevel).tex(scaleUV * (u + sizeX), scaleUV *  v         ).color(red, green, blue, alpha).endVertex();
-		vertexBuffer.pos( x         ,  y         , zLevel).tex(scaleUV * u          , scaleUV *  v         ).color(red, green, blue, alpha).endVertex();
+		vertexBuffer.pos( x         , (y + sizeY), zLevel).tex(SCALE_UV * u          , SCALE_UV * (v + sizeY)).color(red, green, blue, alpha).endVertex();
+		vertexBuffer.pos((x + sizeX), (y + sizeY), zLevel).tex(SCALE_UV * (u + sizeX), SCALE_UV * (v + sizeY)).color(red, green, blue, alpha).endVertex();
+		vertexBuffer.pos((x + sizeX),  y         , zLevel).tex(SCALE_UV * (u + sizeX), SCALE_UV * v).color(red, green, blue, alpha).endVertex();
+		vertexBuffer.pos( x         ,  y         , zLevel).tex(SCALE_UV * u          , SCALE_UV * v).color(red, green, blue, alpha).endVertex();
 		tessellator.draw();
 	}
 	
@@ -90,7 +91,6 @@ public class RenderCommons {
 		return alpha;
 	}
 	
-	private static final int TEXT_BORDER = 2;
 	public static void drawText(final int screen_width, final int screen_height, final String text,
 	                           final float scale, final String formatPrefix, final int colorBackground, final int colorText, final boolean hasShadow,
 	                           final EnumDisplayAlignment enumScreenAnchor, final int xOffset, final int yOffset,

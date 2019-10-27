@@ -38,22 +38,8 @@ public class EntityFXBoundingBox extends Particle {
 		this.min = min;
 		this.max = max;
 		this.particleMaxAge = age;
-		
-		// kill the particle if it's too far away
-		/*
-		final Entity entityRender = Minecraft.getMinecraft().getRenderViewEntity();
-		int visibleDistance = 300;
-
-		if (!Minecraft.getMinecraft().gameSettings.fancyGraphics) {
-			visibleDistance = 100;
-		}
-
-		if (entityRender.getDistance(posX, posY, posZ) > visibleDistance) {
-			particleMaxAge = 0;
-		}
-		/**/
 	}
-
+	
 	@Override
 	public void onUpdate() {
 		prevPosX = posX;

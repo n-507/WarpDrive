@@ -70,15 +70,14 @@ public class RenderEntityParticleBunch extends RenderEntity {
 			return;
 		}
 		
-		// translate
-		GlStateManager.pushMatrix();
-		GlStateManager.translate((float) x, (float) y, (float) z);
-		
 		// compute parameters
 		final double energy = entityParticleBunch.getEnergy();
 		final float size = (float) Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_SIZE_Y, energy);
-		final int rayCount_base = 45; 
-        
+		final int rayCount_base = 45;
+		
+		// common render parameters
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(x, y, z);
         renderStar(entityParticleBunch.ticksExisted + partialTick, entityParticleBunch.getEntityId(), rayCount_base,
 	        (float) Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_RED_INSIDE_Y, energy),
 	        (float) Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_GREEN_INSIDE_Y, energy),
@@ -127,7 +126,6 @@ public class RenderEntityParticleBunch extends RenderEntity {
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder vertexBuffer = tessellator.getBuffer();
 		RenderHelper.disableStandardItemLighting();
-		// GL11.glPushAttrib(GL11.GL_LIGHTING_BIT | GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT);
 		GlStateManager.disableTexture2D();
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		GlStateManager.enableBlend();
@@ -135,7 +133,6 @@ public class RenderEntityParticleBunch extends RenderEntity {
 		GlStateManager.disableAlpha();
 		GlStateManager.enableCull();
 		GlStateManager.depthMask(false);
-		GlStateManager.pushMatrix();
 		GlStateManager.scale(scaleX, scaleY, scaleZ);
 		
 		for (int i = 0; i < rayCount; i++) {
@@ -157,14 +154,12 @@ public class RenderEntityParticleBunch extends RenderEntity {
 		}
 		
 		// drawing closure
-		GlStateManager.popMatrix();
 		GlStateManager.depthMask(true);
 		GlStateManager.disableCull();
 		GlStateManager.disableBlend();
 		GlStateManager.shadeModel(GL11.GL_FLAT);
 		GlStateManager.enableTexture2D();
 		GlStateManager.enableAlpha();
-		// GL11.glPopAttrib();
 		RenderHelper.enableStandardItemLighting();
 	}
 }

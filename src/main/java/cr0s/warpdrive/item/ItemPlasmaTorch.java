@@ -77,7 +77,8 @@ public class ItemPlasmaTorch extends ItemAbstractBase implements IParticleContai
 	public ItemStack getItemStackNoCache(@Nullable final Particle particle, final int amount) {
 		final ItemStack itemStack = new ItemStack(this, 1, 0);
 		ParticleStack particleStack = null;
-		if (particle != null && amount != 0) {
+		if ( particle != null
+		   && amount != 0 ) {
 			particleStack = new ParticleStack(particle, amount);
 			final NBTTagCompound tagCompound = new NBTTagCompound();
 			tagCompound.setTag(IParticleContainerItem.TAG_PARTICLE, particleStack.writeToNBT(new NBTTagCompound()));
@@ -131,7 +132,8 @@ public class ItemPlasmaTorch extends ItemAbstractBase implements IParticleContai
 	@Override
 	public void setAmountToConsume(@Nonnull final ItemStack itemStack, final int amountToConsume) {
 		final ParticleStack particleStack = getParticleStack(itemStack);
-		if (particleStack == null || particleStack.getParticle() == null) {
+		if ( particleStack == null
+		  || particleStack.getParticle() == null ) {
 			return;
 		}
 		NBTTagCompound tagCompound = itemStack.getTagCompound();
@@ -172,7 +174,8 @@ public class ItemPlasmaTorch extends ItemAbstractBase implements IParticleContai
 			                                     itemStack));
 			return itemStack.getItemDamage();
 		}
-		if (particleStack == null || particleStack.getParticle() == null) {
+		if ( particleStack == null
+		  || particleStack.getParticle() == null ) {
 			return 0;
 		}
 		final ItemPlasmaTorch itemPlasmaTorch = (ItemPlasmaTorch) itemStack.getItem();
@@ -209,15 +212,18 @@ public class ItemPlasmaTorch extends ItemAbstractBase implements IParticleContai
 	@Override
 	public boolean isEmpty(final ItemStack itemStack) {
 		final ParticleStack particleStack = getParticleStack(itemStack);
-		return particleStack == null || particleStack.isEmpty();
+		return particleStack == null
+		    || particleStack.isEmpty();
 	}
 	
 	@Override
 	public int fill(final ItemStack itemStack, final ParticleStack resource, final boolean doFill) {
 		ParticleStack particleStack = getParticleStack(itemStack);
-		if (particleStack == null || particleStack.getParticle() == null) {
+		if ( particleStack == null
+		  || particleStack.getParticle() == null ) {
 			particleStack = new ParticleStack(resource.getParticle(), 0);
-		} else if (!particleStack.isParticleEqual(resource) || particleStack.getAmount() >= getCapacity(itemStack)) {
+		} else if ( !particleStack.isParticleEqual(resource)
+		         || particleStack.getAmount() >= getCapacity(itemStack) ) {
 			return 0;
 		}
 		final int transfer = Math.min(resource.getAmount(), getCapacity(itemStack) - particleStack.getAmount());
@@ -238,10 +244,10 @@ public class ItemPlasmaTorch extends ItemAbstractBase implements IParticleContai
 	@Override
 	public ParticleStack drain(final ItemStack itemStack, final ParticleStack resource, final boolean doDrain) {
 		final ParticleStack particleStack = getParticleStack(itemStack);
-		if (particleStack == null || particleStack.getParticle() == null) {
-			return null;
-		}
-		if (!particleStack.isParticleEqual(resource) || particleStack.getAmount() <= 0) {
+		if ( particleStack == null
+		  || particleStack.getParticle() == null
+		  || !particleStack.isParticleEqual(resource) 
+		  || particleStack.getAmount() <= 0 ) {
 			return null;
 		}
 		final int transfer = Math.min(resource.getAmount(), particleStack.getAmount());
@@ -273,7 +279,8 @@ public class ItemPlasmaTorch extends ItemAbstractBase implements IParticleContai
 		final ItemPlasmaTorch itemPlasmaTorch = (ItemPlasmaTorch) itemStack.getItem();
 		final ParticleStack particleStack = itemPlasmaTorch.getParticleStack(itemStack);
 		final String tooltip;
-		if (particleStack == null || particleStack.getParticle() == null) {
+		if ( particleStack == null
+		  || particleStack.getParticle() == null ) {
 			tooltip = new TextComponentTranslation("item.warpdrive.tool.plasma_torch.tooltip.empty").getFormattedText();
 			Commons.addTooltip(list, tooltip);
 			

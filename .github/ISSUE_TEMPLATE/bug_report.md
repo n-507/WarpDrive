@@ -12,10 +12,10 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+1.  Go to '...'
+2.  Click on '....'
+3.  Scroll down to '....'
+4.  See error
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
@@ -27,10 +27,10 @@ If applicable, add screenshots to help explain your problem.
 Link to pastebin/gist or equivalent logs
 
 **Versions** (latest is not a valid answer)
- - WarpDrive version: 
- - Forge version: 
- - Modpack name/version: 
- - Other notable mods & version: 
+-   WarpDrive version: 
+-   Forge version: 
+-   Modpack name/version: 
+-   Other notable mods & version: 
 
 **Additional context**
 Add any other context about the problem here.

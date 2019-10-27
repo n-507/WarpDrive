@@ -100,8 +100,8 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	}
 	
 	@Override
-	protected void onUpgradeChanged(final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
-		if (upgradeSlot == upgradeSlotComputerInterface) {
+	protected void onUpgradeChanged(@Nonnull final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
+		if (upgradeSlot.equals(upgradeSlotComputerInterface)) {
 			if (isAdded) {
 				if (WarpDriveConfig.isComputerCraftLoaded) {
 					CC_mount();
@@ -282,7 +282,8 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 			                                    computerAccess.getID(), computerAccess.getAttachmentName(),
 			                                    peripheralName, methodName, Commons.format(arguments)));
 		}
-		if (!isInterfaceEnabled() && !methodName.equals("isInterfaced")) {
+		if ( !isInterfaceEnabled()
+		  && !"isInterfaced".equals(methodName) ) {
 			throw new RuntimeException("Missing Computer interface upgrade.");
 		}
 		return methodName;
@@ -334,16 +335,14 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	
 	// Common WarpDrive API
 	public boolean computer_isConnected() {
-		if (WarpDriveConfig.isComputerCraftLoaded) {
-			if (!CC_connectedComputers.isEmpty()) {
-				return true;
-			}
+		if ( WarpDriveConfig.isComputerCraftLoaded
+		  && !CC_connectedComputers.isEmpty() ) {
+			return true;
 		}
-		if (WarpDriveConfig.isOpenComputersLoaded) {
-			if (OC_node != null) {
-				final Iterable<Node> iterableNodes = OC_node.reachableNodes();
-				return iterableNodes.iterator().hasNext();
-			}
+		if ( WarpDriveConfig.isOpenComputersLoaded
+		  && OC_node != null ) {
+			final Iterable<Node> iterableNodes = OC_node.reachableNodes();
+			return iterableNodes.iterator().hasNext();
 		}
 		return false;
 	}
@@ -629,20 +628,20 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 				computerAccess.queueEvent(eventName, arguments);
 			}
 		}
-		if (WarpDriveConfig.isOpenComputersLoaded) {
-			if (OC_node != null && OC_node.network() != null) {
-				if (arguments == null || arguments.length == 0) {
-					OC_node.sendToReachable("computer.signal", eventName);
-				} else {
-					final Object[] eventWithArguments = new Object[arguments.length + 1];
-					eventWithArguments[0] = eventName;
-					int index = 1;
-					for (final Object object : arguments) {
-						eventWithArguments[index] = object;
-						index++;
-					}
-					OC_node.sendToReachable("computer.signal", eventWithArguments);
+		if ( WarpDriveConfig.isOpenComputersLoaded
+		  && OC_node != null
+		  && OC_node.network() != null ) {
+			if (arguments == null || arguments.length == 0) {
+				OC_node.sendToReachable("computer.signal", eventName);
+			} else {
+				final Object[] eventWithArguments = new Object[arguments.length + 1];
+				eventWithArguments[0] = eventName;
+				int index = 1;
+				for (final Object object : arguments) {
+					eventWithArguments[index] = object;
+					index++;
 				}
+				OC_node.sendToReachable("computer.signal", eventWithArguments);
 			}
 		}
 	}
@@ -736,7 +735,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 			if (node.host() instanceof Context) {
 				// Disconnecting from a single computer
 				node.disconnect(OC_fileSystem.node());
-			} else if (node == OC_node) {
+			} else if (node.equals(OC_node)) {
 				// Disconnecting from the network
 				OC_fileSystem.node().remove();
 			}

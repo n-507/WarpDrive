@@ -132,6 +132,7 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 			
 		default:
 			bytesNew = null;
+			break;
 		}
 		
 		try {

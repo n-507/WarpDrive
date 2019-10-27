@@ -132,7 +132,7 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 		}
 	}
 	
-	EnumDisabledInputOutput getMode(final EnumFacing facing) {
+	protected EnumDisabledInputOutput getMode(final EnumFacing facing) {
 		return modeSide[facing.ordinal()];
 	}
 	

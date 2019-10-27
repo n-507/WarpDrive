@@ -876,7 +876,7 @@ public class WarpDriveConfig {
 		
 		// Logging
 		LOGGING_THROTTLE_MS = Commons.clamp(0L, 600000L,
-		                                    config.get("logging", "throttle_ms", LOGGING_THROTTLE_MS, "How many milliseconds to we wait between before logging another occurrence in time sensitive section of the mod (rendering, events, etc.)").getLong(LOGGING_THROTTLE_MS));
+		                                    config.get("logging", "throttle_ms", LOGGING_THROTTLE_MS, "How many milliseconds to wait before logging another occurrence in a time sensitive section of the mod (rendering, events, etc.)").getLong(LOGGING_THROTTLE_MS));
 		LOGGING_JUMP = config.get("logging", "enable_jump_logs", LOGGING_JUMP, "Basic jump logs, should always be enabled").getBoolean(true);
 		LOGGING_JUMPBLOCKS = config.get("logging", "enable_jumpblocks_logs", LOGGING_JUMPBLOCKS, "Detailed jump logs to help debug the mod, will spam your logs...").getBoolean(false);
 		LOGGING_ENERGY = config.get("logging", "enable_energy_logs", LOGGING_ENERGY, "Detailed energy logs to help debug the mod, enable it before reporting a bug").getBoolean(false);

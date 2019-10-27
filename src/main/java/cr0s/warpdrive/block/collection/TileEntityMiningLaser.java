@@ -45,10 +45,6 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	                                                                      20);
 	private static final boolean canSilktouch = (WarpDriveConfig.MINING_LASER_MINE_SILKTOUCH_DEUTERIUM_MB <= 0 || FluidRegistry.isFluidRegistered("deuterium"));
 	
-	private boolean isActive() {
-		return stateCurrent != STATE_IDLE;
-	}
-	
 	// persistent properties
 	private int layerOffset = 1;
 	private boolean mineAllBlocks = true;
@@ -464,9 +460,9 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 	}
 	
 	@Override
-	protected void onUpgradeChanged(final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
+	protected void onUpgradeChanged(@Nonnull final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
 		super.onUpgradeChanged(upgradeSlot, countNew, isAdded);
-		if (upgradeSlot == upgradeSlotPumping) {
+		if (upgradeSlot.equals(upgradeSlotPumping)) {
 			updateParameters();
 		}
 	}
@@ -525,14 +521,14 @@ public class TileEntityMiningLaser extends TileEntityAbstractMiner {
 		final long energy = EnergyWrapper.convert(laserMedium_getEnergyStored(true), units);
 		final String status = getStatusHeaderInPureText();
 		final int return_indexValuable, return_countValuables;
-		if (isActive()) {
+		if (stateCurrent != STATE_IDLE) {
 			return_indexValuable = indexValuable;
 			return_countValuables = blockPosValuables.size();
 		} else {
 			return_indexValuable = 0;
 			return_countValuables = 0;
 		}
-		return new Object[] { status, isActive(), energy, currentLayer, return_indexValuable, return_countValuables };
+		return new Object[] { status, stateCurrent != STATE_IDLE, energy, currentLayer, return_indexValuable, return_countValuables };
 	}
 	
 	@Override

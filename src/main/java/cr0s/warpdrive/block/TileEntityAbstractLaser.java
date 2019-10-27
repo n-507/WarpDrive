@@ -39,7 +39,6 @@ public abstract class TileEntityAbstractLaser extends TileEntityAbstractEnergyBa
 	public TileEntityAbstractLaser() {
 		super();
 		
-		// (abstract) peripheralName = "xxx";
 		addMethods(new String[] {
 				"getEnergyRequired",
 				"laserMediumDirection",

@@ -41,6 +41,8 @@ public abstract class BakedModelAbstractBase implements IMyBakedModel {
 	protected int tintIndex = -1;
 	protected VertexFormat format = DefaultVertexFormats.ITEM;
 	
+	protected IBlockState blockStateDefault;
+	
 	public BakedModelAbstractBase() {
 		super();
 	}
@@ -204,8 +206,6 @@ public abstract class BakedModelAbstractBase implements IMyBakedModel {
 		// return bakedModelOriginal.getOverrides();
 		return itemOverrideList;
 	}
-	
-	protected IBlockState blockStateDefault;
 	
 	protected ItemOverrideList itemOverrideList = new ItemOverrideList(ImmutableList.of()) {
 		@Nonnull

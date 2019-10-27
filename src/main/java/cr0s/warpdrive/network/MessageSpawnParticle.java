@@ -128,7 +128,11 @@ public class MessageSpawnParticle implements IMessage, IMessageHandler<MessageSp
 					direction.z + noiseLevel * (world.rand.nextFloat() - world.rand.nextFloat()));
 			switch (type) {
 			default:
-				WarpDrive.logger.error(String.format("Invalid particle type '%s' at %s", type, origin.toString()));
+				if (Commons.throttleMe("invalidParticleType " + type)) {
+					WarpDrive.logger.error(String.format("Invalid particle type '%s' at %s",
+					                                     type, origin.toString() ));
+				}
+				// no break: continue to a default huge explosion
 				
 			case "explosionHuge":
 				particle = mc.effectRenderer.spawnEffectParticle(EnumParticleTypes.EXPLOSION_HUGE.getParticleID(),

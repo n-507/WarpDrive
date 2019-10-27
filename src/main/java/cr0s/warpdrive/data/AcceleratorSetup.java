@@ -619,12 +619,15 @@ public class AcceleratorSetup extends GlobalPosition {
 	}
 	
 	public void energy_consume(final int amount_internal) {
+		assert amount_internal > 0;
 		assert isLoaded;
+		final int countCapacitors = setCapacitors.size();
+		assert countCapacitors > 0;
 		
 		// first, draw average from all
-		final int energyMean = amount_internal / setCapacitors.size();
+		final int energyMean = amount_internal / countCapacitors;
 		int energyConsumed = 0;
-		int energyLeft = amount_internal - energyMean * setCapacitors.size();
+		int energyLeft = amount_internal - energyMean * countCapacitors;
 		final HashSet<TileEntityCapacitor> setTileEntityCapacitors = getCapacitors();
 		for (final TileEntityCapacitor tileEntityCapacitor : setTileEntityCapacitors) {
 			final int energyToConsume = Math.min(tileEntityCapacitor.energy_getPotentialOutput(), energyMean + energyLeft);

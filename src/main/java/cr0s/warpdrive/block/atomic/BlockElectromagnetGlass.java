@@ -43,6 +43,6 @@ public class BlockElectromagnetGlass extends BlockElectromagnetPlain {
 		if (blockStateSide.getBlock().isAir(blockStateSide, blockAccess, blockPosSide)) {
 			return true;
 		}
-		return !(blockStateSide.getBlock() == this);
+		return blockStateSide.getBlock() != this;
 	}
 }

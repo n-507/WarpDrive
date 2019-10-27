@@ -490,6 +490,8 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		if (setParticleBunches.isEmpty()) {
 			return;
 		}
+		
+		// update particle bunches
 		for (final ParticleBunch particleBunch : setParticleBunches) {
 			final boolean isAlive = particleBunch.onUpdate(world, mapControlParameters, acceleratorSetup);
 			if (!isAlive) {
@@ -502,6 +504,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 			return;
 		}
 		
+		// update colliders
 		final Collection<ParticleBunch> setInRange = new ArrayList<>(setParticleBunches.size());
 		boolean hasCollided;
 		for (final TrajectoryPoint trajectoryPointCollider : acceleratorSetup.listColliders) {
@@ -516,6 +519,8 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 				trajectoryPointCollider.x + 0.5F + 2.0F, trajectoryPointCollider.y + 0.5F + 2.0F, trajectoryPointCollider.z + 0.5F + 2.0F );
 			setInRange.clear();
 			hasCollided = false;
+			
+			// collect all applicable particles bunches, look for simple collision
 			for (final ParticleBunch particleBunch : setParticleBunches) {
 				if (hasCollided) {
 					break;
@@ -699,7 +704,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	@Override
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
-				
+		
 		uuid = new UUID(tagCompound.getLong("uuidMost"), tagCompound.getLong("uuidLeast"));
 		if (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0) {
 			uuid = UUID.randomUUID();
@@ -974,6 +979,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		return new Object[] { };
 	}
 	
+	@Nonnull
 	private Object[] getControlPointsCount() {
 		if (acceleratorSetup != null) {
 			final Object[] controlPoints = acceleratorSetup.getControlPoints(world);
@@ -1101,7 +1107,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		return new Object[] { status, isEnabled, isPowered, energy, temperatureCurrent_K, acceleratorSetup.temperatureTarget_K };
 	}
 	
-	// ComputerCraft IPeripheral methods implementation
+	// ComputerCraft IPeripheral methods
 	@Override
 	@Optional.Method(modid = "computercraft")
 	protected Object[] CC_callMethod(@Nonnull final String methodName, @Nonnull final Object[] arguments) {

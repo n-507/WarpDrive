@@ -13,7 +13,9 @@ public class LoggerPrintStream extends PrintStream {
 	public LoggerPrintStream(final Level level) {
 		super(new OutputStream() {
 			@Override
-			public void write(final int b) { }
+			public void write(final int b) {
+				// no operation
+			}
 		});
 		this.level = level;
 	}

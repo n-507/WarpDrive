@@ -162,14 +162,13 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			// report cool down time when a command is requested
 			if ( isEnabled
 			  && isCommandConfirmed
-			  && enumShipCommand.isMovement() ) {
-				if (ticksCooldown % 20 == 0) {
-					final int seconds = ticksCooldown / 20;
-					if (!isCooldownReported || (seconds < 5) || ((seconds < 30) && (seconds % 5 == 0)) || (seconds % 10 == 0)) {
-						isCooldownReported = true;
-						Commons.messageToAllPlayersInArea(this, new WarpDriveText(null, "warpdrive.ship.guide.cooling_countdown",
-						                                                          seconds));
-					}
+			  && enumShipCommand.isMovement()
+			  && ticksCooldown % 20 == 0 ) {
+				final int seconds = ticksCooldown / 20;
+				if (!isCooldownReported || (seconds < 5) || ((seconds < 30) && (seconds % 5 == 0)) || (seconds % 10 == 0)) {
+					isCooldownReported = true;
+					Commons.messageToAllPlayersInArea(this, new WarpDriveText(null, "warpdrive.ship.guide.cooling_countdown",
+					                                                          seconds));
 				}
 			}
 			

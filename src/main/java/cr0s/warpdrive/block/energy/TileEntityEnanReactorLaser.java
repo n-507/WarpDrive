@@ -45,11 +45,11 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	public TileEntityEnanReactorLaser() {
 		super();
 		
+		peripheralName = "warpdriveEnanReactorLaser";
 		addMethods(new String[] {
 				"side",
 				"stabilize"
 		});
-		peripheralName = "warpdriveEnanReactorLaser";
 		laserMedium_maxCount = 1;
 		laserMedium_directionsValid = new EnumFacing[] { EnumFacing.UP, EnumFacing.DOWN };
 	}

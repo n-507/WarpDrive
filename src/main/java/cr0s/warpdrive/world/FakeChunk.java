@@ -37,10 +37,12 @@ public class FakeChunk extends Chunk {
 	
 	@Override
 	public void generateHeightMap() {
+		// no operation
 	}
 	
 	@Override
 	public void generateSkylightMap() {
+		// no operation
 	}
 	
 	@Nonnull
@@ -61,6 +63,7 @@ public class FakeChunk extends Chunk {
 	
 	@Override
 	public void setLightFor(final EnumSkyBlock enumSkyBlock, final BlockPos blockPos, final int value) {
+		// no operation
 	}
 	
 	@Override
@@ -70,14 +73,17 @@ public class FakeChunk extends Chunk {
 	
 	@Override
 	public void addEntity(final Entity entity) {
+		// no operation
 	}
 	
 	@Override
 	public void removeEntity(final Entity entity) {
+		// no operation
 	}
 	
 	@Override
 	public void removeEntityAtIndex(@Nonnull final Entity entity, final int index) {
+		// no operation
 	}
 	
 	@Override
@@ -93,37 +99,44 @@ public class FakeChunk extends Chunk {
 	
 	@Override
 	public void addTileEntity(final TileEntity tileEntity) {
+		// no operation
 	}
 	
 	@Override
 	public void addTileEntity(@Nonnull final BlockPos blockPos, final TileEntity tileEntity) {
+		// no operation
 	}
 	
 	@Override
 	public void removeTileEntity(@Nonnull final BlockPos blockPos) {
-		
+		// no operation
 	}
 	
 	@Override
 	public void onLoad() {
+		// no operation
 	}
 	
 	@Override
 	public void onUnload() {
+		// no operation
 	}
 	
 	@Override
 	public void markDirty() {
+		// no operation
 	}
 	
 	@Override
 	public void getEntitiesWithinAABBForEntity(@Nullable final Entity entityIn, final AxisAlignedBB aabb,
 	                                           @Nonnull final List<Entity> listToFill, final Predicate<? super Entity> filter) {
+		// no operation
 	}
 	
 	@Override
 	public <T extends Entity> void getEntitiesOfTypeWithinAABB(@Nonnull final Class<? extends T> entityClass, final AxisAlignedBB aabb,
 	                                                           @Nonnull final List<T> listToFill, final Predicate<? super T> filter) {
+		// no operation
 	}
 	
 	@Override

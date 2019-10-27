@@ -90,7 +90,7 @@ public class FastSetBlockState {
 		final int i = pos.getX() & 15;
 		final int j = pos.getY();
 		final int k = pos.getZ() & 15;
-		final int l = k << 4 | i;
+		// final int l = k << 4 | i;
 		
 		/* FIXME
 		if (j >= chunk.precipitationHeightMap[l] - 1)

@@ -132,7 +132,9 @@ public class ParticleBunch extends Vector3 {
 	private boolean moveForward(final World world, final Map<Integer, AcceleratorControlParameter> mapParameters, final AcceleratorSetup acceleratorSetup, final double speed) {
 		// get current position
 		final VectorI vCurrentBlock = new VectorI((int) Math.floor(x), (int) Math.floor(y), (int) Math.floor(z));
-		final boolean isNewBlock = (vLastBlock == null || vLastBlock.x != vCurrentBlock.x || vLastBlock.z != vCurrentBlock.z);
+		final boolean isNewBlock = vLastBlock == null
+		                        || vLastBlock.x != vCurrentBlock.x
+		                        || vLastBlock.z != vCurrentBlock.z;
 		if (trajectoryPointCurrent == null) {
 			trajectoryPointCurrent = (acceleratorSetup == null) ? null : acceleratorSetup.getTrajectoryPoint(vCurrentBlock);
 		}
@@ -143,26 +145,25 @@ public class ParticleBunch extends Vector3 {
 		// apply magnets only once per passage
 		if ( tier > 0
 		  && trajectoryPointCurrent.hasNoMissingVoidShells()
-		  && isNewBlock ) {
-			// validate energy level
-			if ( energy >= TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MINIMUM[tier - 1]
-			  && energy <= TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1] ) {
-				// linear accelerate
-				final int countMagnets = trajectoryPointCurrent.getMagnetsCount();
-				final double energy_before = energy;
-				energy *= 1.0D + countMagnets * TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_FACTOR_PER_MAGNET[tier - 1];
-				energy = Math.min(energy, TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1]);
-				if (WarpDriveConfig.LOGGING_ACCELERATOR && WarpDrive.isDev) {
-					WarpDrive.logger.info(String.format(this + " accelerating by %d magnets energy %.5f -> %.5f at [%d %d %d]",
-							countMagnets, energy_before, energy, vCurrentBlock.x, vCurrentBlock.y, vCurrentBlock.z));
-				}
+		  && isNewBlock
+		  && energy >= TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MINIMUM[tier - 1]
+		  && energy <= TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1] ) {
+			// linear accelerate
+			final int countMagnets = trajectoryPointCurrent.getMagnetsCount();
+			final double energy_before = energy;
+			energy *= 1.0D + countMagnets * TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_FACTOR_PER_MAGNET[tier - 1];
+			energy = Math.min(energy, TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1]);
+			if (WarpDriveConfig.LOGGING_ACCELERATOR && WarpDrive.isDev) {
+				WarpDrive.logger.info(String.format(this + " accelerating by %d magnets energy %.5f -> %.5f at [%d %d %d]",
+						countMagnets, energy_before, energy, vCurrentBlock.x, vCurrentBlock.y, vCurrentBlock.z));
 			}
 		}
 		
 		// check control point
 		final int controlChannel = trajectoryPointCurrent == null ? -1 : trajectoryPointCurrent.controlChannel;
 		final boolean enableControlPoint;
-		if (tier > 0 && controlChannel >= 0) {
+		if ( tier > 0
+		  && controlChannel >= 0 ) {
 			final AcceleratorControlParameter acceleratorControlParameter = mapParameters.get(controlChannel); 
 			final double threshold =  (acceleratorControlParameter  == null ? WarpDriveConfig.ACCELERATOR_THRESHOLD_DEFAULT : acceleratorControlParameter.threshold);
 			enableControlPoint = energy > threshold
@@ -202,7 +203,8 @@ public class ParticleBunch extends Vector3 {
 					}
 				}
 				
-				if (!enableControlPoint || vectorNewMotion == null) {
+				if ( !enableControlPoint
+				  || vectorNewMotion == null ) {
 					directionNewMotion = trajectoryPointCurrent.getTurnedDirection(directionCurrentMotion);
 					if (directionNewMotion != null) {
 						vectorNewMotion = new Vector3(directionNewMotion);
@@ -230,12 +232,13 @@ public class ParticleBunch extends Vector3 {
 				// default to center of block
 				vectorNewTurningPoint = new Vector3(vCurrentBlock.x + 0.5D, vCurrentBlock.y + 0.5D, vCurrentBlock.z + 0.5D);
 				// adjust if it's not a straight 90 deg turn (i.e. it's a 45 deg turn)
-				if (Math.abs(vectorNewMotion.x) != 1.0D && Math.abs(vectorNewMotion.z) != 1.0D) {
+				if ( Math.abs(vectorNewMotion.x) != 1.0D
+				  && Math.abs(vectorNewMotion.z) != 1.0D ) {
 					vectorNewTurningPoint.translateFactor(vectorCurrentMotion, -0.5D);
 				}
 			}
 			
-		} else {
+		} else {// (no trajectory point => free flight)
 			final IBlockState blockStateCurrent = vCurrentBlock.getBlockState(world);
 			final Block blockCurrent = blockStateCurrent.getBlock();
 			if (!(blockCurrent instanceof BlockVoidShellPlain)) {
@@ -258,11 +261,11 @@ public class ParticleBunch extends Vector3 {
 		
 		// move forward
 		double speedAdjusted = speed;
-		Vector3 vectorOldPosition = new Vector3(x, y, z);
 		Vector3 vectorNewPosition = new Vector3(x + speedAdjusted * vectorCurrentMotion.x,
 		                                        y + speedAdjusted * vectorCurrentMotion.y,
 		                                        z + speedAdjusted * vectorCurrentMotion.z);
 		if (vectorNewTurningPoint != null) {
+			Vector3 vectorOldPosition = new Vector3(x, y, z);
 			// rollback if it's a new block so we recover the turning point in case we overshoot last time
 			if (isNewBlock) {
 				vectorOldPosition = new Vector3(x - vectorCurrentMotion.x, y - vectorCurrentMotion.y, z - vectorCurrentMotion.z);
@@ -315,7 +318,7 @@ public class ParticleBunch extends Vector3 {
 		// update properties
 		vLastBlock = vCurrentBlock.clone();
 		final VectorI vNewBlock = new VectorI((int) vectorNewPosition.x, (int) vectorNewPosition.y, (int) vectorNewPosition.z);
-		if (vNewBlock != vCurrentBlock) {
+		if (!vNewBlock.equals(vCurrentBlock)) {
 			trajectoryPointCurrent = null;
 		}
 		if (directionNewMotion != null) {

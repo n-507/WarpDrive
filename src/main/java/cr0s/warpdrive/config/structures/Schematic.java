@@ -160,7 +160,7 @@ public class Schematic extends AbstractStructure {
 		
 		public boolean isMatching(final IBlockState blockStateIn) {
 			return (block != null && block == blockStateIn.getBlock())
-			    || blockState == blockStateIn;
+			    || blockState.equals(blockStateIn);
 		}
 	}
 	
@@ -260,7 +260,7 @@ public class Schematic extends AbstractStructure {
 		
 		public boolean isMatching(final IBlockState blockStateIn) {
 			return (block != null && block == blockStateIn.getBlock())
-			       || blockState == blockStateIn;
+			    || blockState.equals(blockStateIn);
 		}
 	}
 }

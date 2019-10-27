@@ -39,6 +39,8 @@ public class RenderOverlayAir {
 	private static float ratioPreviousAir = 1.0F;
 	private static long timePreviousAir = 0;
 	
+	private boolean wasRendered;
+	
 	private void renderAir(final int width, final int height) {
 		// get player
 		final EntityPlayer entityPlayer = minecraft.player;
@@ -182,7 +184,6 @@ public class RenderOverlayAir {
 		    && !BreathingManager.isAirBlock(blockState.getBlock());
 	}
 	
-	private boolean wasRendered;
 	@SubscribeEvent
 	public void onRender(@Nonnull final RenderGameOverlayEvent.Pre event) {
 		switch (event.getType()) {

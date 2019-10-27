@@ -39,7 +39,6 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	public TileEntityAbstractShipController() {
 		super();
 		
-		// (abstract) peripheralName = "xxx";
 		addMethods(new String[] {
 				"getOrientation",
 				"isInSpace",

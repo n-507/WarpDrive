@@ -142,7 +142,7 @@ public class LivingHandler {
 			final double newEntityX = celestialObject.dimensionCenterX + Math.signum(relativeX) * newAbsoluteX;
 			final double newEntityY = entityLivingBase.posY + 0.1D;
 			final double newEntityZ = celestialObject.dimensionCenterX + Math.signum(relativeZ) * newAbsoluteZ;
-			// entity.isAirBorne = true;
+			// entityLivingBase.isAirBorne = true;
 			Commons.moveEntity(entityLivingBase, entityLivingBase.world, new Vector3(newEntityX, newEntityY, newEntityZ));
 			
 			// give a survival chance for players, notably when switching dimension

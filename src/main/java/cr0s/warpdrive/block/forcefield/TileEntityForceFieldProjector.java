@@ -966,7 +966,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	}
 	
 	@Override
-	protected void onUpgradeChanged(final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
+	protected void onUpgradeChanged(@Nonnull final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
 		super.onUpgradeChanged(upgradeSlot, countNew, isAdded);
 		cache_forceFieldSetup = null;
 	}

@@ -1491,7 +1491,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	}
 	
 	@Override
-	protected void onUpgradeChanged(final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
+	protected void onUpgradeChanged(@Nonnull final UpgradeSlot upgradeSlot, final int countNew, final boolean isAdded) {
 		if (upgradeSlot == upgradeSlotEnergyStorage) {
 			refreshEnergyParameters();
 		}

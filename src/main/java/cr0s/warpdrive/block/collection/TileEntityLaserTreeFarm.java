@@ -60,9 +60,6 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 	private boolean breakLeaves = false;
 	private boolean tapTrees = false;
 	
-	private boolean isActive() {
-		return currentState != STATE_IDLE;
-	}
 	private static final int STATE_IDLE = 0;
 	private static final int STATE_WARMING_UP = 1;
 	private static final int STATE_SCANNING = 2;
@@ -859,14 +856,14 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 		final int energy = laserMedium_getEnergyStored(true);
 		final String status = getStatusHeaderInPureText();
 		final int return_indexValuable, return_countValuables;
-		if (isActive()) {
+		if (currentState != STATE_IDLE) {
 			return_indexValuable = indexValuable;
 			return_countValuables = blockPosValuables.size();
 		} else {
 			return_indexValuable = 0;
 			return_countValuables = 0;
 		}
-		return new Object[] { status, isActive(), energy, totalHarvested, return_indexValuable, return_countValuables };
+		return new Object[] { status, currentState != STATE_IDLE, energy, totalHarvested, return_indexValuable, return_countValuables };
 	}
 	
 	private Object[] radius(final Object[] arguments) {

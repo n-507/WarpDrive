@@ -13,8 +13,6 @@ public class TileEntityWeaponController extends TileEntityAbstractInterfaced {
 		super();
 		
 		peripheralName = "warpdriveWeaponController";
-		addMethods(new String[] {
-		});
 		CC_scripts = Collections.singletonList("startup");
 	}
 	

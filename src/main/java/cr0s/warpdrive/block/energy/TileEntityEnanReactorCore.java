@@ -167,51 +167,55 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		aabbRender = null;
 	}
 	
+	private void client_update() {
+		float instabilityAverage = 0.0F;
+		final ReactorFace[] reactorFaces = ReactorFace.getLasers(enumTier);
+		for (final ReactorFace reactorFace : reactorFaces) {
+			instabilityAverage += (float) instabilityValues[reactorFace.indexStability];
+		}
+		instabilityAverage /= reactorFaces.length;
+		
+		final float radiusArea = (float) (vCenter.y - pos.getY() - 1.0F);
+		final float yCoreTarget = containedEnergy == 0 ? 1.0F : (radiusArea + 1.0F);
+		final float rotationSpeedTarget_degPerTick = 0.05F * instabilityAverage;
+		final float radiusMatterMax = radiusArea - 0.10F;
+		final float radiusMatterTarget = containedEnergy <= 10000 ? 0.0F : MATTER_SURFACE_MIN + (radiusMatterMax - MATTER_SURFACE_MIN) / MATTER_SURFACE_FACTOR
+		                                                                                      * (float) Math.pow(containedEnergy / (float) energyStored_max, 0.3333D);
+		final float radiusShieldTarget = containedEnergy <= 1000 ? 0.0F : Math.min(radiusArea - 0.05F, (float) Math.ceil(radiusMatterTarget * 3.0F + 0.8F) / 3.0F);
+		
+		// linear shield growth
+		client_radiusShield_m += client_radiusSpeedShield_mPerTick;
+		final float radiusShieldDelta = radiusShieldTarget - client_radiusShield_m;
+		client_radiusSpeedShield_mPerTick = Math.signum(radiusShieldDelta) * Math.min(0.015F, Math.abs(radiusShieldDelta));
+		
+		// elastic rotation
+		client_rotationCore_deg = (client_rotationCore_deg + client_rotationSpeedCore_degPerTick) % 360.0F;
+		client_rotationSpeedCore_degPerTick = 0.975F * client_rotationSpeedCore_degPerTick
+		                                    + 0.025F * rotationSpeedTarget_degPerTick;
+		client_rotationMatter_deg = (client_rotationMatter_deg + client_rotationSpeedMatter_degPerTick) % 360.0F;
+		client_rotationSpeedMatter_degPerTick = 0.985F * client_rotationSpeedMatter_degPerTick
+		                                      + 0.015F * rotationSpeedTarget_degPerTick;
+		client_rotationSurface_deg = (client_rotationSurface_deg + client_rotationSpeedSurface_degPerTick) % 360.0F;
+		client_rotationSpeedSurface_degPerTick = 0.990F * client_rotationSpeedSurface_degPerTick
+		                                       + 0.010F * rotationSpeedTarget_degPerTick;
+		
+		// linear radius
+		client_radiusMatter_m += client_radiusSpeedMatter_mPerTick;
+		final float radiusMatterDelta = radiusMatterTarget - client_radiusMatter_m;
+		client_radiusSpeedMatter_mPerTick = Math.signum(radiusMatterDelta) * Math.min(0.05F, Math.abs(radiusMatterDelta));
+		
+		// linear position
+		client_yCore += client_yCoreSpeed_mPerTick;
+		final float yDelta = yCoreTarget - client_yCore;
+		client_yCoreSpeed_mPerTick = Math.signum(yDelta) * Math.min(0.05F, Math.abs(yDelta));
+	}
+	
 	@Override
 	public void update() {
 		super.update();
 		
 		if (world.isRemote) {
-			float instabilityAverage = 0.0F;
-			final ReactorFace[] reactorFaces = ReactorFace.getLasers(enumTier);
-			for (final ReactorFace reactorFace : reactorFaces) {
-				instabilityAverage += (float) instabilityValues[reactorFace.indexStability];
-			}
-			instabilityAverage /= reactorFaces.length;
-			
-			final float radiusArea = (float) (vCenter.y - pos.getY() - 1.0F);
-			final float yCoreTarget = containedEnergy == 0 ? 1.0F : (radiusArea + 1.0F);
-			final float rotationSpeedTarget_degPerTick = 0.05F * instabilityAverage;
-			final float radiusMatterMax = radiusArea - 0.10F;
-			final float radiusMatterTarget = containedEnergy <= 10000 ? 0.0F : MATTER_SURFACE_MIN + (radiusMatterMax - MATTER_SURFACE_MIN) / MATTER_SURFACE_FACTOR
-			                                                                                      * (float) Math.pow(containedEnergy / (float) energyStored_max, 0.3333D);
-			final float radiusShieldTarget = containedEnergy <= 1000 ? 0.0F : Math.min(radiusArea - 0.05F, (float) Math.ceil(radiusMatterTarget * 3.0F + 0.8F) / 3.0F);
-			
-			// linear shield growth
-			client_radiusShield_m += client_radiusSpeedShield_mPerTick;
-			final float radiusShieldDelta = radiusShieldTarget - client_radiusShield_m;
-			client_radiusSpeedShield_mPerTick = Math.signum(radiusShieldDelta) * Math.min(0.015F, Math.abs(radiusShieldDelta));
-			
-			// elastic rotation
-			client_rotationCore_deg = (client_rotationCore_deg + client_rotationSpeedCore_degPerTick) % 360.0F;
-			client_rotationSpeedCore_degPerTick = 0.975F * client_rotationSpeedCore_degPerTick
-			                                    + 0.025F * rotationSpeedTarget_degPerTick;
-			client_rotationMatter_deg = (client_rotationMatter_deg + client_rotationSpeedMatter_degPerTick) % 360.0F;
-			client_rotationSpeedMatter_degPerTick = 0.985F * client_rotationSpeedMatter_degPerTick
-			                                      + 0.015F * rotationSpeedTarget_degPerTick;
-			client_rotationSurface_deg = (client_rotationSurface_deg + client_rotationSpeedSurface_degPerTick) % 360.0F;
-			client_rotationSpeedSurface_degPerTick = 0.990F * client_rotationSpeedSurface_degPerTick
-			                                       + 0.010F * rotationSpeedTarget_degPerTick;
-			
-			// linear radius
-			client_radiusMatter_m += client_radiusSpeedMatter_mPerTick;
-			final float radiusMatterDelta = radiusMatterTarget - client_radiusMatter_m;
-			client_radiusSpeedMatter_mPerTick = Math.signum(radiusMatterDelta) * Math.min(0.05F, Math.abs(radiusMatterDelta));
-			
-			// linear position
-			client_yCore += client_yCoreSpeed_mPerTick;
-			final float yDelta = yCoreTarget - client_yCore;
-			client_yCoreSpeed_mPerTick = Math.signum(yDelta) * Math.min(0.05F, Math.abs(yDelta));
+			client_update();
 			return;
 		}
 		
@@ -514,10 +518,9 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 			                       blockPos.getY() + reactorFace.y,
 			                       blockPos.getZ() + reactorFace.z );
 			final TileEntity tileEntity = world.getTileEntity(mutableBlockPos);
-			if (tileEntity instanceof TileEntityEnanReactorLaser) {
-				if (((TileEntityEnanReactorLaser) tileEntity).getReactorFace() == reactorFace) {
-					((TileEntityEnanReactorLaser) tileEntity).setReactorFace(ReactorFace.UNKNOWN, null);
-				}
+			if ( tileEntity instanceof TileEntityEnanReactorLaser
+			  && ((TileEntityEnanReactorLaser) tileEntity).getReactorFace() == reactorFace ) {
+				((TileEntityEnanReactorLaser) tileEntity).setReactorFace(ReactorFace.UNKNOWN, null);
 			}
 		}
 		

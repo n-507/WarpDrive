@@ -3,19 +3,12 @@ package cr0s.warpdrive.entity;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.WarpDriveConfig;
-import cr0s.warpdrive.data.SoundEvents;
-import cr0s.warpdrive.data.Vector3;
 
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -92,10 +85,12 @@ public class EntityLaserExploder extends Entity {
 	
 	@Override
 	protected void readEntityFromNBT(@Nonnull final NBTTagCompound tagCompound) {
+		// not applicable
 	}
 	
 	@Override
 	protected void writeEntityToNBT(@Nonnull final NBTTagCompound tagCompound) {
+		// not applicable
 	}
 	
 	@Nonnull

@@ -44,7 +44,6 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	public TileEntityAbstractMachine() {
 		super();
 		
-		// (abstract) peripheralName = "xxx";
 		addMethods(new String[] {
 				"name",
 				"enable",

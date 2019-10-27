@@ -118,8 +118,10 @@ public final class EntityCamera extends EntityLivingBase {
 				mc.getRenderViewEntity().rotationPitch = player.rotationPitch;
 			}
 			
-			ClientCameraHandler.overlayLoggingMessage = "Mouse " + Mouse.isButtonDown(0) + " " + Mouse.isButtonDown(1) + " " + Mouse.isButtonDown(2) + " " + Mouse.isButtonDown(3) + "\nBackspace "
-					+ Keyboard.isKeyDown(Keyboard.KEY_BACKSLASH) + " Space " + Keyboard.isKeyDown(Keyboard.KEY_SPACE) + " Shift " + "";
+			ClientCameraHandler.overlayLoggingMessage = "Mouse " + Mouse.isButtonDown(0) + " " + Mouse.isButtonDown(1) + " " + Mouse.isButtonDown(2) + " " + Mouse.isButtonDown(3)
+			                                          + "\nBackspace " + Keyboard.isKeyDown(Keyboard.KEY_BACKSLASH)
+			                                          + " Space " + Keyboard.isKeyDown(Keyboard.KEY_SPACE)
+			                                          + " Shift " + "";
 			// Perform zoom
 			if (Mouse.isButtonDown(0)) {
 				zoomWaitTicks++;

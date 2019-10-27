@@ -349,7 +349,8 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 					IBlockState blockState = world.getBlockState(blockPos);
 					
 					// Skip leftBehind and anchor blocks
-					if (Dictionary.BLOCKS_LEFTBEHIND.contains(blockState.getBlock()) || Dictionary.BLOCKS_ANCHOR.contains(blockState.getBlock())) {
+					if ( Dictionary.BLOCKS_LEFTBEHIND.contains(blockState.getBlock())
+					  || Dictionary.BLOCKS_ANCHOR.contains(blockState.getBlock()) ) {
 						blockState = Blocks.AIR.getDefaultState();
 					}
 					

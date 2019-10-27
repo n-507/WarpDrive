@@ -11,7 +11,7 @@ public abstract class AbstractEntityFX extends Particle {
 	
 	// particles are no longer entities on 1.10+, so we can't use the entityId as a seed
 	private static int nextSeed;
-	private int seed = nextSeed++;
+	private final int seed = nextSeed++;
 	
 	public AbstractEntityFX(final World world, final double x, final double y, final double z,
 	                        final double xSpeed, final double ySpeed, final double zSpeed) {

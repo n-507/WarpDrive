@@ -44,6 +44,8 @@ import net.minecraftforge.common.util.Constants;
  */
 public class StarMapRegistry {
 	
+	public static String GALAXY_UNDEFINED = "???";
+	
 	private final HashMap<Integer, CopyOnWriteArraySet<StarMapRegistryItem>> registry;
 	private int countAdd = 0;
 	private int countRemove = 0;
@@ -401,7 +403,6 @@ public class StarMapRegistry {
 		return arrayListRadarEchos;
 	}
 	
-	public static String GALAXY_UNDEFINED = "???";
 	public static String getGalaxyName(final CelestialObject celestialObject, final double x, final double y, final double z) {
 		if (celestialObject == null) {
 			// not a registered area

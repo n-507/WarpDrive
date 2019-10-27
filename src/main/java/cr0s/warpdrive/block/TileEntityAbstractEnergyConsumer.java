@@ -22,7 +22,6 @@ public abstract class TileEntityAbstractEnergyConsumer extends TileEntityAbstrac
 	public TileEntityAbstractEnergyConsumer() {
 		super();
 		
-		// (abstract) peripheralName = "xxx";
 		addMethods(new String[] {
 				"getEnergyRequired",
 				});
