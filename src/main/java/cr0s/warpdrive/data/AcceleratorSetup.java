@@ -33,7 +33,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -61,6 +60,7 @@ public class AcceleratorSetup extends GlobalPosition {
 	public final TreeMap<Integer, VectorI> mapInjectors = new TreeMap<>();
 	public final Integer[] keyInjectors;
 	public final ArrayList<TrajectoryPoint> listColliders = new ArrayList<>();
+	private Object[][] matrixControlPoints = null;
 	
 	private VectorI vMin;
 	private VectorI vMax;
@@ -397,6 +397,34 @@ public class AcceleratorSetup extends GlobalPosition {
 			textReason.append(Commons.getStyleWarning(), "warpdrive.accelerator.status_line.missing_basic_chiller");
 		}
 		
+		// build matrix description for Computer APIs
+		matrixControlPoints = new Object[controlPoints.size() + mapInjectors.size()][];
+		int index = 0;
+		for (final Entry<VectorI, Integer> entryControlPoint : controlPoints.entrySet()) {
+			final Integer tier = TrajectoryPoint.getTier(entryControlPoint.getValue());
+			final String type = TrajectoryPoint.isCollider(entryControlPoint.getValue()) ? "Collider" :
+			                    TrajectoryPoint.isOutput(entryControlPoint.getValue()) ? "Output" :
+			                    TrajectoryPoint.isInput(entryControlPoint.getValue()) ? "Input" : "?";
+			final TileEntity tileEntity = world.getTileEntity(entryControlPoint.getKey().getBlockPos());
+			final Boolean isEnabled = (tileEntity instanceof TileEntityAcceleratorControlPoint) && ((TileEntityAcceleratorControlPoint) tileEntity).getIsEnabled();
+			final Integer controlChannel = (tileEntity instanceof IControlChannel) ? ((IControlChannel) tileEntity).getControlChannel() : -1;
+			
+			matrixControlPoints[index++] = new Object[] {
+					entryControlPoint.getKey().x, entryControlPoint.getKey().y, entryControlPoint.getKey().z,
+					tier, type, isEnabled, controlChannel };
+		}
+		for (final Entry<Integer, VectorI> entryInjector : mapInjectors.entrySet()) {
+			final Integer tier = 1;
+			final String type = "Injector";
+			final TileEntity tileEntity = world.getTileEntity(entryInjector.getValue().getBlockPos());
+			final Boolean isEnabled = (tileEntity instanceof TileEntityParticlesInjector) && ((TileEntityParticlesInjector) tileEntity).getIsEnabled();
+			final Integer controlChannel = (tileEntity instanceof IControlChannel) ? ((IControlChannel) tileEntity).getControlChannel() : -1;
+			
+			matrixControlPoints[index++] = new Object[] {
+					entryInjector.getValue().x, entryInjector.getValue().y, entryInjector.getValue().z,
+					tier, type, isEnabled, controlChannel };
+		}
+		
 		// update validity status
 		isAssemblyValid = isValid;
 		textValidityIssues = textReason;
@@ -650,34 +678,8 @@ public class AcceleratorSetup extends GlobalPosition {
 	}
 	
 	// Pseudo-API for computers
-	public Object[][] getControlPoints(final IBlockAccess blockAccess) {
-		final Object[][] objectResults  = new Object[controlPoints.size() + (keyInjectors == null ? 0 : keyInjectors.length)][];
-		int index = 0;
-		for (final Entry<VectorI, Integer> entryControlPoint : controlPoints.entrySet()) {
-			final Integer tier = TrajectoryPoint.getTier(entryControlPoint.getValue());
-			final String type = TrajectoryPoint.isCollider(entryControlPoint.getValue()) ? "Collider" :
-			                    TrajectoryPoint.isOutput(entryControlPoint.getValue()) ? "Output" :
-			                    TrajectoryPoint.isInput(entryControlPoint.getValue()) ? "Input" : "?";
-			final TileEntity tileEntity = entryControlPoint.getKey().getTileEntity(blockAccess);
-			final Boolean isEnabled = (tileEntity instanceof TileEntityAcceleratorControlPoint) && ((TileEntityAcceleratorControlPoint) tileEntity).getIsEnabled();
-			final Integer controlChannel = (tileEntity instanceof IControlChannel) ? ((IControlChannel) tileEntity).getControlChannel() : -1;
-			
-			objectResults[index++] = new Object[] {
-				entryControlPoint.getKey().x, entryControlPoint.getKey().y, entryControlPoint.getKey().z,
-				tier, type, isEnabled, controlChannel };
-		}
-		for (final Entry<Integer, VectorI> entryControlPoint : mapInjectors.entrySet()) {
-			final Integer tier = 1;
-			final String type = "Injector";
-			final TileEntity tileEntity = entryControlPoint.getValue().getTileEntity(blockAccess);
-			final Boolean isEnabled = (tileEntity instanceof TileEntityParticlesInjector) && ((TileEntityParticlesInjector) tileEntity).getIsEnabled();
-			final Integer controlChannel = (tileEntity instanceof IControlChannel) ? ((IControlChannel) tileEntity).getControlChannel() : -1;
-			
-			objectResults[index++] = new Object[] {
-				entryControlPoint.getValue().x, entryControlPoint.getValue().y, entryControlPoint.getValue().z,
-				tier, type, isEnabled, controlChannel };
-		}
-		return objectResults;
+	public Object[][] getControlPoints() {
+		return matrixControlPoints;
 	}
 	
 	

@@ -974,7 +974,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	
 	private Object[] getControlPoints() {
 		if (acceleratorSetup != null) {
-			return acceleratorSetup.getControlPoints(world);
+			return acceleratorSetup.getControlPoints();
 		}
 		return new Object[] { };
 	}
@@ -982,7 +982,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	@Nonnull
 	private Object[] getControlPointsCount() {
 		if (acceleratorSetup != null) {
-			final Object[] controlPoints = acceleratorSetup.getControlPoints(world);
+			final Object[][] controlPoints = acceleratorSetup.getControlPoints();
 			return new Integer[] { controlPoints.length };
 		}
 		return new Integer[] { -1 };
@@ -1003,7 +1003,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		} catch (final Exception exception) {
 			return new Object[] { false, "Integer expected for 1st argument" };
 		}
-		final Object[][] controlPoints = acceleratorSetup.getControlPoints(world);
+		final Object[][] controlPoints = acceleratorSetup.getControlPoints();
 		if (index < 0 || index >= controlPoints.length) {
 			return new Object[] { false, "Index out of range" };
 		}
