@@ -340,8 +340,12 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyCoreOrContro
 	}
 	
 	private void updateCoils(final boolean isConnected, final boolean isActive) {
-		updateBlockState(null, BlockProperties.ACTIVE, isActive);
+		// update core, only if it's still present/connected
+		if (isConnected) {
+			updateBlockState(null, BlockProperties.ACTIVE, isActive);
+		}
 		
+		// update coils
 		for (final EnumFacing direction : EnumFacing.VALUES) {
 			if (isValidInnerCoils[direction.ordinal()]) {
 				updateCoil(isConnected, isActive, direction, DISTANCE_INNER_COILS_BLOCKS);
