@@ -83,7 +83,7 @@ public final class EntityStarCore extends Entity {
 				}
 				if (entityLivingBase instanceof EntityPlayer) {
 					final EntityPlayer entityPlayer = (EntityPlayer) entityLivingBase;
-					if (entityPlayer.capabilities.isCreativeMode) {
+					if (entityPlayer.capabilities.disableDamage) {
 						continue;
 					}
 				}

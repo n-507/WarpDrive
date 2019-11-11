@@ -335,7 +335,7 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 				if ( entityLivingBase.isDead
 				  || !entityLivingBase.attackable()
 				  || ( entityLivingBase instanceof EntityPlayer
-				    && ((EntityPlayer) entityLivingBase).capabilities.isCreativeMode ) ) {
+				    && ((EntityPlayer) entityLivingBase).capabilities.disableDamage ) ) {
 					continue;
 				}
 				

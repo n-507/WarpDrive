@@ -124,7 +124,7 @@ public class LivingHandler {
 			
 		} else {
 			if (entityLivingBase instanceof EntityPlayer) {
-				if (((EntityPlayer) entityLivingBase).capabilities.isCreativeMode) {
+				if (((EntityPlayer) entityLivingBase).capabilities.disableDamage) {
 					if (entityLivingBase.ticksExisted % 100 == 0) {
 						((EntityPlayer) entityLivingBase).sendStatusMessage(
 								new WarpDriveText(Commons.getStyleWarning(), "warpdrive.world_border.outside",
@@ -189,7 +189,7 @@ public class LivingHandler {
 		if (!celestialObject.hasAtmosphere()) {
 			// skip players in creative
 			if ( !(entityLivingBase instanceof EntityPlayerMP)
-			  || !((EntityPlayerMP) entityLivingBase).capabilities.isCreativeMode ) {
+			  || !((EntityPlayerMP) entityLivingBase).capabilities.disableDamage ) {
 				BreathingManager.onLivingUpdateEvent(entityLivingBase, x, y, z);
 			}
 		}
