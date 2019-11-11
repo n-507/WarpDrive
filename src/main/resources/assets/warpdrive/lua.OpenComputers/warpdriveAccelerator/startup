@@ -22,11 +22,35 @@ function lhc_boot(isDetailed)
     
     w.writeLn("...")
     w.sleep(0.1)
+    
+    w.setColorNormal()
+    w.write("- checking assembly   : ")
   end
+  
+  local timeout = 10
+  local isValid, message
+  local count
+  repeat
+    isValid, message = accelerator.getAssemblyStatus()
+    count = accelerator.getControlPointsCount()
+    w.sleep(0.05)
+    timeout = timeout - 1
+  until (isValid == true and count >= 0) or timeout < 0
+  if timeout < 0 then
+    w.setColorWarning()
+    w.writeLn("failed")
+    w.writeLn(message)
+    w.setColorNormal()
+    w.sleep(6)
+    w.reboot()
+  elseif isDetailed then
+    w.setColorSuccess()
+    w.writeLn("passed")
+  end
+  w.sleep(0.2)
   
   -- getting control points
   lhc_controlPoints = {}
-  local count = accelerator.getControlPointsCount()
   local lhc_controlChannels = { }
   local countParameters = 0
   
