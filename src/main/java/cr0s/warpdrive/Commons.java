@@ -1175,7 +1175,7 @@ public class Commons {
 		if (blockState instanceof IExtendedBlockState) {
 			final IExtendedBlockState extendedBlockState = (IExtendedBlockState) blockState;
 			// own camouflage blocks
-			try {
+			if (extendedBlockState.getUnlistedProperties().containsKey(BlockProperties.CAMOUFLAGE)) {// failed: add it to the fast check
 				extendedBlockState.getValue(BlockProperties.CAMOUFLAGE);
 				// failed: add it to the fast check
 				WarpDrive.logger.error(String.format("Recursive camouflage block detected for block state %s, updating dictionary with %s = NOCAMOUFLAGE to prevent further errors",
@@ -1183,8 +1183,6 @@ public class Commons {
 				                                     blockState.getBlock().getRegistryName()));
 				Dictionary.BLOCKS_NOCAMOUFLAGE.add(blockState.getBlock());
 				return false;
-			} catch (final IllegalArgumentException exception) {
-				// success: this is valid block for us
 			}
 			// other mods camouflage blocks
 			for (final IUnlistedProperty<?> property : extendedBlockState.getUnlistedNames()) {
