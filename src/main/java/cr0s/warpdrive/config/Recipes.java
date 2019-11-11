@@ -858,6 +858,12 @@ public class Recipes {
 		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
 		                                       's', ingotIronOrSteel));
 		
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       new ItemStack(WarpDrive.blockVoidShellGlass, 2), "g g", "sfs", "g g",
+		                                       'g', "blockGlass",
+		                                       'f', "dustGlowstone",
+		                                       's', WarpDrive.blockVoidShellPlain));
+		
 		// Electromagnetic cell
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       new ItemStack(WarpDrive.itemElectromagneticCell[EnumTier.BASIC.getIndex()], 2), "iri", "i i", "ici",
