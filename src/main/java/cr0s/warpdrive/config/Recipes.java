@@ -1122,7 +1122,7 @@ public class Recipes {
 			
 			WarpDrive.register(new ShapedOreRecipe(groupMachines,
 			                                       new ItemStack(WarpDrive.blockAirShield, 4, metadataColor), false, "gog", "oco", "gog",
-			                                       'g', Items.GLOWSTONE_DUST,
+			                                       'g', "dustGlowstone",
 			                                       'o', new ItemStack(WarpDrive.blockHulls_omnipanel[EnumTier.BASIC.getIndex()], 1, metadataColor),
 			                                       'c', ItemComponent.getItemStack(EnumComponentType.DIAMOND_COIL) ));
 			WarpDrive.register(new ShapedOreRecipe(groupMachines,
