@@ -649,32 +649,44 @@ public class AcceleratorSetup extends GlobalPosition {
 	public void energy_consume(final int amount_internal) {
 		assert amount_internal > 0;
 		assert isLoaded;
-		final int countCapacitors = setCapacitors.size();
+		final HashSet<TileEntityCapacitor> setTileEntityCapacitors = getCapacitors();
+		final int countCapacitors = setTileEntityCapacitors.size();
 		assert countCapacitors > 0;
 		
 		// first, draw average from all
 		final int energyMean = amount_internal / countCapacitors;
 		int energyConsumed = 0;
 		int energyLeft = amount_internal - energyMean * countCapacitors;
-		final HashSet<TileEntityCapacitor> setTileEntityCapacitors = getCapacitors();
 		for (final TileEntityCapacitor tileEntityCapacitor : setTileEntityCapacitors) {
 			final int energyToConsume = Math.min(tileEntityCapacitor.energy_getPotentialOutput(), energyMean + energyLeft);
 			tileEntityCapacitor.energy_consume(energyToConsume);
 			energyConsumed += energyToConsume;
-			energyLeft += (energyMean - energyConsumed);
+			energyLeft += (energyMean - energyToConsume);
 		}
-		assert energyConsumed + energyLeft == amount_internal;
+		if (energyConsumed + energyLeft != amount_internal) {
+			if (Commons.throttleMe("AcceleratorSetup.energy_consume")) {
+				WarpDrive.logger.error(String.format("Inconsistent accelerator energy consumption 1/2 amount %d count %d (%s) mean %d consumed %d left %d",
+				                                     amount_internal, countCapacitors, setTileEntityCapacitors.size(), energyMean, energyConsumed, energyLeft));
+			}
+			assert false;
+		}
 		// then, draw remaining in no special order
 		if (energyLeft > 0) {
 			for (final TileEntityCapacitor tileEntityCapacitor : setTileEntityCapacitors) {
 				final int energyToConsume = Math.min(tileEntityCapacitor.energy_getPotentialOutput(), energyLeft);
 				tileEntityCapacitor.energy_consume(energyToConsume);
 				energyConsumed += energyToConsume;
-				energyLeft -= energyConsumed;
+				energyLeft -= energyToConsume;
 			}
 		}
-		assert energyConsumed == amount_internal;
-		assert energyLeft == 0;
+		if ( energyConsumed != amount_internal
+		  || energyLeft != 0 ) {
+			if (Commons.throttleMe("AcceleratorSetup.energy_consume")) {
+				WarpDrive.logger.error(String.format("Inconsistent accelerator energy consumption 2/2 amount %d count %d (%s) mean %d consumed %d left %d (0)",
+				                                     amount_internal, countCapacitors, setTileEntityCapacitors.size(), energyMean, energyConsumed, energyLeft));
+			}
+			assert false;
+		}
 	}
 	
 	// Pseudo-API for computers
