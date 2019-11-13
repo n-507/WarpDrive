@@ -406,7 +406,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		final Collection<Object> inventories = InventoryWrapper.getConnectedInventories(tileEntity.getWorld(), tileEntity.getPos());
 		if (inventories.isEmpty()) {
 			PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5,
-			                                      new Vector3(pos),
+			                                      new Vector3(vInjector.x, vInjector.y, vInjector.z),
 			                                      new Vector3(0.0D, 0.0D, 0.0D),
 			                                      1.0F, 1.0F, 1.0F,
 			                                      1.0F, 1.0F, 1.0F,
@@ -445,6 +445,12 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 			if (WarpDriveConfig.LOGGING_ACCELERATOR) {
 				WarpDrive.logger.debug(this + " No valid item found to inject");
 			}
+			PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5,
+			                                      new Vector3(vInjector.x, vInjector.y, vInjector.z),
+			                                      new Vector3(0.0D, 0.0D, 0.0D),
+			                                      1.0F, 1.0F, 1.0F,
+			                                      1.0F, 1.0F, 1.0F,
+			                                      32);
 			return;
 		}
 		//noinspection ConstantConditions
