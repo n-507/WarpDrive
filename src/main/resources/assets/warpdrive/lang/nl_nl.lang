@@ -769,7 +769,7 @@ warpdrive.video_channel.status_line.not_loaded=Videokanaal %1$d is ongeldig of c
 warpdrive.video_channel.status_line.undefined=niet gedefinieerd videokanaal.\n§bGebruik een Afstemmingsvork§r om het te zetten.
 
 
-warpdrive.accelerator.guide.low_power.not_enough_storage=Energie-opslagcapaciteit is te weinig; we hebben tenminste %1$d om verder te opereren maar we kunnen alleen %2$d opslaan
+warpdrive.accelerator.guide.low_power.not_enough_storage=Energie-opslagcapaciteit is te weinig; we hebben tenminste %1$d %3$s om verder te opereren maar we kunnen alleen %2$d %3$s opslaan.
 warpdrive.accelerator.guide.low_power.accelerating=We verliezen stroom baas (%1$s > %2$s %3$s), deeltjes vliegen in het rond, bereid je voor op grote bestraling!
 warpdrive.accelerator.guide.low_power.no_particles=We hebben meer stroom nodig om de versneller te activeren!
 warpdrive.accelerator.guide.no_chiller=Geen koeler gevonden voor deze versneller!

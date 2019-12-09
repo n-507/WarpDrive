@@ -774,7 +774,7 @@ warpdrive.video_channel.status_line.not_loaded=视频通道 %1$d 无效或者是
 warpdrive.video_channel.status_line.undefined=未定义的视频通道.\n§b使用一个音叉§r 去设置它.
 
 
-warpdrive.accelerator.guide.low_power.not_enough_storage=能量不足;我们需要%1$d的能量储备维持运转  目前仅剩%2$d
+warpdrive.accelerator.guide.low_power.not_enough_storage=能量不足;我们需要%1$d %3$s的能量储备维持运转  目前仅剩%2$d %3$s.
 warpdrive.accelerator.guide.low_power.accelerating=我们的主能量储备耗尽 (%1$s > %2$s %3$s), 粒子正在泄漏,准备承受巨量辐射!
 warpdrive.accelerator.guide.low_power.no_particles=需要更多能量以启动加速器!
 warpdrive.accelerator.guide.no_chiller=这台加速器没有冷却设备!

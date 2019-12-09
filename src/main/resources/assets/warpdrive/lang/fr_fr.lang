@@ -769,7 +769,7 @@ warpdrive.video_channel.status_line.not_loaded=Le canal vidéo %1$d est invalide
 warpdrive.video_channel.status_line.undefined=Le canal vidéo est non défini.\n§bUtilises un Diapason§r pour l'ajuster.
 
 
-warpdrive.accelerator.guide.low_power.not_enough_storage=La capacité de stockage d'énergie est insuffisante; Nous avons besoin d'au moins %1$d pour continuer mais ne pouvons stocker que %2$d
+warpdrive.accelerator.guide.low_power.not_enough_storage=La capacité de stockage d'énergie est insuffisante; Nous avons besoin d'au moins %1$d %3$s pour continuer mais ne pouvons stocker que %2$d %3$s.
 warpdrive.accelerator.guide.low_power.accelerating=Nous sommes à court d'énergie chef (%1$s > %2$s %3$s), les bunches de particules s'échappent, préparez-vous à une irradiation de masse!
 warpdrive.accelerator.guide.low_power.no_particles=Il nous faut plus d'énergie pour démarrer l'accélérateur!
 warpdrive.accelerator.guide.no_chiller=Cet accélérateur n'a aucun refroidisseur!

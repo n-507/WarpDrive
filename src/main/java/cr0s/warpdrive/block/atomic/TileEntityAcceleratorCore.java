@@ -280,17 +280,24 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 					guideTicks = ACCELERATOR_GUIDE_UPDATE_TICKS;
 					
 					final WarpDriveText text = getStatusPrefix();
+					final String energyUnits = energy_getDisplayUnits();
 					if (energyRequired > acceleratorSetup.energy_getMaxStorage()) {
 						text.append(Commons.getStyleWarning(), "warpdrive.accelerator.guide.low_power.not_enough_storage",
-						            energyRequired, acceleratorSetup.energy_getMaxStorage() );
+						            EnergyWrapper.format(energyRequired, energyUnits),
+						            EnergyWrapper.format(acceleratorSetup.energy_getMaxStorage(), energyUnits),
+						            energyUnits);
 					} else if (acceleratorSetup.setChillers.isEmpty()) {
 						text.append(Commons.getStyleWarning(), "warpdrive.accelerator.guide.no_chiller");
 					} else if (setParticleBunches.isEmpty()) {
 						text.append(Commons.getStyleWarning(), "warpdrive.accelerator.guide.low_power.no_particles",
-						            energyRequired, energyPotential);
+						            EnergyWrapper.format(energyRequired, energyUnits),
+						            EnergyWrapper.format(energyPotential, energyUnits),
+						            energyUnits);
 					} else {
 						text.append(Commons.getStyleWarning(), "warpdrive.accelerator.guide.low_power.accelerating",
-						            energyRequired, energyPotential);
+						            EnergyWrapper.format(energyRequired, energyUnits),
+						            EnergyWrapper.format(energyPotential, energyUnits),
+						            energyUnits);
 					}
 					
 					final AxisAlignedBB axisalignedbb = new AxisAlignedBB(pos.getX() - 10, pos.getY() - 10, pos.getZ() - 10,

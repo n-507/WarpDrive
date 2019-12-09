@@ -769,7 +769,7 @@ warpdrive.video_channel.status_line.not_loaded=Videokanal %1$d ist ungültig ode
 warpdrive.video_channel.status_line.undefined=Nicht definierter Videokanal.\n§bNutze eine Stimmgabel§r um ihn einzustellen.
 
 
-warpdrive.accelerator.guide.low_power.not_enough_storage=Energiespeicher zu klein; wir brauchen mindestens %1$d um den Betrieb fortzusetzen, können aber nur %2$d speichern.
+warpdrive.accelerator.guide.low_power.not_enough_storage=Energiespeicher zu klein; wir brauchen mindestens %1$d %3$s um den Betrieb fortzusetzen, können aber nur %2$d %3$s speichern.
 warpdrive.accelerator.guide.low_power.accelerating=Uns geht der Strom aus (%1$s > %2$s %3$s), Chef, Teilchen werden frei, auf massiven Strahlungsaustritt vorbereiten!
 warpdrive.accelerator.guide.low_power.no_particles=Wir brauchen mehr Strom um den Beschleuniger zu starten!
 warpdrive.accelerator.guide.no_chiller=Für diesen Beschleuniger konnte kein Kühler gefunden werden!
