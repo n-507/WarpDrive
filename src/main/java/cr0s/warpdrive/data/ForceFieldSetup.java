@@ -5,6 +5,7 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IForceFieldShape;
 import cr0s.warpdrive.api.IForceFieldUpgrade;
 import cr0s.warpdrive.api.IForceFieldUpgradeEffector;
+import cr0s.warpdrive.block.TileEntityAbstractBase;
 import cr0s.warpdrive.block.TileEntityAbstractBase.UpgradeSlot;
 import cr0s.warpdrive.block.forcefield.TileEntityForceFieldProjector;
 import cr0s.warpdrive.config.WarpDriveConfig;
@@ -143,6 +144,11 @@ public class ForceFieldSetup extends GlobalPosition {
 			  || tileEntity.getWorld().provider.getDimension() != dimensionId ) {
 				continue;
 			}
+			// ensure entity is constructed
+			if (tileEntity instanceof TileEntityAbstractBase) {
+				((TileEntityAbstractBase) tileEntity).finishConstruction();
+			}
+			
 			// projectors
 			if (tileEntity instanceof TileEntityForceFieldProjector) {
 				final TileEntityForceFieldProjector projector = (TileEntityForceFieldProjector) tileEntity;
