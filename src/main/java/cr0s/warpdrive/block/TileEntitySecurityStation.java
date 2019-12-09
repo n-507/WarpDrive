@@ -29,7 +29,7 @@ public class TileEntitySecurityStation extends TileEntityAbstractMachine impleme
 	public TileEntitySecurityStation() {
 		super();
 		
-		// (abstract) peripheralName = "warpdriveSecurityStation";
+		peripheralName = "warpdriveSecurityStation";
 		addMethods(new String[] {
 				"getAttachedPlayers"
 				});

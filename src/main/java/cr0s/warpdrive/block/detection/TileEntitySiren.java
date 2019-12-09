@@ -32,6 +32,7 @@ public class TileEntitySiren extends TileEntityAbstractMachine {
 	public TileEntitySiren() {
 		super();
 		
+		peripheralName = "warpdriveSiren";
 		doRequireUpgradeToInterface();
 	}
 	

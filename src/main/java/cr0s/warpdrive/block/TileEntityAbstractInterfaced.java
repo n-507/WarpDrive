@@ -418,6 +418,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	@Override
 	@Optional.Method(modid = "computercraft")
 	public String getType() {
+		assert peripheralName != null;
 		return peripheralName;
 	}
 	
