@@ -834,6 +834,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
 		final boolean isValid = super.doScanAssembly(isDirty, textReason);
 		
+		// note: acceleratorSetup is null when loading chunk, always defined otherwise
 		final AcceleratorSetup legacy_acceleratorSetup = acceleratorSetup;
 		if ( isDirty
 		  || acceleratorSetup == null
@@ -857,11 +858,12 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		
 		// reset accelerator in case of major changes
 		if (isDirty) {
-			if (acceleratorSetup.isMajorChange(legacy_acceleratorSetup)) {
+			if ( legacy_acceleratorSetup != null
+			  && acceleratorSetup.isMajorChange(legacy_acceleratorSetup) ) {
 				if (WarpDriveConfig.LOGGING_ACCELERATOR) {
 					WarpDrive.logger.info(this + " rebooting due to major change...");
 				}
-				rebootAccelerator(legacy_acceleratorSetup != null ? legacy_acceleratorSetup : acceleratorSetup, true, true);
+				rebootAccelerator(legacy_acceleratorSetup, true, true);
 			}
 			sendEvent("acceleratorUpdated");
 		}
