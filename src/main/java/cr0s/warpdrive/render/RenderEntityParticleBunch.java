@@ -79,12 +79,12 @@ public class RenderEntityParticleBunch extends RenderEntity {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
         renderStar(entityParticleBunch.ticksExisted + partialTick, entityParticleBunch.getEntityId(), rayCount_base,
-	        (float) Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_RED_INSIDE_Y, energy),
-	        (float) Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_GREEN_INSIDE_Y, energy),
-	        (float) Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_BLUE_INSIDE_Y, energy),
-	        (float) Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_RED_OUTSIDE_Y, energy),
-	        (float) Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_GREEN_OUTSIDE_Y, energy),
-	        (float) Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_BLUE_OUTSIDE_Y, energy),
+	        (int) (255.0F * Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_RED_INSIDE_Y   , energy)),
+	        (int) (255.0F * Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_GREEN_INSIDE_Y , energy)),
+	        (int) (255.0F * Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_BLUE_INSIDE_Y  , energy)),
+	        (int) (255.0F * Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_RED_OUTSIDE_Y  , energy)),
+	        (int) (255.0F * Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_GREEN_OUTSIDE_Y, energy)),
+	        (int) (255.0F * Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_BLUE_OUTSIDE_Y , energy)),
             size, size, size);
         
         // restore
@@ -93,8 +93,8 @@ public class RenderEntityParticleBunch extends RenderEntity {
 	
 	// Loosely based on ender dragon death effect
 	private static void renderStar(final float ticksExisted, final long seed, final int rayCount_base,
-						   final float redIn, final float greenIn, final float blueIn,
-						   final float redOut, final float greenOut, final float blueOut,
+						   final int redIn, final int greenIn, final int blueIn,
+						   final int redOut, final int greenOut, final int blueOut,
 						   final float scaleX, final float scaleY, final float scaleZ) {
 		final Random random = new Random(seed);
 		
