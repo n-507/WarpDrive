@@ -69,6 +69,14 @@ public class EntityParticleBunch extends Entity {
 		this.setRotation(yaw, pitch);
 	}
 	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public int getBrightnessForRender() {
+		final int lightFromSky = 0;
+		final int lightFromBlock = 15;
+		return lightFromSky << 20 | lightFromBlock << 4;
+	}
+	
 	@Override
 	public boolean isEntityInvulnerable(@Nonnull final DamageSource source) {
 		return true;

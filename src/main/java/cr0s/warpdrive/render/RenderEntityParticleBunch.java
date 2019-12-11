@@ -28,7 +28,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class RenderEntityParticleBunch extends RenderEntity {
 	
 	public static final double[]  PARTICLE_BUNCH_ENERGY_TO_SIZE_X          = { 0.00,   0.8,   1.0,   8.0,  10.0,  80.0, 100.0 };
-	public static final double[]  PARTICLE_BUNCH_ENERGY_TO_SIZE_Y          = { 0.01, 0.015, 0.020, 0.040, 0.045, 0.065, 0.070 };
+	public static final double[]  PARTICLE_BUNCH_ENERGY_TO_SIZE_Y          = { 0.12, 0.080, 0.060, 0.050, 0.040, 0.030, 0.020 };
 	
 	public static final double[]  PARTICLE_BUNCH_ENERGY_TO_RED_INSIDE_Y    = { 0.40,  0.60,  0.70,  0.80,  0.60,  0.20,  0.20 };
 	public static final double[]  PARTICLE_BUNCH_ENERGY_TO_GREEN_INSIDE_Y  = { 0.40,  0.50,  0.40,  0.20,  0.20,  0.30,  0.40 };
@@ -78,14 +78,16 @@ public class RenderEntityParticleBunch extends RenderEntity {
 		// common render parameters
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
-        renderStar(entityParticleBunch.ticksExisted + partialTick, entityParticleBunch.getEntityId(), rayCount_base,
+		GlStateManager.scale(size, size, size);
+		// lightmap already done by caller, see getBrightnessForRender()
+		
+		renderStar(entityParticleBunch.ticksExisted + partialTick, entityParticleBunch.getEntityId(), rayCount_base,
 	        (int) (255.0F * Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_RED_INSIDE_Y   , energy)),
 	        (int) (255.0F * Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_GREEN_INSIDE_Y , energy)),
 	        (int) (255.0F * Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_BLUE_INSIDE_Y  , energy)),
 	        (int) (255.0F * Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_RED_OUTSIDE_Y  , energy)),
 	        (int) (255.0F * Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_GREEN_OUTSIDE_Y, energy)),
-	        (int) (255.0F * Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_BLUE_OUTSIDE_Y , energy)),
-            size, size, size);
+	        (int) (255.0F * Commons.interpolate(PARTICLE_BUNCH_ENERGY_TO_SIZE_X, PARTICLE_BUNCH_ENERGY_TO_BLUE_OUTSIDE_Y , energy)) );
         
         // restore
 		GlStateManager.popMatrix();
@@ -94,8 +96,7 @@ public class RenderEntityParticleBunch extends RenderEntity {
 	// Loosely based on ender dragon death effect
 	private static void renderStar(final float ticksExisted, final long seed, final int rayCount_base,
 						   final int redIn, final int greenIn, final int blueIn,
-						   final int redOut, final int greenOut, final int blueOut,
-						   final float scaleX, final float scaleY, final float scaleZ) {
+						   final int redOut, final int greenOut, final int blueOut ) {
 		final Random random = new Random(seed);
 		
 		// compute rotation cycle
@@ -106,18 +107,6 @@ public class RenderEntityParticleBunch extends RenderEntity {
 		}
 		final float cycleRotation = 2 * tickRotation / (float) tickRotationPeriod;
 	    
-		// compute boost pulsation cycle
-		final int tickBoostPeriod = 15 + 2 * random.nextInt(10);
-		int tickBoost = (int) (ticksExisted % tickBoostPeriod);
-		if (tickBoost >= tickBoostPeriod / 2) {
-			tickBoost = tickBoostPeriod - tickBoost - 1;
-		}
-		final float cycleBoost = 2 * tickBoost / (float) tickBoostPeriod;
-		float boost = 0.0F;
-		if (cycleBoost > 0.7F) {
-			boost = (cycleBoost - 0.6F) / 0.4F;
-		}
-		
 		// compute number of rays
 		// final int rayCount = 45 + (int) ((cycleRotation + cycleRotation * cycleRotation) * 15.0F);
 		final int rayCount = rayCount_base + random.nextInt(10);
@@ -133,9 +122,21 @@ public class RenderEntityParticleBunch extends RenderEntity {
 		GlStateManager.disableAlpha();
 		GlStateManager.enableCull();
 		GlStateManager.depthMask(false);
-		GlStateManager.scale(scaleX, scaleY, scaleZ);
 		
 		for (int i = 0; i < rayCount; i++) {
+			// compute boost pulsation cycle
+			final int tickBoostPeriod = 15 + 2 * random.nextInt(10);
+			int tickBoost = (int) (ticksExisted % tickBoostPeriod);
+			if (tickBoost >= tickBoostPeriod / 2) {
+				tickBoost = tickBoostPeriod - tickBoost - 1;
+			}
+			final float cycleBoost = 2 * tickBoost / (float) tickBoostPeriod;
+			float boost = 0.0F;
+			if (cycleBoost > 0.6F) {
+				boost = (cycleBoost - 0.6F) / 0.4F;
+			}
+			
+			// compute branch orientation
 			GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
 			GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
 			GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 0.0F, 1.0F);
@@ -145,7 +146,7 @@ public class RenderEntityParticleBunch extends RenderEntity {
 			vertexBuffer.begin(6, DefaultVertexFormats.POSITION_COLOR);
 			final float rayLength = random.nextFloat() * 15.0F + 5.0F + boost *  5.0F;
 			final float rayWidth  = random.nextFloat() *  2.0F + 1.0F + boost *  1.0F;
-			vertexBuffer.pos( 0.0D             ,      0.0D,  0.0D           ).color(redIn, greenIn, blueIn, (int) (255F * (1.0F - boost))).endVertex();
+			vertexBuffer.pos( 0.0D             ,      0.0D,  0.0D           ).color(redIn, greenIn, blueIn, (int) (190.0F + 64.0F * (1.0F - boost))).endVertex();
 			vertexBuffer.pos(-0.866D * rayWidth, rayLength, -0.5D * rayWidth).color(redOut, greenOut, blueOut, 0).endVertex();
 			vertexBuffer.pos( 0.866D * rayWidth, rayLength, -0.5D * rayWidth).color(redOut, greenOut, blueOut, 0).endVertex();
 			vertexBuffer.pos( 0.000D           , rayLength,  1.0D * rayWidth).color(redOut, greenOut, blueOut, 0).endVertex();
