@@ -26,6 +26,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -40,8 +41,6 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import org.lwjgl.input.Keyboard;
 
 public abstract class TileEntityAbstractBase extends TileEntity implements IBlockUpdateDetector, ITickable {
 	
@@ -395,9 +394,9 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 				// show updates details in the world or while sneaking in the inventory
 				boolean showDetails = hasWorld();
 				if (Commons.isClientThread()) {
-					final int keyCodeSneak = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
-					final String keyName = Minecraft.getMinecraft().gameSettings.keyBindSneak.getDisplayName();
-					showDetails = Keyboard.isKeyDown(keyCodeSneak);
+					final KeyBinding keyBindingSneak = Minecraft.getMinecraft().gameSettings.keyBindSneak;
+					final String keyName = keyBindingSneak.getDisplayName();
+					showDetails = Commons.isKeyPressed(keyBindingSneak);
 					if (!showDetails) {
 						message.append(null, "warpdrive.upgrade.status_line.upgradeable",
 						               new WarpDriveText(Commons.getStyleCommand(), "%1$s", keyName));

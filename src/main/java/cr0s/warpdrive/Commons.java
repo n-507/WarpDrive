@@ -18,6 +18,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.command.ICommandSender;
@@ -73,6 +74,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -355,6 +359,20 @@ public class Commons {
 					lineRemaining = "";
 				}
 			}
+		}
+	}
+	
+	public static boolean isKeyPressed(@Nonnull final KeyBinding keyBinding) {
+		try {
+			final int keyCode = keyBinding.getKeyCode();
+			return keyCode < 0 ? Mouse.isButtonDown(keyCode + 100) : Keyboard.isKeyDown(keyCode);
+		} catch(final Exception exception) {
+			if (throttleMe(keyBinding.getDisplayName())) {
+				exception.printStackTrace();
+				WarpDrive.logger.error(String.format("Exception trying to get key pressed status for %s",
+				                                     keyBinding.getDisplayName() ));
+			}
+			return false;
 		}
 	}
 	

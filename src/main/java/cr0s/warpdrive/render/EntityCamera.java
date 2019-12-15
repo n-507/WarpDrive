@@ -1,11 +1,11 @@
 package cr0s.warpdrive.render;
 
+import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.network.PacketHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
@@ -161,18 +161,17 @@ public final class EntityCamera extends EntityLivingBase {
 				fireWaitTicks = 0;
 			}
 			
-			final GameSettings gamesettings = mc.gameSettings;
 			if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
 				dy = -1;
 			} else if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
 				dy = 2;
-			} else if (Keyboard.isKeyDown(gamesettings.keyBindLeft.getKeyCode())) {
+			} else if (Commons.isKeyPressed(mc.gameSettings.keyBindLeft)) {
 				dz = -1;
-			} else if (Keyboard.isKeyDown(gamesettings.keyBindRight.getKeyCode())) {
+			} else if (Commons.isKeyPressed(mc.gameSettings.keyBindRight)) {
 				dz = 1;
-			} else if (Keyboard.isKeyDown(gamesettings.keyBindForward.getKeyCode())) {
+			} else if (Commons.isKeyPressed(mc.gameSettings.keyBindForward)) {
 				dx = 1;
-			} else if (Keyboard.isKeyDown(gamesettings.keyBindBack.getKeyCode())) {
+			} else if (Commons.isKeyPressed(mc.gameSettings.keyBindBack)) {
 				dx = -1;
 			} else if (Keyboard.isKeyDown(Keyboard.KEY_C)) { // centering view
 				dx = 0;

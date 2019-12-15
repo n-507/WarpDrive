@@ -17,6 +17,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -34,8 +35,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-
-import org.lwjgl.input.Keyboard;
 
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -84,8 +83,8 @@ public class TooltipHandler {
 		}
 		
 		// note: event.getEntityPlayer().isSneaking() remains false inside GUIs, so we ask directly the driver
-		final int keyCodeSneak = Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode();
-		final boolean isSneaking = Keyboard.isKeyDown(keyCodeSneak);
+		final KeyBinding keyBindingSneak = Minecraft.getMinecraft().gameSettings.keyBindSneak;
+		final boolean isSneaking = Commons.isKeyPressed(keyBindingSneak);
 		final boolean isCreativeMode = event.getEntityPlayer().capabilities.isCreativeMode;
 		
 		// cleanup the mess every mods add (notably the registry name)
