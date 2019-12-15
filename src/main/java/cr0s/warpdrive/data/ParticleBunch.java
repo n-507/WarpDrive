@@ -165,7 +165,7 @@ public class ParticleBunch extends Vector3 {
 		if ( tier > 0
 		  && controlChannel >= 0 ) {
 			final AcceleratorControlParameter acceleratorControlParameter = mapParameters.get(controlChannel); 
-			final double threshold =  (acceleratorControlParameter  == null ? WarpDriveConfig.ACCELERATOR_THRESHOLD_DEFAULT : acceleratorControlParameter.threshold);
+			final double threshold = Math.max(0.01D, (acceleratorControlParameter  == null ? WarpDriveConfig.ACCELERATOR_THRESHOLD_DEFAULT : acceleratorControlParameter.threshold));
 			enableControlPoint = energy > threshold
 			                            * TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1];
 			if (enableControlPoint && WarpDriveConfig.LOGGING_ACCELERATOR) {
@@ -207,12 +207,19 @@ public class ParticleBunch extends Vector3 {
 				  || vectorNewMotion == null ) {
 					directionNewMotion = trajectoryPointCurrent.getTurnedDirection(directionCurrentMotion);
 					if (directionNewMotion != null) {
-						vectorNewMotion = new Vector3(directionNewMotion);
-						if (WarpDriveConfig.LOGGING_ACCELERATOR) {
-							WarpDrive.logger.info(String.format(this + " approaching tier %d turn towards %s %s",
-									tier, directionNewMotion, vectorNewMotion));
+						isTurning = energy >= TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MINIMUM[tier - 1];
+						if (isTurning) {
+							vectorNewMotion = new Vector3(directionNewMotion);
+							if (WarpDriveConfig.LOGGING_ACCELERATOR) {
+								WarpDrive.logger.info(String.format(this + " approaching tier %d turn towards %s %s",
+								                                    tier, directionNewMotion, vectorNewMotion));
+							}
+						} else {
+							// cancel turning
+							directionNewMotion = null;
+							vectorNewMotion = null;
+							vectorNewTurningPoint = null;
 						}
-						isTurning = true;
 					}
 				}
 			
@@ -264,8 +271,10 @@ public class ParticleBunch extends Vector3 {
 		Vector3 vectorNewPosition = new Vector3(x + speedAdjusted * vectorCurrentMotion.x,
 		                                        y + speedAdjusted * vectorCurrentMotion.y,
 		                                        z + speedAdjusted * vectorCurrentMotion.z);
-		if (vectorNewTurningPoint != null) {
+		if (isTurning) {
 			Vector3 vectorOldPosition = new Vector3(x, y, z);
+			
+			// note: at this point both vectorNewMotion and vectorNewTurningPoint are defined
 			// rollback if it's a new block so we recover the turning point in case we overshoot last time
 			if (isNewBlock) {
 				vectorOldPosition = new Vector3(x - vectorCurrentMotion.x, y - vectorCurrentMotion.y, z - vectorCurrentMotion.z);
@@ -283,21 +292,18 @@ public class ParticleBunch extends Vector3 {
 					vectorNewPosition = vectorNewTurningPoint.clone().translateFactor(vectorNewMotion, distanceLeft);
 					
 					// adjust speed
-					if (isTurning) {
-						// @TODO
-						final double energy_before = energy;
-						// final double energyMin = TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MINIMUM[tier - 1];
-						// energy = energyMin + (energy - energyMin) * TileEntityAcceleratorCore.ACCELERATOR_PARTICLE_ENERGY_TURN_COEFFICIENTS[tier - 1];
-						final double energyMin = TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MINIMUM[tier - 1];
-						final double energyMax = TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1];
-						energy = Commons.clamp(energyMin, energyMax, energy * Commons.interpolate(
-							new double[] { energyMin, energyMax },
-							new double[] { TileEntityAcceleratorCore.PARTICLE_BUNCH_TURN_COEFFICIENTS_AT_MIN_ENERGY[tier - 1], TileEntityAcceleratorCore.PARTICLE_BUNCH_TURN_COEFFICIENTS_AT_MAX_ENERGY[tier - 1] },
-							energy));
-						if (WarpDriveConfig.LOGGING_ACCELERATOR) {
-							WarpDrive.logger.info(String.format(this + " turning energy %.5f -> %.5f at [%d %d %d]",
-								energy_before, energy, vCurrentBlock.x, vCurrentBlock.y, vCurrentBlock.z));
-						}
+					final double energy_before = energy;
+					// final double energyMin = TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MINIMUM[tier - 1];
+					// energy = energyMin + (energy - energyMin) * TileEntityAcceleratorCore.ACCELERATOR_PARTICLE_ENERGY_TURN_COEFFICIENTS[tier - 1];
+					final double energyMin = TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MINIMUM[tier - 1];
+					final double energyMax = TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1];
+					energy = Commons.clamp(energyMin, energyMax, energy * Commons.interpolate(
+						new double[] { energyMin, energyMax },
+						new double[] { TileEntityAcceleratorCore.PARTICLE_BUNCH_TURN_COEFFICIENTS_AT_MIN_ENERGY[tier - 1], TileEntityAcceleratorCore.PARTICLE_BUNCH_TURN_COEFFICIENTS_AT_MAX_ENERGY[tier - 1] },
+						energy));
+					if (WarpDriveConfig.LOGGING_ACCELERATOR) {
+						WarpDrive.logger.info(String.format(this + " turning energy %.5f -> %.5f at [%d %d %d]",
+							energy_before, energy, vCurrentBlock.x, vCurrentBlock.y, vCurrentBlock.z));
 					}
 					
 				} else {
@@ -317,7 +323,7 @@ public class ParticleBunch extends Vector3 {
 		
 		// update properties
 		vLastBlock = vCurrentBlock.clone();
-		final VectorI vNewBlock = new VectorI((int) vectorNewPosition.x, (int) vectorNewPosition.y, (int) vectorNewPosition.z);
+		final VectorI vNewBlock = new VectorI((int) Math.floor(vectorNewPosition.x), (int) Math.floor(vectorNewPosition.y), (int) Math.floor(vectorNewPosition.z));
 		if (!vNewBlock.equals(vCurrentBlock)) {
 			trajectoryPointCurrent = null;
 		}
