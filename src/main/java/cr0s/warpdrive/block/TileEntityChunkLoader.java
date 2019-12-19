@@ -129,14 +129,22 @@ public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
 		final int radiusZpos_new =   Commons.clamp(0, 1000, Math.abs(posZ));
 		
 		// validate size constrains
-		final int maxArea = (1 + 2 * maxRange) * (1 + 2 * maxRange);
-		final int newArea = (-radiusXneg_new + 1 + radiusXpos_new)
+		final int areaMax = (1 + 2 * maxRange) * (1 + 2 * maxRange);
+		final int areaCurrent = (-radiusXneg + 1 + radiusXpos)
+		                      * (-radiusZneg + 1 + radiusZpos);
+		final int areaNew = (-radiusXneg_new + 1 + radiusXpos_new)
 		                  * (-radiusZneg_new + 1 + radiusZpos_new);
-		if (newArea <= maxArea) {
+		if (areaNew <= areaMax) {
 			radiusXneg = radiusXneg_new;
 			radiusXpos = radiusXpos_new;
 			radiusZneg = radiusZneg_new;
 			radiusZpos = radiusZpos_new;
+			refreshChunkRange();
+		} else if (areaCurrent > areaMax) {
+			radiusXneg = - maxRange;
+			radiusXpos =   maxRange;
+			radiusZneg = - maxRange;
+			radiusZpos =   maxRange;
 			refreshChunkRange();
 		}
 	}

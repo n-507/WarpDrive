@@ -1323,7 +1323,7 @@ public class WarpDriveConfig {
 		// Chunk loader
 		CHUNK_LOADER_MAX_ENERGY_STORED = Commons.clamp(1, Integer.MAX_VALUE,
 				config.get("chunk_loader", "max_energy_stored", CHUNK_LOADER_MAX_ENERGY_STORED, "Maximum energy stored").getInt());
-		CHUNK_LOADER_MAX_RADIUS = Commons.clamp(1, Integer.MAX_VALUE,
+		CHUNK_LOADER_MAX_RADIUS = Commons.clamp(1, 1000,
 				config.get("chunk_loader", "max_radius", CHUNK_LOADER_MAX_RADIUS, "Maximum radius when loading a square shape, measured in chunks. A linear shape can be up to 1 chunk wide by (radius + 1 + radius) ^ 2 chunks long.").getInt());
 		CHUNK_LOADER_ENERGY_PER_CHUNK = Commons.clamp(1, 100,
 				config.get("chunk_loader", "energy_per_chunk", CHUNK_LOADER_ENERGY_PER_CHUNK, "Energy consumed per chunk loaded").getInt());
