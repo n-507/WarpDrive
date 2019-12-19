@@ -78,8 +78,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
+import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -180,6 +182,7 @@ public class WarpDriveConfig {
 	public static boolean              G_ENABLE_FAST_SET_BLOCKSTATE = false;
 	public static boolean              G_ENABLE_PROTECTION_CHECKS = true;
 	public static boolean              G_ENABLE_EXPERIMENTAL_REFRESH = false;
+	public static int                  G_MINIMUM_DIMENSION_UNLOAD_QUEUE_DELAY = 100;
 	
 	public static float                G_BLAST_RESISTANCE_CAP = 60.0F;
 	
@@ -795,6 +798,20 @@ public class WarpDriveConfig {
 		                                        "Enable area protection checks from other mods or plugins, disable if you use the event system exclusively").getBoolean(G_ENABLE_PROTECTION_CHECKS);
 		G_ENABLE_EXPERIMENTAL_REFRESH  = config.get("general", "enable_experimental_refresh", G_ENABLE_EXPERIMENTAL_REFRESH,
 		                                            "Enable experimental refresh during jump to prevent duping, use at your own risk").getBoolean(G_ENABLE_EXPERIMENTAL_REFRESH);
+		G_MINIMUM_DIMENSION_UNLOAD_QUEUE_DELAY = Commons.clamp(0, 1000,
+				config.get("general", "minimum_dimension_unload_queue_delay_ticks", G_MINIMUM_DIMENSION_UNLOAD_QUEUE_DELAY,
+		                   "Enforce a minimum value for Forge's dimensionUnloadQueueDelay to fix various dimension transition issues from unloading the world too soon (set below 100 at your own risk)").getInt());
+		ForgeModContainer.dimensionUnloadQueueDelay = Math.max(ForgeModContainer.dimensionUnloadQueueDelay, G_MINIMUM_DIMENSION_UNLOAD_QUEUE_DELAY);
+		WarpDrive.logger.info(String.format("Forge's dimensionUnloadQueueDelay is set to %d ticks",
+		                                    ForgeModContainer.dimensionUnloadQueueDelay ));
+		if (ForgeModContainer.dimensionUnloadQueueDelay < 100) {
+			FMLLog.bigWarning("Forge's dimensionUnloadQueueDelay is lower than 100 ticks, world transitions won't work properly!");
+			try {
+				Thread.sleep(1000L);
+			} catch (final Exception exception) {
+				// no operation
+			}
+		}
 		
 		G_BLAST_RESISTANCE_CAP = Commons.clamp(10.0F, 6000.0F,
 				(float) config.get("general", "blast_resistance_cap", G_BLAST_RESISTANCE_CAP,
