@@ -78,8 +78,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
+import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
@@ -183,6 +185,7 @@ public class WarpDriveConfig {
 	public static boolean              G_ENABLE_PROTECTION_CHECKS = true;
 	public static boolean              G_ENABLE_EXPERIMENTAL_REFRESH = false;
 	public static int                  G_MINIMUM_DIMENSION_UNLOAD_QUEUE_DELAY = 100;
+	public static boolean              G_ENABLE_FORGE_CHUNK_MANAGER = true;
 	
 	public static float                G_BLAST_RESISTANCE_CAP = 60.0F;
 	
@@ -812,6 +815,8 @@ public class WarpDriveConfig {
 				// no operation
 			}
 		}
+		G_ENABLE_FORGE_CHUNK_MANAGER = config.get("general", "enable_forge_chunk_manager", G_ENABLE_FORGE_CHUNK_MANAGER,
+		                                                   "Enable automatic configuration of Forge's ChunkManager for WarpDrive. Disable to control manually WarpDrive specific settings.").getBoolean(G_ENABLE_FORGE_CHUNK_MANAGER);
 		
 		G_BLAST_RESISTANCE_CAP = Commons.clamp(10.0F, 6000.0F,
 				(float) config.get("general", "blast_resistance_cap", G_BLAST_RESISTANCE_CAP,
@@ -1330,6 +1335,28 @@ public class WarpDriveConfig {
 		ACCELERATOR_MAX_PARTICLE_BUNCHES = Commons.clamp(2, 100,
 				config.get("accelerator", "max_particle_bunches", ACCELERATOR_MAX_PARTICLE_BUNCHES, "Maximum number of particle bunches per accelerator controller").getInt());
 		
+		
+		// post treatment for forge configuration
+		if (G_ENABLE_FORGE_CHUNK_MANAGER) {
+			final int sideShipMax_chunks = (int) Math.ceil(SHIP_SIZE_MAX_PER_SIDE_BY_TIER[3] / 16.0F) + 1;
+			final int sizeShipMax_chunks = sideShipMax_chunks * sideShipMax_chunks;
+			final int sizeChunkLoaderMax_chunks = (1 + 2 * CHUNK_LOADER_MAX_RADIUS) * (1 + 2 * CHUNK_LOADER_MAX_RADIUS);
+			final int sizeMax_chunks = Math.max(sizeShipMax_chunks, sizeChunkLoaderMax_chunks);
+			final Configuration configForgeChunks = ForgeChunkManager.getConfig();
+			final Property propertyMaximumTicketCount = configForgeChunks.get(WarpDrive.MODID, "maximumTicketCount", 100);
+			if (propertyMaximumTicketCount.getInt() < 2) {
+				propertyMaximumTicketCount.set(2);
+			}
+			final Property propertyMaximumChunksPerTicket = configForgeChunks.get(WarpDrive.MODID, "maximumChunksPerTicket", sizeMax_chunks);
+			if (propertyMaximumChunksPerTicket.getInt() < sizeMax_chunks) {
+				propertyMaximumChunksPerTicket.set(sizeMax_chunks);
+			}
+			if (configForgeChunks.hasChanged()) {
+				configForgeChunks.save();
+			}
+		}
+		
+		// always save to ensure comments are up-to-date
 		config.save();
 	}
 	
