@@ -5,14 +5,19 @@ buildscript {
         jcenter()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://files.minecraftforge.net/maven"
+        }
+        maven {
+            url "https://plugins.gradle.org/m2/"
         }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.1.2'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.matthewprenger.cursegradle'
 
 // define the properties file
 ext.configFile = file "build.properties"
@@ -49,11 +54,19 @@ minecraft {
     replaceIn "MyDummyModContainer.java"
 }
 
+curseforge {
+	apiKey = "${token_curseforge}"
+}
+
 repositories {
 	mavenCentral()
-    maven { // JEI & Tinkers
-        name 'DVS1 Maven FS'
-        url 'http://dvs1.progwml6.com/files/maven'
+//    maven { // JEI & Tinkers
+//        name 'DVS1 Maven FS'
+//        url 'http://dvs1.progwml6.com/files/maven'
+//    }
+    maven { // JEI fallback
+        name = "ModMaven"
+        url = "https://modmaven.k-4u.nl"
     }
     maven { // CCC/NEI (for WAILA)
         name 'CB Repo'
@@ -86,6 +99,10 @@ repositories {
     maven {
         name = "dmod's BuildBroken maven"
         url = "http://api.dmodoomsirius.me"
+    }
+    maven {
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven/"
     }
 	mavenLocal()
 }
