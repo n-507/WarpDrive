@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 
+import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBlockTransformer;
 import cr0s.warpdrive.api.ITransformation;
@@ -352,11 +353,25 @@ public class CompatImmersiveEngineering implements IBlockTransformer {
 	public void restoreExternals(final World world, final BlockPos blockPos,
 	                             final IBlockState blockState, final TileEntity tileEntity,
 	                             final ITransformation transformation, final NBTBase nbtBase) {
-		final NBTTagList nbtImmersiveEngineering = (NBTTagList) nbtBase;
-		if (nbtImmersiveEngineering == null) {
+		if ( nbtBase == null
+		  || nbtBase.isEmpty() ) {
 			return;
 		}
+		if (!(nbtBase instanceof NBTTagList)) {
+			WarpDrive.logger.warn(String.format("Invalid external data for %s %s with TileEntity %s: %s",
+			                                    blockState, Commons.format(world, blockPos), tileEntity, nbtBase ));
+			return;
+		}
+		final NBTTagList nbtImmersiveEngineering = (NBTTagList) nbtBase;
 		final World targetWorld = transformation.getTargetWorld();
+		if (nbtImmersiveEngineering.isEmpty()) {
+			return;
+		}
+		if (tileEntity == null) {
+			WarpDrive.logger.warn(String.format("Invalid null tile entity for %s %s with external data %s",
+			                                    blockState, Commons.format(world, blockPos), nbtBase ));
+			return;
+		}
 		
 		// powerPathList
 		for (int indexConnectionToAdd = 0; indexConnectionToAdd < nbtImmersiveEngineering.tagCount(); indexConnectionToAdd++) {
