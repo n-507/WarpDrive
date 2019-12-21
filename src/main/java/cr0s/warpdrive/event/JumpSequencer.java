@@ -1176,7 +1176,7 @@ public class JumpSequencer extends AbstractSequencer {
 								                                 jumpBlock.block, jumpBlock.blockMeta, tileEntitySource);
 							}
 							
-							final TileEntity tileEntityTarget = jumpBlock.weakTileEntity == null ? null : worldTarget.getTileEntity(blockPosTarget);
+							final TileEntity tileEntityTarget = jumpBlock.blockNBT == null ? null : worldTarget.getTileEntity(blockPosTarget);
 							blockTransformer.restoreExternals(worldTarget, blockPosTarget,
 							                                  blockStateTarget, tileEntityTarget, transformation, external.getValue());
 						}
