@@ -214,7 +214,8 @@ public class ItemElectromagneticCell extends ItemAbstractBase implements IPartic
 	
 	@Override
 	public ParticleStack getParticleStack(@Nonnull final ItemStack itemStack) {
-		if (itemStack.getItem() != this) {
+		if ( itemStack.getCount() != 1
+		  || itemStack.getItem() != this ) {
 			return null;
 		}
 		final NBTTagCompound tagCompound = itemStack.getTagCompound();
@@ -241,6 +242,9 @@ public class ItemElectromagneticCell extends ItemAbstractBase implements IPartic
 	
 	@Override
 	public int fill(final ItemStack itemStack, final ParticleStack resource, final boolean doFill) {
+		if (itemStack.getCount() != 1) {
+			return 0;
+		}
 		ParticleStack particleStack = getParticleStack(itemStack);
 		if ( particleStack == null
 		  || particleStack.getParticle() == null ) {
