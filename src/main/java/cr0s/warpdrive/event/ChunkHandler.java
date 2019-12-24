@@ -5,6 +5,7 @@ import cr0s.warpdrive.LocalProfiler;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.ExceptionChunkNotLoaded;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.ChunkData;
 import cr0s.warpdrive.data.StateAir;
 
@@ -20,6 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import net.minecraft.world.border.WorldBorder;
 
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.ChunkEvent;
@@ -58,6 +60,17 @@ public class ChunkHandler {
 			final String filename = String.format("%s/%s.dat", event.getWorld().getSaveHandler().getWorldDirectory().getPath(), WarpDrive.MODID);
 			final NBTTagCompound tagCompound = Commons.readNBTFromFile(filename);
 			WarpDrive.starMap.readFromNBT(tagCompound);
+			
+			// enforce vanilla's WorldBorder diameter consistency
+			final WorldBorder worldBorder = event.getWorld().getWorldBorder();
+			final double maxWorldBorder = CelestialObjectManager.getMaxWorldBorder(event.getWorld());
+			WarpDrive.logger.info(String.format("Checking vanilla WorldBorder size (%.1f m) against celestial map maximum border (%.1f m)",
+			                                    worldBorder.getDiameter(), maxWorldBorder ));
+			if (worldBorder.getDiameter() < maxWorldBorder) {
+				worldBorder.setTransition(maxWorldBorder);
+				WarpDrive.logger.warn(String.format("Vanilla WorldBorder size was too small, it has been adjusted to %.1f m!",
+				                                    worldBorder.getDiameter() ));
+			}
 		}
 	}
 	

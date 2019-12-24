@@ -36,6 +36,8 @@ public class CelestialObjectManager extends XmlFileManager {
 	private HashMap<String, CelestialObject> celestialObjectsById = new HashMap<>();
 	public CelestialObject[] celestialObjects = new CelestialObject[0];
 	
+	private double maxWorldBorder = 0.0D;
+	
 	// *** mixed statics ***
 	
 	public static void clearForReload(final boolean isRemote) {
@@ -97,6 +99,10 @@ public class CelestialObjectManager extends XmlFileManager {
 		final CelestialObject celestialObject = get(world, x, z);
 		return celestialObject == null
 		    || (!celestialObject.isSpace() && !celestialObject.isHyperspace());
+	}
+	
+	public static double getMaxWorldBorder(final World world) {
+		return (world.isRemote ? CLIENT : SERVER).getMaxWorldBorder();
 	}
 	
 	// *** server side only ***
@@ -279,6 +285,7 @@ public class CelestialObjectManager extends XmlFileManager {
 		int countErrors = 0;
 		int countHyperspace = 0;
 		int countSpace = 0;
+		double maxWorldBorderTemp = 0.0D;
 		for (int indexCelestialObject1 = 0; indexCelestialObject1 < count; indexCelestialObject1++) {
 			final CelestialObject celestialObject1 = celestialObjectsTemp[indexCelestialObject1];
 			celestialObject1.lateUpdate();
@@ -289,6 +296,9 @@ public class CelestialObjectManager extends XmlFileManager {
 			} else if (celestialObject1.isSpace()) {
 				countSpace++;
 			}
+			final AxisAlignedBB worldBorderArea1 = celestialObject1.getWorldBorderArea();
+			maxWorldBorderTemp = Math.max(maxWorldBorderTemp, 2 * Math.max(Math.max(Math.abs(worldBorderArea1.minX), Math.abs(worldBorderArea1.minZ)),
+			                                                               Math.max(Math.abs(worldBorderArea1.maxX), Math.abs(worldBorderArea1.maxZ)) ) );
 			
 			// validate coordinates
 			if (!celestialObject1.isVirtual()) {
@@ -363,7 +373,6 @@ public class CelestialObjectManager extends XmlFileManager {
 				if ( !celestialObject1.isVirtual()
 				  && !celestialObject2.isVirtual()
 				  && celestialObject1.dimensionId == celestialObject2.dimensionId ) {
-					final AxisAlignedBB worldBorderArea1 = celestialObject1.getWorldBorderArea();
 					final AxisAlignedBB worldBorderArea2 = celestialObject2.getWorldBorderArea();
 					if (worldBorderArea1.intersects(worldBorderArea2)) {
 						countErrors++;
@@ -404,6 +413,7 @@ public class CelestialObjectManager extends XmlFileManager {
 		
 		// delay setting the array so the render thread can rely on its content
 		celestialObjects = celestialObjectsTemp;
+		maxWorldBorder = maxWorldBorderTemp;
 	}
 	
 	@Override
@@ -449,5 +459,9 @@ public class CelestialObjectManager extends XmlFileManager {
 			}
 		}
 		return celestialObjectClosest;
+	}
+	
+	public double getMaxWorldBorder() {
+		return maxWorldBorder < 1000 ? 6.0E7D : maxWorldBorder;
 	}
 }
