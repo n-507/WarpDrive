@@ -55,15 +55,20 @@ minecraft {
 }
 
 curseforge {
-	apiKey = "${token_curseforge}"
+	// get token from gradle.properties (development space) or default to private environment variable (Travis CI & such)
+    if (project.hasProperty('token_curseforge')) {
+        apiKey = "${token_curseforge}"
+    } else {
+        apiKey = System.getenv('token_curseforge')
+    }
 }
 
 repositories {
 	mavenCentral()
-//    maven { // JEI & Tinkers
-//        name 'DVS1 Maven FS'
-//        url 'http://dvs1.progwml6.com/files/maven'
-//    }
+    maven { // JEI & Tinkers
+        name 'DVS1 Maven FS'
+        url 'http://dvs1.progwml6.com/files/maven'
+    }
     maven { // JEI fallback
         name = "ModMaven"
         url = "https://modmaven.k-4u.nl"
