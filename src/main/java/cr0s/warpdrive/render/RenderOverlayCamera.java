@@ -97,6 +97,7 @@ public class RenderOverlayCamera {
 			case AIR:
 			case ARMOR:
 			case BOSSHEALTH:
+			case BOSSINFO:
 			case CROSSHAIRS:
 			case EXPERIENCE:
 			case FOOD:
