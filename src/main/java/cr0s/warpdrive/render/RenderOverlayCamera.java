@@ -104,10 +104,14 @@ public class RenderOverlayCamera {
 			case HEALTHMOUNT:
 			case HOTBAR:
 			case TEXT:
-				// Don't render other GUI parts
+				// Don't render inventory/stats GUI parts
 				if (event.isCancelable()) {
 					event.setCanceled(true);
 				}
+				break;
+				
+			default:
+				// Keep other GUI parts: PORTAL, JUMPBAR, CHAT, PLAYER_LIST, DEBUG, POTION_ICONS, SUBTITLES, FPS_GRAPH, VIGNETTE
 				break;
 			}
 		}
