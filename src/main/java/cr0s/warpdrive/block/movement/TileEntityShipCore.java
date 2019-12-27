@@ -1012,7 +1012,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				final WarpDriveText reason = new WarpDriveText();
 				if (nearestGate == null || !isShipInJumpgate(nearestGate, reason)) {
 					commandDone(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.insufficient_mass_for_hyperspace",
-					                                     shipMass, WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE));
+					                                     WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE, shipMass ));
 					return;
 				}
 			}
