@@ -311,7 +311,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	
 	@Override
 	public Object[] getUpgrades() {
-		return new Object[] { isUpgradeable(), getUpgradeStatus(false).getUnformattedText() };
+		return new Object[] { isUpgradeable(), Commons.removeFormatting( getUpgradeStatus(false).getUnformattedText() ) };
 	}
 	
 	@Override

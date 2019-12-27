@@ -1217,7 +1217,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		final WarpDriveText reason = new WarpDriveText();
 		final int energyRequired = getEnergyRequired(enumShipCommand, reason);
 		if (energyRequired < 0) {
-			return new Object[] { false, reason.getUnformattedComponentText() };
+			return new Object[] { false, Commons.removeFormatting( reason.getUnformattedText() ) };
 		}
 		final String units = energy_getDisplayUnits();
 		return new Object[] { true, EnergyWrapper.convert(energyRequired, units) };
