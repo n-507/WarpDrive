@@ -265,7 +265,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				if ( shipMass > WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE
 				  && CelestialObjectManager.isPlanet(world, pos.getX(), pos.getZ()) ) {
 					textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.too_much_mass_for_planet",
-					                                  WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE, shipMass);
+					                                       WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE, shipMass );
 					isAssemblyValid = false;
 					if (isEnabled) {
 						commandDone(false, textValidityIssues);
@@ -275,7 +275,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				if ( shipMass < WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE
 				  && CelestialObjectManager.isInHyperspace(world, pos.getX(), pos.getZ()) ) {
 					textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.insufficient_mass_for_hyperspace",
-					                                       WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE, shipMass);
+					                                       WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE, shipMass );
 					isAssemblyValid = false;
 					if (isEnabled) {
 						commandDone(false, textValidityIssues);
@@ -284,7 +284,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				}
 				if (shipMass < WarpDriveConfig.SHIP_MASS_MIN_BY_TIER[enumTier.getIndex()]) {
 					textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.insufficient_mass_for_tier",
-					                                       WarpDriveConfig.SHIP_MASS_MIN_BY_TIER[enumTier.getIndex()], shipMass);
+					                                       WarpDriveConfig.SHIP_MASS_MIN_BY_TIER[enumTier.getIndex()], shipMass );
 					isAssemblyValid = false;
 					if (isEnabled) {
 						commandDone(false, textValidityIssues);
@@ -293,7 +293,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				}
 				if (shipMass > WarpDriveConfig.SHIP_MASS_MAX_BY_TIER[enumTier.getIndex()]) {
 					textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.too_much_mass_for_tier",
-					                                       WarpDriveConfig.SHIP_MASS_MAX_BY_TIER[enumTier.getIndex()], shipMass);
+					                                       WarpDriveConfig.SHIP_MASS_MAX_BY_TIER[enumTier.getIndex()], shipMass );
 					isAssemblyValid = false;
 					if (isEnabled) {
 						commandDone(false, textValidityIssues);
