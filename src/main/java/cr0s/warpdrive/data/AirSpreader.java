@@ -247,7 +247,7 @@ public class AirSpreader {
 							z - facingSource.getZOffset()));
 					if (blockStateGenerator.getBlock() instanceof BlockAirGeneratorTiered) {
 						final EnumFacing facingGenerator = blockStateGenerator.getValue(BlockProperties.FACING);
-						if (facingGenerator == facingSource) {
+						if (facingGenerator.equals(facingSource)) {
 							// all good
 							hasGenerator = true;
 						}

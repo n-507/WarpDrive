@@ -1,6 +1,6 @@
 package cr0s.warpdrive.api;
 
-public interface FunctionSetVector<Component> {
+public interface FunctionSetVector<V> {
 	
-	void apply(Component x, Component y, Component z);
+	void apply(V x, V y, V z);
 }

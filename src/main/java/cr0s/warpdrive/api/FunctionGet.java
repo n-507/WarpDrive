@@ -1,6 +1,6 @@
 package cr0s.warpdrive.api;
 
-public interface FunctionGet<Return> {
+public interface FunctionGet<R> {
 	
-	Return apply();
+	R apply();
 }
