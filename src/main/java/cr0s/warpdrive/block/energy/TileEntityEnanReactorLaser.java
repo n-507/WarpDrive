@@ -230,8 +230,13 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		}
 		
 		if (!laserMedium_consumeExactly(energy, false)) {
-			WarpDrive.logger.warn(String.format("ReactorLaser %s on %s side doesn't have enough energy %d",
-			                                    Commons.format(world, pos), reactorFace.name, energy));
+			WarpDrive.logger.warn(String.format("ReactorLaser %s on %s side doesn't have enough energy %d/%d while core can output %d/%d",
+			                                    Commons.format(world, pos),
+			                                    reactorFace.name,
+			                                    laserMedium_getEnergyStored(true),
+			                                    energy,
+			                                    reactorCore.energy_getPotentialOutput(),
+			                                    reactorCore.energy_getEnergyStored() ));
 			return;
 		}
 		
