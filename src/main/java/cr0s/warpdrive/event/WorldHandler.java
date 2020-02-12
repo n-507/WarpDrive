@@ -132,6 +132,7 @@ public class WorldHandler {
 	
 	// BreakEvent = entity is breaking a block (no ancestor)
 	// EntityPlaceEvent = entity is EntityFallingBlock
+	// HarvestDropsEvent = collecting drops
 	// NeighborNotifyEvent = neighbours update, snow placed/removed by environment, WorldEdit (can't be cancelled)
 	// PlaceEvent (EntityPlaceEvent) = player is (re)placing a block
 	// PortalSpawnEvent = nether portal is opening (fire placed inside an obsidian frame)
@@ -200,7 +201,30 @@ public class WorldHandler {
 			isAllowed = isAllowed && WarpDrive.starMap.onBlockUpdating(entity, blockEvent.getWorld(), blockEvent.getPos(), blockEvent.getState());
 		}
 		if (!isAllowed) {
-			blockEvent.setCanceled(true);
+			if (blockEvent.isCancelable()) {
+				blockEvent.setCanceled(true);
+			} else if (blockEvent instanceof BlockEvent.HarvestDropsEvent) {
+				if (Commons.throttleMe("WorldHandler.onBlockEvent")) {
+					WarpDrive.logger.info(String.format("Skipping HarvestDropsEvent %s %s %s by %s",
+					                                    blockEvent.getClass().getSimpleName(),
+					                                    blockStatePlaced,
+					                                    Commons.format(blockEvent.getWorld(), blockEvent.getPos()),
+					                                    entity ));
+				}
+			} else {
+				try {
+					blockEvent.getWorld().setBlockToAir(blockEvent.getPos());
+				} catch (final Exception exception) {
+					if (Commons.throttleMe("WorldHandler.onBlockEvent")) {
+						exception.printStackTrace();
+						WarpDrive.logger.info(String.format("Exception with %s %s %s by %s",
+						                                    blockEvent.getClass().getSimpleName(),
+						                                    blockStatePlaced,
+						                                    Commons.format(blockEvent.getWorld(), blockEvent.getPos()),
+						                                    entity ));
+					}
+				}
+			}
 			return;
 		}
 		
