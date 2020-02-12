@@ -79,8 +79,8 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 		} else {
 			// get current status
 			final boolean isConnected = uuidTransporterCore != null
-			                         && ( uuidTransporterCore.getLeastSignificantBits() != 0
-			                           || uuidTransporterCore.getMostSignificantBits() != 0 );
+			                         && ( uuidTransporterCore.getLeastSignificantBits() != 0L
+			                           || uuidTransporterCore.getMostSignificantBits() != 0L );
 			final boolean isPowered = energy_consume(WarpDriveConfig.TRANSPORTER_BEACON_ENERGY_PER_TICK, true);
 			// final boolean isLowPower = energy_getEnergyStored() < WarpDriveConfig.TRANSPORTER_BEACON_ENERGY_PER_TICK * TICK_LOW_POWER;
 			
@@ -243,7 +243,7 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 		
 		nameTransporterCore = tagCompound.getString(ICoreSignature.NAME_TAG);
 		uuidTransporterCore = new UUID(tagCompound.getLong(ICoreSignature.UUID_MOST_TAG), tagCompound.getLong(ICoreSignature.UUID_LEAST_TAG));
-		if (uuidTransporterCore.getMostSignificantBits() == 0 && uuidTransporterCore.getLeastSignificantBits() == 0) {
+		if (uuidTransporterCore.getMostSignificantBits() == 0L && uuidTransporterCore.getLeastSignificantBits() == 0L) {
 			uuidTransporterCore = null;
 			nameTransporterCore = "";
 		}

@@ -114,7 +114,7 @@ public class StarMapRegistryItem extends GlobalPosition {
 		type = EnumStarMapEntryType.getByName(tagCompound.getString("type"));
 		name = tagCompound.getString(ICoreSignature.NAME_TAG);
 		UUID uuidLocal = new UUID(tagCompound.getLong(ICoreSignature.UUID_MOST_TAG), tagCompound.getLong(ICoreSignature.UUID_LEAST_TAG));
-		if (uuidLocal.getMostSignificantBits() == 0 && uuidLocal.getLeastSignificantBits() == 0) {
+		if (uuidLocal.getMostSignificantBits() == 0L && uuidLocal.getLeastSignificantBits() == 0L) {
 			uuidLocal = UUID.randomUUID();
 		}
 		uuid = uuidLocal;

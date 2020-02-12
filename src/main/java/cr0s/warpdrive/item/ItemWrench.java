@@ -53,7 +53,8 @@ public class ItemWrench extends ItemAbstractBase implements IWarpTool {
 		// @TODO: confirm if both are really needed
 		if ( !entityPlayer.canPlayerEdit(blockPos, facing, itemStackHeld)
 		  || !world.isBlockModifiable(entityPlayer, blockPos) ) {
-			PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5, vFace,
+			PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5,
+			                                      vFace,
 			                                      new Vector3(0.0D, 0.0D, 0.0D),
 			                                      1.0F, 1.0F, 1.0F,
 			                                      1.0F, 1.0F, 1.0F,
@@ -62,7 +63,8 @@ public class ItemWrench extends ItemAbstractBase implements IWarpTool {
 		}
 		
 		if (!blockState.getBlock().rotateBlock(world, blockPos, facing)) {
-			PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5, vFace,
+			PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5,
+			                                      vFace,
 			                                      new Vector3(0.0D, 0.0D, 0.0D),
 			                                      1.0F, 1.0F, 1.0F,
 			                                      1.0F, 1.0F, 1.0F,

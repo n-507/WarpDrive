@@ -175,7 +175,7 @@ public class LivingHandler {
 			
 			// *** air handling
 			if ( WarpDriveConfig.BREATHING_AIR_AT_ENTITY_DEBUG
-			  && entityLivingBase.world.getWorldTime() % 20 == 0) {
+			  && entityLivingBase.world.getWorldTime() % 20 == 0 ) {
 				StateAir.dumpAroundEntity((EntityPlayer) entityLivingBase);
 			}
 		}
@@ -238,7 +238,8 @@ public class LivingHandler {
 					}
 				}
 				
-			} else if (celestialObject.isHyperspace() || celestialObject.isSpace()) {
+			} else if ( celestialObject.isHyperspace()
+			         || celestialObject.isSpace() ) {
 				// player is in space or hyperspace, let's roll around
 				entityLivingBase.setPositionAndUpdate(entityLivingBase.posX, 260.0D, entityLivingBase.posZ);
 			}

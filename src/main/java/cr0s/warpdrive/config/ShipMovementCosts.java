@@ -82,7 +82,7 @@ public class ShipMovementCosts {
 		
 		public void load(final Configuration config, final String category, final String prefixKey, final String comment) {
 			final String COMMENT_FACTORS = "\n"
-					+ "You need to provide exactly 5 values { A, B, C, D, E }. The equation used is A + B * mass + C * distance + D * ln( mass ) * exp( distance / E )\n"
+					+ "You need to provide exactly 5 values < A B C D E >. The equation used is A + B * mass + C * distance + D * ln( mass ) * exp( distance / E )\n"
 					+ "Result is rounded up to an integer. Use 0 to ignore that part of the equation.";
 			
 			maximumDistance = WarpDriveConfig.getDoubleList(config, category, prefixKey + "_max_jump_distance",

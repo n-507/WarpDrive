@@ -411,7 +411,7 @@ public class JumpShip {
 	
 	@Override
 	public String toString() {
-		return String.format("%s/%d \'%s\' %s",
+		return String.format("%s/%d '%s' %s",
 		                     getClass().getSimpleName(), hashCode(),
 		                     shipCore == null ? "~NULL~" : (shipCore.uuid + ":" + shipCore.name),
 			                 Commons.format(world, core));

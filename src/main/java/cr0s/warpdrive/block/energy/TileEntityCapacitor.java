@@ -139,7 +139,7 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 	void setMode(final EnumFacing facing, final EnumDisabledInputOutput enumDisabledInputOutput) {
 		modeSide[facing.ordinal()] = enumDisabledInputOutput;
 		markDirty();
-		energy_refreshConnections(facing);
+		energy_refreshConnections();
 	}
 	
 	// Forge overrides

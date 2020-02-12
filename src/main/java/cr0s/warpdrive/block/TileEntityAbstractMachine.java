@@ -303,7 +303,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	
 	@Override
 	public String toString() {
-		return String.format("%s \'%s\' %s",
+		return String.format("%s '%s' %s",
 		                     getClass().getSimpleName(),
 		                     name,
 		                     Commons.format(world, pos));

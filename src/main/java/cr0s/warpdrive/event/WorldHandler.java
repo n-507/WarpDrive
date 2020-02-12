@@ -178,7 +178,7 @@ public class WorldHandler {
 				                                    blockEvent.getClass().getSimpleName(),
 				                                    blockStatePlaced,
 				                                    Commons.format(blockEvent.getWorld(), blockEvent.getPos()),
-				                                    entity));
+				                                    entity ));
 			}
 		}
 		boolean isAllowed = true;

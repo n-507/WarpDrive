@@ -268,7 +268,7 @@ public class StarMapRegistry {
 	public boolean onBlockUpdating(@Nullable final Entity entity, @Nonnull final World world, @Nonnull final BlockPos blockPos, final IBlockState blockState) {
 		if (!Commons.isSafeThread()) {
 			WarpDrive.logger.error(String.format("Non-threadsafe call to StarMapRegistry:onBlockUpdating outside main thread, for %s %s",
-			                                     blockState, Commons.format(world, blockPos)));
+			                                     blockState, Commons.format(world, blockPos) ));
 			return false;
 		}
 		final CopyOnWriteArraySet<StarMapRegistryItem> setStarMapRegistryItems = registry.get(world.provider.getDimension());

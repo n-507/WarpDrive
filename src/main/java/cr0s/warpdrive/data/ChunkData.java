@@ -33,8 +33,8 @@ public class ChunkData {
 	private static final int INVALID_DATA_INDEX = 0xFF7F;    // central block in chunk top
 	
 	// persistent properties
-	private int[][] dataAirSegments = new int[CHUNK_SIZE_SEGMENTS][];
-	private byte[][] tickAirSegments = new byte[CHUNK_SIZE_SEGMENTS][];
+	private final int[][] dataAirSegments = new int[CHUNK_SIZE_SEGMENTS][];
+	private final byte[][] tickAirSegments = new byte[CHUNK_SIZE_SEGMENTS][];
 	
 	// computed properties
 	private int tickCurrent = (int) (Math.random() * 4096.0D);

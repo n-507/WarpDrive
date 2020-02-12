@@ -12,12 +12,12 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.1.2'
+        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.1.2"
     }
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'com.matthewprenger.cursegradle'
+apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: "com.matthewprenger.cursegradle"
 
 // define the properties file
 ext.configFile = file "build.properties"
@@ -55,7 +55,7 @@ minecraft {
 }
 
 curseforge {
-	// get token from gradle.properties (development space) or default to private environment variable (Travis CI & such)
+    // get token from gradle.properties (development space) or default to private environment variable (Travis CI & such)
     if (project.hasProperty('token_curseforge')) {
         apiKey = "${token_curseforge}"
     } else {
@@ -64,7 +64,7 @@ curseforge {
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
     maven { // JEI & Tinkers
         name 'DVS1 Maven FS'
         url 'http://dvs1.progwml6.com/files/maven'
@@ -109,7 +109,7 @@ repositories {
         name = "CurseForge"
         url = "https://minecraft.curseforge.com/api/maven/"
     }
-	mavenLocal()
+    mavenLocal()
 }
 
 dependencies {
@@ -133,7 +133,7 @@ dependencies {
     provided "codechicken:CodeChickenLib:${config.CodeChickenLib_version}:universal"
     provided "com.builtbroken.icbm-classic:ICBM-classic:${config.ICBMclassic_version}"
     provided "li.cil.oc:OpenComputers:${config.OpenComputers_version}"
-	
+    
 //  compileOnly "mezz.jei:jei_1.10.2:3.13.+"
 //  compileOnly "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
 //  compileOnly "mcjty.theoneprobe:TheOneProbe:1.10-1.0.13-26"

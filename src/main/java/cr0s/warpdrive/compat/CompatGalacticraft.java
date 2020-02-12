@@ -188,7 +188,6 @@ D-	micdoodle8.mods.galacticraft.planets.mars.BlockTelemetry                     
 	private static final int[]   rotLighting4     = {  8, 25, 21, 20,  2,  3,  6,  7, 16,  1, 29, 28, 10, 11, 14, 15,
 	                                                  24,  9,  5,  4, 18, 19, 22, 23,  0, 17, 13, 12, 26, 27, 30, 31 };
 	
-	@SuppressWarnings({"unchecked", "deprecation"})
 	@Override
 	public int rotate(final Block block, final int metadata, final NBTTagCompound nbtTileEntity, final ITransformation transformation) {
 		final byte rotationSteps = transformation.getRotationSteps();

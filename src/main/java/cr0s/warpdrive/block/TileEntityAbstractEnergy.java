@@ -908,11 +908,10 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 	public void onBlockUpdateDetected() {
 		super.onBlockUpdateDetected();
 		
-		energy_refreshConnections(null);
+		energy_refreshConnections();
 	}
 	
-	@SuppressWarnings("UnusedParameters")
-	protected void energy_refreshConnections(final EnumFacing facing) {
+	protected void energy_refreshConnections() {
 		if (WarpDriveConfig.isIndustrialCraft2Loaded) {
 			// IC2 EnergyNet throws a block update during the next world tick following its EnergyTileLoadEvent
 			// Ignoring this specific block update prevents us to do a constant refresh of the energy net

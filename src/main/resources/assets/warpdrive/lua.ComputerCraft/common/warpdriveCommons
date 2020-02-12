@@ -845,7 +845,7 @@ end
 local function event_handler(eventName, param)
   local needRedraw = false
   if eventName == "redstone" then
-    w.redstone_event(param)
+    w.event_redstone(param)
   elseif eventName == "timer" then
     w.event_timer_tick(param)
   elseif eventName == "key_up" then
@@ -880,7 +880,7 @@ local tblRedstoneState = {-- Remember redstone state on each side
   ["bottom"] = rs.getInput("bottom"),
 }
 
-local function redstone_event()
+local function event_redstone()
   -- Event only returns nil so we need to check sides manually
   local message = ""
   for side, state in pairs(tblRedstoneState) do

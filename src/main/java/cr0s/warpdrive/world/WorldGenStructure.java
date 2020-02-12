@@ -123,7 +123,7 @@ public class WorldGenStructure {
 	
 	public void setHullPlain(final World world, final int x, final int y, final int z) {
 		if (corrupted && (rand.nextInt(400) == 1)) {
-			world.newExplosion(null, x + 0.5D, y + 0.5D, z + 0.5D, 17, false, true);
+			world.newExplosion(null, x + 0.5D, y + 0.5D, z + 0.5D, 17.0F, false, true);
 		} else if (corrupted && (rand.nextInt(10) == 1)) {
 			world.setBlockState(new BlockPos(x, y, z), Blocks.AIR.getDefaultState(), 2);
 		} else {

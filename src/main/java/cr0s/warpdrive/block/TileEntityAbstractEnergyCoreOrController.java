@@ -94,7 +94,7 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 	}
 	
 	protected void doRegisterStarMapEntry(final boolean isDirty) {
-		if (uuid == null || (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0)) {
+		if (uuid == null || (uuid.getMostSignificantBits() == 0L && uuid.getLeastSignificantBits() == 0L)) {
 			uuid = UUID.randomUUID();
 		}
 		
@@ -117,13 +117,12 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 		name = ((TileEntityAbstractEnergyCoreOrController) multiblockCore).name;
 	}
 	
-	
 	@Override
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		uuid = new UUID(tagCompound.getLong(ICoreSignature.UUID_MOST_TAG), tagCompound.getLong(ICoreSignature.UUID_LEAST_TAG));
-		if (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0) {
+		if (uuid.getMostSignificantBits() == 0L && uuid.getLeastSignificantBits() == 0L) {
 			uuid = UUID.randomUUID();
 		}
 	}
@@ -176,7 +175,7 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 	
 	@Override
 	public String toString() {
-		return String.format("%s \'%s\' %s %s",
+		return String.format("%s '%s' %s %s",
 		                     getClass().getSimpleName(),
 		                     name,
 		                     Commons.format(world, pos),

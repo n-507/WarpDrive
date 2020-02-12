@@ -1236,33 +1236,6 @@ public class Recipes {
 	}
 	
 	private static void initDetection() {
-		// Radar is 1 motor, 4 Titanium plate (diamond), 1 Quarztite rod (nether quartz), 1 Computer interface, 1 HV Machine casing, 1 Power interface
-		final Object oreCloakingPlate = WarpDriveConfig.getOreOrItemStack(
-				"ore:plateTitanium", 0,          // GregTech
-				"ore:plateEnderium", 0,          // ThermalExpansion
-				"ore:ingotVibrantAlloy", 0,      // EnderIO
-				"ore:plateAlloyIridium", 0,      // IndustrialCraft2
-				"ore:gemQuartz", 0 );
-		final Object oreAntenna = WarpDriveConfig.getOreOrItemStack(
-				"ore:stickQuartzite", 0,         // GregTech
-				"ore:ingotSignalum", 0,          // ThermalExpansion
-				"ore:nuggetPulsatingIron", 0,    // EnderIO
-				"minecraft:ghast_tear", 0 );
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockRadar), false, "PAP", "PtP", "pmc",
-		                                       't', itemStackMotors[2],
-		                                       'P', oreCloakingPlate,
-		                                       'A', oreAntenna,
-		                                       'c', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE),
-		                                       'm', itemStackMachineCasings[2],
-		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE)));
-		
-		// Warp isolation is 1 EV Machine casing (Ti), 4 Titanium plate/Enderium ingot/Vibrant alloy/Iridium plate/quartz
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockWarpIsolation), false, "i i", " m ", "i i",
-		                                       'i', oreCloakingPlate,
-		                                       'm', itemStackMachineCasings[3]));
-		
 		// Camera is 1 Daylight sensor, 2 Motors, 1 Computer interface, 2 Glass panel, 1 Tuning diamond, 1 LV Machine casing
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       new ItemStack(WarpDrive.blockCamera), false, "gtd", "zlm", "gt ",
@@ -1272,13 +1245,6 @@ public class Recipes {
 		                                       'm', itemStackMachineCasings[0],
 		                                       'l', Blocks.DAYLIGHT_DETECTOR,
 		                                       'g', "paneGlassColorless"));
-		
-		// Monitor is 3 Flat screen, 1 Computer interface, 1 Tuning diamond, 1 LV Machine casing
-		WarpDrive.register(new ShapedOreRecipe(groupMachines,
-		                                       new ItemStack(WarpDrive.blockMonitor), false, "fd ", "fm ", "f  ",
-		                                       'f', ItemComponent.getItemStack(EnumComponentType.FLAT_SCREEN),
-		                                       'd', ItemComponent.getItemStack(EnumComponentType.DIAMOND_CRYSTAL),
-		                                       'm', itemStackMachineCasings[0]));
 		
 		// Cloaking core is 3 Cloaking coils, 4 Iridium blocks, 1 Ship controller, 1 Power interface
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
@@ -1316,6 +1282,34 @@ public class Recipes {
 		                                       'i', oreEmeraldOrIridiumPlate,
 		                                       'c', oreGoldIngotOrCoil,
 		                                       'm', itemStackMachineCasings[3] ));
+		
+		// Monitor is 3 Flat screen, 1 Computer interface, 1 Tuning diamond, 1 LV Machine casing
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       new ItemStack(WarpDrive.blockMonitor), false, "fd ", "fm ", "f  ",
+		                                       'f', ItemComponent.getItemStack(EnumComponentType.FLAT_SCREEN),
+		                                       'd', ItemComponent.getItemStack(EnumComponentType.DIAMOND_CRYSTAL),
+		                                       'm', itemStackMachineCasings[0]));
+		
+		// Radar is 1 motor, 4 Titanium plate (diamond), 1 Quarztite rod (nether quartz), 1 Computer interface, 1 HV Machine casing, 1 Power interface
+		final Object oreRadarDish = WarpDriveConfig.getOreOrItemStack(
+				"ore:plateTitanium", 0,          // GregTech
+				"ore:plateEnderium", 0,          // ThermalExpansion
+				"ore:ingotVibrantAlloy", 0,      // EnderIO
+				"ore:plateAlloyIridium", 0,      // IndustrialCraft2
+				"ore:gemQuartz", 0 );
+		final Object oreRadarSensor = WarpDriveConfig.getOreOrItemStack(
+				"ore:stickQuartzite", 0,         // GregTech
+				"ore:ingotSignalum", 0,          // ThermalExpansion
+				"ore:nuggetPulsatingIron", 0,    // EnderIO
+				"minecraft:ghast_tear", 0 );
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       new ItemStack(WarpDrive.blockRadar), false, "PAP", "PtP", "pmc",
+		                                       't', itemStackMotors[2],
+		                                       'P', oreRadarDish,
+		                                       'A', oreRadarSensor,
+		                                       'c', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE),
+		                                       'm', itemStackMachineCasings[2],
+		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE)));
 		
 		// Sirens
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,

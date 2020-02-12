@@ -75,6 +75,7 @@ public class PacketHandler {
 			simpleNetworkManager.sendToAllAround(messageBeamEffect, new TargetPoint(
 					world.provider.getDimension(), (v3Source.x + v3Target.x) / 2, (v3Source.y + v3Target.y) / 2, (v3Source.z + v3Target.z) / 2, radius));
 		} else {// large beam are sent from both ends
+			assert world.getMinecraftServer() != null;
 			final List<EntityPlayerMP> playerEntityList = world.getMinecraftServer().getPlayerList().getPlayers();
 			final int dimensionId = world.provider.getDimension();
 			final int radius_square = radius * radius;
@@ -158,6 +159,7 @@ public class PacketHandler {
 				lockStrength, tickEnergizing, tickCooldown);
 		
 		// check both ends to send packet
+		assert world.getMinecraftServer() != null;
 		final List<EntityPlayerMP> playerEntityList = world.getMinecraftServer().getPlayerList().getPlayers();
 		final int radius_square = radius * radius;
 		for (final EntityPlayerMP entityPlayerMP : playerEntityList) {
@@ -211,10 +213,10 @@ public class PacketHandler {
 		simpleNetworkManager.sendTo(messageClientSync, entityPlayerMP);
 	}
 	
-	public static Packet getPacketForThisEntity(final Entity entity) {
+	public static Packet<?> getPacketForThisEntity(final Entity entity) {
 		final EntityTrackerEntry entry = new EntityTrackerEntry(entity, 0, 0, 0, false);
 		try {
-			return (Packet) EntityTrackerEntry_getPacketForThisEntity.invoke(entry);
+			return (Packet<?>) EntityTrackerEntry_getPacketForThisEntity.invoke(entry);
 		} catch (final Exception exception) {
 			exception.printStackTrace(WarpDrive.printStreamError);
 		}
@@ -230,7 +232,7 @@ public class PacketHandler {
 				                                    entity, entityPlayerMP));
 				return;
 			}
-			final Packet packet = getPacketForThisEntity(entity);
+			final Packet<?> packet = getPacketForThisEntity(entity);
 			if (packet == null) {
 				WarpDrive.logger.error(String.format("Unable to reveal entity %s to player %s: null packet",
 				                                     entity, entityPlayerMP));
@@ -262,7 +264,7 @@ public class PacketHandler {
 			}
 			
 			if (entity instanceof EntityLivingBase) {
-				for (EntityEquipmentSlot entityequipmentslot : EntityEquipmentSlot.values()) {
+				for (final EntityEquipmentSlot entityequipmentslot : EntityEquipmentSlot.values()) {
 					final ItemStack itemstack = ((EntityLivingBase) entity).getItemStackFromSlot(entityequipmentslot);
 					
 					if (!itemstack.isEmpty()) {

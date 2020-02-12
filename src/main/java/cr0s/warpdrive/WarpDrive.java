@@ -646,12 +646,12 @@ public class WarpDrive {
 	
 	@EventHandler
 	public void onFMLServerStarting(final FMLServerStartingEvent event) {
+		event.registerServerCommand(new CommandBed());
 		event.registerServerCommand(new CommandDebug());
 		event.registerServerCommand(new CommandDump());
 		event.registerServerCommand(new CommandEntity());
 		event.registerServerCommand(new CommandFind());
 		event.registerServerCommand(new CommandGenerate());
-		event.registerServerCommand(new CommandBed());
 		event.registerServerCommand(new CommandInvisible());
 		event.registerServerCommand(new CommandReload());
 		event.registerServerCommand(new CommandRender());

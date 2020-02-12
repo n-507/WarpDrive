@@ -42,7 +42,7 @@ public class ItemBlockController extends ItemBlockAbstractBase {
 		}
 		final String name = tagCompound.getString(ICoreSignature.NAME_TAG);
 		final UUID uuid = new UUID(tagCompound.getLong(ICoreSignature.UUID_MOST_TAG), tagCompound.getLong(ICoreSignature.UUID_LEAST_TAG));
-		if (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0) {
+		if (uuid.getMostSignificantBits() == 0L && uuid.getLeastSignificantBits() == 0L) {
 			return "";
 		}
 		return name;
@@ -58,7 +58,7 @@ public class ItemBlockController extends ItemBlockAbstractBase {
 			return null;
 		}
 		final UUID uuid = new UUID(tagCompound.getLong(ICoreSignature.UUID_MOST_TAG), tagCompound.getLong(ICoreSignature.UUID_LEAST_TAG));
-		if (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0) {
+		if (uuid.getMostSignificantBits() == 0L && uuid.getLeastSignificantBits() == 0L) {
 			return null;
 		}
 		return uuid;

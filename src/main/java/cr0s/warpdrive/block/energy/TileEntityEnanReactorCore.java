@@ -221,7 +221,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		
 		if (WarpDriveConfig.LOGGING_ENERGY) {
 			WarpDrive.logger.info(String.format("updateTicks %d releasedThisTick %6d lasersReceived %.5f releasedThisCycle %6d containedEnergy %8d",
-			                                    updateTicks, releasedThisTick, lasersReceived, releasedThisCycle, containedEnergy));
+			                                    updateTicks, releasedThisTick, lasersReceived, releasedThisCycle, containedEnergy ));
 		}
 		releasedThisTick = 0;
 		
@@ -289,7 +289,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 			                   pos.getX() + reactorFace.x - reactorFace.facingLaserProperty.getXOffset(),
 			                   pos.getY() + reactorFace.y - reactorFace.facingLaserProperty.getYOffset(),
 			                   pos.getZ() + reactorFace.z - reactorFace.facingLaserProperty.getZOffset(),
-			                   1, false, false);
+			                   1.0F, false, false);
 		}
 		final double normalisedAmount = Math.min(1.0D, Math.max(0.0D, amount / PR_MAX_LASER_ENERGY)); // 0.0 to 1.0
 		final double baseLaserEffect = 0.5D + 0.5D * Math.cos( Math.PI * Math.log10(0.1D + 0.9D * normalisedAmount) ); // 0.0 to 1.0
@@ -546,8 +546,8 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 					textReason.append(Commons.getStyleWarning(), "warpdrive.enan_reactor.status_line.non_air_block",
 					                  Commons.format(world, mutableBlockPos) );
 					isValid = false;
-					final Vector3 vPosition = new Vector3(mutableBlockPos).translate(0.5D);
-					PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5, vPosition,
+					PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5,
+					                                      new Vector3(mutableBlockPos.getX() + 0.5D, mutableBlockPos.getY() + 0.5D, mutableBlockPos.getZ() + 0.5D),
 					                                      new Vector3(0.0D, 0.0D, 0.0D),
 					                                      1.0F, 1.0F, 1.0F,
 					                                      1.0F, 1.0F, 1.0F,
@@ -568,8 +568,8 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 				textReason.append(Commons.getStyleWarning(), "warpdrive.enan_reactor.status_line.missing_stabilization_laser",
 				                  Commons.format(world, mutableBlockPos) );
 				isValid = false;
-				final Vector3 vPosition = new Vector3(mutableBlockPos).translate(0.5D);
-				PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5, vPosition,
+				PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5,
+				                                      new Vector3(mutableBlockPos.getX() + 0.5D, mutableBlockPos.getY() + 0.5D, mutableBlockPos.getZ() + 0.5D),
 				                                      new Vector3(0.0D, 0.0D, 0.0D),
 				                                      1.0F, 1.0F, 1.0F,
 				                                      1.0F, 1.0F, 1.0F,

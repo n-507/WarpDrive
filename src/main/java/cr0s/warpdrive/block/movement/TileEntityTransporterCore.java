@@ -219,11 +219,12 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		                                                               : EnumTransporterState.ENERGIZING); // @TODO add proper mapping
 		if (isConnected && isEnabled) {
 			if (isLockRequested && isJammed) {
-				PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5, new Vector3(this).translate(0.5F),
-						new Vector3(0.0D, 0.0D, 0.0D),
-						1.0F, 1.0F, 1.0F,
-						1.0F, 1.0F, 1.0F,
-						32);
+				PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5,
+				                                      new Vector3(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D),
+				                                      new Vector3(0.0D, 0.0D, 0.0D),
+				                                      1.0F, 1.0F, 1.0F,
+				                                      1.0F, 1.0F, 1.0F,
+				                                      32);
 			}
 			if ( lockStrengthActual > 0.01F
 			  || (transporterState == EnumTransporterState.ENERGIZING && tickEnergizing > 0)
@@ -1226,7 +1227,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		
 		if (entity instanceof EntityLivingBase) {
 			entity.attackEntityFrom(WarpDrive.damageTeleportation, (float) damageAmount);
-			final boolean isCreative = (entity instanceof EntityPlayer) && ((EntityPlayer) entity).capabilities.isCreativeMode;
+			final boolean isCreative = (entity instanceof EntityPlayer) && ((EntityPlayer) entity).isCreative();
 			if (!isCreative) {
 				if (isPreTeleportation) {
 					// add 1s nausea

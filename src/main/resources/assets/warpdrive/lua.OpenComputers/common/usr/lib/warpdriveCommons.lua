@@ -861,7 +861,7 @@ end
 local function event_handler(eventName, param)
   local needRedraw = false
   if eventName == "redstone" then
-    -- w.redstone_event(param)
+    -- w.event_redstone(param)
   elseif eventName == "key_up" then
   elseif eventName == "touch" then
     w.status_showSuccess("Use the keyboard, Luke!")

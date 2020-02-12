@@ -51,10 +51,6 @@ public class TileEntityAirGeneratorTiered extends TileEntityAbstractEnergyConsum
 			return;
 		}
 		
-		if (isInvalid()) {
-			return;
-		}
-		
 		tickUpdate--;
 		if (tickUpdate >= 0) {
 			return;
