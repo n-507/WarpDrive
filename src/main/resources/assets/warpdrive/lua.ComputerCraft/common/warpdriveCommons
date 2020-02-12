@@ -1313,6 +1313,7 @@ w = {
   event_timer_tick = event_timer_tick,
   event_register = event_register,
   event_handler = event_handler,
+  event_redstone = event_redstone,
   data_get = data_get,
   data_inspect = data_inspect,
   data_read = data_read,
