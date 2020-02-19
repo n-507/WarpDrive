@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import icbm.classic.api.caps.IEMPReceiver;
 import icbm.classic.api.explosion.IBlast;
-import icbm.classic.lib.emp.CapabilityEMP;
+import icbm.classic.api.ICBMClassicAPI;
 
 @Optional.InterfaceList({
 	@Optional.Interface(iface = "icbm.classic.api.caps.IEMPReceiver", modid = "icbmclassic"),
@@ -88,8 +88,9 @@ public class EMPReceiver implements IEMPReceiver, ICapabilityProvider {
 	}
 	
 	@Override
+	@Optional.Method(modid = "icbmclassic")
 	public boolean hasCapability(@Nonnull final Capability<?> capability, @Nullable final EnumFacing facing) {
-		return capability == CapabilityEMP.EMP;
+		return capability == ICBMClassicAPI.EMP_CAPABILITY;
 	}
 	
 	@Nullable
@@ -97,6 +98,6 @@ public class EMPReceiver implements IEMPReceiver, ICapabilityProvider {
 	@Optional.Method(modid = "icbmclassic")
 	@SuppressWarnings("unchecked")
 	public <T> T getCapability(@Nonnull final Capability<T> capability, @Nullable final EnumFacing facing) {
-		return capability == CapabilityEMP.EMP ? (T) this : null;
+		return capability == ICBMClassicAPI.EMP_CAPABILITY ? (T) this : null;
 	}
 }

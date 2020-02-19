@@ -209,7 +209,7 @@ import javax.annotation.Nullable;
                   + "after:enderio@[5.1.52,);"
                   + "after:gregtech;"
                   + "after:ic2;"
-                  + "after:icbmclassic;"
+                  + "after:icbmclassic@[1.12.2-4.0.0,);"
                   + "after:metalchests@[v5.8.1,);"
                   + "after:opencomputers;"
 //                + "after:sgcraft@[2.0.0,);"
