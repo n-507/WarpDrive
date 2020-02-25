@@ -424,6 +424,7 @@ public class Dictionary {
 			config.get("item_tags", "ic2:nano_helmet"                              , "BreathingHelmet").getString();
 			config.get("item_tags", "ic2:quantum_helmet"                           , "BreathingHelmet").getString();
 			config.get("item_tags", "pneumaticcraft:pneumatic_helmet"              , "BreathingHelmet").getString();
+			config.get("item_tags", "powersuits:powerarmor_head"                   , "BreathingHelmet").getString();
 			config.get("item_tags", "psi:psimetal_exosuit_helmet"                  , "BreathingHelmet").getString();
 			config.get("item_tags", "redstonearsenal:armor.helmet_flux"            , "BreathingHelmet").getString();
 			config.get("item_tags", "techguns:t3_combat_helmet"                    , "BreathingHelmet").getString();

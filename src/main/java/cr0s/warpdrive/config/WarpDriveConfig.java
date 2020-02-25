@@ -189,7 +189,7 @@ public class WarpDriveConfig {
 	public static float                G_BLAST_RESISTANCE_CAP = 60.0F;
 	
 	// Client
-	public static boolean              CLIENT_BREATHING_OVERLAY_FORCED = false;
+	public static boolean              CLIENT_BREATHING_OVERLAY_FORCED = true;
 	public static float                CLIENT_LOCATION_SCALE = 1.0F;
 	public static String               CLIENT_LOCATION_NAME_PREFIX = "§l";
 	public static int                  CLIENT_LOCATION_BACKGROUND_COLOR = Commons.colorARGBtoInt(64, 48, 48, 48);
