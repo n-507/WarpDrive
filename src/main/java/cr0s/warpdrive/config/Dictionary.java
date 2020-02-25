@@ -202,6 +202,8 @@ public class Dictionary {
 			config.get("block_tags", "rftools:notick_solid_shield_block_opaque"             , "Anchor StopMining NoBlink").getString();
 			config.get("block_tags", "rftools:solid_shield_block"                           , "Anchor StopMining NoBlink").getString();
 			config.get("block_tags", "rftools:solid_shield_block_opaque"                    , "Anchor StopMining NoBlink").getString();
+			config.get("block_tags", "techguns:orecluster"                                  , "Anchor SkipMining").getString(); // localized strategic resource
+			config.get("block_tags", "techguns:tg_spawner"                                  , "Anchor").getString(); // don't move dungeons around
 			config.get("block_tags", "thaumcraft:hole"                                      , "Anchor StopMining").getString(); // lore
 			config.get("block_tags", "thaumcraft:stone_ancient_doorway"                     , "Anchor StopMining NoBlink").getString(); // lore
 			config.get("block_tags", "thaumcraft:stone_ancient_rock"                        , "Anchor StopMining NoBlink").getString(); // lore
@@ -372,6 +374,7 @@ public class Dictionary {
 			config.get("entity_tags", "pneumaticcraft:drone"                   , "LivingWithoutAir").getString();
 			config.get("entity_tags", "pneumaticcraft:harvesting_drone"        , "LivingWithoutAir").getString();
 			config.get("entity_tags", "pneumaticcraft:logistic_drone"          , "LivingWithoutAir").getString();
+			config.get("entity_tags", "techguns:turret"                        , "NoMass LivingWithoutAir LeftBehind").getString();
 			config.get("entity_tags", "testdummy:dummy"                        , "NoMass LivingWithoutAir").getString();
 			config.get("entity_tags", "thaumcraft:brainyzombie"                , "LivingWithoutAir").getString();
 			config.get("entity_tags", "thaumcraft:giantbrainyzombie"           , "LivingWithoutAir").getString();

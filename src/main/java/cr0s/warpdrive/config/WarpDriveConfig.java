@@ -1651,7 +1651,7 @@ public class WarpDriveConfig {
 			CompatTConstruct.register();
 		}
 		
-		final boolean isTechgunsLoaded = Loader.isModLoaded("Techguns");
+		final boolean isTechgunsLoaded = Loader.isModLoaded("techguns");
 		if (isTechgunsLoaded) {
 			CompatTechguns.register();
 		}

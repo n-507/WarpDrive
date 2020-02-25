@@ -15,17 +15,22 @@ import net.minecraft.world.World;
 
 public class CompatTechguns implements IBlockTransformer {
 	
-	private static Class<?> classBlockLadder;
-	private static Class<?> classBlockLamp;
+	private static Class<?> classBlockTGDoor3x3;
+	
 	private static Class<?> classBlockBasicMachine;
-	private static Class<?> classBlockMultiBlockMachineBlock;
+	private static Class<?> classBlockExplosiveCharge;
+	private static Class<?> classBlockSimpleMachine;
+	private static Class<?> classBlockMultiBlockMachine;
 	
 	public static void register() {
 		try {
-			classBlockLadder = Class.forName("techguns.blocks.BlockTGLadder");
-			classBlockLamp = Class.forName("techguns.blocks.BlockTGLamp");
+			classBlockTGDoor3x3 = Class.forName("techguns.blocks.BlockTGDoor3x3");
+			
 			classBlockBasicMachine = Class.forName("techguns.blocks.machines.BasicMachine");
-			classBlockMultiBlockMachineBlock = Class.forName("techguns.blocks.machines.MultiBlockMachineBlock");
+			classBlockExplosiveCharge = Class.forName("techguns.blocks.machines.BlockExplosiveCharge");
+			classBlockSimpleMachine = Class.forName("techguns.blocks.machines.SimpleMachine");
+			classBlockMultiBlockMachine = Class.forName("techguns.blocks.machines.MultiBlockMachine");
+			
 			WarpDriveConfig.registerBlockTransformer("Techguns", new CompatTechguns());
 		} catch(final ClassNotFoundException exception) {
 			exception.printStackTrace();
@@ -34,10 +39,8 @@ public class CompatTechguns implements IBlockTransformer {
 	
 	@Override
 	public boolean isApplicable(final Block block, final int metadata, final TileEntity tileEntity) {
-		return classBlockLadder.isInstance(block)
-		    || classBlockLamp.isInstance(block)
-		    || classBlockBasicMachine.isInstance(block)
-		    || classBlockMultiBlockMachineBlock.isInstance(block);
+		return classBlockTGDoor3x3.isInstance(block)
+		    || classBlockBasicMachine.isInstance(block);
 	}
 	
 	@Override
@@ -57,161 +60,144 @@ public class CompatTechguns implements IBlockTransformer {
 		// nothing to do
 	}
 	
-	// Transformation handling required:
-	// Block ladder: (metadata) 0 3 1 2 / 4 7 5 6 / 8 11 9 10 / 12 15 13 14             mrotLadder          techguns.blocks.BlockTGLadder
-	// Block lamp: (metadata) 0 / 1 / 2 / 3 6 4 5 / 7 / 8 / 9 / 10 / 11 14 12 13 / 15   mrotLamp            techguns.blocks.BlockTGLamp
-	// Tile basic machine: (metadata 0/1/4/9), rotation (byte) 0 1 2 3                  rotBasicMachine 	techguns.blocks.machines.BasicMachine:0/1/4/9
-	// Tile basic machine: (metadata 2)                                                 -none-              techguns.blocks.machines.BasicMachine:2
-	// Tile basic machine: (metadata 3 or 5), rotation (byte) 0 -1 -2 1                 rotRepairCamoBench  techguns.blocks.machines.BasicMachine:3/5
-	// Tile basic machine: (metadata 6 or 8),
-	//                      orientation (byte)   0 / 1 / 2 5 3 4                        orientExplosiveCharge	techguns.blocks.machines.BasicMachine:6/8
-	//                      rotation (byte)      0 3 1 2                                rotExplosiveCharge
+	// Transformation using default handler:
+	//
+	// Block ladder: (metadata) 0 4 8 12 / 1 5 9 13 / 2 6 10 14 / 3 7 11 15             mrotLadder              techguns.blocks.BlockTGLadder
+	// Block lamp: (metadata) 0 / 1 / 2 5 3 4 / 6 / 7 / 8 11 9 10 / 12 / 13             mrotLamp                techguns.blocks.BlockTGLamp
 	
+	// Transformation handling required:
+	//
+	// Block 3x3 Door: (metadata) 0 4 / 8 12                                            mrotDoor3x3             techguns.blocks.BlockTGDoor3x3
+	//
+	// Basic machine and its inherited
+	// Block basicmachine (metadata 0 1 2): rotation (byte) 0 1 2 3                     rotBasicMachine         techguns.blocks.machines.BasicMachine
+	// Block basicmachine (metadata 3): turretDeath (boolean) false                     (forcing turret death to resync the entity)
+	// Block explosive_charge: (metadata) 0 / 1 / 2 / 3 / 4 10 6 8 / 5 11 7 9           mrotExplosiveCharge     techguns.blocks.machines.BlockExplosiveCharge
+	// Block simplemachine1/2: (metadata) 0 4 8 12 / 1 5 9 13 / 2 6 10 14 / 3 7 11 15   mrotSimpleMachine       techguns.blocks.machines.SimpleMachine
+	//
+	// Block multiblockmachine:                                                                                 techguns.blocks.machines.MultiBlockMachine
+	// Fabricator & Reaction chamber parts (metadata 0/1/2/3/4/5): not formed
+	// Fabricator slave (metadata 8 / 9): masterX/Y/Z (integer) as absolute coordinates
+	// Fabricator master (metadata 10): multiblockDirection (byte) 2 5 3 4              rotMultiblockDirection
+	// Reaction chamber slave (metadata 11 / 12): masterX/Y/Z (integer) as absolute coordinates
+	// Reaction chamber master (metadata 13): multiblockDirection (byte) 2 5 3 4        rotMultiblockDirection
+	//
+	// Block oredrill:
+	// Ore drill slave (metadata 0/1/2/3): not formed
+	// Ore drill master (metadata 4): not formed
+	// Ore drill slave (metadata 8/9/10/11/13): masterX/Y/Z (integer) as absolute coordinates
+	// Ore drill master (metadata 12): multiblockDirection (byte) 5 ?                   rotMultiblockDirection
 	
 	// -----------------------------------------          {  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-	private static final int[]   mrotLadder             = {  3,  2,  0,  1,  7,  6,  4,  5, 11, 10,  8,  9, 15, 14, 12, 13 };
-	private static final int[]   mrotLamp               = {  0,  1,  2,  6,  5,  3,  4,  7,  8,  9, 10, 14, 13, 11, 12, 15 };
-	private static final byte[]  rotBasicMachine        = {  1,  2,  3,  0,  5,  3,  4,  7,  8,  9, 10, 14, 13, 11, 12, 15 };
-	private static final byte[]  orientExplosiveCharge  = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-	private static final byte[]  rotExplosiveCharge     = {  3,  2,  0,  1,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-	
-	private static byte rotRepairCamoBench(final byte value) {
-		switch (value) {
-		case  1: return (byte)  0;
-		case  0: return (byte) -1;
-		case -1: return (byte) -2;
-		case -2: return (byte)  1;
-		default: return value;
-		}
-	}
+	private static final int[]   mrotExplosiveCharge    = {  0,  1,  2,  3, 10, 11,  8,  9,  4,  5,  6,  7, 12, 13, 14, 15 };
+	private static final int[]   mrotDoor3x3            = {  4,  1,  2,  3,  0,  5,  6,  7, 12,  9, 10, 11,  8, 13, 14, 15 };
+	private static final byte[]  rotBasicMachine        = {  1,  2,  3,  0 };
+	private static final int[]   mrotSimpleMachine      = {  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15,  0,  1,  2,  3 };
+	private static final byte[]  rotMultiblockDirection = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 14, 13, 11, 12, 15 };
 	
 	@Override
 	public int rotate(final Block block, final int metadata, final NBTTagCompound nbtTileEntity, final ITransformation transformation) {
 		final byte rotationSteps = transformation.getRotationSteps();
 		
-		if (classBlockLadder.isInstance(block)) {
+		if (classBlockTGDoor3x3.isInstance(block)) {
 			switch (rotationSteps) {
 			case 1:
-				return mrotLadder[metadata];
+				return mrotDoor3x3[metadata];
 			case 2:
-				return mrotLadder[mrotLadder[metadata]];
+				return mrotDoor3x3[mrotDoor3x3[metadata]];
 			case 3:
-				return mrotLadder[mrotLadder[mrotLadder[metadata]]];
+				return mrotDoor3x3[mrotDoor3x3[mrotDoor3x3[metadata]]];
 			default:
 				return metadata;
 			}
 		}
 		
-		if (classBlockLamp.isInstance(block)) {
+		// BasicMachine is parent class for other blocks with different rotations, hence we need to exclude the latest 
+		if ( classBlockBasicMachine.isInstance(block)
+		  && !classBlockExplosiveCharge.isInstance(block)
+		  && !classBlockSimpleMachine.isInstance(block)
+		  && !classBlockMultiBlockMachine.isInstance(block)
+		  && nbtTileEntity != null ) {
+			if (nbtTileEntity.hasKey("rotation")) {
+				final byte rotation =  nbtTileEntity.getByte("rotation");
+				switch (rotationSteps) {
+				case 1:
+					nbtTileEntity.setByte("rotation", rotBasicMachine[rotation]);
+					return metadata;
+				case 2:
+					nbtTileEntity.setByte("rotation", rotBasicMachine[rotBasicMachine[rotation]]);
+					return metadata;
+				case 3:
+					nbtTileEntity.setByte("rotation", rotBasicMachine[rotBasicMachine[rotBasicMachine[rotation]]]);
+					return metadata;
+				default:
+					return metadata;
+				}
+			}
+			
+			// repair turret on jump to ensure it's visible
+			if (nbtTileEntity.hasKey("turretDeath")) {
+				nbtTileEntity.setBoolean("turretDeath", true);
+				nbtTileEntity.setInteger("repairTime", 0);
+			}
+		}
+		
+		if (classBlockExplosiveCharge.isInstance(block)) {
 			switch (rotationSteps) {
 			case 1:
-				return mrotLamp[metadata];
+				return mrotExplosiveCharge[metadata];
 			case 2:
-				return mrotLamp[mrotLamp[metadata]];
+				return mrotExplosiveCharge[mrotExplosiveCharge[metadata]];
 			case 3:
-				return mrotLamp[mrotLamp[mrotLamp[metadata]]];
+				return mrotExplosiveCharge[mrotExplosiveCharge[mrotExplosiveCharge[metadata]]];
 			default:
 				return metadata;
 			}
 		}
 		
-		if (classBlockBasicMachine.isInstance(block)) {
-			switch(metadata) {
-			case 0:
+		if (classBlockSimpleMachine.isInstance(block)) {
+			switch (rotationSteps) {
 			case 1:
-			case 4:
-			case 9:
-				if (nbtTileEntity.hasKey("rotation")) {
-					final byte rotation = nbtTileEntity.getByte("rotation");
-					switch (rotationSteps) {
-					case 1:
-						nbtTileEntity.setByte("rotation", rotBasicMachine[rotation]);
-						return metadata;
-					case 2:
-						nbtTileEntity.setByte("rotation", rotBasicMachine[rotBasicMachine[rotation]]);
-						return metadata;
-					case 3:
-						nbtTileEntity.setByte("rotation", rotBasicMachine[rotBasicMachine[rotBasicMachine[rotation]]]);
-						return metadata;
-					default:
-						return metadata;
-					}
-				}
-				break;
-			
+				return mrotSimpleMachine[metadata];
 			case 2:
-				// no rotation
-				return metadata;
-			
+				return mrotSimpleMachine[mrotSimpleMachine[metadata]];
 			case 3:
-			case 5:
-				if (nbtTileEntity.hasKey("rotation")) {
-					final byte rotation = nbtTileEntity.getByte("rotation");
-					switch (rotationSteps) {
-					case 1:
-						nbtTileEntity.setByte("rotation", rotRepairCamoBench(rotation));
-						return metadata;
-					case 2:
-						nbtTileEntity.setByte("rotation", rotRepairCamoBench(rotRepairCamoBench(rotation)));
-						return metadata;
-					case 3:
-						nbtTileEntity.setByte("rotation", rotRepairCamoBench(rotRepairCamoBench(rotRepairCamoBench(rotation))));
-						return metadata;
-					default:
-						return metadata;
-					}
-				}
-				break;
-			
-			case 6:
-			case 8:
-				if (nbtTileEntity.hasKey("orientation")) {
-					final byte orientation = nbtTileEntity.getByte("orientation");
-					final byte rotation = nbtTileEntity.getByte("rotation");
-					if (orientation == 0 || orientation == 1) {
-						return metadata;
-					}
-					switch (rotationSteps) {
-					case 1:
-						nbtTileEntity.setByte("orientation", orientExplosiveCharge[orientation]);
-						nbtTileEntity.setByte("rotation", rotExplosiveCharge[rotation]);
-						return metadata;
-					case 2:
-						nbtTileEntity.setByte("orientation", orientExplosiveCharge[orientExplosiveCharge[orientation]]);
-						nbtTileEntity.setByte("rotation", rotExplosiveCharge[rotExplosiveCharge[rotation]]);
-						return metadata;
-					case 3:
-						nbtTileEntity.setByte("orientation", orientExplosiveCharge[orientExplosiveCharge[orientExplosiveCharge[orientation]]]);
-						nbtTileEntity.setByte("rotation", rotExplosiveCharge[rotExplosiveCharge[rotExplosiveCharge[rotation]]]);
-						return metadata;
-					default:
-						return metadata;
-					}
-				}
-				break;
-			
-			case 7:
-			case 10:
-			case 11:
-			case 12:
-			case 13:
-			case 14:
-			case 15:
+				return mrotSimpleMachine[mrotSimpleMachine[mrotSimpleMachine[metadata]]];
 			default:
 				return metadata;
 			}
 		}
 		
-		if ( classBlockMultiBlockMachineBlock.isInstance(block)
-		  && nbtTileEntity.hasKey("hasMaster")
-		  && nbtTileEntity.getBoolean("hasMaster") ) {
-			final int xMaster = nbtTileEntity.getInteger("masterX");
-			final int yMaster = nbtTileEntity.getShort("masterY");
-			final int zMaster = nbtTileEntity.getInteger("masterZ");
-			final BlockPos chunkCoordinatesMaster = transformation.apply(xMaster, yMaster, zMaster);
-			nbtTileEntity.setInteger("masterX", chunkCoordinatesMaster.getX());
-			nbtTileEntity.setInteger("masterY", chunkCoordinatesMaster.getY());
-			nbtTileEntity.setInteger("masterZ", chunkCoordinatesMaster.getZ());
+		if ( classBlockMultiBlockMachine.isInstance(block)
+		  && nbtTileEntity != null ) {
+			// Reference to the master block for slave
+			// or Rotation for the Master block
+			if ( nbtTileEntity.hasKey("hasMaster")
+			  && nbtTileEntity.getBoolean("hasMaster") ) {
+				final int xMaster = nbtTileEntity.getInteger("masterX");
+				final int yMaster = nbtTileEntity.getInteger("masterY");
+				final int zMaster = nbtTileEntity.getInteger("masterZ");
+				final BlockPos chunkCoordinatesMaster = transformation.apply(xMaster, yMaster, zMaster);
+				nbtTileEntity.setInteger("masterX", chunkCoordinatesMaster.getX());
+				nbtTileEntity.setInteger("masterY", chunkCoordinatesMaster.getY());
+				nbtTileEntity.setInteger("masterZ", chunkCoordinatesMaster.getZ());
+				
+			} else if (nbtTileEntity.hasKey("multiblockDirection")) {
+				final byte rotation = nbtTileEntity.getByte("multiblockDirection");
+				switch (rotationSteps) {
+				case 1:
+					nbtTileEntity.setByte("multiblockDirection", rotMultiblockDirection[rotation]);
+					return metadata;
+				case 2:
+					nbtTileEntity.setByte("multiblockDirection", rotMultiblockDirection[rotMultiblockDirection[rotation]]);
+					return metadata;
+				case 3:
+					nbtTileEntity.setByte("multiblockDirection", rotMultiblockDirection[rotMultiblockDirection[rotMultiblockDirection[rotation]]]);
+					return metadata;
+				default:
+					return metadata;
+				}
+			}
 		}
 		
 		return metadata;
