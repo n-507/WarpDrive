@@ -29,10 +29,8 @@ import cr0s.warpdrive.compat.CompatImmersiveEngineering;
 import cr0s.warpdrive.compat.CompatIndustrialCraft2;
 import cr0s.warpdrive.compat.CompatIndustrialForegoing;
 import cr0s.warpdrive.compat.CompatIronChest;
-import cr0s.warpdrive.compat.CompatJABBA;
 import cr0s.warpdrive.compat.CompatMekanism;
 import cr0s.warpdrive.compat.CompatMetalChests;
-import cr0s.warpdrive.compat.CompatMetallurgy;
 import cr0s.warpdrive.compat.CompatMysticalAgriculture;
 import cr0s.warpdrive.compat.CompatNatura;
 import cr0s.warpdrive.compat.CompatOpenComputers;
@@ -44,7 +42,6 @@ import cr0s.warpdrive.compat.CompatRefinedStorage;
 import cr0s.warpdrive.compat.CompatRoots;
 import cr0s.warpdrive.compat.CompatRustic;
 import cr0s.warpdrive.compat.CompatSGCraft;
-import cr0s.warpdrive.compat.CompatStargateTech2;
 import cr0s.warpdrive.compat.CompatStorageDrawers;
 import cr0s.warpdrive.compat.CompatTConstruct;
 import cr0s.warpdrive.compat.CompatTechguns;
@@ -1566,11 +1563,6 @@ public class WarpDriveConfig {
 			CompatIronChest.register();
 		}
 		
-		final boolean isJABBAloaded = Loader.isModLoaded("JABBA");
-		if (isJABBAloaded) {
-			CompatJABBA.register();
-		}
-		
 		final boolean isMekanismLoaded = Loader.isModLoaded("mekanism");
 		if (isMekanismLoaded) {
 			CompatMekanism.register();
@@ -1579,11 +1571,6 @@ public class WarpDriveConfig {
 		final boolean isMetalChestsLoaded = Loader.isModLoaded("metalchests");
 		if (isMetalChestsLoaded) {
 			CompatMetalChests.register();
-		}
-		
-		final boolean isMetallurgyLoaded = Loader.isModLoaded("Metallurgy");
-		if (isMetallurgyLoaded) {
-			CompatMetallurgy.register();
 		}
 		
 		final boolean isMysticalAgricultureLoaded = Loader.isModLoaded("mysticalagriculture");
@@ -1634,11 +1621,6 @@ public class WarpDriveConfig {
 		final boolean isSGCraftLoaded = Loader.isModLoaded("sgcraft");
 		if (isSGCraftLoaded) {
 			CompatSGCraft.register();
-		}
-		
-		final boolean isStargateTech2Loaded = Loader.isModLoaded("StargateTech2");
-		if (isStargateTech2Loaded) {
-			CompatStargateTech2.register();
 		}
 		
 		final boolean isStorageDrawersLoaded = Loader.isModLoaded("storagedrawers");
