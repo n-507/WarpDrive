@@ -616,7 +616,8 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 			WarpDrive.logger.info(String.format("%s [IC2]getSourceTier() => %d",
 			                                    this, tier ));
 		}
-		return tier;
+		// IC2 caps at tier 4 (EV), cables burn & block explodes after that, so we might as well enforce it
+		return Math.min(4, tier);
 	}
 	
 	@Override
