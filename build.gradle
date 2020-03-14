@@ -91,7 +91,7 @@ repositories {
         name 'tterrag maven'
         url "http://maven.tterrag.com/"
     }
-    maven { // CraftTweaker (aka MineTweaker3), Immersive Engineering
+    maven { // CraftTweaker (aka MineTweaker3), Immersive Engineering, Patchouli
         name 'jared maven'
         url "http://blamejared.com/maven"
     }
@@ -136,6 +136,7 @@ dependencies {
     // provided "com.builtbroken.icbm-classic:ICBM-classic:${config.ICBMclassic_version}"
     provided curse.resolve("icbm-classic", "${config.ICBMclassic_fileid}")
     provided "li.cil.oc:OpenComputers:${config.OpenComputers_version}"
+    provided "vazkii.patchouli:Patchouli:${config.Patchouli_version}"
     
 //  compileOnly "mezz.jei:jei_1.10.2:3.13.+"
 //  compileOnly "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
