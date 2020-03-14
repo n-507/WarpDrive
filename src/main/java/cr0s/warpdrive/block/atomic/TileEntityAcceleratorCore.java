@@ -996,7 +996,8 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	
 	@Nonnull
 	private Object[] getControlPointsCount() {
-		if (acceleratorSetup != null) {
+		if ( acceleratorSetup != null
+		  && acceleratorSetup.isAssemblyValid() ) {
 			final Object[][] controlPoints = acceleratorSetup.getControlPoints();
 			return new Integer[] { controlPoints.length };
 		}

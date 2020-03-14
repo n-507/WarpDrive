@@ -60,7 +60,7 @@ public class AcceleratorSetup extends GlobalPosition {
 	public final TreeMap<Integer, VectorI> mapInjectors = new TreeMap<>();
 	public final Integer[] keyInjectors;
 	public final ArrayList<TrajectoryPoint> listColliders = new ArrayList<>();
-	private Object[][] matrixControlPoints = null;
+	private Object[][] matrixControlPoints = new Object[0][];
 	
 	private VectorI vMin;
 	private VectorI vMax;
@@ -580,6 +580,10 @@ public class AcceleratorSetup extends GlobalPosition {
 		return isDirty;
 	}
 	
+	public boolean isAssemblyValid() {
+		return isAssemblyValid;
+	}
+	
 	public boolean getAssemblyStatus(@Nonnull final WarpDriveText textReason) {
 		textReason.append(textValidityIssues);
 		return isAssemblyValid;
@@ -690,6 +694,7 @@ public class AcceleratorSetup extends GlobalPosition {
 	}
 	
 	// Pseudo-API for computers
+	@Nonnull
 	public Object[][] getControlPoints() {
 		return matrixControlPoints;
 	}
