@@ -902,7 +902,8 @@ public class JumpSequencer extends AbstractSequencer {
 		
 		case HYPERSPACE_ENTERING: {
 			// anything defined?
-			if (celestialObjectSource.parent == null) {
+			if ( celestialObjectSource == null
+			  || celestialObjectSource.parent == null ) {
 				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.unable_to_reach_hyperspace_no_parent",
 				              Commons.format(worldSource), worldSource.provider.getDimension());
 				return false;
@@ -927,7 +928,8 @@ public class JumpSequencer extends AbstractSequencer {
 		
 		case PLANET_TAKEOFF: {
 			// anything defined?
-			if (celestialObjectSource.parent == null) {
+			if ( celestialObjectSource == null
+			  || celestialObjectSource.parent == null ) {
 				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.unable_to_reach_space_no_parent",
 				              Commons.format(worldSource), worldSource.provider.getDimension());
 				return false;
