@@ -180,7 +180,7 @@ public class ItemElectromagneticCell extends ItemAbstractBase implements IPartic
 		final NBTTagCompound tagCompound = itemStack.getTagCompound();
 		if (tagCompound != null) {
 			// when taking a recipe output, the recipe is matched again before checking for recipients, so we can assume it's in the same tick
-			final long tickToConsume = tagCompound.getInteger(IParticleContainerItem.TAG_TICK_TO_CONSUME);
+			final long tickToConsume = tagCompound.getLong(IParticleContainerItem.TAG_TICK_TO_CONSUME);
 			if (System.currentTimeMillis() - tickToConsume < 50L) {
 				return tagCompound.getInteger(IParticleContainerItem.TAG_AMOUNT_TO_CONSUME);
 			} else {
