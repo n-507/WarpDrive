@@ -3,7 +3,6 @@ package cr0s.warpdrive.block.movement;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.WarpDriveText;
-import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.EnumStarMapEntryType;
 import cr0s.warpdrive.data.StarMapRegistryItem;
 
@@ -169,12 +168,20 @@ public class TileEntityShipController extends TileEntityAbstractShipController {
 	
 	@Override
 	public Object[] isInSpace() {
-		return new Boolean[] { CelestialObjectManager.isInSpace(world, pos.getX(), pos.getZ()) };
+		final TileEntityShipCore tileEntityShipCore = tileEntityShipCoreWeakReference == null ? null : tileEntityShipCoreWeakReference.get();
+		if (tileEntityShipCore == null) {
+			return null;
+		}
+		return tileEntityShipCore.isInSpace();
 	}
 	
 	@Override
 	public Object[] isInHyperspace() {
-		return new Boolean[] { CelestialObjectManager.isInHyperspace(world, pos.getX(), pos.getZ()) };
+		final TileEntityShipCore tileEntityShipCore = tileEntityShipCoreWeakReference == null ? null : tileEntityShipCoreWeakReference.get();
+		if (tileEntityShipCore == null) {
+			return null;
+		}
+		return tileEntityShipCore.isInHyperspace();
 	}
 	
 	@Override
