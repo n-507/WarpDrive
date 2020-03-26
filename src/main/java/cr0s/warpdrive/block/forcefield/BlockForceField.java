@@ -279,10 +279,11 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		boolean isAccessGranted = false;
 		final List<EntityPlayer> entities = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(
 				blockPos.getX() - 1.0D, blockPos.getY() - 1.0D, blockPos.getZ() - 1.0D,
-				blockPos.getX() + 2.0D, blockPos.getY() + 2.0D, blockPos.getZ() + 2.0D));
+				blockPos.getX() + 2.0D, blockPos.getY() + 2.0D, blockPos.getZ() + 2.0D), null);
 		for (final EntityPlayer entityPlayer : entities) {
-			if (entityPlayer != null && !entityPlayer.isSneaking()) {
-				if ( entityPlayer.capabilities.isCreativeMode
+			if (entityPlayer != null) {
+				if ( entityPlayer.isCreative()
+				  || entityPlayer.isSpectator()
 				  || forceFieldSetup.isAccessGranted(entityPlayer, EnumPermissionNode.SNEAK_THROUGH) ) {
 					isAccessGranted = true;
 					break;

@@ -47,7 +47,8 @@ public class RenderOverlayAir {
 		if (entityPlayer == null) {
 			return;
 		}
-		if (entityPlayer.isCreative()) {
+		if ( entityPlayer.isCreative()
+		  || entityPlayer.isSpectator() ) {
 			return;
 		}
 		final int x = MathHelper.floor(entityPlayer.posX);
