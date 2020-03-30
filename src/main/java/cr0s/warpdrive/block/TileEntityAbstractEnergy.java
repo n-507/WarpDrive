@@ -905,13 +905,6 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 	}
 	
 	// WarpDrive overrides
-	@Override
-	public void onBlockUpdateDetected() {
-		super.onBlockUpdateDetected();
-		
-		energy_refreshConnections();
-	}
-	
 	protected void energy_refreshConnections() {
 		if (WarpDriveConfig.isIndustrialCraft2Loaded) {
 			// IC2 EnergyNet throws a block update during the next world tick following its EnergyTileLoadEvent
