@@ -207,6 +207,7 @@ public class LivingHandler {
 			final CelestialObject celestialObjectChild = CelestialObjectManager.getClosestChild(entityLivingBase.world, x, z);
 			// are we actually in orbit?
 			if ( celestialObjectChild != null
+			  && !celestialObjectChild.isVirtual()
 			  && !celestialObject.isHyperspace()
 			  && celestialObjectChild.isInOrbit(entityLivingBase.world.provider.getDimension(), x, z) ) {
 				
