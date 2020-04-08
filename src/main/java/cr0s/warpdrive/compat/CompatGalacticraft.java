@@ -5,16 +5,37 @@ import cr0s.warpdrive.api.IBlockTransformer;
 import cr0s.warpdrive.api.ITransformation;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.CelestialObject;
+import cr0s.warpdrive.data.CelestialObjectManager;
+
+import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import micdoodle8.mods.galacticraft.api.event.oxygen.GCCoreOxygenSuffocationEvent;
+import micdoodle8.mods.galacticraft.core.entities.player.GCPlayerStats;
+import micdoodle8.mods.galacticraft.core.entities.player.GCPlayerStatsClient;
+
 public class CompatGalacticraft implements IBlockTransformer {
+	
+	public static CompatGalacticraft INSTANCE;
 	
 	private static Class<?> classBlockAdvanced;
 	private static Class<?> classBlockConcealedDetector;
@@ -30,9 +51,61 @@ public class CompatGalacticraft implements IBlockTransformer {
 			classBlockTier1TreasureChest = Class.forName("micdoodle8.mods.galacticraft.core.blocks.BlockTier1TreasureChest");
 			classBlockTorchBase = Class.forName("micdoodle8.mods.galacticraft.core.blocks.BlockTorchBase");
 			
-			WarpDriveConfig.registerBlockTransformer("Galacticraft", new CompatGalacticraft());
+			INSTANCE = new CompatGalacticraft();
+			WarpDriveConfig.registerBlockTransformer("Galacticraft", INSTANCE);
+			
+			MinecraftForge.EVENT_BUS.register(INSTANCE);
 		} catch(final ClassNotFoundException exception) {
 			exception.printStackTrace();
+		}
+	}
+	
+	// disable breathing suffocation event server side
+	@SubscribeEvent
+	public void onGCCoreOxygenSuffocationEventPre(final GCCoreOxygenSuffocationEvent.Pre event) {
+		assert event.getEntity() != null;
+		
+		final Entity entity = event.getEntity();
+		final int x = MathHelper.floor(entity.posX);
+		final int z = MathHelper.floor(entity.posZ);
+		final CelestialObject celestialObject = CelestialObjectManager.get(entity.world, x, z);
+		if (celestialObject == null) {
+			// unregistered dimension => exit
+			return;
+		}
+		
+		final GCPlayerStats gcPlayerStats = GCPlayerStats.get(event.getEntity());
+		if (gcPlayerStats != null) {
+			gcPlayerStats.setLastOxygenSetupValid(true);
+		}
+		
+		event.setCanceled(true);
+	}
+	
+	// disable breathing alarm overlay client side
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void onLivingUpdate(@Nonnull final LivingUpdateEvent event) {
+		if (Minecraft.getMinecraft().player == null) {
+			return;
+		}
+		
+		final EntityLivingBase entityLivingBase = event.getEntityLiving();
+		if (entityLivingBase != Minecraft.getMinecraft().player) {
+			return;
+		}
+		
+		final int x = MathHelper.floor(entityLivingBase.posX);
+		final int z = MathHelper.floor(entityLivingBase.posZ);
+		final CelestialObject celestialObject = CelestialObjectManager.get(entityLivingBase.world, x, z);
+		if (celestialObject == null) {
+			// unregistered dimension => exit
+			return;
+		}
+		
+		final GCPlayerStatsClient stats = GCPlayerStatsClient.get(Minecraft.getMinecraft().player);
+		if (stats != null) {
+			stats.setOxygenSetupValid(true);
 		}
 	}
 	
