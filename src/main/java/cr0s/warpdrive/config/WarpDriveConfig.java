@@ -125,6 +125,7 @@ public class WarpDriveConfig {
 	};
 	private static final String[]  defaultXML_celestialObjects = {
 			"celestialObjects-default.xml",
+			"celestialObjects-Galacticraft+ExtraPlanets.xml",
 	};
 	private static final String[]  defaultSchematics = {
 			"default-legacy_1.schematic",

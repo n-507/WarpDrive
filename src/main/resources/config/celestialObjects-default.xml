@@ -2,26 +2,47 @@
 <worldGeneration version="3"
 				 xmlns="http://warpdrive.lemadec.org"
 				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				 xsi:schemaLocation="http://warpdrive.lemadec.org WarpDrive.xsd">
+				 xsi:schemaLocation="http://warpdrive.lemadec.org WarpDrive.xsd"
+				 mods="!galacticraftcore">
 	
 	<!--
+	  This file defines the Celestial Map of your modpack.
+	  It's just a basic geometry definition of all celestial objects with lots of customization for world generation and rendering.
+	  
 	  An astronomical object or celestial object is a naturally occurring physical entity, association, or structure in the observable universe.
 	  They can be a planet, a more abstract construct like solar system (space dimension) or the all mighty hyperspace.
 	  Hyperspace is defined by its WarpDriveHyperspace dimension provider.
 	  Space is a dimension with Hyperspace as its parent.
 	  
-	  This default configuration is fairly simple.
-	  In practice, you can have several hyperspaces containing multiple spaces containing numerous planets, etc..
-	  
 	  When no dimension is defined, a celestial object is considered 'virtual'. An hyperspace can be virtual. A sun is (in most cases) virtual.
 	  In theory, multiple planets can exists in the same Minecraft world (for example: The Twilight Forest exist on multiple planets in different star systems).
 	  
+	  This default configuration is fairly simple: an oversized earth with a small Pluto in a far corner of the star system.
+	  In practice, you can have several hyperspaces containing multiple spaces containing numerous planets, etc..
+	  
+	  
+	  When designing your own Celestial Map, put it first on graph paper or an "Excel" (as a digital graph paper).
+	  The map is simple squares into squares but no square borders can cross.
+	  For example, each "space" dimension must be completely within hyperspace, but no space dimension can cross into another.
+	  Each celestial object must be within a space dimension (not in hyperspace), and their borders cannot cross OR they must be within another celestial object (i.e. the nether under the overworld).
+	  
+	  Sadly, as we go further away from the center of a dimension (0 0), bad things starts happening around 220km including entity jerky motion, damage
+	  and eventually death by suffocation. To account for this, hyperspace should cap at 400 km size (or 200 km radius).
+	  You should watch AntVenom panel to learn more about this, here: https://youtu.be/v6-IAntqg5w .
+	  
+	  worldGeneration.mods defines mod dependencies through a comma separated list of mod ids.
+	  Each mod listed shall be present unless preceded by '!'. When preceded by a exclamation character '!', that mod shall be missing.
+	  If any dependency condition fails in the list, then the related XML element is ignored completely.
+	  For example here, we have mods="!galacticraftcore" which means if Galacticraft is present, this file will be completely ignored.
+	  Hint: the mods attribute can be used on any XML element, you can find more examples in the default fillerSets-*.xml configuration files.
+     -->
+	
+	<!--
+	  Top level is hyperspace, typically a galaxy.
+	  
 	  celestialObject.id should be unique for each Celestial object.
 	  When provided by WarpDrive, this is the world folder name instead of DIMxxx.
-	  -->
-	
-	
-	<!-- Top level is hyperspace, typically a galaxy. -->
+     -->
 	<celestialObject id="Hyperspace">
 		<!--
 		  size defines the world border size, measured in blocks. This is also the size of the orbit area in space, so don't go too big.
@@ -39,7 +60,12 @@
 		  dimension.id: this is the id of the dimension. 0 is the Overworld, -1 is the Nether, 1 is the End.
 		  dimension.isBreathable: this is a boolean flag defining if ambient atmosphere is breathable. This only applies to planets; space and hyperspace are always non-breathable, obviously.
 		  dimension.isHyperspace: this is a boolean flag defining if this an hyperspace dimension. 
-		  dimension.gravity: this is the gravity simulation type. Valid keywords are 'none' (0.0), 'legacySpace', 'legacyHyperspace', 'normal' (1.0) or any value between 0 and 1.
+		  
+		  dimension.gravity: this is the gravity simulation type or strength.
+		  Valid keywords are 'none' (0.0), 'legacySpace', 'legacyHyperspace', 'normal' (1.0) or any value between 0.001 and 1.000.
+		  Value is relative to that dimension default, so 1.000 means normal gravity for that dimension.
+		  Since Galacticraft & AdvancedRocketry dimensions already have low gravity, you want to set their gravity to 'normal'.
+		  
 		  dimension.center.x, dimension.center.z: those are the center coordinate of that dimension world border, measured in blocks. For convenience, it's usually 0, 0.
 		  -->
 		<dimension id="-100" isBreathable="false" isHyperspace="true" gravity="legacyHyperspace">
@@ -53,7 +79,7 @@
 		</dimension>
 		
 		<!--
-		  skybox defines the sky rendering while inside a WarpDrive provided dimensions.
+		  skybox defines the sky rendering while inside a WarpDrive provided dimension.
 		  Those can be adjusted to your lore: in hyperspace, Babylon 5 is redish, Stargate is bluish, etc.
 		  skybox.backgroundColor is self explanatory. Vanilla enforces plain black at max render distance.
 		  skybox.starBrightnessBase is the minimum brightness of stars in the sky.
@@ -79,9 +105,9 @@
 			  parent.center.x, parent.center.z: this is the center coordinates in the parent dimension, measured in blocks.
 			  -->
 			<parent>
-				<center x="50000" z="10000" />
+				<center x="0" z="0" />
 			</parent>
-			<size x="200000" z="200000" />
+			<size x="400000" z="400000" />
 			<name>Space</name>
 			<description>The void, filled with §6resources§r.</description>
 			<dimension id="-101" isBreathable="false" gravity="legacySpace">
@@ -141,9 +167,9 @@
 			<celestialObject id="earth">
 				<parent>
 					<!-- coordinates in the solar system, measured in blocks -->
-					<center x="-40000" z="30000" />
+					<center x="-110000" z="110000" />
 				</parent>
-				<size x="10000" z="10000" />
+				<size x="180000" z="180000" />
 				<dimension id="0" isBreathable="true" gravity="normal">
 					<center x="0" z="0" />
 				</dimension>
@@ -160,7 +186,7 @@
 					<parent>
 						<center x="0" z="0" />
 					</parent>
-					<size x="2500" z="2500" />
+					<size x="50000" z="50000" />
 					<dimension id="-1" isBreathable="true" gravity="normal">
 						<center x="0" z="0" />
 					</dimension>
@@ -170,9 +196,9 @@
 			<!-- Pluto is The End. It's a far planet. --> 
 			<celestialObject id="pluto">
 				<parent>
-					<center x="90000" z="70000" />
+					<center x="160000" z="170000" />
 				</parent>
-				<size x="4000" z="4000" />
+				<size x="40000" z="40000" />
 				<dimension id="1" isBreathable="true" gravity="normal">
 					<center x="0" z="0" />
 				</dimension>
