@@ -104,6 +104,7 @@ public class CommandBed extends AbstractCommand {
 				                                                         Commons.format(entityPlayerMP.world, bedLocation) ));
 			} else {
 				Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.command.teleporting_by_x_to_y",
+				                                                         commandSender,
 				                                                         Commons.format(entityPlayerMP.world, bedLocation) ));
 				Commons.addChatMessage(commandSender, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.command.teleporting_player_x_to_y",
 				                                                        entityPlayerMP.getName(),
