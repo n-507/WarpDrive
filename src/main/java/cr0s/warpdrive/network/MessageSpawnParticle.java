@@ -202,6 +202,7 @@ public class MessageSpawnParticle implements IMessage, IMessageHandler<MessageSp
 				assert particle != null;
 				particle.setParticleTextureIndex(81);
 				particle.setAlphaF(0.5F);
+				particle.setMaxAge(100);
 				break;
 			} 
 			
