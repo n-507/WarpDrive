@@ -97,6 +97,7 @@ import cr0s.warpdrive.command.CommandFind;
 import cr0s.warpdrive.command.CommandGenerate;
 import cr0s.warpdrive.command.CommandBed;
 import cr0s.warpdrive.command.CommandInvisible;
+import cr0s.warpdrive.command.CommandNPC;
 import cr0s.warpdrive.command.CommandReload;
 import cr0s.warpdrive.command.CommandRender;
 import cr0s.warpdrive.command.CommandSpace;
@@ -118,6 +119,7 @@ import cr0s.warpdrive.data.EnumHullPlainType;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.StarMapRegistry;
 import cr0s.warpdrive.entity.EntityLaserExploder;
+import cr0s.warpdrive.entity.EntityNPC;
 import cr0s.warpdrive.entity.EntityParticleBunch;
 import cr0s.warpdrive.event.ChunkHandler;
 import cr0s.warpdrive.event.ChunkLoadingHandler;
@@ -653,6 +655,7 @@ public class WarpDrive {
 		event.registerServerCommand(new CommandFind());
 		event.registerServerCommand(new CommandGenerate());
 		event.registerServerCommand(new CommandInvisible());
+		event.registerServerCommand(new CommandNPC());
 		event.registerServerCommand(new CommandReload());
 		event.registerServerCommand(new CommandRender());
 		event.registerServerCommand(new CommandSpace());
@@ -1100,6 +1103,13 @@ public class WarpDrive {
 		                                .entity(EntityLaserExploder.class).factory(EntityLaserExploder::new)
 		                                .tracker(8, 1000, false)
 		                                .id("entityLaserExploder", WarpDriveConfig.G_ENTITY_LASER_EXPLODER_ID).name("entityLaserExploder")
+		                                .build();
+		event.getRegistry().register(entityEntry);
+		
+		entityEntry = EntityEntryBuilder.create()
+		                                .entity(EntityNPC.class).factory(EntityNPC::new)
+		                                .tracker(200, 1, false)
+		                                .id("entityNPC", WarpDriveConfig.G_ENTITY_NPC_ID).name("EntityNPC")
 		                                .build();
 		event.getRegistry().register(entityEntry);
 		

@@ -5,12 +5,14 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBlockBase;
 import cr0s.warpdrive.api.IItemBase;
 import cr0s.warpdrive.block.breathing.BlockColorAirShield;
+import cr0s.warpdrive.entity.EntityNPC;
 import cr0s.warpdrive.entity.EntityParticleBunch;
 import cr0s.warpdrive.event.ClientHandler;
 import cr0s.warpdrive.event.ModelBakeEventHandler;
 import cr0s.warpdrive.event.TooltipHandler;
 import cr0s.warpdrive.render.ClientCameraHandler;
 import cr0s.warpdrive.render.CustomModelLoaderProjector;
+import cr0s.warpdrive.render.RenderEntityNPC;
 import cr0s.warpdrive.render.RenderEntityParticleBunch;
 import cr0s.warpdrive.render.RenderOverlayAir;
 import cr0s.warpdrive.render.RenderOverlayCamera;
@@ -24,6 +26,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -58,6 +61,13 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(SpriteManager.INSTANCE);
 		
 		// entity rendering
+		RenderingRegistry.registerEntityRenderingHandler(EntityNPC.class, new IRenderFactory<EntityNPC>() {
+			@Nonnull
+			@Override
+			public Render<EntityNPC> createRenderFor(final RenderManager manager) {
+				return new RenderEntityNPC(manager, new ModelBiped(), 0.5F);
+			}
+		});
 		RenderingRegistry.registerEntityRenderingHandler(EntityParticleBunch.class, new IRenderFactory<EntityParticleBunch>() {
 			@Nonnull
 			@Override
