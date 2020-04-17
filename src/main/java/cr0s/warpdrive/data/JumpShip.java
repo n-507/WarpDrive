@@ -8,6 +8,7 @@ import cr0s.warpdrive.block.movement.TileEntityShipCore;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.config.WarpDriveDataFixer;
+import cr0s.warpdrive.network.PacketHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -489,7 +490,13 @@ public class JumpShip {
 					              blockState.getBlock().getLocalizedName(),
 					              x, y, z);
 					reason.append(Commons.getStyleCommand(), "warpdrive.ship.guide.ship_snagged2");
-					world.createExplosion(null, x, y, z, Math.min(4F * 30, 4F * (jumpBlocks.length / 50.0F)), false);
+					world.newExplosion(null, x + 0.5D, y + 0.5D, z + 0.5D, 1.0F, false, false);
+					PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5,
+					                                      new Vector3(x + 0.5D, y + 0.5D, z + 0.5D),
+					                                      new Vector3(0.0D, 0.0D, 0.0D),
+					                                      1.0F, 1.0F, 1.0F,
+					                                      1.0F, 1.0F, 1.0F,
+					                                      32);
 					return false;
 				}
 			}
