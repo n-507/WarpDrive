@@ -10,12 +10,6 @@ import cr0s.warpdrive.data.ChunkData;
 import cr0s.warpdrive.data.StateAir;
 
 import javax.annotation.Nonnull;
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -32,13 +26,17 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.map.hash.TLongObjectHashMap;
+import gnu.trove.procedure.TLongObjectProcedure;
+
 public class ChunkHandler {
 	
 	private static final long CHUNK_HANDLER_UNLOADED_CHUNK_MAX_AGE_MS = 30000L;
 	
 	// persistent properties
-	private static final Map<Integer, Map<Long, ChunkData>> registryClient = new HashMap<>(32);
-	private static final Map<Integer, Map<Long, ChunkData>> registryServer = new HashMap<>(32);
+	private static final TIntObjectHashMap<TLongObjectHashMap<ChunkData>> registryClient = new TIntObjectHashMap<>(32);
+	private static final TIntObjectHashMap<TLongObjectHashMap<ChunkData>> registryServer = new TIntObjectHashMap<>(32);
 	
 	// computed properties
 	public static long delayLogging = 0;
@@ -188,11 +186,12 @@ public class ChunkHandler {
 		
 		// get dimension data
 		LocalProfiler.updateCallStat("onUnloadWorld");
-		final Map<Integer, Map<Long, ChunkData>> registry = event.getWorld().isRemote ? registryClient : registryServer;
-		final Map<Long, ChunkData> mapRegistryItems = registry.get(event.getWorld().provider.getDimension());
+		final TIntObjectHashMap<TLongObjectHashMap<ChunkData>> registry = event.getWorld().isRemote ? registryClient : registryServer;
+		final TLongObjectHashMap<ChunkData> mapRegistryItems = registry.get(event.getWorld().provider.getDimension());
 		if (mapRegistryItems != null) {
 			// unload chunks during shutdown
-			for (final ChunkData chunkData : mapRegistryItems.values()) {
+			for (final Object object : mapRegistryItems.values()) {
+				final ChunkData chunkData = (ChunkData) object;
 				if (chunkData.isLoaded()) {
 					chunkData.unload();
 				}
@@ -292,16 +291,14 @@ public class ChunkHandler {
 	private static ChunkData getChunkData(final boolean isRemote, final int dimensionId, final int xChunk, final int zChunk, final boolean doCreate) {
 		// get dimension data
 		LocalProfiler.updateCallStat("getChunkData");
-		final Map<Integer, Map<Long, ChunkData>> registry = isRemote ? registryClient : registryServer;
-		Map<Long, ChunkData> mapRegistryItems = registry.get(dimensionId);
+		final TIntObjectHashMap<TLongObjectHashMap<ChunkData>> registry = isRemote ? registryClient : registryServer;
+		TLongObjectHashMap<ChunkData> mapRegistryItems = registry.get(dimensionId);
 		// (lambda expressions are forcing synchronisation, so we don't use them here)
 		if (mapRegistryItems == null) {
 			if (!doCreate) {
 				return null;
 			}
-			// TLongObjectMap<ChunkData> m = TCollections.synchronizedMap(new TLongObjectHashMap<ChunkData>(2048) );
-			// @TODO: http://trove4j.sourceforge.net/javadocs/gnu/trove/TCollections.html#synchronizedMap(gnu.trove.map.TLongObjectMap)
-			mapRegistryItems = new LinkedHashMap<>(2048); // Collections.synchronizedMap(new LinkedHashMap<>(2048));
+			mapRegistryItems = new TLongObjectHashMap<>(2048);
 			registry.put(dimensionId, mapRegistryItems);
 		}
 		// get chunk data
@@ -337,7 +334,7 @@ public class ChunkHandler {
 		return chunkData;
 	}
 	
-	private static boolean isLoaded(final Map<Long, ChunkData> mapRegistryItems, final int xChunk, final int zChunk) {
+	private static boolean isLoaded(final TLongObjectHashMap<ChunkData> mapRegistryItems, final int xChunk, final int zChunk) {
 		// get chunk data
 		final long index = ChunkPos.asLong(xChunk, zChunk);
 		final ChunkData chunkData = mapRegistryItems.get(index);
@@ -369,50 +366,51 @@ public class ChunkHandler {
 	private static void updateTick(final World world) {
 		// get dimension data
 		LocalProfiler.updateCallStat("updateTick");
-		final Map<Integer, Map<Long, ChunkData>> registry = world.isRemote ? registryClient : registryServer;
-		final Map<Long, ChunkData> mapRegistryItems = registry.get(world.provider.getDimension());
+		final TIntObjectHashMap<TLongObjectHashMap<ChunkData>> registry = world.isRemote ? registryClient : registryServer;
+		final TLongObjectHashMap<ChunkData> mapRegistryItems = registry.get(world.provider.getDimension());
 		if (mapRegistryItems == null) {
 			return;
 		}
-		int countLoaded = 0;
-		int countRemoved = 0;
+		final int[] countLoaded = { 0 };
+		final int[] countRemoved = { 0 };
 		final long timeForRemoval = System.currentTimeMillis() - CHUNK_HANDLER_UNLOADED_CHUNK_MAX_AGE_MS;
 		final long timeForThrottle = System.currentTimeMillis() + 200;
 		final long sizeBefore = mapRegistryItems.size();
-		long indexCurrent = 0L;
+		final long[] indexCurrent = { 0L };
 		
 		try {
-			
-			for (final Iterator<Entry<Long, ChunkData>> entryIterator = mapRegistryItems.entrySet().iterator(); entryIterator.hasNext(); ) {
-				final Map.Entry<Long, ChunkData> entryChunkData = entryIterator.next();
-				indexCurrent = entryChunkData.getKey();
-				final ChunkData chunkData = entryChunkData.getValue();
-				// update loaded chunks, remove old unloaded chunks
-				if (chunkData.isLoaded()) {
-					countLoaded++;
-					if (System.currentTimeMillis() < timeForThrottle) {
-						updateTickLoopStep(world, mapRegistryItems, entryChunkData.getValue());
+			mapRegistryItems.retainEntries(new TLongObjectProcedure<ChunkData>() {
+				@Override
+				public final boolean execute(final long key, final ChunkData chunkData) {
+					indexCurrent[0] = key;
+					// update loaded chunks, remove old unloaded chunks
+					if (chunkData.isLoaded()) {
+						countLoaded[0]++;
+						if (System.currentTimeMillis() < timeForThrottle) {
+							updateTickLoopStep(world, mapRegistryItems, chunkData);
+						}
+					} else if (chunkData.timeUnloaded < timeForRemoval) {
+						if (WarpDriveConfig.LOGGING_CHUNK_HANDLER) {
+							WarpDrive.logger.info(String.format("%s world %s chunk %s is being removed from updateTick (size is %d)",
+							                                    world.isRemote ? "Client" : "Server",
+							                                    Commons.format(world),
+							                                    chunkData.getChunkCoords(),
+							                                    mapRegistryItems.size()));
+						}
+						countRemoved[0]++;
+						return false;
 					}
-				} else if (chunkData.timeUnloaded < timeForRemoval) {
-					if (WarpDriveConfig.LOGGING_CHUNK_HANDLER) {
-						WarpDrive.logger.info(String.format("%s world %s chunk %s is being removed from updateTick (size is %d)",
-						                                    world.isRemote ? "Client" : "Server",
-						                                    Commons.format(world),
-						                                    chunkData.getChunkCoords(),
-						                                    mapRegistryItems.size()));
-					}
-					entryIterator.remove();
-					countRemoved++;
+					return true;
 				}
-			}
+			});
 			
-		} catch (final ConcurrentModificationException exception) {
+		} catch (final Exception exception) {
 			exception.printStackTrace(WarpDrive.printStreamError);
-			WarpDrive.logger.error(String.format("%s world %s had some chunks changed outside main thread? (size %d -> %d, loaded %d, removed %d, index 0x%X x %d z %d)",
+			WarpDrive.logger.error(String.format("%s world %s had an exception, maybe some chunks changed outside main thread? (size %d -> %d, loaded %d, removed %d, index 0x%X x %d z %d)",
 			                                     world.isRemote ? "Client" : "Server",
 			                                     Commons.format(world),
-			                                     sizeBefore, mapRegistryItems.size(), countLoaded, countRemoved,
-			                                     indexCurrent, indexCurrent & 0xFFFFFFFFL, (indexCurrent >> 32) & 0xFFFFFFFFL ));
+			                                     sizeBefore, mapRegistryItems.size(), countLoaded[0], countRemoved[0],
+			                                     indexCurrent[0], indexCurrent[0] & 0xFFFFFFFFL, (indexCurrent[0] >> 32) & 0xFFFFFFFFL));
 			LocalProfiler.printCallStats();
 		}
 		
@@ -423,14 +421,14 @@ public class ChunkHandler {
 			if (delayLogging == 1) {
 				WarpDrive.logger.info(String.format("Dimension %d has %d / %d chunks loaded",
 				                                    world.provider.getDimension(),
-				                                    countLoaded,
+				                                    countLoaded[0],
 				                                    mapRegistryItems.size()));
 			}
 		}
 	}
 	
 	// apparently, the GC triggers sooner when using sub-function here?
-	private static void updateTickLoopStep(final World world, final Map<Long, ChunkData> mapRegistryItems, final ChunkData chunkData) {
+	private static void updateTickLoopStep(final World world, final TLongObjectHashMap<ChunkData> mapRegistryItems, final ChunkData chunkData) {
 		final ChunkPos chunkCoordIntPair = chunkData.getChunkCoords();
 		// skip empty chunks (faster and more frequent)
 		// ship chunk with unloaded neighbours
