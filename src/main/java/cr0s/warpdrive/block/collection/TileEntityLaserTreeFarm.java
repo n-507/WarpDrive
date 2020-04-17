@@ -200,7 +200,8 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 			if ( !Dictionary.isLog(blockAbove)
 			  && !Dictionary.isLeaf(blockAbove)
 			  && !blockAbove.isAir(blockStateAbove, world, pos.up()) ) {
-				PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5, new Vector3(this).translate(0.5F),
+				PacketHandler.sendSpawnParticlePacket(world, "jammed", (byte) 5,
+				                                      new Vector3(pos.getX() + 0.5D, pos.getY() + 1.5D, pos.getZ() + 0.5D),
 				                                      new Vector3(0.0D, 0.0D, 0.0D),
 				                                      1.0F, 1.0F, 1.0F,
 				                                      1.0F, 1.0F, 1.0F,
