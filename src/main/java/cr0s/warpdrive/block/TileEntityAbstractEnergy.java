@@ -346,9 +346,9 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 		if (WarpDriveConfig.ENERGY_OVERVOLTAGE_EXPLOSION_FACTOR > 0) {
 			world.setBlockToAir(pos);
 			
-			world.createExplosion(
+			world.newExplosion(
 					null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D,
-					tier * WarpDriveConfig.ENERGY_OVERVOLTAGE_EXPLOSION_FACTOR, true);
+					tier * WarpDriveConfig.ENERGY_OVERVOLTAGE_EXPLOSION_FACTOR, true, true);
 		}
 	}
 	
