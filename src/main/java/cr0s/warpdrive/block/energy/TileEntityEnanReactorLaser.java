@@ -201,7 +201,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		}
 		
 		if (energyStabilizationRequest > 0) {
-			WarpDrive.logger.warn(String.format("%s Stabilization already requested for %s",
+			WarpDrive.logger.debug(String.format("%s Stabilization already requested for %s",
 			                                     this, energy ));
 			return -energy;
 		}

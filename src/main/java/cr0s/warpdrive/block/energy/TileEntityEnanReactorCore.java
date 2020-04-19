@@ -345,6 +345,11 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 						hold = true;
 						// delay simulation for a few seconds
 						updateTicks = Math.max(updateTicks, WarpDriveConfig.ENAN_REACTOR_FREEZE_INTERVAL_TICKS);
+						// report to console
+						if (Commons.throttleMe(String.format("Reactor simulation hold %s", Commons.format(world, pos)))) {
+							WarpDrive.logger.warn(String.format("Reactor %s simulation is now on hold for at least %d ticks due to partial loading",
+							                                    Commons.format(world, pos), WarpDriveConfig.ENAN_REACTOR_FREEZE_INTERVAL_TICKS ));
+						}
 					}
 				}
 			}
