@@ -13,6 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
@@ -92,6 +93,13 @@ public abstract class BlockAbstractAir extends BlockAbstractBase {
 	@Override
 	public boolean canCollideCheck(final IBlockState blockState, final boolean hitIfLiquid) {
 		return false;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Nonnull
+	@Override
+	public BlockFaceShape getBlockFaceShape(final IBlockAccess blockAccess, final IBlockState blockState, final BlockPos blockPos, final EnumFacing enumFacing) {
+		return BlockFaceShape.UNDEFINED;
 	}
 	
 	@Override
