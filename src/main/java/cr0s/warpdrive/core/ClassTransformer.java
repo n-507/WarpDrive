@@ -9,13 +9,19 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FrameNode;
+import org.objectweb.asm.tree.IincInsnNode;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
+import org.objectweb.asm.tree.LookupSwitchInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.MultiANewArrayInsnNode;
+import org.objectweb.asm.tree.TableSwitchInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
@@ -23,6 +29,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -190,13 +197,14 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 			
 			if ( (methodNode.name.equals(nodeMap.get("travel.name")) || methodNode.name.equals("travel"))
 			  && methodNode.desc.equals(nodeMap.get("travel.desc")) ) {
-				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s",
-				                                           methodNode.name, methodNode.desc));
+				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s %s",
+				                                            classNode.name, methodNode.name, methodNode.desc ));
 				
 				int indexInstruction = 0;
 				
 				while (indexInstruction < methodNode.instructions.size()) {
 					final AbstractInsnNode abstractNode = methodNode.instructions.get(indexInstruction);
+					if (debugLog) { decompile(abstractNode); }
 					
 					if (abstractNode instanceof LdcInsnNode) {
 						final LdcInsnNode nodeAt = (LdcInsnNode) abstractNode;
@@ -258,8 +266,8 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 			
 			if ( (methodNode.name.equals(nodeMap.get("onUpdate.name")) || methodNode.name.equals("onUpdate"))
 			  && methodNode.desc.equals(nodeMap.get("onUpdate.desc")) ) {
-				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s",
-				                                           methodNode.name, methodNode.desc));
+				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s %s",
+				                                            classNode.name, methodNode.name, methodNode.desc ));
 				
 				int indexInstruction = 0;
 				
@@ -338,13 +346,14 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 			
 			if ( (methodNode.name.equals("update"))
 			  && methodNode.desc.equals("(Lnet/minecraft/entity/item/EntityItem;)V") ) {
-				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s",
-				                                           methodNode.name, methodNode.desc));
+				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s %s",
+				                                            classNode.name, methodNode.name, methodNode.desc ));
 				
 				int indexInstruction = 0;
 				
 				while (indexInstruction < methodNode.instructions.size()) {
 					final AbstractInsnNode abstractNode = methodNode.instructions.get(indexInstruction);
+					if (debugLog) { decompile(abstractNode); }
 					
 					if (abstractNode instanceof LdcInsnNode) {
 						final LdcInsnNode nodeAt = (LdcInsnNode) abstractNode;
@@ -408,13 +417,14 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 			// Entities gravity
 			if ( (methodNode.name.equals("getGravityForEntity"))
 			  && methodNode.desc.equals("(Lnet/minecraft/entity/Entity;)D") ) {
-				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s",
-				                                           methodNode.name, methodNode.desc));
+				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s %s",
+				                                            classNode.name, methodNode.name, methodNode.desc ));
 				
 				int indexInstruction = 0;
 				
 				while (indexInstruction < methodNode.instructions.size()) {
 					final AbstractInsnNode abstractNode = methodNode.instructions.get(indexInstruction);
+					if (debugLog) { decompile(abstractNode); }
 					
 					if (abstractNode instanceof LdcInsnNode) {
 						final LdcInsnNode nodeAt = (LdcInsnNode) abstractNode;
@@ -441,13 +451,14 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 			// Items gravity
 			if ( (methodNode.name.equals("getItemGravity"))
 			  && methodNode.desc.equals("(Lnet/minecraft/entity/item/EntityItem;)D") ) {
-				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s",
-				                                           methodNode.name, methodNode.desc));
+				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s %s",
+				                                            classNode.name, methodNode.name, methodNode.desc ));
 				
 				int indexInstruction = 0;
 				
 				while (indexInstruction < methodNode.instructions.size()) {
 					final AbstractInsnNode abstractNode = methodNode.instructions.get(indexInstruction);
+					if (debugLog) { decompile(abstractNode); }
 					
 					if (abstractNode instanceof LdcInsnNode) {
 						final LdcInsnNode nodeAt = (LdcInsnNode) abstractNode;
@@ -511,13 +522,14 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 			
 			if ( (methodNode.name.equals(nodeMap.get("invalidateRegionAndSetBlock.name")) || methodNode.name.equals("invalidateRegionAndSetBlock"))
 			  && methodNode.desc.equals(nodeMap.get("invalidateRegionAndSetBlock.desc")) ) {
-				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s",
-				                                           methodNode.name, methodNode.desc));
+				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s %s",
+				                                            classNode.name, methodNode.name, methodNode.desc ));
 				
 				int indexInstruction = 0;
 				
 				while (indexInstruction < methodNode.instructions.size()) {
 					final AbstractInsnNode abstractNode = methodNode.instructions.get(indexInstruction);
+					if (debugLog) { decompile(abstractNode); }
 					
 					if (abstractNode instanceof MethodInsnNode) {
 						final MethodInsnNode nodeAt = (MethodInsnNode) abstractNode;
@@ -574,8 +586,8 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 			
 			if ( (methodNode.name.equals(nodeMap.get("read.name")) || methodNode.name.equals("read"))
 			  && methodNode.desc.equals(nodeMap.get("read.desc")) ) {
-				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s",
-				                                           methodNode.name, methodNode.desc));
+				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s %s",
+				                                            classNode.name, methodNode.name, methodNode.desc ));
 				
 				int indexInstruction = 0;
 				
@@ -635,8 +647,8 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 			
 			if ( (methodNode.name.equals(nodeMap.get("loadBuiltInAdvancements.name")) || methodNode.name.equals("loadBuiltInAdvancements"))
 			  && methodNode.desc.equals(nodeMap.get("loadBuiltInAdvancements.desc")) ) {
-				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s",
-				                                           methodNode.name, methodNode.desc));
+				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s %s",
+				                                            classNode.name, methodNode.name, methodNode.desc ));
 				
 				int indexInstruction = 0;
 				
@@ -701,8 +713,8 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 			
 			if ( (methodNode.name.equals(nodeMap.get("loadAdvancements.name")) || methodNode.name.equals("loadAdvancements"))
 			  && methodNode.desc.equals(nodeMap.get("loadAdvancements.desc")) ) {
-				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s",
-				                                           methodNode.name, methodNode.desc));
+				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s %s",
+				                                            classNode.name, methodNode.name, methodNode.desc ));
 				
 				int indexInstruction = 0;
 				
@@ -767,8 +779,8 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 			
 			if ( (methodNode.name.equals(nodeMap.get("renderWorldBorder.name")) || methodNode.name.equals("renderWorldBorder"))
 			  && methodNode.desc.equals(nodeMap.get("renderWorldBorder.desc")) ) {
-				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s",
-				                                            methodNode.name, methodNode.desc));
+				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s %s",
+				                                            classNode.name, methodNode.name, methodNode.desc ));
 				
 				int indexInstruction = 0;
 				
@@ -873,45 +885,69 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 		}
 		
 		final String opcode = opcodeToString(abstractNode.getOpcode());
-		if (abstractNode instanceof VarInsnNode) {
-			final VarInsnNode node = (VarInsnNode) abstractNode;
-			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s", opcode, "Var", node.var));
-			
-		} else if (abstractNode instanceof LabelNode) {
-			final LabelNode node = (LabelNode) abstractNode;
-			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s", opcode, "Label", node.getLabel()));
-			
-		} else if (abstractNode instanceof LineNumberNode) {
-			final LineNumberNode node = (LineNumberNode) abstractNode;
-			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s", opcode, "Line", node.line));
-			
-		} else if (abstractNode instanceof TypeInsnNode) {
-			final TypeInsnNode node = (TypeInsnNode) abstractNode;
-			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s", opcode, "Typed instruction", node.desc));
-			
-		} else if (abstractNode instanceof JumpInsnNode) {
-			final JumpInsnNode node = (JumpInsnNode) abstractNode;
-			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s", opcode, "Jump", node.label.getLabel()));
+		if (abstractNode instanceof FieldInsnNode) {
+			final FieldInsnNode node = (FieldInsnNode) abstractNode;
+			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s %s %s", opcode, "Field", node.owner, node.name, node.desc));
 			
 		} else if (abstractNode instanceof FrameNode) {
 			final FrameNode node = (FrameNode) abstractNode;
 			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %d %s %s", opcode, "Frame", node.type, node.local, node.stack));
 			
+		} else if (abstractNode instanceof IincInsnNode) {
+			final IincInsnNode node = (IincInsnNode) abstractNode;
+			FMLLoadingPlugin.logger.info(String.format("%20s %-20s var %s %s", opcode, "Instruction", node.var, node.incr));
+			
 		} else if (abstractNode instanceof InsnNode) {
-			final InsnNode node = (InsnNode) abstractNode;
-			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s", opcode, "Instruction", node));
+			// final InsnNode node = (InsnNode) abstractNode;
+			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s", opcode, "Instruction", "-"));
+			
+		} else if (abstractNode instanceof IntInsnNode) {
+			final IntInsnNode node = (IntInsnNode) abstractNode;
+			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s", opcode, "Instruction", node.operand));
+			
+		} else if (abstractNode instanceof InvokeDynamicInsnNode) {
+			final InvokeDynamicInsnNode node = (InvokeDynamicInsnNode) abstractNode;
+			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s %s %s %s", opcode, "Instruction", node.name, node.desc, node.bsm, Arrays.toString(node.bsmArgs)));
+			
+		} else if (abstractNode instanceof JumpInsnNode) {
+			final JumpInsnNode node = (JumpInsnNode) abstractNode;
+			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s", opcode, "Jump", node.label.getLabel()));
+			
+		} else if (abstractNode instanceof LabelNode) {
+			final LabelNode node = (LabelNode) abstractNode;
+			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s", opcode, "Label", node.getLabel()));
 			
 		} else if (abstractNode instanceof LdcInsnNode) {
 			final LdcInsnNode node = (LdcInsnNode) abstractNode;
 			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s", opcode, "Load", node.cst));
 			
-		} else if (abstractNode instanceof FieldInsnNode) {
-			final FieldInsnNode node = (FieldInsnNode) abstractNode;
-			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s %s %s", opcode, "Field", node.owner, node.name, node.desc));
+		} else if (abstractNode instanceof LineNumberNode) {
+			final LineNumberNode node = (LineNumberNode) abstractNode;
+			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s", opcode, "Line", node.line));
+			
+		} else if (abstractNode instanceof LookupSwitchInsnNode) {
+			final LookupSwitchInsnNode node = (LookupSwitchInsnNode) abstractNode;
+			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s %s %s", opcode, "Instruction", node.dflt, node.keys, node.labels));
 			
 		} else if (abstractNode instanceof MethodInsnNode) {
 			final MethodInsnNode node = (MethodInsnNode) abstractNode;
 			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s %s %s %s", opcode, "Method", node.owner, node.name, node.desc, node.itf));
+			
+		} else if (abstractNode instanceof MultiANewArrayInsnNode) {
+			final MultiANewArrayInsnNode node = (MultiANewArrayInsnNode) abstractNode;
+			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s %s", opcode, "Instruction", node.desc, node.dims));
+			
+		} else if (abstractNode instanceof TableSwitchInsnNode) {
+			final TableSwitchInsnNode node = (TableSwitchInsnNode) abstractNode;
+			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s %s %s %s", opcode, "Instruction", node.dflt, node.min, node.max, node.labels));
+			
+		} else if (abstractNode instanceof TypeInsnNode) {
+			final TypeInsnNode node = (TypeInsnNode) abstractNode;
+			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s", opcode, "Typed instruction", node.desc));
+			
+		} else if (abstractNode instanceof VarInsnNode) {
+			final VarInsnNode node = (VarInsnNode) abstractNode;
+			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s", opcode, "Var", node.var));
 			
 		} else {
 			FMLLoadingPlugin.logger.info(String.format("%20s %-20s %s %s %s", opcode, "Instruction", abstractNode.getOpcode(), abstractNode.getType(), abstractNode));
