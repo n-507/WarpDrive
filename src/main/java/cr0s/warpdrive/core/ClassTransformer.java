@@ -113,8 +113,8 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 			bytesNew = transformItemPhysicEntityItem(bytesOld);
 			break;
 			
-		case "micdoodle8.mods.galacticraft.core.util.WorldUtil":
-			bytesNew = transformGalacticraftWorldUtil(bytesOld);
+		case "micdoodle8.mods.galacticraft.core.TransformerHooks":
+			bytesNew = transformGalacticraftTransformerHooks(bytesOld);
 			break;
 			
 		case "net.minecraft.client.multiplayer.WorldClient":
@@ -210,6 +210,9 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 						final LdcInsnNode nodeAt = (LdcInsnNode) abstractNode;
 						
 						if (nodeAt.cst.equals(-0.080000000000000002D)) {
+							// Elytra motion is cancelling gravity, so we adjust it to ours
+							// change    this.motionY += -0.08D + (double)f4 * 0.06D;
+							// into      this.motionY += GRAVITY_MANAGER_CLASS.getNegGravityForEntity(this) + (double)f4 * 0.06D;
 							final VarInsnNode beforeNode = new VarInsnNode(Opcodes.ALOAD, 0);
 							final MethodInsnNode overwriteNode = new MethodInsnNode(
 									Opcodes.INVOKESTATIC,
@@ -223,6 +226,10 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 							countTransformed++;
 							
 						} else if (nodeAt.cst.equals(0.080000000000000002D)) {
+							// Entity Y motion is affected by earth gravity, so we adjust it to ours
+							// change    this.motionY -= 0.08D;
+							// into      this.motionY -= GRAVITY_MANAGER_CLASS.getGravityForEntity(this);
+							// note: several mods are doing similar change; to increase compatibility, we tolerate the change and adjust in their callback
 							final VarInsnNode beforeNode = new VarInsnNode(Opcodes.ALOAD, 0);
 							final MethodInsnNode overwriteNode = new MethodInsnNode(
 									Opcodes.INVOKESTATIC,
@@ -404,12 +411,12 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 		return bytesNew;
 	}
 	
-	private byte[] transformGalacticraftWorldUtil(@Nonnull final byte[] bytes) {
+	private byte[] transformGalacticraftTransformerHooks(@Nonnull final byte[] bytes) {
 		final ClassNode classNode = new ClassNode();
 		final ClassReader classReader = new ClassReader(bytes);
 		classReader.accept(classNode, 0);
 		
-		final int countExpected = 5; // 3 + 2 + 0
+		final int countExpected = 7; // 5 + 2 + 0
 		int countTransformed = 0;
 		for (final MethodNode methodNode : classNode.methods) {
 			// if (debugLog) { FMLLoadingPlugin.logger.info(String.format("- Method %s %s", methodNode.name, methodNode.desc)); }
@@ -430,6 +437,16 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 						final LdcInsnNode nodeAt = (LdcInsnNode) abstractNode;
 						
 						if (nodeAt.cst.equals(0.08D)) {
+							// Galacticraft applies armor factor based on its dimension over the vanilla gravity. We only change the gravity constant to match ours.
+							// This maintain compatibility with their armors and entities for the most part while allowing some customization.
+							// change    return 0.08D; (twice)
+							// into      return GRAVITY_MANAGER_CLASS.getGravityForEntity(this);
+							// change    return 0.08D - (customProvider.getGravity() * armorModLowGrav / 100.0F);
+							// into      return GRAVITY_MANAGER_CLASS.getGravityForEntity(this) - (customProvider.getGravity() * armorModLowGrav / 100.0F);
+							// change    return 0.08D - (customProvider.getGravity() * armorModHighGrav / 100.0F);
+							// into      return GRAVITY_MANAGER_CLASS.getGravityForEntity(this) - (customProvider.getGravity() * armorModHighGrav / 100.0F);
+							// change    return 0.08D - customProvider.getGravity();
+							// into      return GRAVITY_MANAGER_CLASS.getGravityForEntity(this) - customProvider.getGravity();
 							final VarInsnNode beforeNode = new VarInsnNode(Opcodes.ALOAD, 0);
 							final MethodInsnNode overwriteNode = new MethodInsnNode(
 									Opcodes.INVOKESTATIC,
