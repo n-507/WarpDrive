@@ -1,0 +1,55 @@
+if not term.isColor() then
+  print("Advanced computer required")
+  error()
+end
+
+local sides = peripheral.getNames()
+local speakers = {}
+for _, side in pairs(sides) do
+  if peripheral.getType(side) == "warpdriveSpeaker" then
+    print("Wrapping " .. side)
+    table.insert(speakers, peripheral.wrap(side))
+  end
+end
+
+
+local noExit = true
+local message = ""
+local args = {...}
+if #args == 0 or args[1] == "help" or args[1] == "?" then
+  print("Usage: speak <message>")
+  print()
+  print("Queue up to 12 messages to send to living players.")
+  print("Antispam will slow you down, be wise!")
+  print()
+  noExit = false
+else
+  for index, arg in pairs(args) do
+    if string.len(message) > 0 then
+      message = message .. " "
+    end
+    if index > 0 then
+      message = message .. arg
+    end
+  end
+end
+
+if #speakers == 0 then
+  term.setBackgroundColor(colors.red)
+  term.setTextColor(colors.white)
+  print("No speaker detected")
+  
+  noExit = false
+end
+if noExit then
+  for _, speaker in pairs(speakers) do
+    speaker.speak(message)
+  end
+  print("Message sent")
+end
+
+term.setBackgroundColor(colors.black)
+term.setTextColor(colors.white)
+
+print()
+print("Program closed")

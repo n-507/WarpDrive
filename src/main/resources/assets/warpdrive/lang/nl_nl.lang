@@ -317,6 +317,10 @@ tile.warpdrive.detection.siren_military.advanced.name=Geavanceerde Luchtsirene
 tile.warpdrive.detection.siren_military.superior.name=Superieure Luchtsirene
 tile.warpdrive.detection.siren_military.tooltip=Aangezet door redstone
 tile.warpdrive.detection.siren_military.tooltip.usage=Je kan deze Sirene vanaf %1$d m verderop horen.
+tile.warpdrive.detection.speaker.basic.name=Basic Speaker
+tile.warpdrive.detection.speaker.advanced.name=Advanced Speaker
+tile.warpdrive.detection.speaker.superior.name=Superior Speaker
+tile.warpdrive.detection.speaker.tooltip.usage=Sends messages to players up to %1$d m away.
 
 tile.warpdrive.energy.enan_reactor_core.basic.name=Normale Enantiomorfe Reactor Kern
 tile.warpdrive.energy.enan_reactor_core.advanced.name=Geavanceerde Enantiomorfe Reactor Kern

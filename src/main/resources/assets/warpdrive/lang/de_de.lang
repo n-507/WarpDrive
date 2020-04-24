@@ -317,6 +317,10 @@ tile.warpdrive.detection.siren_military.advanced.name=Weiterentwickelte Luftschu
 tile.warpdrive.detection.siren_military.superior.name=Überlegene Luftschutzsirene
 tile.warpdrive.detection.siren_military.tooltip=Ausgelöst durch ein Redstone Signal.
 tile.warpdrive.detection.siren_military.tooltip.usage=Lässt einen Alarm bis zu %1$d m weit ertönen.
+tile.warpdrive.detection.speaker.basic.name=Basic Speaker
+tile.warpdrive.detection.speaker.advanced.name=Advanced Speaker
+tile.warpdrive.detection.speaker.superior.name=Superior Speaker
+tile.warpdrive.detection.speaker.tooltip.usage=Sends messages to players up to %1$d m away.
 
 tile.warpdrive.energy.enan_reactor_core.basic.name=Standard Enantiomorpher Reaktorkern
 tile.warpdrive.energy.enan_reactor_core.advanced.name=Weiterentwickelte Enantiomorpher Reaktorkern

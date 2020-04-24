@@ -317,6 +317,10 @@ tile.warpdrive.detection.siren_military.advanced.name=高级空袭警报器
 tile.warpdrive.detection.siren_military.superior.name=卓越空袭警报器
 tile.warpdrive.detection.siren_military.tooltip=红石触发
 tile.warpdrive.detection.siren_military.tooltip.usage=在%1$d米内能听到警报声。
+tile.warpdrive.detection.speaker.basic.name=Basic Speaker
+tile.warpdrive.detection.speaker.advanced.name=Advanced Speaker
+tile.warpdrive.detection.speaker.superior.name=Superior Speaker
+tile.warpdrive.detection.speaker.tooltip.usage=Sends messages to players up to %1$d m away.
 
 tile.warpdrive.energy.enan_reactor_core.basic.name=基础对称反应堆核心
 tile.warpdrive.energy.enan_reactor_core.advanced.name=高级对称反应堆核心

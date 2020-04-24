@@ -313,6 +313,12 @@ public class WarpDriveConfig {
 	// Siren
 	public static float[]          SIREN_RANGE_BLOCKS_BY_TIER = { 0.0F, 32.0F, 64.0F, 128.0F };
 	
+	// Speaker
+	public static float[]          SPEAKER_RANGE_BLOCKS_BY_TIER = { 0.0F, 16.0F, 32.0F, 64.0F };
+	public static float            SPEAKER_QUEUE_MAX_MESSAGES = 12;
+	public static float            SPEAKER_RATE_MAX_MESSAGES = 3;
+	public static int              SPEAKER_RATE_PERIOD_TICKS = 60;
+	
 	// Ship Scanner
 	public static int              SS_MAX_DEPLOY_RADIUS_BLOCKS = 100;
 	public static int              SS_SEARCH_INTERVAL_TICKS = 20;

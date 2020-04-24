@@ -1,0 +1,70 @@
+local component = require("component")
+local computer = require("computer")
+local term = require("term")
+
+if not term.isAvailable() then
+  computer.beep()
+  os.exit()
+end
+if component.gpu.getDepth() < 4 then
+  print("A tier 2 or higher GPU is required")
+  os.exit()
+end
+
+local speakers = {}
+for address, _ in component.list("warpdriveSpeaker", true) do
+  print("Wrapping " .. address)
+  table.insert(speakers, component.proxy(address))
+end
+
+function textOut(x, y, text, fg, bg)
+  if term.isAvailable() then
+    local w, _ = component.gpu.getResolution()
+    if w then
+      component.gpu.setBackground(bg)
+      component.gpu.setForeground(fg)
+      component.gpu.set(x, y, text)
+      component.gpu.setBackground(0x000000)
+    end
+  end
+end
+
+
+local noExit = true
+local message = ""
+local args = {...}
+if #args == 0 or args[1] == "help" or args[1] == "?" then
+  print("Usage: speak <message>")
+  print()
+  print("Queue up to 12 messages to send to living players.")
+  print("Antispam will slow you down, be wise!")
+  print()
+  noExit = false
+else
+  for index, arg in pairs(args) do
+    if string.len(message) > 0 then
+      message = message .. " "
+    end
+    if index > 0 then
+      message = message .. arg
+    end
+  end
+end
+
+if #speakers == 0 then
+  computer.beep()
+  textOut(1, 2, "No speaker detected", 0xFFFFFF, 0xFF0000)
+  
+  noExit = false
+end
+if noExit then
+  for _, speaker in pairs(speakers) do
+    speaker.speak(message)
+  end
+  print("Message sent")
+end
+
+textOut(1, 1, "", 0xFFFFFF, 0x000000)
+
+print()
+print("Program closed")

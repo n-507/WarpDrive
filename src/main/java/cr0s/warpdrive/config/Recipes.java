@@ -1339,6 +1339,22 @@ public class Recipes {
 		                                       WarpDrive.blockSirenMilitary[EnumTier.SUPERIOR.getIndex()], " I ", "ISI", " I ",
 		                                       'I', "gemDiamond",
 		                                       'S', WarpDrive.blockSirenMilitary[EnumTier.ADVANCED.getIndex()] ));
+		
+		// Speakers
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       WarpDrive.blockSpeaker[EnumTier.BASIC.getIndex()], "BBB", "rDr", "rCr",
+		                                       'B', ItemComponent.getItemStack(EnumComponentType.BIOFIBER),
+		                                       'r', rubber,
+		                                       'D', ItemComponent.getItemStack(EnumComponentType.DIAMOND_CRYSTAL),
+		                                       'C', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE) ));
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       WarpDrive.blockSpeaker[EnumTier.ADVANCED.getIndex()], " I ", "ISI", " I ",
+		                                       'I', "ingotGold",
+		                                       'S', WarpDrive.blockSpeaker[EnumTier.BASIC.getIndex()] ));
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       WarpDrive.blockSpeaker[EnumTier.SUPERIOR.getIndex()], " I ", "ISI", " I ",
+		                                       'I', "gemDiamond",
+		                                       'S', WarpDrive.blockSpeaker[EnumTier.ADVANCED.getIndex()] ));
 	}
 	
 	private static void initEnergy() {

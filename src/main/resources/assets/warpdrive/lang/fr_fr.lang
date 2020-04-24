@@ -317,6 +317,10 @@ tile.warpdrive.detection.siren_military.advanced.name=Sirène de raid aérien av
 tile.warpdrive.detection.siren_military.superior.name=Sirène de raid aérien supérieure
 tile.warpdrive.detection.siren_military.tooltip=Déclenchement par redstone
 tile.warpdrive.detection.siren_military.tooltip.usage=Emet une alarme audible à %1$d m.
+tile.warpdrive.detection.speaker.basic.name=Haut-parleur basique
+tile.warpdrive.detection.speaker.advanced.name=Haut-parleur avancé
+tile.warpdrive.detection.speaker.superior.name=Haut-parleur supérieur
+tile.warpdrive.detection.speaker.tooltip.usage=Envoi des messages aux joueurs à moins de %1$d m.
 
 tile.warpdrive.energy.enan_reactor_core.basic.name=Noyau de réacteur Enantiomorphic basique
 tile.warpdrive.energy.enan_reactor_core.advanced.name=Noyau de réacteur Enantiomorphic avancé
