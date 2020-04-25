@@ -37,7 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import net.minecraft.block.Block;
@@ -113,8 +112,6 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	private int injectionTicks = 0;
 	private int indexNextInjector = 0;
 	private boolean legacy_isOn = false;
-	
-	public UUID uuid = null;
 	
 	// computed properties
 	private int cooldownTicks;
@@ -718,11 +715,6 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
-		uuid = new UUID(tagCompound.getLong("uuidMost"), tagCompound.getLong("uuidLeast"));
-		if (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0) {
-			uuid = UUID.randomUUID();
-		}
-		
 		final NBTTagList tagListParticleBunches = tagCompound.getTagList("particleBunches", Constants.NBT.TAG_COMPOUND);
 		setParticleBunches.clear();
 		for (int index = 0; index < tagListParticleBunches.tagCount(); index++) {
@@ -757,11 +749,6 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	@Override
 	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
-		
-		if (uuid != null) {
-			tagCompound.setLong("uuidMost", uuid.getMostSignificantBits());
-			tagCompound.setLong("uuidLeast", uuid.getLeastSignificantBits());
-		}
 		
 		final NBTTagList tagListParticleBunches = new NBTTagList();
 		for (final ParticleBunch particleBunch : setParticleBunches) {
@@ -1163,11 +1150,6 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	@Override
 	public EnumStarMapEntryType getStarMapType() {
 		return EnumStarMapEntryType.ACCELERATOR;
-	}
-	
-	@Override
-	public UUID getSignatureUUID() {
-		return uuid;
 	}
 	
 	@Override

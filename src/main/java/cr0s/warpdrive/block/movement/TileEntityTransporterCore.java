@@ -1516,11 +1516,6 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
-		if (uuid != null) {
-			tagCompound.setLong(ICoreSignature.UUID_MOST_TAG, uuid.getMostSignificantBits());
-			tagCompound.setLong(ICoreSignature.UUID_LEAST_TAG, uuid.getLeastSignificantBits());
-		}
-		
 		if ( vLocalScanners != null
 		  && vLocalContainments != null ) {
 			final NBTTagList tagListScanners = new NBTTagList();
@@ -1565,11 +1560,6 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	@Override
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
-		
-		uuid = new UUID(tagCompound.getLong(ICoreSignature.UUID_MOST_TAG), tagCompound.getLong(ICoreSignature.UUID_LEAST_TAG));
-		if (uuid.getMostSignificantBits() == 0 && uuid.getLeastSignificantBits() == 0) {
-			uuid = UUID.randomUUID();
-		}
 		
 		if ( tagCompound.hasKey("scanners", Constants.NBT.TAG_LIST)
 		  && tagCompound.hasKey("containments", Constants.NBT.TAG_LIST)) {

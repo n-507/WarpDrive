@@ -132,7 +132,9 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
-		if (uuid != null) {
+		if ( uuid != null
+		  && uuid.getMostSignificantBits() != 0L
+		  && uuid.getLeastSignificantBits() != 0L ) {
 			tagCompound.setLong(ICoreSignature.UUID_MOST_TAG, uuid.getMostSignificantBits());
 			tagCompound.setLong(ICoreSignature.UUID_LEAST_TAG, uuid.getLeastSignificantBits());
 		}

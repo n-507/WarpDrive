@@ -78,7 +78,7 @@ public class ItemBlockController extends ItemBlockAbstractBase {
 		} else {
 			tagCompound.setString(ICoreSignature.NAME_TAG, name);
 		}
-		if (uuid == null) {
+		if (uuid == null || (uuid.getMostSignificantBits() == 0L && uuid.getLeastSignificantBits() == 0L)) {
 			tagCompound.removeTag(ICoreSignature.UUID_MOST_TAG);
 			tagCompound.removeTag(ICoreSignature.UUID_LEAST_TAG);
 		} else {
