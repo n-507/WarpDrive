@@ -232,8 +232,26 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 		         && tileEntityAbstractBase instanceof TileEntityAbstractMachine
 		         && itemStackHeld.getItem() == Item.getItemFromBlock(Blocks.REDSTONE_TORCH) ) {// redstone torch on a machine to toggle it on/off
 			final TileEntityAbstractMachine tileEntityAbstractMachine = (TileEntityAbstractMachine) tileEntityAbstractBase;
-			tileEntityAbstractMachine.setIsEnabled(!tileEntityAbstractMachine.getIsEnabled());
-			Commons.addChatMessage(entityPlayer, tileEntityAbstractBase.getStatus());
+			final boolean isEnabledOld = tileEntityAbstractMachine.getIsEnabled();
+			tileEntityAbstractMachine.setIsEnabled(!isEnabledOld);
+			final boolean isEnabledNew = tileEntityAbstractMachine.getIsEnabled();
+			if (isEnabledOld != isEnabledNew) {
+				if (isEnabledNew) {
+					Commons.addChatMessage(entityPlayer, Commons.getChatPrefix(blockState.getBlock())
+					                                            .appendSibling(new TextComponentTranslation("warpdrive.machine.is_enabled.set.enabled")) );
+				} else {
+					Commons.addChatMessage(entityPlayer, Commons.getChatPrefix(blockState.getBlock())
+					                                            .appendSibling(new TextComponentTranslation("warpdrive.machine.is_enabled.set.disabled")) );
+				}
+			} else {
+				if (isEnabledNew) {
+					Commons.addChatMessage(entityPlayer, Commons.getChatPrefix(blockState.getBlock())
+					                                            .appendSibling(new TextComponentTranslation("warpdrive.machine.is_enabled.get.enabled")) );
+				} else {
+					Commons.addChatMessage(entityPlayer, Commons.getChatPrefix(blockState.getBlock())
+					                                            .appendSibling(new TextComponentTranslation("warpdrive.machine.is_enabled.get.disabled")) );
+				}
+			}
 			return true;
 			
 		} else if ( !world.isRemote

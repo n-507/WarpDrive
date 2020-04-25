@@ -690,8 +690,10 @@ warpdrive.control_channel.status_line.valid=Control channel %1$d is valid.
 warpdrive.control_channel.status_line.invalid=Control channel %1$d is invalid.
 warpdrive.control_channel.status_line.undefined=Undefined Control channel.\n§bUse a Tuning fork§r to set it.
 
-warpdrive.is_enabled.set.enabled=Switched ON!
-warpdrive.is_enabled.set.disabled=Switched off!
+warpdrive.machine.is_enabled.set.enabled=Switched ON!
+warpdrive.machine.is_enabled.set.disabled=Switched off!
+warpdrive.machine.is_enabled.get.disabled=System is off.
+warpdrive.machine.is_enabled.get.enabled=System is ON.
 
 # %1 is signature name, %2 is item name, %3 is block name
 warpdrive.core_signature.tooltip=Signature is set to %1$d

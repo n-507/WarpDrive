@@ -170,10 +170,10 @@ public class BlockTransporterBeacon extends BlockAbstractContainer {
 				if (isEnabledOld != isEnabledNew) {
 					if (isEnabledNew) {
 						Commons.addChatMessage(entityPlayer, Commons.getChatPrefix(this)
-						                                            .appendSibling(new TextComponentTranslation("warpdrive.is_enabled.set.enabled")));
+						                                            .appendSibling(new TextComponentTranslation("warpdrive.machine.is_enabled.set.enabled")) );
 					} else {
 						Commons.addChatMessage(entityPlayer, Commons.getChatPrefix(this)
-						                                            .appendSibling(new TextComponentTranslation("warpdrive.is_enabled.set.disabled")));
+						                                            .appendSibling(new TextComponentTranslation("warpdrive.machine.is_enabled.set.disabled")) );
 					}
 				}
 				return true;

@@ -692,8 +692,10 @@ warpdrive.control_channel.status_line.valid=Controlekanaal %1$d is Geldig.
 warpdrive.control_channel.status_line.invalid=Controlekanaal %1$d is incorrect.
 warpdrive.control_channel.status_line.undefined=Niet gedefinieerde controlekanaal.\n§bGebruik een Afstemmingsvork§r om deze te zetten.
 
-warpdrive.is_enabled.set.enabled=Switched ON!
-warpdrive.is_enabled.set.disabled=Switched off!
+warpdrive.machine.is_enabled.set.enabled=Switched ON!
+warpdrive.machine.is_enabled.set.disabled=Switched off!
+warpdrive.machine.is_enabled.get.disabled=System is off.
+warpdrive.machine.is_enabled.get.enabled=System is ON.
 
 # %1 is signature name, %2 is item name, %3 is block name
 warpdrive.core_signature.tooltip=Signature is set to %1$d

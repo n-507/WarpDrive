@@ -692,8 +692,10 @@ warpdrive.control_channel.status_line.valid=Le canal de contrôle %1$d est valid
 warpdrive.control_channel.status_line.invalid=Le canal de contrôle %1$d est invalide.
 warpdrive.control_channel.status_line.undefined=Le canal de contrôle est non défini.\n§bUtilises un Diapason§r pour l'ajuster.
 
-warpdrive.is_enabled.set.enabled=Allumé!
-warpdrive.is_enabled.set.disabled=Eteint!
+warpdrive.machine.is_enabled.set.enabled=Allumé!
+warpdrive.machine.is_enabled.set.disabled=Eteint!
+warpdrive.machine.is_enabled.get.disabled=Le système est allumé.
+warpdrive.machine.is_enabled.get.enabled=Le système est éteint.
 
 # %1 is signature name, %2 is item name, %3 is block name
 warpdrive.core_signature.tooltip=Signature est définie à %1$d.
