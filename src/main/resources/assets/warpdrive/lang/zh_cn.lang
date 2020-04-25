@@ -299,6 +299,8 @@ tile.warpdrive.building.ship_scanner.superior.name=护卫舰飞船扫描仪
 tile.warpdrive.collection.laser_tree_farm.name=激光林场
 tile.warpdrive.collection.mining_laser.name=采矿激光
 
+tile.warpdrive.detection.biometric_scanner.name=Biometric Scanner
+tile.warpdrive.detection.biometric_scanner.tooltip=§bRight click§r to get identified.
 tile.warpdrive.detection.camera.name=摄像机
 tile.warpdrive.detection.cloaking_coil.name=隐形线圈
 tile.warpdrive.detection.cloaking_core.name=隐形核心
@@ -796,6 +798,12 @@ warpdrive.accelerator.status_line.missing_advanced_chiller=缺少高级冷却器
 warpdrive.accelerator.status_line.missing_superior_chiller=缺少卓越冷却器。
 warpdrive.accelerator.status_line.missing_injector=缺少加速器注入节点。
 warpdrive.accelerator.status_line.missing_collider_node=缺少加速器控制节点。
+
+warpdrive.biometric_scanner.start_scanning.in_progress=Scan already in progress, %1$d s to go...
+warpdrive.biometric_scanner.start_scanning.started=Scanning started, please stay still...
+warpdrive.biometric_scanner.status_line.invalid=Last scan had no result.
+warpdrive.biometric_scanner.status_line.scan_in_progress=Scan is in progress, %1$d s to go...
+warpdrive.biometric_scanner.status_line.valid=Last scan has identified %1$s (%2$s).
 
 warpdrive.breathing.alarm=呼吸警报
 warpdrive.breathing.invalid_setup=无呼吸头盔\n或者未穿整套盔甲

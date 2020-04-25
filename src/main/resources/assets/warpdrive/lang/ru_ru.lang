@@ -299,6 +299,8 @@ tile.warpdrive.building.ship_scanner.superior.name=Frigate Сканер кора
 tile.warpdrive.collection.laser_tree_farm.name=Лазерная ферма деревьев
 tile.warpdrive.collection.mining_laser.name=Лазерная буровая установка
 
+tile.warpdrive.detection.biometric_scanner.name=Biometric Scanner
+tile.warpdrive.detection.biometric_scanner.tooltip=§bRight click§r to get identified.
 tile.warpdrive.detection.camera.name=Камера видеонаблюдения
 tile.warpdrive.detection.cloaking_coil.name=Маскировочная катушка
 tile.warpdrive.detection.cloaking_core.name=Маскировщик
@@ -796,6 +798,12 @@ warpdrive.accelerator.status_line.missing_advanced_chiller=Missing advanced chil
 warpdrive.accelerator.status_line.missing_superior_chiller=Missing superior chiller.
 warpdrive.accelerator.status_line.missing_injector=Missing accelerator injector node.
 warpdrive.accelerator.status_line.missing_collider_node=Missing accelerator collider node.
+
+warpdrive.biometric_scanner.start_scanning.in_progress=Scan already in progress, %1$d s to go...
+warpdrive.biometric_scanner.start_scanning.started=Scanning started, please stay still...
+warpdrive.biometric_scanner.status_line.invalid=Last scan had no result.
+warpdrive.biometric_scanner.status_line.scan_in_progress=Scan is in progress, %1$d s to go...
+warpdrive.biometric_scanner.status_line.valid=Last scan has identified %1$s (%2$s).
 
 warpdrive.breathing.alarm=Breathing alarm
 warpdrive.breathing.invalid_setup=No breathing helmet\nor incomplete armor

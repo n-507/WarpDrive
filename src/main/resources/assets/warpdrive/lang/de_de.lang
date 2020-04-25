@@ -299,6 +299,8 @@ tile.warpdrive.building.ship_scanner.superior.name=Frigate Raumschiff Scanner
 tile.warpdrive.collection.laser_tree_farm.name=Laser Baumfarm
 tile.warpdrive.collection.mining_laser.name=Bergbau Laser
 
+tile.warpdrive.detection.biometric_scanner.name=Biometric Scanner
+tile.warpdrive.detection.biometric_scanner.tooltip=§bRight click§r to get identified.
 tile.warpdrive.detection.camera.name=Kamera
 tile.warpdrive.detection.cloaking_coil.name=Tarnfeld Spule
 tile.warpdrive.detection.cloaking_core.name=Tarnfeld Kern

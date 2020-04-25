@@ -299,6 +299,8 @@ tile.warpdrive.building.ship_scanner.superior.name=Scanneur de vaisseau frégate
 tile.warpdrive.collection.laser_tree_farm.name=Laser de plantation arboricole
 tile.warpdrive.collection.mining_laser.name=Laser de minage
 
+tile.warpdrive.detection.biometric_scanner.name=Scanneur biométrique
+tile.warpdrive.detection.biometric_scanner.tooltip=§bClique droit§r pour s'identifier.
 tile.warpdrive.detection.camera.name=Caméra
 tile.warpdrive.detection.cloaking_coil.name=Bobine d'invisibilité
 tile.warpdrive.detection.cloaking_core.name=Noyau d'invisibilité
@@ -796,6 +798,12 @@ warpdrive.accelerator.status_line.missing_advanced_chiller=Refroidisseur avancé
 warpdrive.accelerator.status_line.missing_superior_chiller=Refroidisseur supérieur manquant.
 warpdrive.accelerator.status_line.missing_injector=Noeud injecteur d'accélérateur manquant.
 warpdrive.accelerator.status_line.missing_collider_node=Noeud collisionneur d'accélérateur manquant.
+
+warpdrive.biometric_scanner.start_scanning.in_progress=Analyse déjà en cours, encore %1$d s...
+warpdrive.biometric_scanner.start_scanning.started=L'analyse a commencé, veuillez rester immobile...
+warpdrive.biometric_scanner.status_line.invalid=La dernière analyse n'a pas aboutie.
+warpdrive.biometric_scanner.status_line.scan_in_progress=L'analyse est en cours, encore %1$d s...
+warpdrive.biometric_scanner.status_line.valid=La dernière analyse a identifié %1$s (%2$s).
 
 warpdrive.breathing.alarm=Alarme de respiration
 warpdrive.breathing.invalid_setup=Pas de casque respiratoire\nou armure incomplète

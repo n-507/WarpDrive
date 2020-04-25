@@ -38,6 +38,7 @@ import cr0s.warpdrive.block.decoration.BlockGas;
 import cr0s.warpdrive.block.decoration.BlockLamp_bubble;
 import cr0s.warpdrive.block.decoration.BlockLamp_flat;
 import cr0s.warpdrive.block.decoration.BlockLamp_long;
+import cr0s.warpdrive.block.detection.BlockBiometricScanner;
 import cr0s.warpdrive.block.detection.BlockCamera;
 import cr0s.warpdrive.block.detection.BlockCloakingCoil;
 import cr0s.warpdrive.block.detection.BlockCloakingCore;
@@ -47,6 +48,7 @@ import cr0s.warpdrive.block.detection.BlockRadar;
 import cr0s.warpdrive.block.detection.BlockSiren;
 import cr0s.warpdrive.block.detection.BlockSpeaker;
 import cr0s.warpdrive.block.detection.BlockWarpIsolation;
+import cr0s.warpdrive.block.detection.TileEntityBiometricScanner;
 import cr0s.warpdrive.block.detection.TileEntityCamera;
 import cr0s.warpdrive.block.detection.TileEntityCloakingCore;
 import cr0s.warpdrive.block.detection.TileEntityEnvironmentalSensor;
@@ -272,6 +274,7 @@ public class WarpDrive {
 	public static Block blockLamp_long;
 	
 	// detection blocks
+	public static Block blockBiometricScanner;
 	public static Block blockCamera;
 	public static Block blockCloakingCoil;
 	public static Block blockCloakingCore;
@@ -470,6 +473,7 @@ public class WarpDrive {
 		blockLamp_long = new BlockLamp_long("lamp_long", EnumTier.BASIC);
 		
 		// detection blocks
+		blockBiometricScanner = new BlockBiometricScanner("biometric_scanner", EnumTier.BASIC);
 		blockCamera = new BlockCamera("camera", EnumTier.BASIC);
 		blockCloakingCoil = new BlockCloakingCoil("cloaking_coil", EnumTier.BASIC);
 		blockCloakingCore = new BlockCloakingCore("cloaking_core", EnumTier.BASIC);
@@ -1031,6 +1035,7 @@ public class WarpDrive {
 		GameRegistry.registerTileEntity(TileEntityAcceleratorCore.class, new ResourceLocation(WarpDrive.MODID, "accelerator_core"));
 		GameRegistry.registerTileEntity(TileEntityAcceleratorControlPoint.class, new ResourceLocation(WarpDrive.MODID, "accelerator_control_point"));
 		GameRegistry.registerTileEntity(TileEntityAirGeneratorTiered.class, new ResourceLocation(WarpDrive.MODID, "air_generator"));
+		GameRegistry.registerTileEntity(TileEntityBiometricScanner.class, new ResourceLocation(WarpDrive.MODID, "biometric_scanner"));
 		GameRegistry.registerTileEntity(TileEntityCamera.class, new ResourceLocation(WarpDrive.MODID, "camera"));
 		GameRegistry.registerTileEntity(TileEntityCapacitor.class, new ResourceLocation(WarpDrive.MODID, "capacitor"));
 		GameRegistry.registerTileEntity(TileEntityChunkLoader.class, new ResourceLocation(WarpDrive.MODID, "chunk_loader"));

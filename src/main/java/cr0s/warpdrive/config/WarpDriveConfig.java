@@ -298,6 +298,10 @@ public class WarpDriveConfig {
 	// Jump gate
 	public static int[]            JUMP_GATE_SIZE_MAX_PER_SIDE_BY_TIER = { 127, 32, 64, 127 };
 	
+	// Biometric scanner
+	public static int              BIOMETRIC_SCANNER_DURATION_TICKS = 100;
+	public static int              BIOMETRIC_SCANNER_RANGE_BLOCKS = 3;
+	
 	// Radar
 	public static int              RADAR_MAX_ENERGY_STORED = 100000000; // 100kk eU
 	public static int              RADAR_SCAN_MIN_ENERGY_COST = 10000;

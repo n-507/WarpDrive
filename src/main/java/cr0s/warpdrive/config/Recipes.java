@@ -1236,6 +1236,25 @@ public class Recipes {
 	}
 	
 	private static void initDetection() {
+		// Biometric scanner
+		if (!WarpDriveConfig.ACCELERATOR_ENABLE) {
+			WarpDrive.register(new ShapedOreRecipe(groupMachines,
+			                                       WarpDrive.blockBiometricScanner, false, "rDr", "EmE", "rCr",
+			                                       'r', rubber,
+			                                       'm', itemStackMachineCasings[1],
+			                                       'E', ItemComponent.getItemStack(EnumComponentType.ENDER_COIL),
+			                                       'D', ItemComponent.getItemStack(EnumComponentType.DIAMOND_CRYSTAL),
+			                                       'C', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE) ));
+		} else {
+			WarpDrive.register(new ShapedOreRecipe(groupMachines,
+			                                       WarpDrive.blockBiometricScanner, false, "rDr", "EmE", "rCr",
+			                                       'r', rubber,
+			                                       'm', "blockElectromagnet1",
+			                                       'E', ItemComponent.getItemStack(EnumComponentType.ENDER_COIL),
+			                                       'D', ItemComponent.getItemStack(EnumComponentType.DIAMOND_CRYSTAL),
+			                                       'C', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE) ));
+		}
+		
 		// Camera is 1 Daylight sensor, 2 Motors, 1 Computer interface, 2 Glass panel, 1 Tuning diamond, 1 LV Machine casing
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       new ItemStack(WarpDrive.blockCamera), false, "gtd", "zlm", "gt ",
