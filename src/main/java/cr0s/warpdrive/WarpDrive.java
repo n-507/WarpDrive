@@ -41,6 +41,7 @@ import cr0s.warpdrive.block.decoration.BlockLamp_long;
 import cr0s.warpdrive.block.detection.BlockCamera;
 import cr0s.warpdrive.block.detection.BlockCloakingCoil;
 import cr0s.warpdrive.block.detection.BlockCloakingCore;
+import cr0s.warpdrive.block.detection.BlockEnvironmentalSensor;
 import cr0s.warpdrive.block.detection.BlockMonitor;
 import cr0s.warpdrive.block.detection.BlockRadar;
 import cr0s.warpdrive.block.detection.BlockSiren;
@@ -48,6 +49,7 @@ import cr0s.warpdrive.block.detection.BlockSpeaker;
 import cr0s.warpdrive.block.detection.BlockWarpIsolation;
 import cr0s.warpdrive.block.detection.TileEntityCamera;
 import cr0s.warpdrive.block.detection.TileEntityCloakingCore;
+import cr0s.warpdrive.block.detection.TileEntityEnvironmentalSensor;
 import cr0s.warpdrive.block.detection.TileEntityMonitor;
 import cr0s.warpdrive.block.detection.TileEntityRadar;
 import cr0s.warpdrive.block.detection.TileEntitySiren;
@@ -273,6 +275,7 @@ public class WarpDrive {
 	public static Block blockCamera;
 	public static Block blockCloakingCoil;
 	public static Block blockCloakingCore;
+	public static Block blockEnvironmentalSensor;
 	public static Block blockMonitor;
 	public static Block blockRadar;
 	public static Block[] blockSirenIndustrial;
@@ -470,6 +473,7 @@ public class WarpDrive {
 		blockCamera = new BlockCamera("camera", EnumTier.BASIC);
 		blockCloakingCoil = new BlockCloakingCoil("cloaking_coil", EnumTier.BASIC);
 		blockCloakingCore = new BlockCloakingCore("cloaking_core", EnumTier.BASIC);
+		blockEnvironmentalSensor = new BlockEnvironmentalSensor("environmental_sensor", EnumTier.BASIC);
 		blockMonitor = new BlockMonitor("monitor", EnumTier.BASIC);
 		blockRadar = new BlockRadar("radar", EnumTier.BASIC);
 		
@@ -1033,6 +1037,7 @@ public class WarpDrive {
 		GameRegistry.registerTileEntity(TileEntityCloakingCore.class, new ResourceLocation(WarpDrive.MODID, "cloaking_core"));
 		GameRegistry.registerTileEntity(TileEntityEnanReactorCore.class, new ResourceLocation(WarpDrive.MODID, "enan_reactor_core"));
 		GameRegistry.registerTileEntity(TileEntityEnanReactorLaser.class, new ResourceLocation(WarpDrive.MODID, "enan_reactor_laser"));
+		GameRegistry.registerTileEntity(TileEntityEnvironmentalSensor.class, new ResourceLocation(WarpDrive.MODID, "environmental_sensor"));
 		GameRegistry.registerTileEntity(TileEntityForceField.class, new ResourceLocation(WarpDrive.MODID, "force_field"));
 		GameRegistry.registerTileEntity(TileEntityForceFieldProjector.class, new ResourceLocation(WarpDrive.MODID, "force_field_projector"));
 		GameRegistry.registerTileEntity(TileEntityForceFieldRelay.class, new ResourceLocation(WarpDrive.MODID, "force_field_relay"));

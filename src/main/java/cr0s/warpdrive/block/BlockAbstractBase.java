@@ -140,9 +140,11 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 		final boolean hasVideoChannel = tileEntity instanceof IVideoChannel;
 		
 		// video channel is reported client side, everything else is reported server side
+		// we still need to process the event server side for machines that are not full blocks, so in that case we return true
 		if ( world.isRemote
 		  && !hasVideoChannel ) {
-			return false;
+			return tileEntityAbstractBase instanceof TileEntityAbstractMachine
+			    && itemStackHeld.getItem() == Item.getItemFromBlock(Blocks.REDSTONE_TORCH);
 		}
 		
 		UpgradeSlot upgradeSlot = tileEntityAbstractBase.getUpgradeSlot(itemStackHeld);

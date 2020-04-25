@@ -1283,6 +1283,14 @@ public class Recipes {
 		                                       'c', oreGoldIngotOrCoil,
 		                                       'm', itemStackMachineCasings[3] ));
 		
+		// Environmental sensor
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       WarpDrive.blockEnvironmentalSensor, "   ", "dcd", "rCr",
+		                                       'r', rubber,
+		                                       'c', Items.CLOCK,
+		                                       'd', Blocks.DAYLIGHT_DETECTOR,
+		                                       'C', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE) ));
+		
 		// Monitor is 3 Flat screen, 1 Computer interface, 1 Tuning diamond, 1 LV Machine casing
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       new ItemStack(WarpDrive.blockMonitor), false, "fd ", "fm ", "f  ",

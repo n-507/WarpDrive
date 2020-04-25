@@ -1,0 +1,100 @@
+if not term.isColor() then
+  print("Advanced computer required")
+  error()
+end
+
+local sides = peripheral.getNames()
+local environmentalSensors = {}
+for _, side in pairs(sides) do
+  if peripheral.getType(side) == "warpdriveEnvironmentalSensor" then
+    print("Wrapping " .. side)
+    table.insert(environmentalSensors, peripheral.wrap(side))
+  end
+end
+
+
+local noExit = true
+
+if #environmentalSensors == 0 then
+  term.setBackgroundColor(colors.red)
+  term.setTextColor(colors.white)
+  print("No environmental sensor detected")
+
+  noExit = false
+end
+
+local label = os.getComputerLabel()
+if label then
+else
+  label = "" .. os.getComputerID()
+end
+
+if noExit then
+  local isRunning = true
+  repeat
+    for key, environmentalSensor in pairs(environmentalSensors) do
+      local isSuccessWeather, currentWeather, nextWeatherSeconds = environmentalSensor.getWeather()
+      local isSuccessWorldTime, day, hours, minutes, totalSeconds = environmentalSensor.getWorldTime()
+      
+      term.setBackgroundColor(colors.black)
+      term.setTextColor(colors.blue)
+      term.clear()
+      term.setBackgroundColor(colors.lime)
+      term.setCursorPos(1, 1)
+      term.write(label .. " - Environmental sensor " .. key .. " of " .. #environmentalSensors)
+      term.setBackgroundColor(colors.black)
+      
+      term.setCursorPos(1, 3)
+      if isSuccessWeather then
+        if currentWeather == "CLEAR" then
+          term.setTextColor(colors.yellow)
+        elseif currentWeather == "RAIN" then
+          term.setTextColor(colors.blue)
+        else
+          term.setTextColor(colors.orange)
+        end
+        term.write("Local weather is " .. currentWeather .. ", changing in " .. nextWeatherSeconds .. " s.")
+      else
+        -- show failure message
+        term.setTextColor(colors.red)
+        term.write("Local weather is ? (" .. currentWeather .. ")")
+      end
+      
+      term.setCursorPos(1, 5)
+      if isSuccessWorldTime then
+        if hours >= 6 and hours < 18 then
+          term.setTextColor(colors.white)
+        else
+          term.setTextColor(colors.lightGray)
+        end
+        term.write("Day " .. day)
+      else
+        -- show failure message
+        term.setTextColor(colors.red)
+        term.write("Day ? (" .. day .. ")")
+      end
+      
+      term.setCursorPos(1, 7)
+      if isSuccessWorldTime then
+        if hours >= 6 and hours < 18 then
+          term.setTextColor(colors.white)
+        else
+          term.setTextColor(colors.lightGray)
+        end
+        term.write("Local time is " .. string.format("%02d", hours) .. ":" .. string.format("%02d", minutes))
+      else
+        -- show failure message
+        term.setTextColor(colors.red)
+        term.write("Local time is ? (" .. day .. ")")
+      end
+      
+      os.sleep(1)
+    end
+  until not isRunning
+end
+
+term.setBackgroundColor(colors.black)
+term.setTextColor(colors.white)
+
+print()
+print("Program closed")
