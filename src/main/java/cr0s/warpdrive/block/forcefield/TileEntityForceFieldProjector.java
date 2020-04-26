@@ -907,7 +907,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		final float oldRoll = this.rotationRoll;
 		this.rotationYaw = Commons.clamp( -45.0F, +45.0F, rotationYaw);
 		this.rotationPitch = Commons.clamp( -45.0F, +45.0F, rotationPitch);
-		this.rotationRoll = (rotationRoll + 720.0F) % 360.0F - 180.0F;
+		this.rotationRoll = (rotationRoll + 540.0F) % 360.0F - 180.0F;
 		if ( oldYaw != this.rotationYaw
 		  || oldPitch != this.rotationPitch
 		  || oldRoll != this.rotationRoll ) {
