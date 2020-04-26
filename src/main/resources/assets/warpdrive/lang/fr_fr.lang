@@ -325,6 +325,10 @@ tile.warpdrive.detection.speaker.basic.name=Haut-parleur basique
 tile.warpdrive.detection.speaker.advanced.name=Haut-parleur avancé
 tile.warpdrive.detection.speaker.superior.name=Haut-parleur supérieur
 tile.warpdrive.detection.speaker.tooltip.usage=Envoi des messages aux joueurs à moins de %1$d m.
+tile.warpdrive.detection.virtual_assistant.basic.name=Assistant virtual basique
+tile.warpdrive.detection.virtual_assistant.advanced.name=Assistant virtual avancé
+tile.warpdrive.detection.virtual_assistant.superior.name=Assistant virtual supérieur
+tile.warpdrive.detection.virtual_assistant.tooltip.usage=Détecte les messages des joueurs à moins de %1$d m.
 
 tile.warpdrive.energy.enan_reactor_core.basic.name=Noyau de réacteur Enantiomorphic basique
 tile.warpdrive.energy.enan_reactor_core.advanced.name=Noyau de réacteur Enantiomorphic avancé
@@ -993,6 +997,9 @@ warpdrive.transporter_signature.set_missing=Transporter beacon needs to be linke
 warpdrive.transporter_signature.set_self=Transporter room can't target itself!
 warpdrive.transporter_signature.set_same=Transporter room is already linked to %1$s.
 warpdrive.transporter_signature.set=Transporter room is now linked to %1$s.
+
+warpdrive.virtual_assistant.status_line.none=Pas de commande à traiter.
+warpdrive.virtual_assistant.status_line.last_command=La dernière commande reçue était '%1$s'.
 
 warpdrive.world_border.in_range=Alerte de proximité: frontière du monde à %1$d m!
 warpdrive.world_border.outside=Tu es %1$d m au-delà de la frontière du monde...

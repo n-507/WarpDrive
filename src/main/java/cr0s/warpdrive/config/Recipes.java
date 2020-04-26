@@ -1382,6 +1382,31 @@ public class Recipes {
 		                                       WarpDrive.blockSpeaker[EnumTier.SUPERIOR.getIndex()], " I ", "ISI", " I ",
 		                                       'I', "gemDiamond",
 		                                       'S', WarpDrive.blockSpeaker[EnumTier.ADVANCED.getIndex()] ));
+		
+		// Virtual assistants
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       WarpDrive.blockVirtualAssistant[EnumTier.BASIC.getIndex()], "BEB", "rmr", "rCr",
+		                                       'B', ItemComponent.getItemStack(EnumComponentType.BIOFIBER),
+		                                       'm', itemStackMachineCasings[1],
+		                                       'r', rubber,
+		                                       'E', ItemComponent.getItemStack(EnumComponentType.EMERALD_CRYSTAL),
+		                                       'C', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE) ));
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       WarpDrive.blockVirtualAssistant[EnumTier.ADVANCED.getIndex()], "DCD", "CSC", "DCD",
+		                                       'D', ItemComponent.getItemStack(EnumComponentType.DIAMOND_COIL),
+		                                       'C', ItemComponent.getItemStack(EnumComponentType.DIAMOND_CRYSTAL),
+		                                       'S', WarpDrive.blockVirtualAssistant[EnumTier.BASIC.getIndex()] ));
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       WarpDrive.blockVirtualAssistant[EnumTier.SUPERIOR.getIndex()], "EYE", "YSY", "EYE",
+		                                       'E', ItemComponent.getItemStack(EnumComponentType.ENDER_COIL),
+		                                       'Y', Items.ENDER_EYE,
+		                                       'S', WarpDrive.blockVirtualAssistant[EnumTier.ADVANCED.getIndex()] ));
+		
+		// Warp isolation is 1 EV Machine casing (Ti), 4 Titanium plate/Enderium ingot/Vibrant alloy/Iridium plate/quartz
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       new ItemStack(WarpDrive.blockWarpIsolation), false, "i i", " m ", "i i",
+		                                       'i', oreRadarDish,
+		                                       'm', itemStackMachineCasings[3]));
 	}
 	
 	private static void initEnergy() {

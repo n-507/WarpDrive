@@ -7,15 +7,16 @@ import java.util.HashMap;
 
 public enum EnumStarMapEntryType implements IStringSerializable {
 	
-	UNDEFINED  (0, "-undefined-", true ),
-	SHIP       (1, "ship"       , true ), // a ship core
-	JUMP_GATE  (2, "jump_gate"  , true ), // a jump gate
-	PLANET     (3, "planet"     , true ), // a planet (a transition plane allowing to move to another dimension)
-	STAR       (4, "star"       , true ), // a star
-	STRUCTURE  (5, "structure"  , true ), // a structure from WorldGeneration (moon, asteroid field, etc.)
-	WARP_ECHO  (6, "warp_echo"  , true ), // remains of a warp
-	ACCELERATOR(7, "accelerator", false), // an accelerator setup
-	TRANSPORTER(8, "transporter", false); // a transporter room
+	UNDEFINED        (0, "-undefined-"      , true ),
+	SHIP             (1, "ship"             , true ), // a ship core
+	JUMP_GATE        (2, "jump_gate"        , true ), // a jump gate
+	PLANET           (3, "planet"           , true ), // a planet (a transition plane allowing to move to another dimension)
+	STAR             (4, "star"             , true ), // a star
+	STRUCTURE        (5, "structure"        , true ), // a structure from WorldGeneration (moon, asteroid field, etc.)
+	WARP_ECHO        (6, "warp_echo"        , true ), // remains of a warp
+	ACCELERATOR      (7, "accelerator"      , false), // an accelerator setup
+	TRANSPORTER      (8, "transporter"      , false), // a transporter room
+	VIRTUAL_ASSISTANT(9, "virtual_assistant", false); // a virtual assistant
 	
 	private final int id;
 	private final String name;

@@ -5,6 +5,8 @@ import cr0s.warpdrive.LocalProfiler;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
 import cr0s.warpdrive.block.atomic.BlockAcceleratorCore;
+import cr0s.warpdrive.block.detection.BlockVirtualAssistant;
+import cr0s.warpdrive.block.detection.TileEntityVirtualAssistant;
 import cr0s.warpdrive.block.movement.BlockShipCore;
 import cr0s.warpdrive.block.movement.BlockTransporterCore;
 import cr0s.warpdrive.block.movement.TileEntityShipCore;
@@ -23,6 +25,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -285,6 +288,30 @@ public class StarMapRegistry {
 			}
 		}
 		return isAllowed;
+	}
+	
+	public boolean onChatReceived(@Nonnull final EntityPlayer entityPlayer, @Nonnull final String message) {
+		if (!Commons.isSafeThread()) {
+			WarpDrive.logger.error(String.format("Non-threadsafe call to StarMapRegistry:onChatReceived outside main thread, for %s %s",
+			                                     entityPlayer, message ));
+			return false;
+		}
+		final CopyOnWriteArraySet<StarMapRegistryItem> setStarMapRegistryItems = registry.get(entityPlayer.world.provider.getDimension());
+		if (setStarMapRegistryItems == null) {
+			return true;
+		}
+		final BlockPos blockPos = entityPlayer.getPosition();
+		boolean isCancelled = false;
+		for (final StarMapRegistryItem registryItem : setStarMapRegistryItems) {
+			if ( registryItem.type == EnumStarMapEntryType.VIRTUAL_ASSISTANT
+			  && registryItem.contains(blockPos) ) {
+				final TileEntity tileEntity = entityPlayer.world.getTileEntity(new BlockPos(registryItem.x, registryItem.y, registryItem.z));
+				if (tileEntity instanceof TileEntityVirtualAssistant) {
+					isCancelled = isCancelled || ((TileEntityVirtualAssistant) tileEntity).onChatReceived(entityPlayer, message);
+				}
+			}
+		}
+		return isCancelled;
 	}
 	
 	public static double getGravity(final Entity entity) {
@@ -590,6 +617,9 @@ public class StarMapRegistry {
 						break;
 					case TRANSPORTER:
 						isValid = block instanceof BlockTransporterCore && tileEntity != null && !tileEntity.isInvalid();
+						break;
+					case VIRTUAL_ASSISTANT:
+						isValid = block instanceof BlockVirtualAssistant && tileEntity != null && !tileEntity.isInvalid();
 						break;
 					default:
 						break;

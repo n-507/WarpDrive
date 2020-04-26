@@ -47,6 +47,7 @@ import cr0s.warpdrive.block.detection.BlockMonitor;
 import cr0s.warpdrive.block.detection.BlockRadar;
 import cr0s.warpdrive.block.detection.BlockSiren;
 import cr0s.warpdrive.block.detection.BlockSpeaker;
+import cr0s.warpdrive.block.detection.BlockVirtualAssistant;
 import cr0s.warpdrive.block.detection.BlockWarpIsolation;
 import cr0s.warpdrive.block.detection.TileEntityBiometricScanner;
 import cr0s.warpdrive.block.detection.TileEntityCamera;
@@ -56,6 +57,7 @@ import cr0s.warpdrive.block.detection.TileEntityMonitor;
 import cr0s.warpdrive.block.detection.TileEntityRadar;
 import cr0s.warpdrive.block.detection.TileEntitySiren;
 import cr0s.warpdrive.block.detection.TileEntitySpeaker;
+import cr0s.warpdrive.block.detection.TileEntityVirtualAssistant;
 import cr0s.warpdrive.block.energy.BlockCapacitor;
 import cr0s.warpdrive.block.energy.BlockEnanReactorCore;
 import cr0s.warpdrive.block.energy.BlockEnanReactorLaser;
@@ -127,6 +129,7 @@ import cr0s.warpdrive.data.StarMapRegistry;
 import cr0s.warpdrive.entity.EntityLaserExploder;
 import cr0s.warpdrive.entity.EntityNPC;
 import cr0s.warpdrive.entity.EntityParticleBunch;
+import cr0s.warpdrive.event.ChatHandler;
 import cr0s.warpdrive.event.ChunkHandler;
 import cr0s.warpdrive.event.ChunkLoadingHandler;
 import cr0s.warpdrive.event.CommonWorldGenerator;
@@ -284,6 +287,7 @@ public class WarpDrive {
 	public static Block[] blockSirenIndustrial;
 	public static Block[] blockSirenMilitary;
 	public static Block[] blockSpeaker;
+	public static Block[] blockVirtualAssistant;
 	public static Block blockWarpIsolation;
 	
 	// energy blocks and items
@@ -484,11 +488,13 @@ public class WarpDrive {
 		blockSirenIndustrial = new Block[EnumTier.length];
 		blockSirenMilitary = new Block[EnumTier.length];
 		blockSpeaker = new Block[EnumTier.length];
+		blockVirtualAssistant = new Block[EnumTier.length];
 		for(final EnumTier enumTier : EnumTier.nonCreative()) {
 			final int index = enumTier.getIndex();
 			blockSirenIndustrial[index] = new BlockSiren("siren_industrial." + enumTier.getName(), enumTier, true);
 			blockSirenMilitary[index] = new BlockSiren("siren_military." + enumTier.getName(), enumTier, false);
 			blockSpeaker[index] = new BlockSpeaker("speaker." + enumTier.getName(), enumTier);
+			blockVirtualAssistant[index] = new BlockVirtualAssistant("virtual_assistant." + enumTier.getName(), enumTier);
 		}
 		blockWarpIsolation = new BlockWarpIsolation("warp_isolation", EnumTier.BASIC);
 		
@@ -657,6 +663,9 @@ public class WarpDrive {
 		
 		final ChunkHandler chunkHandler = new ChunkHandler();
 		MinecraftForge.EVENT_BUS.register(chunkHandler);
+		
+		final ChatHandler chatHandler = new ChatHandler();
+		MinecraftForge.EVENT_BUS.register(chatHandler);
 	}
 	
 	@EventHandler
@@ -1065,6 +1074,7 @@ public class WarpDrive {
 		GameRegistry.registerTileEntity(TileEntitySpeaker.class, new ResourceLocation(WarpDrive.MODID, "speaker"));
 		GameRegistry.registerTileEntity(TileEntityTransporterBeacon.class, new ResourceLocation(WarpDrive.MODID, "transporter_beacon"));
 		GameRegistry.registerTileEntity(TileEntityTransporterCore.class, new ResourceLocation(WarpDrive.MODID, "transporter_core"));
+		GameRegistry.registerTileEntity(TileEntityVirtualAssistant.class, new ResourceLocation(WarpDrive.MODID, "virtual_assistant"));
 		GameRegistry.registerTileEntity(TileEntityWeaponController.class, new ResourceLocation(WarpDrive.MODID, "weapon_controller"));
 		
 		LocalProfiler.stop(1000);

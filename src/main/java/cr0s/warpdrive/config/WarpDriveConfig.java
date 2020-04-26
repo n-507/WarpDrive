@@ -330,6 +330,12 @@ public class WarpDriveConfig {
 	public static int              SS_DEPLOY_BLOCKS_PER_INTERVAL = 10;
 	public static int              SS_DEPLOY_INTERVAL_TICKS = 4;
 	
+	// Virtual Assistant
+	public static int[]            VIRTUAL_ASSISTANT_ENERGY_PER_TICK_BY_TIER = { 0, 10, 40, 160 };
+	public static boolean          VIRTUAL_ASSISTANT_HIDE_COMMANDS_IN_CHAT = false;
+	public static int[]            VIRTUAL_ASSISTANT_MAX_ENERGY_STORED_BY_TIER = { 1000000, 10000, 30000, 100000 };
+	public static float[]          VIRTUAL_ASSISTANT_RANGE_BLOCKS_BY_TIER = { 0.0F, 32.0F, 64.0F, 128.0F };
+	
 	// Laser medium
 	public static int[]            LASER_MEDIUM_MAX_ENERGY_STORED_BY_TIER = { 1000000, 10000, 30000, 100000 };
 	public static double[]         LASER_MEDIUM_FACTOR_BY_TIER = { 1.25D, 0.5D, 1.0D, 1.5D };

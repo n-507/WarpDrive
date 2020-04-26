@@ -325,6 +325,10 @@ tile.warpdrive.detection.speaker.basic.name=Basic Speaker
 tile.warpdrive.detection.speaker.advanced.name=Advanced Speaker
 tile.warpdrive.detection.speaker.superior.name=Superior Speaker
 tile.warpdrive.detection.speaker.tooltip.usage=Sends messages to players up to %1$d m away.
+tile.warpdrive.detection.virtual_assistant.basic.name=Basic Virtual Assistant
+tile.warpdrive.detection.virtual_assistant.advanced.name=Advanced Virtual Assistant
+tile.warpdrive.detection.virtual_assistant.superior.name=Superior Virtual Assistant
+tile.warpdrive.detection.virtual_assistant.tooltip.usage=Detects messages from players up to %1$d m away.
 
 tile.warpdrive.energy.enan_reactor_core.basic.name=Normale Enantiomorfe Reactor Kern
 tile.warpdrive.energy.enan_reactor_core.advanced.name=Geavanceerde Enantiomorfe Reactor Kern
@@ -992,6 +996,9 @@ warpdrive.transporter_signature.set_missing=Transporter beacon needs to be linke
 warpdrive.transporter_signature.set_self=Transporter room can't target itself!
 warpdrive.transporter_signature.set_same=Transporter room is already linked to %1$s.
 warpdrive.transporter_signature.set=Transporter room is now linked to %1$s.
+
+warpdrive.virtual_assistant.status_line.none=No pending command to process.
+warpdrive.virtual_assistant.status_line.last_command=Last command received was '%1$s'.
 
 warpdrive.world_border.in_range=Proximity alert: world border is only %1$d m away!
 warpdrive.world_border.outside=You're %1$d m outside the world border...
