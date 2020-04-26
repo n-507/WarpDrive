@@ -129,6 +129,7 @@ import cr0s.warpdrive.data.StarMapRegistry;
 import cr0s.warpdrive.entity.EntityLaserExploder;
 import cr0s.warpdrive.entity.EntityNPC;
 import cr0s.warpdrive.entity.EntityParticleBunch;
+import cr0s.warpdrive.entity.EntitySeat;
 import cr0s.warpdrive.event.ChatHandler;
 import cr0s.warpdrive.event.ChunkHandler;
 import cr0s.warpdrive.event.ChunkLoadingHandler;
@@ -1136,6 +1137,13 @@ public class WarpDrive {
 		                                .entity(EntityNPC.class).factory(EntityNPC::new)
 		                                .tracker(200, 1, false)
 		                                .id("entityNPC", WarpDriveConfig.G_ENTITY_NPC_ID).name("EntityNPC")
+		                                .build();
+		event.getRegistry().register(entityEntry);
+		
+		entityEntry = EntityEntryBuilder.create()
+		                                .entity(EntitySeat.class).factory(EntitySeat::new)
+		                                .tracker(200, 1, false)
+		                                .id("entitySeat", WarpDriveConfig.G_ENTITY_SEAT_ID).name("EntitySeat")
 		                                .build();
 		event.getRegistry().register(entityEntry);
 		

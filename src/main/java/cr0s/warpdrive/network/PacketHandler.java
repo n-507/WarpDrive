@@ -52,6 +52,7 @@ public class PacketHandler {
 		
 		simpleNetworkManager.registerMessage(MessageTargeting.class           , MessageTargeting.class           , 100, Side.SERVER);
 		simpleNetworkManager.registerMessage(MessageClientValidation.class    , MessageClientValidation.class    , 101, Side.SERVER);
+		simpleNetworkManager.registerMessage(MessageClientUnseating.class     , MessageClientUnseating.class     , 102, Side.SERVER);
 		
 		// Entity packets for 'uncloaking' entities
 		try {
@@ -290,6 +291,15 @@ public class PacketHandler {
 			}
 		} catch (final Exception exception) {
 			exception.printStackTrace(WarpDrive.printStreamError);
+		}
+	}
+	
+	// Player dismounting from its seat (client -> server)
+	public static void sendUnseating() {
+		final MessageClientUnseating messageClientUnseating = new MessageClientUnseating();
+		simpleNetworkManager.sendToServer(messageClientUnseating);
+		if (WarpDriveConfig.LOGGING_CAMERA) {
+			WarpDrive.logger.info("Sent unseating packet");
 		}
 	}
 }
