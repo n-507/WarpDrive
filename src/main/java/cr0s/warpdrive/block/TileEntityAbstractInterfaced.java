@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -65,6 +66,9 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	
 	// String returned to LUA script in case of error
 	public static final String COMPUTER_ERROR_TAG = "!ERROR!";
+	
+	// Cached resource presence to reduce disk access on chunk loading
+	private static final HashMap<String, Boolean> hashAssetExist = new HashMap<>(128);
 	
 	// pre-loaded scripts support
 	private volatile ManagedEnvironment OC_fileSystem = null;
@@ -140,8 +144,13 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	}
 	
 	private boolean assetExist(final String resourcePath) {
-		final URL url = getClass().getResource(resourcePath);
-		return (url != null);
+		Boolean exist = hashAssetExist.get(resourcePath);
+		if (exist == null) {
+			final URL url = getClass().getResource(resourcePath);
+			exist = (url != null);
+			hashAssetExist.put(resourcePath, exist);
+		}
+		return exist;
 	}
 	
 	// TileEntity overrides
