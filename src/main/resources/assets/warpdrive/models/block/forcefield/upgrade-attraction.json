@@ -1,0 +1,6 @@
+{
+    "parent": "warpdrive:block/forcefield/upgrade",
+    "textures": {
+        "icon": "warpdrive:items/forcefield/upgrade-attraction"
+    }
+}
