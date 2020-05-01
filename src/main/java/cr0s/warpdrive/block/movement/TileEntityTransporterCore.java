@@ -167,7 +167,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		}
 		
 		// frequency status
-		isConnected = beamFrequency > 0 && beamFrequency <= IBeamFrequency.BEAM_FREQUENCY_MAX;
+		isConnected = IBeamFrequency.isValid(beamFrequency);
 		
 		// always cool down
 		if (tickCooldown > 0) {

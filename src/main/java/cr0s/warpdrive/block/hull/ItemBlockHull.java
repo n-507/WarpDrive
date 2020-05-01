@@ -33,8 +33,8 @@ public class ItemBlockHull extends ItemBlockAbstractBase {
 	
 	@Nonnull
 	@Override
-	public String getTranslationKey(final ItemStack itemStack) {
-		if (itemStack == null || block instanceof BlockHullStairs) {
+	public String getTranslationKey(@Nonnull final ItemStack itemStack) {
+		if (block instanceof BlockHullStairs) {
 			return getTranslationKey();
 		}
 		return getTranslationKey() + EnumDyeColor.byMetadata( itemStack.getItemDamage() ).getTranslationKey();

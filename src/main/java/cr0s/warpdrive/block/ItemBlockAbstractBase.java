@@ -55,9 +55,8 @@ public class ItemBlockAbstractBase extends ItemBlock implements IItemBase {
 	
 	@Nonnull
 	@Override
-	public String getTranslationKey(final ItemStack itemStack) {
+	public String getTranslationKey(@Nonnull final ItemStack itemStack) {
 		if ( hasUniqueName
-		  || itemStack == null
 		  || !(block instanceof BlockAbstractContainer)
 		  || !((BlockAbstractContainer) block).hasSubBlocks ) {
 			return getTranslationKey();
