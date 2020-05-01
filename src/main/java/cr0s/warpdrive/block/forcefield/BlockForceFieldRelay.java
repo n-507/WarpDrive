@@ -2,6 +2,7 @@ package cr0s.warpdrive.block.forcefield;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.api.WarpDriveText;
+import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnumForceFieldUpgrade;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.item.ItemForceFieldUpgrade;
@@ -11,6 +12,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
@@ -20,14 +22,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 public class BlockForceFieldRelay extends BlockAbstractForceField {
 	
 	public static final PropertyEnum<EnumForceFieldUpgrade> UPGRADE = PropertyEnum.create("upgrade", EnumForceFieldUpgrade.class);
+	
+	private static final AxisAlignedBB AABB_RELAY = new AxisAlignedBB(0.000D, 0.000D, 0.000D, 1.000D, 0.625D, 1.000D);
 	
 	public BlockForceFieldRelay(final String registryName, final EnumTier enumTier) {
 		super(registryName, enumTier, Material.IRON);
@@ -35,6 +43,8 @@ public class BlockForceFieldRelay extends BlockAbstractForceField {
 		setTranslationKey("warpdrive.force_field.relay." + enumTier.getName());
 		
 		setDefaultState(getDefaultState()
+				                .withProperty(BlockProperties.ACTIVE, false)
+				                .withProperty(BlockProperties.FACING_HORIZONTAL, EnumFacing.NORTH)
 				                .withProperty(UPGRADE, EnumForceFieldUpgrade.NONE)
 		               );
 	}
@@ -42,28 +52,33 @@ public class BlockForceFieldRelay extends BlockAbstractForceField {
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, UPGRADE);
+		return new BlockStateContainer(this, BlockProperties.ACTIVE, BlockProperties.FACING_HORIZONTAL, UPGRADE);
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(final int metadata) {
-		return this.getDefaultState();
+		return getDefaultState()
+				       .withProperty(BlockProperties.ACTIVE, (metadata & 0x8) != 0)
+				       .withProperty(BlockProperties.FACING_HORIZONTAL, EnumFacing.byIndex(2 + (metadata & 0x3)));
 	}
 	
 	@Override
 	public int getMetaFromState(@Nonnull final IBlockState blockState) {
-		return 0;
+		return (blockState.getValue(BlockProperties.ACTIVE) ? 0x8 : 0x0)
+		     | ((blockState.getValue(BlockProperties.FACING_HORIZONTAL).getIndex() - 2) & 0x3);
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public IBlockState getActualState(@Nonnull final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos pos) {
-		final TileEntity tileEntity = blockAccess.getTileEntity(pos);
+	public IBlockState getActualState(@Nonnull final IBlockState blockState, final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
 		if (tileEntity instanceof TileEntityForceFieldRelay) {
-			return blockState.withProperty(UPGRADE, ((TileEntityForceFieldRelay) tileEntity).getUpgrade());
+			return blockState
+					       .withProperty(BlockProperties.ACTIVE, ((TileEntityForceFieldRelay) tileEntity).isConnected)
+					       .withProperty(UPGRADE, ((TileEntityForceFieldRelay) tileEntity).getUpgrade());
 		} else {
 			return blockState;
 		}
@@ -75,15 +90,98 @@ public class BlockForceFieldRelay extends BlockAbstractForceField {
 		return new ItemBlockForceFieldRelay(this);
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
-	public int damageDropped(final IBlockState blockState) {
-		return blockState.getBlock().getMetaFromState(blockState);
+	public int getLightOpacity(@Nonnull final IBlockState blockState) {
+		return 255;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Nonnull
+	@Override
+	public AxisAlignedBB getBoundingBox(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+		return AABB_RELAY;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Nullable
+	@Override
+	public AxisAlignedBB getCollisionBoundingBox(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+		return AABB_RELAY;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isTopSolid(@Nonnull final IBlockState blockState) {
+		return false;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Nonnull
+	@Override
+	public BlockFaceShape getBlockFaceShape(@Nonnull final IBlockAccess blockAccess, @Nonnull final IBlockState blockState, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing) {
+		if (facing == EnumFacing.DOWN) {
+			return BlockFaceShape.SOLID;
+			
+		} else if (facing == EnumFacing.UP) {
+			// getActualState wasn't called, so the upgrade needs to be retrieved from the tile entity itself
+			final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
+			if (tileEntity instanceof TileEntityForceFieldRelay) {
+				final EnumForceFieldUpgrade enumForceFieldUpgrade = ((TileEntityForceFieldRelay) tileEntity).getUpgrade();
+				if (enumForceFieldUpgrade == EnumForceFieldUpgrade.CAMOUFLAGE) {
+					return BlockFaceShape.SOLID;
+				}
+			}
+		}
+		
+		return BlockFaceShape.UNDEFINED;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isFullBlock(@Nonnull final IBlockState blockState) {
+		return false;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isFullCube(@Nonnull final IBlockState blockState) {
+		return false;
 	}
 	
 	@Nonnull
 	@Override
 	public TileEntity createNewTileEntity(@Nonnull final World world, final int metadata) {
 		return new TileEntityForceFieldRelay();
+	}
+	
+	@SuppressWarnings("deprecation")
+	@SideOnly(Side.CLIENT)
+	@Override
+	public boolean shouldSideBeRendered(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing) {
+		final BlockPos blockPosSide = blockPos.offset(facing);
+		final boolean doesSideBlockRendering = blockAccess.getBlockState(blockPosSide).doesSideBlockRendering(blockAccess, blockPosSide, facing.getOpposite());
+		if (facing != EnumFacing.DOWN) {
+			return !doesSideBlockRendering;
+		}
+		return true;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
+		return true;
+	}
+	
+	@Override
+	public boolean doesSideBlockRendering(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing side) {
+		return side == EnumFacing.DOWN;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isSideSolid(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing side) {
+		return side == EnumFacing.DOWN;
 	}
 	
 	@Override

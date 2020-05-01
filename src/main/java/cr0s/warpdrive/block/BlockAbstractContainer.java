@@ -99,14 +99,22 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	                                        final float hitX, final float hitY, final float hitZ, final int metadata,
 	                                        @Nonnull final EntityLivingBase entityLivingBase, final EnumHand enumHand) {
 		final IBlockState blockState = super.getStateForPlacement(world, blockPos, facing, hitX, hitY, hitZ, metadata, entityLivingBase, enumHand);
-		final boolean isRotating = !ignoreFacingOnPlacement
-		                           && blockState.getProperties().containsKey(BlockProperties.FACING);
-		if (isRotating) {
-			if (blockState.isFullBlock()) {
-				final EnumFacing enumFacing = Commons.getFacingFromEntity(entityLivingBase);
-				return blockState.withProperty(BlockProperties.FACING, enumFacing);
-			} else {
-				return blockState.withProperty(BlockProperties.FACING, facing);
+		if (!ignoreFacingOnPlacement) {
+			if (blockState.getProperties().containsKey(BlockProperties.FACING)) {
+				if (blockState.isFullBlock()) {
+					final EnumFacing enumFacing = Commons.getFacingFromEntity(entityLivingBase);
+					return blockState.withProperty(BlockProperties.FACING, enumFacing);
+				} else {
+					return blockState.withProperty(BlockProperties.FACING, facing);
+				}
+			}
+			if (blockState.getProperties().containsKey(BlockProperties.FACING_HORIZONTAL)) {
+				final EnumFacing enumFacing = Commons.getHorizontalDirectionFromEntity(entityLivingBase);
+				if (blockState.isFullBlock()) {
+					return blockState.withProperty(BlockProperties.FACING_HORIZONTAL, enumFacing.getOpposite());
+				} else {
+					return blockState.withProperty(BlockProperties.FACING_HORIZONTAL, enumFacing);
+				}
 			}
 		}
 		return blockState;

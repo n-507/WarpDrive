@@ -7,6 +7,6 @@ import net.minecraft.block.Block;
 public class ItemBlockForceFieldRelay extends ItemBlockAbstractBase {
 	
 	public ItemBlockForceFieldRelay(final Block block) {
-		super(block, true, false);
+		super(block, false, true);
 	}
 }
