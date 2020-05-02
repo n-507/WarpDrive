@@ -607,7 +607,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		schematicFileName = tagCompound.getString("schematic");
 		targetX = tagCompound.getInteger("targetX");
@@ -639,7 +639,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		tagCompound.setString("schematic", schematicFileName);
 		tagCompound.setInteger("targetX", targetX);

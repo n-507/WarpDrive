@@ -1513,7 +1513,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		if ( vLocalScanners != null
@@ -1558,7 +1558,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		if ( tagCompound.hasKey("scanners", Constants.NBT.TAG_LIST)
@@ -1834,7 +1834,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	
 	@Override
 	public String toString() {
-		return String.format("%s \'%s\' %s Beam %d %s",
+		return String.format("%s '%s' %s Beam %d %s",
 		                     getClass().getSimpleName(),
 		                     name, uuid,
 		                     beamFrequency,

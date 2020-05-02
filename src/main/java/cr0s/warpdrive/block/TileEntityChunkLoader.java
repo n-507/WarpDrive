@@ -163,7 +163,7 @@ public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
 	// Forge overrides
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		setBounds(tagCompound.getInteger("radiusXneg"), tagCompound.getInteger("radiusXpos"),
@@ -173,7 +173,7 @@ public class TileEntityChunkLoader extends TileEntityAbstractChunkLoading {
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		tagCompound.setInteger("radiusXneg", radiusXneg);

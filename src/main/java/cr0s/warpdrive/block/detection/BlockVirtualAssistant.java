@@ -64,7 +64,7 @@ public class BlockVirtualAssistant extends BlockAbstractContainer {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(@Nonnull final ItemStack itemStack, @Nullable final World world,
-	                           @Nonnull final List<String> list, @Nullable final ITooltipFlag advancedItemTooltips) {
+	                           @Nonnull final List<String> list, @Nonnull final ITooltipFlag advancedItemTooltips) {
 		super.addInformation(itemStack, world, list, advancedItemTooltips);
 		
 		final int range = MathHelper.floor(WarpDriveConfig.VIRTUAL_ASSISTANT_RANGE_BLOCKS_BY_TIER[enumTier.getIndex()]);

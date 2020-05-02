@@ -32,7 +32,7 @@ public abstract class TileEntityAbstractEnergyBase extends TileEntityAbstractMac
 	
 	// Forge overrides
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		if (tagCompound.hasKey(EnergyWrapper.TAG_DISPLAY_UNITS)) {
@@ -42,7 +42,7 @@ public abstract class TileEntityAbstractEnergyBase extends TileEntityAbstractMac
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		if (energy_displayUnits != null) {

@@ -2,6 +2,7 @@ package cr0s.warpdrive.config;
 
 import cr0s.warpdrive.WarpDrive;
 
+import javax.annotation.Nonnull;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Map.Entry;
@@ -55,7 +56,7 @@ public class RandomCollection<E extends IStringSerializable> {
 		}
 	}
 	
-	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		final NBTTagList tagListWeights = new NBTTagList();
 		int weightPrevious = 0;
 		for (final Entry<Integer, E> entry : weightMap.entrySet()) {

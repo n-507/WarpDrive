@@ -96,7 +96,7 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		radius = tagCompound.getInteger("radius");
@@ -107,7 +107,7 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		tagCompound.setInteger("radius", radius);

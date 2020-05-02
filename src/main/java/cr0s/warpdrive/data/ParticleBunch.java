@@ -8,6 +8,7 @@ import cr0s.warpdrive.block.atomic.TileEntityAcceleratorCore;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.entity.EntityParticleBunch;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 
@@ -376,7 +377,7 @@ public class ParticleBunch extends Vector3 {
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		id = tagCompound.getInteger("id");
 		try {
@@ -396,7 +397,7 @@ public class ParticleBunch extends Vector3 {
 	}
 	
 	@Override
-	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
 		tagCompound.setInteger("id", id);
 		tagCompound.setString("direction", directionCurrentMotion.name());

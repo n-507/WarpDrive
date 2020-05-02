@@ -336,7 +336,7 @@ public class TileEntityCloakingCore extends TileEntityAbstractEnergyCoreOrContro
 	
 	@Override
 	protected void doUpdateParameters(final boolean isDirty) {
-		
+		// no operation
 	}
 	
 	private void updateCoils(final boolean isConnected, final boolean isActive) {

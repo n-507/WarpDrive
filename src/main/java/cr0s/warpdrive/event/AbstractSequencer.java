@@ -1,5 +1,6 @@
 package cr0s.warpdrive.event;
 
+import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,8 +44,8 @@ public abstract class AbstractSequencer {
 	
 	abstract public boolean onUpdate();
 
-	abstract protected void readFromNBT(final NBTTagCompound tagCompound);
+	abstract protected void readFromNBT(@Nonnull final NBTTagCompound tagCompound);
 
-	abstract protected NBTTagCompound writeToNBT(final NBTTagCompound tagCompound);
+	abstract protected NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound tagCompound);
 	
 }

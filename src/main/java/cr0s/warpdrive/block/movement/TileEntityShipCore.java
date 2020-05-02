@@ -1106,7 +1106,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		isolationRate = tagCompound.getDouble("isolationRate");
@@ -1117,7 +1117,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		tagCompound.setDouble("isolationRate", isolationRate);
@@ -1144,7 +1144,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	}
 	
 	@Override
-	public void onDataPacket(final NetworkManager networkManager, @Nonnull final SPacketUpdateTileEntity packet) {
+	public void onDataPacket(@Nonnull final NetworkManager networkManager, @Nonnull final SPacketUpdateTileEntity packet) {
 		super.onDataPacket(networkManager, packet);
 		
 		final NBTTagCompound tagCompound = packet.getNbtCompound();

@@ -112,7 +112,7 @@ public class BlockAbstractLamp extends BlockAbstractBase {
 	@SuppressWarnings("deprecation")
 	@Nullable
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+	public AxisAlignedBB getCollisionBoundingBox(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		return NULL_AABB;
 	}
 	
@@ -161,9 +161,9 @@ public class BlockAbstractLamp extends BlockAbstractBase {
 	}
 	
 	@Override
-	public boolean onBlockActivated(final World world, final BlockPos blockPos, final IBlockState blockState,
-	                                final EntityPlayer entityPlayer, final EnumHand enumHand,
-	                                final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
+	public boolean onBlockActivated(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState,
+	                                @Nonnull final EntityPlayer entityPlayer, @Nonnull final EnumHand enumHand,
+	                                @Nonnull final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
 		if (enumHand != EnumHand.MAIN_HAND) {
 			return true;
 		}
@@ -187,7 +187,7 @@ public class BlockAbstractLamp extends BlockAbstractBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(@Nonnull final ItemStack itemStack, @Nullable final World world,
-	                           @Nonnull final List<String> list, @Nullable final ITooltipFlag advancedItemTooltips) {
+	                           @Nonnull final List<String> list, @Nonnull final ITooltipFlag advancedItemTooltips) {
 		super.addInformation(itemStack, world, list, advancedItemTooltips);
 		
 		Commons.addTooltip(list, new TextComponentTranslation("item.warpdrive.decoration.lamp.tooltip.usage").getFormattedText());

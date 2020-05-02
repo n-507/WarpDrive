@@ -510,7 +510,7 @@ public class JumpBlock {
 		}
 	}
 	
-	public void writeToNBT(final World worldSource, @Nonnull final NBTTagCompound tagCompound) {
+	public void writeToNBT(@Nonnull final World worldSource, @Nonnull final NBTTagCompound tagCompound) {
 		tagCompound.setString("block", Block.REGISTRY.getNameForObject(block).toString());
 		tagCompound.setByte("blockMeta", (byte) blockMeta);
 		final NBTTagCompound nbtTileEntity = getBlockNBT(worldSource);

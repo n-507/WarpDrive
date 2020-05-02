@@ -12,9 +12,9 @@ public class JumpgateGenerator {
 	public static final int GATE_SIZE_HALF = GATE_SIZE / 2;
 
 	public static void generate(final World world, final BlockPos blockPos) {
-		int x = blockPos.getX();
-		int y = blockPos.getY();
-		int z = blockPos.getZ();
+		final int x = blockPos.getX();
+		final int y = blockPos.getY();
+		final int z = blockPos.getZ();
 		for (int length = -GATE_LENGTH_HALF; length < GATE_LENGTH_HALF; length++) {
 			for (int newZ = z - GATE_SIZE_HALF; newZ <= z + GATE_SIZE_HALF; newZ++) {
 				world.setBlockState(new BlockPos(x + (2 * length), y + GATE_SIZE_HALF, newZ), Blocks.BEDROCK.getDefaultState());

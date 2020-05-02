@@ -2,6 +2,7 @@ package cr0s.warpdrive.data;
 
 import cr0s.warpdrive.render.AbstractEntityFX;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
@@ -517,13 +518,13 @@ public class Vector3 implements Cloneable {
 		return vector;
 	}
 	
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		x = tagCompound.getDouble("x");
 		y = tagCompound.getDouble("y");
 		z = tagCompound.getDouble("z");
 	}
 	
-	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		tagCompound.setDouble("x", x);
 		tagCompound.setDouble("y", y);
 		tagCompound.setDouble("z", z);

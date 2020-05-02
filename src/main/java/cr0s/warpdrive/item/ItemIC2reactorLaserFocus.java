@@ -147,7 +147,7 @@ public class ItemIC2reactorLaserFocus extends ItemAbstractBase implements IReact
 	}
 	
 	@Override
-	public boolean canBePlacedIn(ItemStack stack, IReactor reactor) {
+	public boolean canBePlacedIn(final ItemStack itemStack, final IReactor reactor) {
 		return true;
 	}
 }

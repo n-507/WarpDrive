@@ -60,7 +60,7 @@ public class SchematicInstance extends AbstractStructureInstance {
 	}
 	
 	@Override
-	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
 		// TODO not implemented
 		return tagCompound;

@@ -624,7 +624,7 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 		    && (Math.abs(z - parentCenterZ) <= borderRadiusZ);
 	}
 	
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		id = tagCompound.getString("id");
 		
 		parentId = tagCompound.getString("parentId");
@@ -679,7 +679,7 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 		cache_aabbAreaInParent = null;
 	}
 	
-	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		tagCompound.setString("id", id);
 		
 		tagCompound.setString("parentId", parentId);
@@ -802,13 +802,13 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 			readFromNBT(tagCompound);
 		}
 		
-		public void readFromNBT(final NBTTagCompound tagCompound) {
+		public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 			red = tagCompound.getFloat("red");
 			green = tagCompound.getFloat("green");
 			blue = tagCompound.getFloat("blue");
 		}
 		
-		public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+		public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 			tagCompound.setFloat("red", red);
 			tagCompound.setFloat("green", green);
 			tagCompound.setFloat("blue", blue);
@@ -883,7 +883,7 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 			readFromNBT(tagCompound);
 		}
 		
-		public void readFromNBT(final NBTTagCompound tagCompound) {
+		public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 			red = tagCompound.getFloat("red");
 			green = tagCompound.getFloat("green");
 			blue = tagCompound.getFloat("blue");
@@ -903,7 +903,7 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 			}
 		}
 		
-		public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+		public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 			tagCompound.setFloat("red", red);
 			tagCompound.setFloat("green", green);
 			tagCompound.setFloat("blue", blue);

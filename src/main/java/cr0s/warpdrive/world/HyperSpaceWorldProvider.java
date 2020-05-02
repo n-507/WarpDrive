@@ -96,11 +96,10 @@ public class HyperSpaceWorldProvider extends AbstractWorldProvider {
 	public boolean isSkyColored() {
 		return true;
 	}
-		
+	
 	@Override
-	public int getRespawnDimension(final EntityPlayerMP entityPlayerMP) {
-		if ( entityPlayerMP == null
-		  || entityPlayerMP.world == null ) {
+	public int getRespawnDimension(@Nonnull final EntityPlayerMP entityPlayerMP) {
+		if (entityPlayerMP.world == null) {
 			WarpDrive.logger.error(String.format("Invalid player passed to getRespawnDimension: %s", entityPlayerMP));
 			return 0;
 		}
@@ -126,12 +125,12 @@ public class HyperSpaceWorldProvider extends AbstractWorldProvider {
 	}
 	
 	@Override
-	public boolean canDoLightning(final Chunk chunk) {
+	public boolean canDoLightning(@Nonnull final Chunk chunk) {
 		return false;
 	}
 	
 	@Override
-	public boolean canDoRainSnowIce(final Chunk chunk) {
+	public boolean canDoRainSnowIce(@Nonnull final Chunk chunk) {
 		return false;
 	}
 }

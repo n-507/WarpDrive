@@ -80,14 +80,14 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public EnumBlockRenderType getRenderType(final IBlockState blockState) {
+	public EnumBlockRenderType getRenderType(@Nonnull final IBlockState blockState) {
 		return EnumBlockRenderType.MODEL;
 	}
 	
 	@Override
-	public void onBlockAdded(final World world, final BlockPos pos, final IBlockState blockState) {
-		super.onBlockAdded(world, pos, blockState);
-		final TileEntity tileEntity = world.getTileEntity(pos);
+	public void onBlockAdded(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
+		super.onBlockAdded(world, blockPos, blockState);
+		final TileEntity tileEntity = world.getTileEntity(blockPos);
 		if (tileEntity instanceof IBlockUpdateDetector) {
 			((IBlockUpdateDetector) tileEntity).onBlockUpdateDetected();
 		}
@@ -97,7 +97,7 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	@Override
 	public IBlockState getStateForPlacement(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing,
 	                                        final float hitX, final float hitY, final float hitZ, final int metadata,
-	                                        @Nonnull final EntityLivingBase entityLivingBase, final EnumHand enumHand) {
+	                                        @Nonnull final EntityLivingBase entityLivingBase, @Nonnull final EnumHand enumHand) {
 		final IBlockState blockState = super.getStateForPlacement(world, blockPos, facing, hitX, hitY, hitZ, metadata, entityLivingBase, enumHand);
 		final boolean isRotating = !ignoreFacingOnPlacement
 		                           && blockState.getProperties().containsKey(BlockProperties.FACING);
@@ -113,8 +113,8 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	}
 	
 	@Override
-	public void onBlockPlacedBy(final World world, final BlockPos blockPos, final IBlockState blockState,
-	                            final EntityLivingBase entityLivingBase, final ItemStack itemStack) {
+	public void onBlockPlacedBy(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState,
+	                            @Nonnull final EntityLivingBase entityLivingBase, @Nonnull final ItemStack itemStack) {
 		super.onBlockPlacedBy(world, blockPos, blockState, entityLivingBase, itemStack);
 		
 		// set inherited properties
@@ -132,7 +132,7 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	}
 	
 	@Override
-	public boolean removedByPlayer(@Nonnull final IBlockState blockState, final World world, @Nonnull final BlockPos blockPos,
+	public boolean removedByPlayer(@Nonnull final IBlockState blockState, @Nonnull final World world, @Nonnull final BlockPos blockPos,
 	                               @Nonnull final EntityPlayer entityPlayer, final boolean willHarvest) {
 		final boolean bResult;
 		if (willHarvest) {// harvestBlock will be called later on, we'll need the TileEntity at that time, so we don't call ancestor here so we don't set block to air
@@ -157,9 +157,9 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	// willHarvest was true during the call to removedPlayer so TileEntity is still there when drops will be computed hereafter
 	@Override
 	public void getDrops(@Nonnull final NonNullList<ItemStack> drops,
-	                     @Nullable final IBlockAccess blockAccess, final BlockPos blockPos, @Nonnull final IBlockState blockState,
+	                     @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState,
 	                     final int fortune) {
-		final TileEntity tileEntity = blockAccess == null ? null : blockAccess.getTileEntity(blockPos);
+		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
 		if (!(tileEntity instanceof TileEntityAbstractBase)) {
 			WarpDrive.logger.error(String.format("Missing tile entity for %s %s, reverting to vanilla getDrops logic",
 			                                     this, Commons.format(blockAccess, blockPos)));
@@ -196,7 +196,10 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	
 	@Nonnull
 	@Override
-	public ItemStack getPickBlock(@Nonnull final IBlockState blockState, final RayTraceResult target, @Nonnull final World world, @Nonnull final BlockPos blockPos, final EntityPlayer entityPlayer) {
+	public ItemStack getPickBlock(@Nonnull final IBlockState blockState, @Nullable final RayTraceResult target,
+	                              @Nonnull final World world, @Nonnull final BlockPos blockPos, @Nullable final EntityPlayer entityPlayer) {
+		// note: target and entityPlayer should be Nonnull but the base game & most mods never use those parameters.
+		// Consequently, this method is frequently called with nulls...
 		final ItemStack itemStack = super.getPickBlock(blockState, target, world, blockPos, entityPlayer);
 		final TileEntity tileEntity = world.getTileEntity(blockPos);
 		final NBTTagCompound tagCompound = new NBTTagCompound();
@@ -210,14 +213,15 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	}
 	
 	@Override
-	public boolean rotateBlock(final World world, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing axis) {
+	public boolean rotateBlock(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing axis) {
 		// already handled by vanilla
 		return super.rotateBlock(world, blockPos, axis);
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public void neighborChanged(final IBlockState blockState, final World world, final BlockPos blockPos, final Block block, final BlockPos blockPosFrom) {
+	public void neighborChanged(@Nonnull final IBlockState blockState, @Nonnull final World world, @Nonnull final BlockPos blockPos,
+	                            @Nonnull final Block block, @Nonnull final BlockPos blockPosFrom) {
 		super.neighborChanged(blockState, world, blockPos, block, blockPosFrom);
 		onBlockUpdateDetected(world, blockPos, blockPosFrom);
 	}
@@ -228,13 +232,14 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	// Triggers on both sides when removing a TileEntity
 	// (by extension, it'll trigger twice for the same placement of a TileEntity with comparator output)
 	@Override
-	public void onNeighborChange(final IBlockAccess blockAccess, final BlockPos blockPos, final BlockPos blockPosNeighbor) {
+	public void onNeighborChange(@Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final BlockPos blockPosNeighbor) {
 		super.onNeighborChange(blockAccess, blockPos, blockPosNeighbor);
 		onBlockUpdateDetected(blockAccess, blockPos, blockPosNeighbor);
 	}
 	
 	@Override
-	public void observedNeighborChange(final IBlockState observerState, final World world, final BlockPos blockPosObserver, final Block blockChanged, final BlockPos blockPosChanged) {
+	public void observedNeighborChange(@Nonnull final IBlockState observerState, @Nonnull final World world, @Nonnull final BlockPos blockPosObserver,
+	                                   @Nonnull final Block blockChanged, @Nonnull final BlockPos blockPosChanged) {
 		super.observedNeighborChange(observerState, world, blockPosObserver, blockChanged, blockPosChanged);
 		onBlockUpdateDetected(world, blockPosObserver, blockPosChanged);
 	}
@@ -304,9 +309,9 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	}
 	
 	@Override
-	public boolean onBlockActivated(final World world, final BlockPos blockPos, final IBlockState blockState,
-	                                final EntityPlayer entityPlayer, final EnumHand enumHand,
-	                                final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
+	public boolean onBlockActivated(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState,
+	                                @Nonnull final EntityPlayer entityPlayer, @Nonnull final EnumHand enumHand,
+	                                @Nonnull final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
 		if (BlockAbstractBase.onCommonBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ)) {
 			return true;
 		}

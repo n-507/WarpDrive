@@ -728,14 +728,14 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		setBeamFrequency(tagCompound.getInteger(IBeamFrequency.BEAM_FREQUENCY_TAG));
 	}
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		if (IBeamFrequency.isValid(beamFrequency)) {
 			tagCompound.setInteger(IBeamFrequency.BEAM_FREQUENCY_TAG, beamFrequency);
@@ -852,7 +852,7 @@ public class TileEntityLaser extends TileEntityAbstractLaser implements IBeamFre
 	
 	@Override
 	public String toString() {
-		return String.format("%s Beam \'%d\' %s",
+		return String.format("%s Beam %d %s",
 		                     getClass().getSimpleName(),
 		                     beamFrequency,
 		                     Commons.format(world, pos));

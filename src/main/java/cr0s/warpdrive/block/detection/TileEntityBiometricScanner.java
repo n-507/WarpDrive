@@ -151,7 +151,7 @@ public class TileEntityBiometricScanner extends TileEntityAbstractMachine {
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		if (tagCompound.hasUniqueId("uuidLastPlayer")) {
@@ -165,7 +165,7 @@ public class TileEntityBiometricScanner extends TileEntityAbstractMachine {
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		// only save is scanning has concluded

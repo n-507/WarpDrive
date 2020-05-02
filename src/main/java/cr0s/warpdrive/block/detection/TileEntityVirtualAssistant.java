@@ -91,7 +91,7 @@ public class TileEntityVirtualAssistant extends TileEntityAbstractEnergyCoreOrCo
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		lastCommand = tagCompound.getString("lastCommand");
@@ -99,7 +99,7 @@ public class TileEntityVirtualAssistant extends TileEntityAbstractEnergyCoreOrCo
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		tagCompound.setString("lastCommand", lastCommand);

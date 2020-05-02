@@ -186,7 +186,8 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	}
 	
 	@Override
-	public boolean shouldRefresh(final World world, final BlockPos pos, @Nonnull final IBlockState blockStateOld, @Nonnull final IBlockState blockStateNew) {
+	public boolean shouldRefresh(@Nonnull final World world, @Nonnull final BlockPos blockPos,
+	                             @Nonnull final IBlockState blockStateOld, @Nonnull final IBlockState blockStateNew) {
 		return blockStateOld.getBlock() != blockStateNew.getBlock();
 	}
 	
@@ -202,7 +203,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	
 	// saved properties
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		if (tagCompound.hasKey("upgrades")) {
 			final NBTTagCompound nbtTagCompoundUpgrades = tagCompound.getCompoundTag("upgrades");
@@ -222,7 +223,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		// forge cleanup
@@ -268,7 +269,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	}
 	
 	@Override
-	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
+	public void onDataPacket(@Nonnull final NetworkManager networkManager, @Nonnull final SPacketUpdateTileEntity packet) {
 		final NBTTagCompound tagCompound = packet.getNbtCompound();
 		readFromNBT(tagCompound);
 	}
@@ -515,7 +516,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	}
 	
 	@Nullable
-	public UpgradeSlot getFirstUpgradeOfType(@Nonnull final Class clazz, @Nullable final UpgradeSlot defaultValue) {
+	public UpgradeSlot getFirstUpgradeOfType(@Nonnull final Class<?> clazz, @Nullable final UpgradeSlot defaultValue) {
 		for (final Entry<UpgradeSlot, Integer> entry : upgradeSlots.entrySet()) {
 			if ( entry.getValue() > 0
 			  && ( clazz.isInstance(entry.getKey())
@@ -526,7 +527,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		return defaultValue;
 	}
 	
-	public Map<UpgradeSlot, Integer> getUpgradesOfType(final Class clazz) {
+	public Map<UpgradeSlot, Integer> getUpgradesOfType(final Class<?> clazz) {
 		if (clazz == null) {
 			return upgradeSlots;
 		}

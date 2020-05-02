@@ -188,7 +188,7 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		if (tagCompound.hasKey("mode")) {
 			final byte byteValue = tagCompound.getByte("mode");
@@ -202,7 +202,7 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		tagCompound.setByte("mode", (byte) mode.ordinal());
 		tagCompound.setByte("computerMode", (byte) computerMode.ordinal());

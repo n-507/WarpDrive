@@ -86,7 +86,7 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 	@Override
 	public IBlockState getStateForPlacement(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing,
 	                                        final float hitX, final float hitY, final float hitZ, final int metadata,
-	                                        @Nonnull final EntityLivingBase entityLivingBase, final EnumHand enumHand) {
+	                                        @Nonnull final EntityLivingBase entityLivingBase, @Nonnull final EnumHand enumHand) {
 		final IBlockState blockState = super.getStateForPlacement(world, blockPos, facing, hitX, hitY, hitZ, metadata, entityLivingBase, enumHand);
 		final boolean isRotating = !ignoreFacingOnPlacement
 		                        && blockState.getProperties().containsKey(BlockProperties.FACING);
@@ -102,7 +102,7 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 	}
 	
 	@Override
-	public boolean rotateBlock(final World world, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing axis) {
+	public boolean rotateBlock(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing axis) {
 		// already handled by vanilla
 		return super.rotateBlock(world, blockPos, axis);
 	}
@@ -119,9 +119,9 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 		return getTier(itemStack).getForgeRarity();
 	}
 	
-	public static boolean onCommonBlockActivated(final World world, final BlockPos blockPos, final IBlockState blockState,
-	                                             final EntityPlayer entityPlayer, final EnumHand enumHand,
-	                                             final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
+	public static boolean onCommonBlockActivated(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState,
+	                                             @Nonnull final EntityPlayer entityPlayer, @Nonnull final EnumHand enumHand,
+	                                             @Nonnull final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
 		if (enumHand != EnumHand.MAIN_HAND) {
 			return true;
 		}
@@ -266,9 +266,9 @@ public abstract class BlockAbstractBase extends Block implements IBlockBase {
 	}
 	
 	@Override
-	public boolean onBlockActivated(final World world, final BlockPos blockPos, final IBlockState blockState,
-	                                final EntityPlayer entityPlayer, final EnumHand enumHand,
-	                                final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
+	public boolean onBlockActivated(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState,
+	                                @Nonnull final EntityPlayer entityPlayer, @Nonnull final EnumHand enumHand,
+	                                @Nonnull final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
 		if (BlockAbstractBase.onCommonBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ)) {
 			return true;
 		}

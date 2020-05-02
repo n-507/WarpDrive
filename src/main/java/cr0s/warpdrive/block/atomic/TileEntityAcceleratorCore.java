@@ -712,7 +712,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		final NBTTagList tagListParticleBunches = tagCompound.getTagList("particleBunches", Constants.NBT.TAG_COMPOUND);
@@ -747,7 +747,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
 		
 		final NBTTagList tagListParticleBunches = new NBTTagList();
@@ -797,7 +797,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 	}
 	
 	@Override
-	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
+	public void onDataPacket(@Nonnull final NetworkManager networkManager, @Nonnull final SPacketUpdateTileEntity packet) {
 		super.onDataPacket(networkManager, packet);
 		
 		final NBTTagCompound tagCompound = packet.getNbtCompound();

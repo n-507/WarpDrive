@@ -145,7 +145,7 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 	// Forge overrides
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		final byte[] bytes = new byte[EnumFacing.values().length];
@@ -157,7 +157,7 @@ public class TileEntityCapacitor extends TileEntityAbstractEnergy {
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		final byte[] bytes = tagCompound.getByteArray(TAG_MODE_SIDE);

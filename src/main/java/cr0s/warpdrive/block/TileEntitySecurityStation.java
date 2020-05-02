@@ -36,7 +36,7 @@ public class TileEntitySecurityStation extends TileEntityAbstractMachine impleme
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		players.clear();
@@ -49,7 +49,7 @@ public class TileEntitySecurityStation extends TileEntityAbstractMachine impleme
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		final NBTTagList tagListPlayers = new NBTTagList();

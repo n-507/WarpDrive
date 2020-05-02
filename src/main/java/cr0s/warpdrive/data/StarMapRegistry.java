@@ -645,7 +645,7 @@ public class StarMapRegistry {
 		LocalProfiler.stop();
 	}
 	
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nullable final NBTTagCompound tagCompound) {
 		if (tagCompound == null || !tagCompound.hasKey("starMapRegistryItems")) {
 			registry.clear();
 			return;
@@ -683,7 +683,7 @@ public class StarMapRegistry {
 		}
 	}
 	
-	public void writeToNBT(final NBTTagCompound tagCompound) {
+	public void writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		final NBTTagList tagList = new NBTTagList();
 		for (final CopyOnWriteArraySet<StarMapRegistryItem> starMapRegistryItems : registry.values()) {
 			for (final StarMapRegistryItem starMapRegistryItem : starMapRegistryItems) {

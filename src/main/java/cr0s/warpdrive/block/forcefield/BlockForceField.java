@@ -199,7 +199,8 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	
 	@Nonnull
 	@Override
-	public ItemStack getPickBlock(@Nonnull final IBlockState blockState, final RayTraceResult target, @Nonnull final World world, @Nonnull final BlockPos blockPos, final EntityPlayer entityPlayer) {
+	public ItemStack getPickBlock(@Nonnull final IBlockState blockState, final RayTraceResult target,
+	                              @Nonnull final World world, @Nonnull final BlockPos blockPos, final EntityPlayer entityPlayer) {
 		return new ItemStack(Blocks.AIR);
 	}
 	
@@ -210,7 +211,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	
 	@Nonnull
 	@Override
-	public EnumBlockRenderType getRenderType(final IBlockState blockState) {
+	public EnumBlockRenderType getRenderType(@Nonnull final IBlockState blockState) {
 		return EnumBlockRenderType.MODEL;
 	}
 	
@@ -296,7 +297,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	@SuppressWarnings("deprecation")
 	@Nullable
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+	public AxisAlignedBB getCollisionBoundingBox(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		final ForceFieldSetup forceFieldSetup = getForceFieldSetup(blockAccess, blockPos);
 		if ( forceFieldSetup != null
 		  && blockAccess instanceof World ) {// @TODO lag when placing force field due to permission checks?
@@ -563,7 +564,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	}
 	
 	@Override
-	public boolean canEntityDestroy(final IBlockState state, final IBlockAccess world, final BlockPos pos, final Entity entity) {
+	public boolean canEntityDestroy(final IBlockState state, final IBlockAccess blockAccess, final BlockPos blockPos, final Entity entity) {
 		return false;
 	}
 	
@@ -612,12 +613,12 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public float getBlockHardness(final IBlockState blockState, final World worldIn, final BlockPos pos) {
+	public float getBlockHardness(final IBlockState blockState, final World world, final BlockPos blockPos) {
 		final String name = Thread.currentThread().getName();
 		// hide unbreakable status from ICBM explosion handler (as of ICBM-classic-1.12.2-3.3.0b63, Nuclear skip unbreakable blocks)
 		if (name.startsWith("ICBM")) {
 			return WarpDriveConfig.HULL_HARDNESS[enumTier.getIndex()];
 		}
-		return super.getBlockHardness(blockState, worldIn, pos);
+		return super.getBlockHardness(blockState, world, blockPos);
 	}
 }

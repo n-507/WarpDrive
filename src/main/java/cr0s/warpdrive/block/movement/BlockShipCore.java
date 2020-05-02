@@ -53,16 +53,16 @@ public class BlockShipCore extends BlockAbstractRotatingContainer {
 	@Override
 	public IBlockState getStateForPlacement(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing,
 	                                        final float hitX, final float hitY, final float hitZ, final int metadata,
-	                                        @Nonnull final EntityLivingBase entityLivingBase, final EnumHand enumHand) {
+	                                        @Nonnull final EntityLivingBase entityLivingBase, @Nonnull final EnumHand enumHand) {
 		final IBlockState blockState = super.getStateForPlacement(world, blockPos, facing, hitX, hitY, hitZ, metadata, entityLivingBase, enumHand);
 		final EnumFacing enumFacing = Commons.getHorizontalDirectionFromEntity(entityLivingBase).getOpposite();
 		return blockState.withProperty(BlockProperties.FACING, enumFacing);
 	}
 	
 	@Override
-	public void getDrops(@Nonnull final NonNullList<ItemStack> itemStacks, @Nullable final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos,
+	public void getDrops(@Nonnull final NonNullList<ItemStack> itemStacks, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos,
 	                     @Nonnull final IBlockState blockState, final int fortune) {
-		final TileEntity tileEntity = blockAccess == null ? null : blockAccess.getTileEntity(blockPos);
+		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
 		if (tileEntity instanceof TileEntityShipCore) {
 			if (((TileEntityShipCore) tileEntity).jumpCount == 0) {
 				super.getDrops(itemStacks, blockAccess, blockPos, blockState, fortune);
@@ -94,7 +94,8 @@ public class BlockShipCore extends BlockAbstractRotatingContainer {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public float getPlayerRelativeBlockHardness(final IBlockState blockState, @Nonnull final EntityPlayer entityPlayer, @Nonnull final World world, @Nonnull final BlockPos blockPos) {
+	public float getPlayerRelativeBlockHardness(@Nonnull final IBlockState blockState, @Nonnull final EntityPlayer entityPlayer,
+	                                            @Nonnull final World world, @Nonnull final BlockPos blockPos) {
 		boolean willBreak = true;
 		final TileEntity tileEntity = world.getTileEntity(blockPos);
 		if (tileEntity instanceof TileEntityShipCore) {
@@ -106,9 +107,9 @@ public class BlockShipCore extends BlockAbstractRotatingContainer {
 	}
 	
 	@Override
-	public boolean onBlockActivated(final World world, final BlockPos blockPos, final IBlockState blockState,
-	                                final EntityPlayer entityPlayer, final EnumHand enumHand,
-	                                final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
+	public boolean onBlockActivated(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState,
+	                                @Nonnull final EntityPlayer entityPlayer, @Nonnull final EnumHand enumHand,
+	                                @Nonnull final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
 		if (enumHand != EnumHand.MAIN_HAND) {
 			return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 		}
@@ -144,9 +145,9 @@ public class BlockShipCore extends BlockAbstractRotatingContainer {
 	}
 	
 	@Override
-	public void addInformation(final ItemStack stack, @Nullable final World world, @Nonnull final List<String> list,
-	                           @Nullable final ITooltipFlag advancedItemTooltips) {
-		super.addInformation(stack, world, list, advancedItemTooltips);
+	public void addInformation(@Nonnull final ItemStack itemStack, @Nullable final World world,
+	                           @Nonnull final List<String> list, @Nonnull final ITooltipFlag advancedItemTooltips) {
+		super.addInformation(itemStack, world, list, advancedItemTooltips);
 		
 		Commons.addTooltip(list, new TextComponentTranslation("tile.warpdrive.movement.ship_core.tooltip.constrains",
 		                                                      new WarpDriveText(Commons.getStyleValue(), WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]),

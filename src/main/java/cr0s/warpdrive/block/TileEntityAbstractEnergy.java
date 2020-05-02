@@ -880,14 +880,14 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 	
 	// Forge overrides
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		energyStored_internal = tagCompound.getLong(EnergyWrapper.TAG_ENERGY);
 	}
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		tagCompound.setLong(EnergyWrapper.TAG_ENERGY, energyStored_internal);

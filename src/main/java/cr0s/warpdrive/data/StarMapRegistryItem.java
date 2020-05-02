@@ -131,7 +131,7 @@ public class StarMapRegistryItem extends GlobalPosition {
 	}
 	
 	@Override
-	public void writeToNBT(final NBTTagCompound tagCompound) {
+	public void writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
 		tagCompound.setString("type", type.getName());
 		if (name != null && !name.isEmpty()) {

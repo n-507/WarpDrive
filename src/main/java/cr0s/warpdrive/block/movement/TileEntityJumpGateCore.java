@@ -112,7 +112,7 @@ public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrContro
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		minX = tagCompound.getInteger("minX");
@@ -127,7 +127,7 @@ public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrContro
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		tagCompound.setInteger("minX", minX);
