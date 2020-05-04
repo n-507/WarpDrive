@@ -27,7 +27,7 @@ public class ForceFieldRegistry {
 	private static int countRemove = 0;
 	private static int countRead = 0;
 	
-	public static Set<TileEntity> getTileEntities(final int beamFrequency, final WorldServer worldSource, final int x, final int y, final int z) {
+	public static Set<TileEntity> getTileEntities(final int beamFrequency, final WorldServer world, final int x, final int y, final int z) {
 		countRead++;
 		if (WarpDriveConfig.LOGGING_FORCE_FIELD_REGISTRY) {
 			if (countRead % 1000 == 0) {
@@ -36,7 +36,7 @@ public class ForceFieldRegistry {
 			}
 		}
 		final CopyOnWriteArraySet<GlobalPosition> setGlobalPositions = registry.get(beamFrequency);
-		if (setGlobalPositions == null || worldSource == null) {
+		if (setGlobalPositions == null || world == null) {
 			return new CopyOnWriteArraySet<>();
 		}
 		// find all relevant tiles by world and frequency, keep relays in range as starting point
@@ -46,32 +46,32 @@ public class ForceFieldRegistry {
 		int range2;
 		final int maxRange2 = ForceFieldSetup.FORCEFIELD_RELAY_RANGE * ForceFieldSetup.FORCEFIELD_RELAY_RANGE;
 		for (final GlobalPosition globalPosition : setGlobalPositions) {
-			final WorldServer world = globalPosition.getWorldServerIfLoaded();
-			if (world != null) {
-				// skip if it's in another dimension
-				if (world != worldSource) {
-					continue;
-				}
-				
-				// confirm frequency and split by groups
-				final TileEntity tileEntity = world.getTileEntity(new BlockPos(globalPosition.x, globalPosition.y, globalPosition.z));
-				if ( (tileEntity instanceof IBeamFrequency)
-				  && ((IBeamFrequency)tileEntity).getBeamFrequency() == beamFrequency ) {
-					if (tileEntity instanceof TileEntityForceFieldRelay) {
-						// add relays in range as start point
-						range2 = (globalPosition.x - x) * (globalPosition.x - x) + (globalPosition.y - y) * (globalPosition.y - y) + (globalPosition.z - z) * (globalPosition.z - z);
-						if (range2 <= maxRange2) {
-							setToIterate.add(tileEntity);
-						} else {
-							setRelays.add(tileEntity);
-						}
-					} else {
-						setNonRelays.add(tileEntity);
-					}
-					continue;
-				}
+			// skip if it's in another dimension
+			if (globalPosition.dimensionId != world.provider.getDimension()) {
+				continue;
 			}
-			// world isn't loaded or block no longer exist => remove from registry
+			
+			// confirm frequency and split by groups
+			final TileEntity tileEntity = world.getTileEntity(new BlockPos(globalPosition.x, globalPosition.y, globalPosition.z));
+			if ( (tileEntity instanceof IBeamFrequency)
+			  && ((IBeamFrequency) tileEntity).getBeamFrequency() == beamFrequency ) {
+				if (tileEntity instanceof TileEntityForceFieldRelay) {
+					// add relays in range as starting point(s)
+					range2 = (globalPosition.x - x) * (globalPosition.x - x)
+					       + (globalPosition.y - y) * (globalPosition.y - y)
+					       + (globalPosition.z - z) * (globalPosition.z - z);
+					if (range2 <= maxRange2) {
+						setToIterate.add(tileEntity);
+					} else {
+						setRelays.add(tileEntity);
+					}
+				} else {
+					setNonRelays.add(tileEntity);
+				}
+				continue;
+			}
+			
+			// block no longer exist => remove from registry
 			countRemove++;
 			setGlobalPositions.remove(globalPosition);
 			if (WarpDriveConfig.LOGGING_FORCE_FIELD_REGISTRY) {
@@ -82,7 +82,7 @@ public class ForceFieldRegistry {
 		// no relays in range => just add that one block
 		if (setToIterate.isEmpty()) {
 			final Set<TileEntity> setResult = new HashSet<>();
-			setResult.add(worldSource.getTileEntity(new BlockPos(x, y, z)));
+			setResult.add(world.getTileEntity(new BlockPos(x, y, z)));
 			return setResult;
 		}
 		
@@ -94,7 +94,9 @@ public class ForceFieldRegistry {
 			for (final TileEntity tileEntityCurrent : setToIterate) {
 				setRelaysInRange.add(tileEntityCurrent);
 				for (final TileEntity tileEntityEntry : setRelays) {
-					if (!setRelaysInRange.contains(tileEntityEntry) && !setToIterate.contains(tileEntityEntry) && !setToIterateNext.contains(tileEntityEntry)) {
+					if ( !setRelaysInRange.contains(tileEntityEntry)
+					  && !setToIterate.contains(tileEntityEntry)
+					  && !setToIterateNext.contains(tileEntityEntry) ) {
 						range2 = (tileEntityCurrent.getPos().getX() - tileEntityEntry.getPos().getX()) * (tileEntityCurrent.getPos().getX() - tileEntityEntry.getPos().getX())
 						       + (tileEntityCurrent.getPos().getY() - tileEntityEntry.getPos().getY()) * (tileEntityCurrent.getPos().getY() - tileEntityEntry.getPos().getY())
 						       + (tileEntityCurrent.getPos().getZ() - tileEntityEntry.getPos().getZ()) * (tileEntityCurrent.getPos().getZ() - tileEntityEntry.getPos().getZ());
