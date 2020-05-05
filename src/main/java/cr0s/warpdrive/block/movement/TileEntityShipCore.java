@@ -20,6 +20,7 @@ import cr0s.warpdrive.data.EnumShipCoreState;
 import cr0s.warpdrive.data.EnumShipMovementType;
 import cr0s.warpdrive.data.EnumStarMapEntryType;
 import cr0s.warpdrive.data.SoundEvents;
+import cr0s.warpdrive.data.StarMapRegistry;
 import cr0s.warpdrive.data.StarMapRegistryItem;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
@@ -444,7 +445,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				return;
 			}
 			
-			final TileEntityShipCore shipCoreIntersecting = WarpDrive.starMap.getIntersectingShipCore(this);
+			final TileEntityShipCore shipCoreIntersecting = StarMapRegistry.getIntersectingShipCore(this);
 			if (shipCoreIntersecting != null) {
 				commandDone(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.warp_field_overlapping",
 				                                     shipCoreIntersecting.getSignatureName() ));
@@ -914,7 +915,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	private void doGateJump() {
 		// Search nearest jump-gate
 		final String targetName = getTargetName();
-		final StarMapRegistryItem jumpGate_target = WarpDrive.starMap.getByName(EnumStarMapEntryType.JUMP_GATE, targetName);
+		final StarMapRegistryItem jumpGate_target = StarMapRegistry.getByName(EnumStarMapEntryType.JUMP_GATE, targetName);
 		
 		if (jumpGate_target == null) {
 			commandDone(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.jumpgate_not_defined",
@@ -929,7 +930,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		int destX = gateX;
 		int destY = gateY;
 		int destZ = gateZ;
-		final StarMapRegistryItem jumpGate_nearest = WarpDrive.starMap.findNearest(EnumStarMapEntryType.JUMP_GATE, world, pos);
+		final StarMapRegistryItem jumpGate_nearest = StarMapRegistry.findNearest(EnumStarMapEntryType.JUMP_GATE, world, pos);
 		
 		final WarpDriveText reason = new WarpDriveText();
 		if (!isShipInJumpgate(jumpGate_nearest, reason)) {
@@ -1007,7 +1008,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			
 			// Check ship size for hyper-space jump
 			if (shipMass < WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE) {
-				final StarMapRegistryItem nearestGate = WarpDrive.starMap.findNearest(EnumStarMapEntryType.JUMP_GATE, world, pos);
+				final StarMapRegistryItem nearestGate = StarMapRegistry.findNearest(EnumStarMapEntryType.JUMP_GATE, world, pos);
 				
 				final WarpDriveText reason = new WarpDriveText();
 				if (nearestGate == null || !isShipInJumpgate(nearestGate, reason)) {

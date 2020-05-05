@@ -9,6 +9,7 @@ import cr0s.warpdrive.block.TileEntityAbstractEnergyConsumer;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnergyWrapper;
+import cr0s.warpdrive.data.StarMapRegistry;
 import cr0s.warpdrive.data.StarMapRegistryItem;
 import cr0s.warpdrive.data.EnumStarMapEntryType;
 
@@ -108,7 +109,7 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 	}
 	
 	private boolean pingTransporter() {
-		final StarMapRegistryItem starMapRegistryItem = WarpDrive.starMap.getByUUID(EnumStarMapEntryType.TRANSPORTER, uuidTransporterCore);
+		final StarMapRegistryItem starMapRegistryItem = StarMapRegistry.getByUUID(EnumStarMapEntryType.TRANSPORTER, uuidTransporterCore);
 		if (starMapRegistryItem == null) {
 			return false;
 		}

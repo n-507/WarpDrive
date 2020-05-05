@@ -1,8 +1,8 @@
 package cr0s.warpdrive.command;
 
 import cr0s.warpdrive.Commons;
-import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.data.EnumStarMapEntryType;
+import cr0s.warpdrive.data.StarMapRegistry;
 import cr0s.warpdrive.data.StarMapRegistryItem;
 
 import net.minecraft.command.ICommandSender;
@@ -42,7 +42,7 @@ public class CommandFind extends AbstractCommand {
 				Commons.addChatMessage(commandSender, new TextComponentString(getUsage(commandSender)));
 				return;
 			}
-			final StarMapRegistryItem starMapRegistryItem = WarpDrive.starMap.findNearest(EnumStarMapEntryType.SHIP, entityPlayer.world, entityPlayer.getPosition());
+			final StarMapRegistryItem starMapRegistryItem = StarMapRegistry.findNearest(EnumStarMapEntryType.SHIP, entityPlayer.world, entityPlayer.getPosition());
 			if (starMapRegistryItem != null) {
 				Commons.addChatMessage(commandSender, new TextComponentString(String.format("Ship '%s' found in %s",
 				                                                                            starMapRegistryItem.name,
@@ -72,7 +72,7 @@ public class CommandFind extends AbstractCommand {
 			nameToken = nameBuilder.toString();
 		}
 		
-		final String result = WarpDrive.starMap.find(nameToken);
+		final String result = StarMapRegistry.find(nameToken);
 		Commons.addChatMessage(commandSender, new TextComponentString(result));
 	}
 }

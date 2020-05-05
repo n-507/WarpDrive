@@ -82,7 +82,7 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 			try {
 				scanning_countdown_ticks--;
 				if (scanning_countdown_ticks <= 0) {
-					results = WarpDrive.starMap.getRadarEchos(this, scanning_radius);
+					results = StarMapRegistry.getRadarEchos(this, scanning_radius);
 					isScanning = false;
 					if (WarpDriveConfig.LOGGING_RADAR) {
 						WarpDrive.logger.info(String.format("%s Scan found %d results in %d radius...",

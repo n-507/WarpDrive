@@ -1,13 +1,13 @@
 package cr0s.warpdrive.block;
 
 import cr0s.warpdrive.Commons;
-import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
 import cr0s.warpdrive.api.computer.ICoreSignature;
 import cr0s.warpdrive.api.computer.IEnergyConsumer;
 import cr0s.warpdrive.api.computer.IMultiBlockCoreOrController;
 import cr0s.warpdrive.api.computer.IMultiBlockCore;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.StarMapRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -98,14 +98,14 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 			uuid = UUID.randomUUID();
 		}
 		
-		WarpDrive.starMap.updateInRegistry((IStarMapRegistryTileEntity) this);
+		StarMapRegistry.updateInRegistry((IStarMapRegistryTileEntity) this);
 	}
 	
 	@Override
 	public void onBlockBroken(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
 		if ( !world.isRemote
 		  && this instanceof IStarMapRegistryTileEntity ) {
-			WarpDrive.starMap.removeFromRegistry((IStarMapRegistryTileEntity) this);
+			StarMapRegistry.removeFromRegistry((IStarMapRegistryTileEntity) this);
 		}
 		
 		super.onBlockBroken(world, blockPos, blockState);

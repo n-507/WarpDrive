@@ -49,16 +49,12 @@ public class StarMapRegistry {
 	
 	public static String GALAXY_UNDEFINED = "???";
 	
-	private final HashMap<Integer, CopyOnWriteArraySet<StarMapRegistryItem>> registry;
-	private int countAdd = 0;
-	private int countRemove = 0;
-	private int countRead = 0;
+	private static final HashMap<Integer, CopyOnWriteArraySet<StarMapRegistryItem>> registry = new HashMap<>();
+	private static int countAdd = 0;
+	private static int countRemove = 0;
+	private static int countRead = 0;
 	
-	public StarMapRegistry() {
-		registry = new HashMap<>();
-	}
-	
-	public void updateInRegistry(final IStarMapRegistryTileEntity tileEntity) {
+	public static void updateInRegistry(final IStarMapRegistryTileEntity tileEntity) {
 		// validate context
 		assert tileEntity instanceof TileEntity;
 		if (!Commons.isSafeThread()) {
@@ -118,7 +114,7 @@ public class StarMapRegistry {
 		}
 	}
 	
-	public void removeFromRegistry(final IStarMapRegistryTileEntity tileEntity) {
+	public static void removeFromRegistry(final IStarMapRegistryTileEntity tileEntity) {
 		assert tileEntity instanceof TileEntity;
 		
 		countRead++;
@@ -139,7 +135,7 @@ public class StarMapRegistry {
 		// not found => ignore it
 	}
 	
-	public StarMapRegistryItem getByName(final EnumStarMapEntryType enumStarMapEntryType, final String name) {
+	public static StarMapRegistryItem getByName(final EnumStarMapEntryType enumStarMapEntryType, final String name) {
 		for (final Integer dimensionId : registry.keySet()) {
 			final CopyOnWriteArraySet<StarMapRegistryItem> setStarMapRegistryItems = registry.get(dimensionId);
 			if (setStarMapRegistryItems == null) {
@@ -158,7 +154,7 @@ public class StarMapRegistry {
 		return null;
 	}
 	
-	public StarMapRegistryItem getByUUID(final EnumStarMapEntryType enumStarMapEntryType, final UUID uuid) {
+	public static StarMapRegistryItem getByUUID(final EnumStarMapEntryType enumStarMapEntryType, final UUID uuid) {
 		for (final Integer dimensionId : registry.keySet()) {
 			final CopyOnWriteArraySet<StarMapRegistryItem> setStarMapRegistryItems = registry.get(dimensionId);
 			if (setStarMapRegistryItems == null) {
@@ -177,7 +173,7 @@ public class StarMapRegistry {
 		return null;
 	}
 	
-	public String find(final String nameShip) {
+	public static String find(final String nameShip) {
 		final int MAX_LENGTH = 2000;
 		final StringBuilder resultMatch = new StringBuilder();
 		final StringBuilder resultCaseInsensitive = new StringBuilder();
@@ -240,7 +236,7 @@ public class StarMapRegistry {
 		return String.format("No ship found with name '%s'", nameShip);
 	}
 	
-	public StarMapRegistryItem findNearest(final EnumStarMapEntryType enumStarMapEntryType, @Nonnull final World world, @Nonnull final BlockPos blockPos) {
+	public static StarMapRegistryItem findNearest(final EnumStarMapEntryType enumStarMapEntryType, @Nonnull final World world, @Nonnull final BlockPos blockPos) {
 		final CopyOnWriteArraySet<StarMapRegistryItem> setStarMapRegistryItems = registry.get(world.provider.getDimension());
 		if (setStarMapRegistryItems == null) {
 			return null;
@@ -268,7 +264,7 @@ public class StarMapRegistry {
 		return result;
 	}
 	
-	public boolean onBlockUpdating(@Nullable final Entity entity, @Nonnull final World world, @Nonnull final BlockPos blockPos, final IBlockState blockState) {
+	public static boolean onBlockUpdating(@Nullable final Entity entity, @Nonnull final World world, @Nonnull final BlockPos blockPos, final IBlockState blockState) {
 		if (!Commons.isSafeThread()) {
 			WarpDrive.logger.error(String.format("Non-threadsafe call to StarMapRegistry:onBlockUpdating outside main thread, for %s %s",
 			                                     blockState, Commons.format(world, blockPos) ));
@@ -290,7 +286,7 @@ public class StarMapRegistry {
 		return isAllowed;
 	}
 	
-	public boolean onChatReceived(@Nonnull final EntityPlayer entityPlayer, @Nonnull final String message) {
+	public static boolean onChatReceived(@Nonnull final EntityPlayer entityPlayer, @Nonnull final String message) {
 		if (!Commons.isSafeThread()) {
 			WarpDrive.logger.error(String.format("Non-threadsafe call to StarMapRegistry:onChatReceived outside main thread, for %s %s",
 			                                     entityPlayer, message ));
@@ -389,7 +385,7 @@ public class StarMapRegistry {
 		return 0;
 	}
 	
-	public ArrayList<RadarEcho> getRadarEchos(final TileEntity tileEntity, final int radius) {
+	public static ArrayList<RadarEcho> getRadarEchos(final TileEntity tileEntity, final int radius) {
 		final ArrayList<RadarEcho> arrayListRadarEchos = new ArrayList<>(registry.size());
 		cleanup();
 		
@@ -463,7 +459,7 @@ public class StarMapRegistry {
 		return hasHyperspace ? vec3Result : null;
 	}
 	
-	public void printRegistry(final String trigger) {
+	public static void printRegistry(final String trigger) {
 		WarpDrive.logger.info(String.format("Starmap registry (%s entries after %s):",
 		                                    registry.size(), trigger));
 		
@@ -480,7 +476,7 @@ public class StarMapRegistry {
 		}
 	}
 	
-	public TileEntityShipCore getIntersectingShipCore(@Nonnull final TileEntityShipCore shipCore1) {
+	public static TileEntityShipCore getIntersectingShipCore(@Nonnull final TileEntityShipCore shipCore1) {
 		cleanup();
 		
 		if (!shipCore1.isAssemblyValid()) {
@@ -546,7 +542,7 @@ public class StarMapRegistry {
 	
 	// do not call during tileEntity construction (readFromNBT and validate)
 	private static boolean isExceptionReported = false;
-	private void cleanup() {
+	private static void cleanup() {
 		if (!Commons.throttleMe("Starmap registry cleanup", 180000)) {
 			return;
 		}
@@ -645,7 +641,7 @@ public class StarMapRegistry {
 		LocalProfiler.stop();
 	}
 	
-	public void readFromNBT(@Nullable final NBTTagCompound tagCompound) {
+	public static void readFromNBT(@Nullable final NBTTagCompound tagCompound) {
 		if (tagCompound == null || !tagCompound.hasKey("starMapRegistryItems")) {
 			registry.clear();
 			return;
@@ -683,7 +679,7 @@ public class StarMapRegistry {
 		}
 	}
 	
-	public void writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
+	public static void writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		final NBTTagList tagList = new NBTTagList();
 		for (final CopyOnWriteArraySet<StarMapRegistryItem> starMapRegistryItems : registry.values()) {
 			for (final StarMapRegistryItem starMapRegistryItem : starMapRegistryItems) {

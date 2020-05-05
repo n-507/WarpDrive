@@ -1,9 +1,9 @@
 package cr0s.warpdrive.block.movement;
 
 import cr0s.warpdrive.Commons;
-import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.data.EnumStarMapEntryType;
+import cr0s.warpdrive.data.StarMapRegistry;
 import cr0s.warpdrive.data.StarMapRegistryItem;
 
 import javax.annotation.Nonnull;
@@ -66,7 +66,7 @@ public class TileEntityShipController extends TileEntityAbstractShipController {
 		// refresh as needed
 		// note: it's up to players to break the link, so if the world is partially restored we won't lose the link
 		if (tileEntityShipCore == null) {
-			final StarMapRegistryItem starMapRegistryItem = WarpDrive.starMap.getByUUID(EnumStarMapEntryType.SHIP, uuid);
+			final StarMapRegistryItem starMapRegistryItem = StarMapRegistry.getByUUID(EnumStarMapEntryType.SHIP, uuid);
 			if (starMapRegistryItem == null) {
 				textReason.append(Commons.getStyleWarning(), "warpdrive.core_signature.status_line.unknown_core_signature");
 				return false;

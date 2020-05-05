@@ -751,7 +751,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 			}
 			
 		} else if (remoteLocationRequested instanceof UUID) {
-			globalPositionRemoteNew = WarpDrive.starMap.getByUUID(EnumStarMapEntryType.TRANSPORTER, (UUID) remoteLocationRequested);
+			globalPositionRemoteNew = StarMapRegistry.getByUUID(EnumStarMapEntryType.TRANSPORTER, (UUID) remoteLocationRequested);
 			if (globalPositionRemoteNew == null) {
 				reasonJammed = "Unknown transporter signature";
 			}

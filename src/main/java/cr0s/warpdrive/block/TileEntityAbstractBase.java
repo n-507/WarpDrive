@@ -13,6 +13,7 @@ import cr0s.warpdrive.data.CameraRegistryItem;
 import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumForceFieldUpgrade;
 import cr0s.warpdrive.data.EnumTier;
+import cr0s.warpdrive.data.StarMapRegistry;
 import cr0s.warpdrive.item.ItemComponent;
 import cr0s.warpdrive.item.ItemForceFieldUpgrade;
 
@@ -179,7 +180,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 			isDirty = false;
 			final IBlockState blockState = world.getBlockState(pos);
 			world.notifyBlockUpdate(pos, blockState, blockState, 3);
-			WarpDrive.starMap.onBlockUpdating(null, world, pos, blockState);
+			StarMapRegistry.onBlockUpdating(null, world, pos, blockState);
 		} else {
 			isDirty = true;
 		}
