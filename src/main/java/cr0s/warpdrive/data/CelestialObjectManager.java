@@ -4,6 +4,7 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.InvalidXmlException;
+import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.config.XmlFileManager;
 
 import javax.annotation.Nonnull;
@@ -12,6 +13,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
+
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.w3c.dom.Element;
@@ -476,12 +479,16 @@ public class CelestialObjectManager extends XmlFileManager {
 			                                     countErrors ));
 		}
 		
-		if (countErrors == 1) {
-			throw new RuntimeException("Invalid celestial objects definition: update your configuration to fix this validation error, search your logs for 'CelestialObjects validation error' to get more details.");
-		} else if (countErrors > 0) {
-			throw new RuntimeException(String.format(
-				"Invalid celestial objects definition: update your configuration to fix those %d validation errors, search your logs for 'CelestialObjects validation error' to get more details.",
-				countErrors));
+		if (WarpDriveConfig.G_ENFORCE_VALID_CELESTIAL_OBJECTS) {
+			if (countErrors == 1) {
+				throw new RuntimeException("Invalid celestial objects definition: update your configuration to fix this validation error, search your logs for 'CelestialObjects validation error' to get more details.");
+			} else if (countErrors > 0) {
+				throw new RuntimeException(String.format(
+						"Invalid celestial objects definition: update your configuration to fix those %d validation errors, search your logs for 'CelestialObjects validation error' to get more details.",
+						countErrors));
+			}
+		} else {
+			FMLLog.bigWarning("Invalid celestial objects definition: bad things will happen, fix those before reporting any issue!");
 		}
 		
 		
