@@ -142,6 +142,7 @@ dependencies {
     provided curse.resolve("icbm-classic", "${config.ICBMclassic_fileid}")
     provided "li.cil.oc:OpenComputers:${config.OpenComputers_version}"
     provided "vazkii.patchouli:Patchouli:${config.Patchouli_version}"
+    provided curse.resolve("matteroverdrive", "${config.MatterOverdrive_fileid}") // "${config.MatterOverdrive_version}"
     
 //  compileOnly "mezz.jei:jei_1.10.2:3.13.+"
 //  compileOnly "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"

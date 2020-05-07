@@ -147,6 +147,7 @@ public class WarpDriveConfig {
 	public static boolean              isGregtechLoaded = false;
 	public static boolean              isICBMClassicLoaded = false;
 	public static boolean              isIndustrialCraft2Loaded = false;
+	public static boolean              isMatterOverdriveLoaded = false;
 	public static boolean              isNotEnoughItemsLoaded = false;
 	public static boolean              isOpenComputersLoaded = false;
 	public static boolean              isThermalExpansionLoaded = false;
@@ -767,6 +768,7 @@ public class WarpDriveConfig {
 		isAdvancedRepulsionSystemLoaded = Loader.isModLoaded("AdvancedRepulsionSystems");
 		isForgeMultipartLoaded = Loader.isModLoaded("forgemultipartcbe");
 		isICBMClassicLoaded = Loader.isModLoaded("icbmclassic");
+		isMatterOverdriveLoaded = Loader.isModLoaded("matteroverdrive");
 		isNotEnoughItemsLoaded = Loader.isModLoaded("NotEnoughItems");
 		isThermalExpansionLoaded = Loader.isModLoaded("thermalexpansion");
 		isThermalFoundationLoaded = Loader.isModLoaded("thermalfoundation");
