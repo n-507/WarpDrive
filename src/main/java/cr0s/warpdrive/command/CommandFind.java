@@ -1,9 +1,9 @@
 package cr0s.warpdrive.command;
 
 import cr0s.warpdrive.Commons;
-import cr0s.warpdrive.data.EnumStarMapEntryType;
-import cr0s.warpdrive.data.StarMapRegistry;
-import cr0s.warpdrive.data.StarMapRegistryItem;
+import cr0s.warpdrive.data.EnumGlobalRegionType;
+import cr0s.warpdrive.data.GlobalRegionManager;
+import cr0s.warpdrive.data.GlobalRegion;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -42,11 +42,11 @@ public class CommandFind extends AbstractCommand {
 				Commons.addChatMessage(commandSender, new TextComponentString(getUsage(commandSender)));
 				return;
 			}
-			final StarMapRegistryItem starMapRegistryItem = StarMapRegistry.findNearest(EnumStarMapEntryType.SHIP, entityPlayer.world, entityPlayer.getPosition());
-			if (starMapRegistryItem != null) {
+			final GlobalRegion globalRegion = GlobalRegionManager.getNearest(EnumGlobalRegionType.SHIP, entityPlayer.world, entityPlayer.getPosition());
+			if (globalRegion != null) {
 				Commons.addChatMessage(commandSender, new TextComponentString(String.format("Ship '%s' found in %s",
-				                                                                            starMapRegistryItem.name,
-				                                                                            starMapRegistryItem.getFormattedLocation() )));
+				                                                                            globalRegion.name,
+				                                                                            globalRegion.getFormattedLocation())));
 			} else {
 				Commons.addChatMessage(commandSender, new TextComponentString(String.format("No ship found in %s",
 				                                                                            Commons.format(entityPlayer.world) )));
@@ -72,7 +72,7 @@ public class CommandFind extends AbstractCommand {
 			nameToken = nameBuilder.toString();
 		}
 		
-		final String result = StarMapRegistry.find(nameToken);
+		final String result = GlobalRegionManager.listByKeyword(EnumGlobalRegionType.SHIP, nameToken);
 		Commons.addChatMessage(commandSender, new TextComponentString(result));
 	}
 }

@@ -4,7 +4,7 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.block.TileEntitySecurityStation;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.EventWarpDrive.Ship.PreJump;
-import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
+import cr0s.warpdrive.api.IGlobalRegionProvider;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.api.computer.IMultiBlockCoreOrController;
 import cr0s.warpdrive.api.computer.IMultiBlockCore;
@@ -15,13 +15,13 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.EnergyWrapper;
+import cr0s.warpdrive.data.EnumGlobalRegionType;
 import cr0s.warpdrive.data.EnumShipCommand;
 import cr0s.warpdrive.data.EnumShipCoreState;
 import cr0s.warpdrive.data.EnumShipMovementType;
-import cr0s.warpdrive.data.EnumStarMapEntryType;
+import cr0s.warpdrive.data.GlobalRegionManager;
 import cr0s.warpdrive.data.SoundEvents;
-import cr0s.warpdrive.data.StarMapRegistry;
-import cr0s.warpdrive.data.StarMapRegistryItem;
+import cr0s.warpdrive.data.GlobalRegion;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
 import cr0s.warpdrive.event.JumpSequencer;
@@ -62,7 +62,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityShipCore extends TileEntityAbstractShipController implements IStarMapRegistryTileEntity, IMultiBlockCore {
+public class TileEntityShipCore extends TileEntityAbstractShipController implements IGlobalRegionProvider, IMultiBlockCore {
 	
 	private static final int LOG_INTERVAL_TICKS = 20 * 180;
 	private static final int BOUNDING_BOX_INTERVAL_TICKS = 60;
@@ -445,7 +445,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				return;
 			}
 			
-			final TileEntityShipCore shipCoreIntersecting = StarMapRegistry.getIntersectingShipCore(this);
+			final TileEntityShipCore shipCoreIntersecting = GlobalRegionManager.getIntersectingShipCore(this);
 			if (shipCoreIntersecting != null) {
 				commandDone(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.warp_field_overlapping",
 				                                     shipCoreIntersecting.getSignatureName() ));
@@ -612,7 +612,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			isolationRate = 0.0D;
 		}
 		if (legacy_isolationRate != isolationRate) {
-			markDirtyStarMapEntry();
+			markDirtyGlobalRegion();
 			if (WarpDriveConfig.LOGGING_RADAR && WarpDrive.isDev) {
 				WarpDrive.logger.info(String.format("%s Isolation updated to %d (%.1f%%)",
 				                                    this, isolationBlocksCount , isolationRate * 100.0));
@@ -810,8 +810,8 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	}
 	
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
-	private boolean isShipInJumpgate(@Nonnull final StarMapRegistryItem jumpGate, @Nonnull final WarpDriveText reason) {
-		assert jumpGate.type == EnumStarMapEntryType.JUMP_GATE;
+	private boolean isShipInJumpgate(@Nonnull final GlobalRegion jumpGate, @Nonnull final WarpDriveText reason) {
+		assert jumpGate.type == EnumGlobalRegionType.JUMP_GATE;
 		final AxisAlignedBB aabb = jumpGate.getArea();
 		if (WarpDriveConfig.LOGGING_JUMP) {
 			WarpDrive.logger.info(this + " Jumpgate " + jumpGate.name + " AABB is " + aabb);
@@ -915,7 +915,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	private void doGateJump() {
 		// Search nearest jump-gate
 		final String targetName = getTargetName();
-		final StarMapRegistryItem jumpGate_target = StarMapRegistry.getByName(EnumStarMapEntryType.JUMP_GATE, targetName);
+		final GlobalRegion jumpGate_target = GlobalRegionManager.getByName(EnumGlobalRegionType.JUMP_GATE, targetName);
 		
 		if (jumpGate_target == null) {
 			commandDone(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.jumpgate_not_defined",
@@ -930,10 +930,10 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		int destX = gateX;
 		int destY = gateY;
 		int destZ = gateZ;
-		final StarMapRegistryItem jumpGate_nearest = StarMapRegistry.findNearest(EnumStarMapEntryType.JUMP_GATE, world, pos);
+		final GlobalRegion jumpGate_nearest = GlobalRegionManager.getNearest(EnumGlobalRegionType.JUMP_GATE, world, pos);
 		
 		final WarpDriveText reason = new WarpDriveText();
-		if (!isShipInJumpgate(jumpGate_nearest, reason)) {
+		if (jumpGate_nearest == null || !isShipInJumpgate(jumpGate_nearest, reason)) {
 			commandDone(false, reason);
 			return;
 		}
@@ -1008,10 +1008,10 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			
 			// Check ship size for hyper-space jump
 			if (shipMass < WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE) {
-				final StarMapRegistryItem nearestGate = StarMapRegistry.findNearest(EnumStarMapEntryType.JUMP_GATE, world, pos);
+				final GlobalRegion jumpGate_nearest = GlobalRegionManager.getNearest(EnumGlobalRegionType.JUMP_GATE, world, pos);
 				
 				final WarpDriveText reason = new WarpDriveText();
-				if (nearestGate == null || !isShipInJumpgate(nearestGate, reason)) {
+				if (jumpGate_nearest == null || !isShipInJumpgate(jumpGate_nearest, reason)) {
 					commandDone(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.insufficient_mass_for_hyperspace",
 					                                     WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE, shipMass ));
 					return;
@@ -1165,14 +1165,14 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		return name;
 	}
 	
-	// IStarMapRegistryTileEntity overrides
+	// IGlobalRegionProvider overrides
 	@Override
-	public EnumStarMapEntryType getStarMapType() {
-		return EnumStarMapEntryType.SHIP;
+	public EnumGlobalRegionType getGlobalRegionType() {
+		return EnumGlobalRegionType.SHIP;
 	}
 	
 	@Override
-	public AxisAlignedBB getStarMapArea() {
+	public AxisAlignedBB getGlobalRegionArea() {
 		if (cache_aabbArea == null) {
 			cache_aabbArea = new AxisAlignedBB(minX, minY, minZ, maxX + 1.0D, maxY + 1.0D, maxZ + 1.0D);
 		}

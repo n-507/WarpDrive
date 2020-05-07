@@ -52,7 +52,7 @@ public class ForceFieldRegistry {
 			}
 			
 			// confirm frequency and split by groups
-			final TileEntity tileEntity = world.getTileEntity(new BlockPos(globalPosition.x, globalPosition.y, globalPosition.z));
+			final TileEntity tileEntity = world.getTileEntity(globalPosition.getBlockPos());
 			if ( (tileEntity instanceof IBeamFrequency)
 			  && ((IBeamFrequency) tileEntity).getBeamFrequency() == beamFrequency ) {
 				if (tileEntity instanceof TileEntityForceFieldRelay) {

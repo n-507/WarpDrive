@@ -2,9 +2,9 @@ package cr0s.warpdrive.block.movement;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.api.WarpDriveText;
-import cr0s.warpdrive.data.EnumStarMapEntryType;
-import cr0s.warpdrive.data.StarMapRegistry;
-import cr0s.warpdrive.data.StarMapRegistryItem;
+import cr0s.warpdrive.data.EnumGlobalRegionType;
+import cr0s.warpdrive.data.GlobalRegionManager;
+import cr0s.warpdrive.data.GlobalRegion;
 
 import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
@@ -66,17 +66,17 @@ public class TileEntityShipController extends TileEntityAbstractShipController {
 		// refresh as needed
 		// note: it's up to players to break the link, so if the world is partially restored we won't lose the link
 		if (tileEntityShipCore == null) {
-			final StarMapRegistryItem starMapRegistryItem = StarMapRegistry.getByUUID(EnumStarMapEntryType.SHIP, uuid);
-			if (starMapRegistryItem == null) {
+			final GlobalRegion globalRegion = GlobalRegionManager.getByUUID(EnumGlobalRegionType.SHIP, uuid);
+			if (globalRegion == null) {
 				textReason.append(Commons.getStyleWarning(), "warpdrive.core_signature.status_line.unknown_core_signature");
 				return false;
 			}
-			final WorldServer worldServer = starMapRegistryItem.getWorldServerIfLoaded();
+			final WorldServer worldServer = globalRegion.getWorldServerIfLoaded();
 			if (worldServer == null) {
 				textReason.append(Commons.getStyleWarning(), "warpdrive.core_signature.status_line.world_not_loaded");
 				return false;
 			}
-			final TileEntity tileEntity = worldServer.getTileEntity(starMapRegistryItem.getBlockPos());
+			final TileEntity tileEntity = worldServer.getTileEntity(globalRegion.getBlockPos());
 			if ( !(tileEntity instanceof TileEntityShipCore)
 			  || tileEntity.isInvalid()
 			  || uuid == null

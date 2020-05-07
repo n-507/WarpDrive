@@ -7,8 +7,8 @@ import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObject;
 import cr0s.warpdrive.data.EnergyWrapper;
+import cr0s.warpdrive.data.GlobalRegionManager;
 import cr0s.warpdrive.data.RadarEcho;
-import cr0s.warpdrive.data.StarMapRegistry;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.EnumRadarMode;
 
@@ -82,7 +82,7 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 			try {
 				scanning_countdown_ticks--;
 				if (scanning_countdown_ticks <= 0) {
-					results = StarMapRegistry.getRadarEchos(this, scanning_radius);
+					results = GlobalRegionManager.getRadarEchos(this, scanning_radius);
 					isScanning = false;
 					if (WarpDriveConfig.LOGGING_RADAR) {
 						WarpDrive.logger.info(String.format("%s Scan found %d results in %d radius...",
@@ -138,18 +138,18 @@ public class TileEntityRadar extends TileEntityAbstractEnergyConsumer {
 	public Object[] getGlobalPosition() {
 		// check for optical sensors
 		if (false) {
-			return new Object[] { false, StarMapRegistry.GALAXY_UNDEFINED, pos.getX(), pos.getY(), pos.getZ(), Commons.format(world) };
+			return new Object[] { false, GlobalRegionManager.GALAXY_UNDEFINED, pos.getX(), pos.getY(), pos.getZ(), Commons.format(world) };
 		}
 		
 		// check for registered celestial object
 		final CelestialObject celestialObject = CelestialObjectManager.get(world, pos.getX(), pos.getZ());
 		if (celestialObject == null) {
-			return new Object[] { false, StarMapRegistry.GALAXY_UNDEFINED, pos.getX(), pos.getY(), pos.getZ(), Commons.format(world) };
+			return new Object[] { false, GlobalRegionManager.GALAXY_UNDEFINED, pos.getX(), pos.getY(), pos.getZ(), Commons.format(world) };
 		}
 		
 		// get actual coordinates
-		final String galaxyName = StarMapRegistry.getGalaxyName(celestialObject, pos.getX(), pos.getY(), pos.getZ());
-		final Vector3 vec3Position = StarMapRegistry.getUniversalCoordinates(celestialObject, pos.getX(), pos.getY(), pos.getZ());
+		final String galaxyName = GlobalRegionManager.getGalaxyName(celestialObject, pos.getX(), pos.getY(), pos.getZ());
+		final Vector3 vec3Position = GlobalRegionManager.getUniversalCoordinates(celestialObject, pos.getX(), pos.getY(), pos.getZ());
 		return new Object[] { true, galaxyName, vec3Position.x, vec3Position.y, vec3Position.z, celestialObject.getDisplayName() };
 	}
 	

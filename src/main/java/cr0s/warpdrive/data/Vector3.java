@@ -177,6 +177,13 @@ public class Vector3 implements Cloneable {
 		return this;
 	}
 	
+	public Vector3 translate(final Vec3d vector3) {
+		x += vector3.x;
+		y += vector3.y;
+		z += vector3.z;
+		return this;
+	}
+	
 	public Vector3 translate(final Vector3 vector3) {
 		x += vector3.x;
 		y += vector3.y;

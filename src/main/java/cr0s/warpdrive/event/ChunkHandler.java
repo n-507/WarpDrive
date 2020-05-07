@@ -7,7 +7,7 @@ import cr0s.warpdrive.api.ExceptionChunkNotLoaded;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.ChunkData;
-import cr0s.warpdrive.data.StarMapRegistry;
+import cr0s.warpdrive.data.GlobalRegionManager;
 import cr0s.warpdrive.data.StateAir;
 
 import javax.annotation.Nonnull;
@@ -55,10 +55,10 @@ public class ChunkHandler {
 		
 		if ( !event.getWorld().isRemote
 		  && event.getWorld().provider.getDimension() == 0 ) {
-			// load star map
+			// load registries
 			final String filename = String.format("%s/%s.dat", event.getWorld().getSaveHandler().getWorldDirectory().getPath(), WarpDrive.MODID);
 			final NBTTagCompound tagCompound = Commons.readNBTFromFile(filename);
-			StarMapRegistry.readFromNBT(tagCompound);
+			GlobalRegionManager.readFromNBT(tagCompound);
 			
 			// enforce vanilla's WorldBorder diameter consistency
 			final WorldBorder worldBorder = event.getWorld().getWorldBorder();
@@ -170,10 +170,10 @@ public class ChunkHandler {
 			return;
 		}
 		
-		// save star map
+		// save registries
 		final String filename = String.format("%s/%s.dat", event.getWorld().getSaveHandler().getWorldDirectory().getPath(), WarpDrive.MODID);
 		final NBTTagCompound tagCompound = new NBTTagCompound();
-		StarMapRegistry.writeToNBT(tagCompound);
+		GlobalRegionManager.writeToNBT(tagCompound);
 		Commons.writeNBTToFile(filename, tagCompound);
 	}
 	
@@ -199,7 +199,7 @@ public class ChunkHandler {
 			}
 		}
 		
-		// @TODO unload star map
+		// @TODO unload registries
 	}
 	
 	

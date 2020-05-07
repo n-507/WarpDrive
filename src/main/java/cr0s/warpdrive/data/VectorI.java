@@ -251,6 +251,13 @@ public class VectorI implements Cloneable {
 		return Math.sqrt(newX * newX + newY * newY + newZ * newZ);
 	}
 	
+	public int distance2To(final BlockPos blockPos) {
+		final int newX = blockPos.getX() - x;
+		final int newY = blockPos.getY() - y;
+		final int newZ = blockPos.getZ() - z;
+		return (newX * newX + newY * newY + newZ * newZ);
+	}
+	
 	public int distance2To(final VectorI vector) {
 		final int newX = vector.x - x;
 		final int newY = vector.y - y;

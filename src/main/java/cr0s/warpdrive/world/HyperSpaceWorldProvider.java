@@ -1,7 +1,8 @@
 package cr0s.warpdrive.world;
 
 import cr0s.warpdrive.WarpDrive;
-import cr0s.warpdrive.data.StarMapRegistry;
+import cr0s.warpdrive.data.CelestialObjectManager;
+import cr0s.warpdrive.data.GlobalRegionManager;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
@@ -103,7 +104,7 @@ public class HyperSpaceWorldProvider extends AbstractWorldProvider {
 			WarpDrive.logger.error(String.format("Invalid player passed to getRespawnDimension: %s", entityPlayerMP));
 			return 0;
 		}
-		return StarMapRegistry.getHyperspaceDimensionId(entityPlayerMP.world, (int) entityPlayerMP.posX, (int) entityPlayerMP.posZ);
+		return CelestialObjectManager.getHyperspaceDimensionId(entityPlayerMP.world, (int) entityPlayerMP.posX, (int) entityPlayerMP.posZ);
 	}
 	
 	@Nonnull

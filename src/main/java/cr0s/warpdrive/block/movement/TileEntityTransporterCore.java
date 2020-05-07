@@ -4,7 +4,7 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBeamFrequency;
 import cr0s.warpdrive.api.IItemTransporterBeacon;
-import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
+import cr0s.warpdrive.api.IGlobalRegionProvider;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.api.computer.ICoreSignature;
 import cr0s.warpdrive.api.computer.ITransporterBeacon;
@@ -19,13 +19,13 @@ import cr0s.warpdrive.data.CelestialObject;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumComponentType;
+import cr0s.warpdrive.data.EnumGlobalRegionType;
 import cr0s.warpdrive.data.EnumTransporterState;
 import cr0s.warpdrive.data.ForceFieldRegistry;
 import cr0s.warpdrive.data.ForceFieldSetup;
 import cr0s.warpdrive.data.GlobalPosition;
+import cr0s.warpdrive.data.GlobalRegionManager;
 import cr0s.warpdrive.data.MovingEntity;
-import cr0s.warpdrive.data.StarMapRegistry;
-import cr0s.warpdrive.data.EnumStarMapEntryType;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
 import cr0s.warpdrive.item.ItemComponent;
@@ -69,6 +69,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -79,7 +80,7 @@ import net.minecraftforge.common.ForgeChunkManager.Type;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.Optional;
 
-public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrController implements ITransporterCore, IBeamFrequency, IStarMapRegistryTileEntity {
+public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrController implements ITransporterCore, IBeamFrequency, IGlobalRegionProvider {
 	
 	// global properties
 	private static final UpgradeSlot upgradeSlotEnergyStorage = new UpgradeSlot("transporter.energy_storage",
@@ -512,14 +513,14 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		markDirty();
 	}
 	
-	// IStarMapRegistryTileEntity overrides
+	// IGlobalRegionProvider overrides
 	@Override
-	public EnumStarMapEntryType getStarMapType() {
-		return EnumStarMapEntryType.TRANSPORTER;
+	public EnumGlobalRegionType getGlobalRegionType() {
+		return EnumGlobalRegionType.TRANSPORTER;
 	}
 	
 	@Override
-	public AxisAlignedBB getStarMapArea() {
+	public AxisAlignedBB getGlobalRegionArea() {
 		return new AxisAlignedBB(
 			Math.min(pos.getX() - WarpDriveConfig.TRANSPORTER_SETUP_SCANNER_RANGE_XZ_BLOCKS     , aabbLocalScanners == null ? pos.getX() : aabbLocalScanners.minX),
 			Math.min(pos.getY() - WarpDriveConfig.TRANSPORTER_SETUP_SCANNER_RANGE_Y_BELOW_BLOCKS, aabbLocalScanners == null ? pos.getY() : aabbLocalScanners.minY),
@@ -622,7 +623,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		
 		// cascade updates
 		markDirtyParameters();
-		markDirtyStarMapEntry();
+		markDirtyGlobalRegion();
 		
 		return isValid;
 	}
@@ -683,7 +684,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 				reasonJammed = "";
 				
 			} else {
-				final TileEntity tileEntity = worldBeacon.getTileEntity(new BlockPos(globalPositionBeacon.x, globalPositionBeacon.y, globalPositionBeacon.z));
+				final TileEntity tileEntity = worldBeacon.getTileEntity(globalPositionBeacon.getBlockPos());
 				if ( !(tileEntity instanceof ITransporterBeacon)
 				  || !((ITransporterBeacon) tileEntity).isActive() ) {
 					globalPositionBeacon = null;
@@ -716,7 +717,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		
 		// compute local universal coordinates
 		final CelestialObject celestialObjectLocal = CelestialObjectManager.get(world, pos.getX(), pos.getZ());
-		final Vector3 v3Local_universal = StarMapRegistry.getUniversalCoordinates(celestialObjectLocal, globalPositionLocal.x, globalPositionLocal.y, globalPositionLocal.z);
+		final Vector3 v3Local_universal = GlobalRegionManager.getUniversalCoordinates(celestialObjectLocal, globalPositionLocal.x, globalPositionLocal.y, globalPositionLocal.z);
 		
 		// validate context
 		checkBeaconObsolescence();
@@ -751,7 +752,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 			}
 			
 		} else if (remoteLocationRequested instanceof UUID) {
-			globalPositionRemoteNew = StarMapRegistry.getByUUID(EnumStarMapEntryType.TRANSPORTER, (UUID) remoteLocationRequested);
+			globalPositionRemoteNew = GlobalRegionManager.getByUUID(EnumGlobalRegionType.TRANSPORTER, (UUID) remoteLocationRequested);
 			if (globalPositionRemoteNew == null) {
 				reasonJammed = "Unknown transporter signature";
 			}
@@ -842,8 +843,8 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		final int rangeActual = (int) Math.ceil(Math.sqrt(rangeActualSquared));
 		
 		// compute focalization bonuses
-		final FocusValues focusValuesLocal  = getFocusValueAtCoordinates(world, globalPositionLocal.getVectorI(), 0);
-		final FocusValues focusValuesRemote = getFocusValueAtCoordinates(worldRemote, globalPositionRemote.getVectorI(), WarpDriveConfig.TRANSPORTER_FOCUS_SEARCH_RADIUS_BLOCKS);
+		final FocusValues focusValuesLocal  = getFocusValueAtCoordinates(world, globalPositionLocal.getBlockPos(), 0);
+		final FocusValues focusValuesRemote = getFocusValueAtCoordinates(worldRemote, globalPositionRemote.getBlockPos(), WarpDriveConfig.TRANSPORTER_FOCUS_SEARCH_RADIUS_BLOCKS);
 		final double focusBoost = Commons.interpolate(
 				1.0D,
 				0.0D,
@@ -902,24 +903,24 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		
 		// validate shields along trajectory
 		if (world == worldRemote) {// same world
-			isJammed |= isJammedTrajectory(world, globalPositionLocal.getVectorI(), globalPositionRemote.getVectorI(), beamFrequency);
+			isJammed |= isJammedTrajectory(world, globalPositionLocal.getBlockPos(), globalPositionRemote.getBlockPos(), beamFrequency);
 		} else if (v3Local_universal.y > v3Remote_universal.y) {// remote is below us
 			isJammed |= isJammedTrajectory(world,
-			                               globalPositionLocal.getVectorI(),
-			                               new VectorI(globalPositionLocal.x, -1, globalPositionLocal.z),
+			                               globalPositionLocal.getBlockPos(),
+			                               new BlockPos(globalPositionLocal.x, -1, globalPositionLocal.z),
 			                               beamFrequency);
 			isJammed |= isJammedTrajectory(worldRemote,
-			                               new VectorI(globalPositionRemote.x, 256, globalPositionRemote.z),
-			                               globalPositionRemote.getVectorI(),
+			                               new BlockPos(globalPositionRemote.x, 256, globalPositionRemote.z),
+			                               globalPositionRemote.getBlockPos(),
 			                               beamFrequency);
 		} else {// remote is above us
 			isJammed |= isJammedTrajectory(world,
-			                               globalPositionLocal.getVectorI(),
-			                               new VectorI(globalPositionLocal.x, 256, globalPositionLocal.z),
+			                               globalPositionLocal.getBlockPos(),
+			                               new BlockPos(globalPositionLocal.x, 256, globalPositionLocal.z),
 			                               beamFrequency);
 			isJammed |= isJammedTrajectory(worldRemote,
-			                               new VectorI(globalPositionRemote.x, -1, globalPositionRemote.z),
-			                               globalPositionRemote.getVectorI(),
+			                               new BlockPos(globalPositionRemote.x, -1, globalPositionRemote.z),
+			                               globalPositionRemote.getBlockPos(),
 			                               beamFrequency);
 		}
 		if (isJammed) {
@@ -992,7 +993,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 			                                     this));
 			return;
 		}
-		final AxisAlignedBB aabbArea = getStarMapArea();
+		final AxisAlignedBB aabbArea = getGlobalRegionArea();
 		final int minX = (int) aabbArea.minX >> 4;
 		final int maxX = (int) aabbArea.maxX >> 4;
 		final int minZ = (int) aabbArea.minZ >> 4;
@@ -1028,7 +1029,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		}
 	}
 	
-	private static FocusValues getFocusValueAtCoordinates(final World world, final VectorI vLocation, final int radius) {
+	private static FocusValues getFocusValueAtCoordinates(final World world, final BlockPos blockPos, final int radius) {
 		//  return default values if world isn't loaded
 		if (world == null) {
 			final FocusValues result = new FocusValues();
@@ -1044,12 +1045,12 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		int sumRangeUpgrades = 0;
 		int sumFocusUpgrades = 0;
 		
-		final int xMin = vLocation.x - radius;
-		final int xMax = vLocation.x + radius;
-		final int yMin = vLocation.y - radius;
-		final int yMax = vLocation.y + radius;
-		final int zMin = vLocation.z - radius;
-		final int zMax = vLocation.z + radius;
+		final int xMin = blockPos.getX() - radius;
+		final int xMax = blockPos.getX() + radius;
+		final int yMin = blockPos.getY() - radius;
+		final int yMax = blockPos.getY() + radius;
+		final int zMin = blockPos.getZ() - radius;
+		final int zMax = blockPos.getZ() + radius;
 		
 		ArrayList<BlockPos> vScanners = null;
 		final MutableBlockPos mutableBlockPos = new MutableBlockPos(0, 0, 0);
@@ -1107,47 +1108,50 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		
 		if (WarpDriveConfig.LOGGING_TRANSPORTER) {
 			WarpDrive.logger.info(String.format("Transporter getFocusValueAtCoordinates %s gives range %d speed %.3f strength %.3f",
-			                                    vLocation, result.countRangeUpgrades, result.speed, result.strength));
+			                                    blockPos, result.countRangeUpgrades, result.speed, result.strength ));
 		}
 		
 		return result;
 	}
 	
-	private static boolean isJammedTrajectory(final World world, final VectorI vSource, final VectorI vDestination, final int beamFrequency) {
+	private static boolean isJammedTrajectory(final World world, final BlockPos blockPosSource, final BlockPos blockPosDestination, final int beamFrequency) {
 		// return default value if world isn't loaded
 		if (world == null) {
 			return false;
 		}
 		
-		final VectorI vPath = vDestination.clone().translateBack(vSource);
-		final int length = (int) Math.ceil(3 * Math.sqrt(vPath.getMagnitudeSquared()));
-		final Vector3 v3Delta = new Vector3(vPath.x / (double) length, vPath.y / (double) length, vPath.z / (double) length);
+		final Vec3d v3dPath = new Vec3d(blockPosDestination.getX() - blockPosSource.getX(),
+		                                blockPosDestination.getY() - blockPosSource.getY(),
+		                                blockPosDestination.getZ() - blockPosSource.getZ() );
+		final int length = (int) Math.ceil(3 * v3dPath.length());
+		final Vec3d v3Delta = new Vec3d(v3dPath.x / (double) length, v3dPath.y / (double) length, v3dPath.z / (double) length);
 		
 		// scan along given trajectory
-		final Vector3 v3Current = new Vector3(vSource.x, vSource.y, vSource.z).translate(0.5D);
-		final VectorI vCurrent = vSource.clone();
-		final VectorI vPrevious = vCurrent.clone();
+		// note: we use our own Vector3 as a mutable Vec3d to save from memory fragmentation/lag
+		final Vector3 v3Current = new Vector3(blockPosSource.getX() + 0.5D,
+		                                      blockPosSource.getY() + 0.5D,
+		                                      blockPosSource.getZ() + 0.5D );
+		final MutableBlockPos blockPosCurrent = new MutableBlockPos(blockPosSource);
+		final MutableBlockPos blockPosPrevious = new MutableBlockPos(blockPosCurrent);
 		for (int step = 0; step < length; step++) {
 			v3Current.translate(v3Delta);
-			vCurrent.x = (int) Math.round(v3Current.x);
-			vCurrent.y = (int) Math.round(v3Current.y);
-			vCurrent.z = (int) Math.round(v3Current.z);
+			blockPosCurrent.setPos((int) Math.round(v3Current.x),
+			                       (int) Math.round(v3Current.y),
+			                       (int) Math.round(v3Current.z) );
 			// skip repeating coordinates
-			if (vCurrent.equals(vPrevious)) {
+			if (blockPosCurrent.equals(blockPosPrevious)) {
 				continue;
 			}
-			if (isJammedCoordinate(world, vCurrent, beamFrequency)) return true;
+			if (isJammedCoordinate(world, blockPosCurrent, beamFrequency)) return true;
 			
 			// remember this coordinates
-			vPrevious.x = vCurrent.x;
-			vPrevious.y = vCurrent.y;
-			vPrevious.z = vCurrent.z;
+			blockPosPrevious.setPos(blockPosCurrent);
 		}
 		return false;
 	}
-	private static boolean isJammedCoordinate(final World world, final VectorI vCurrent, final int beamFrequency) {
+	private static boolean isJammedCoordinate(final World world, final BlockPos blockPos, final int beamFrequency) {
 		// check block blacklist for blinking
-		final Block block = vCurrent.getBlock(world);
+		final Block block = world.getBlockState(blockPos).getBlock();
 		if (Dictionary.BLOCKS_NOBLINK.contains(block)) {
 			if (WarpDriveConfig.LOGGING_TRANSPORTER) {
 				WarpDrive.logger.info(String.format("Transporter beam jammed by blacklisted block %s", block));
@@ -1157,7 +1161,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		
 		// allow passing through force fields with same beam frequency
 		if (block instanceof BlockForceField) {
-			final TileEntity tileEntity = vCurrent.getTileEntity(world);
+			final TileEntity tileEntity = world.getTileEntity(blockPos);
 			if (tileEntity instanceof TileEntityForceField) {
 				final ForceFieldSetup forceFieldSetup = ((TileEntityForceField) tileEntity).getForceFieldSetup();
 				if (forceFieldSetup == null) {

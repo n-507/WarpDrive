@@ -1,13 +1,13 @@
 package cr0s.warpdrive.block.detection;
 
 import cr0s.warpdrive.Commons;
-import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
+import cr0s.warpdrive.api.IGlobalRegionProvider;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.TileEntityAbstractEnergyCoreOrController;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnergyWrapper;
-import cr0s.warpdrive.data.EnumStarMapEntryType;
+import cr0s.warpdrive.data.EnumGlobalRegionType;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -25,7 +25,7 @@ import net.minecraft.util.math.BlockPos;
 
 import net.minecraftforge.fml.common.Optional;
 
-public class TileEntityVirtualAssistant extends TileEntityAbstractEnergyCoreOrController implements IStarMapRegistryTileEntity {
+public class TileEntityVirtualAssistant extends TileEntityAbstractEnergyCoreOrController implements IGlobalRegionProvider {
 	
 	// persistent properties
 	private String lastCommand = "";
@@ -155,14 +155,14 @@ public class TileEntityVirtualAssistant extends TileEntityAbstractEnergyCoreOrCo
 		}
 	}
 	
-	// IStarMapRegistryTileEntity overrides
+	// IGlobalRegionProvider overrides
 	@Override
-	public EnumStarMapEntryType getStarMapType() {
-		return EnumStarMapEntryType.VIRTUAL_ASSISTANT;
+	public EnumGlobalRegionType getGlobalRegionType() {
+		return EnumGlobalRegionType.VIRTUAL_ASSISTANT;
 	}
 	
 	@Override
-	public AxisAlignedBB getStarMapArea() {
+	public AxisAlignedBB getGlobalRegionArea() {
 		return aabbArea;
 	}
 	

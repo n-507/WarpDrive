@@ -4,7 +4,7 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IControlChannel;
 import cr0s.warpdrive.api.IParticleContainerItem;
-import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
+import cr0s.warpdrive.api.IGlobalRegionProvider;
 import cr0s.warpdrive.api.Particle;
 import cr0s.warpdrive.api.ParticleRegistry;
 import cr0s.warpdrive.api.ParticleStack;
@@ -16,9 +16,9 @@ import cr0s.warpdrive.data.AcceleratorControlParameter;
 import cr0s.warpdrive.data.AcceleratorSetup;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnergyWrapper;
+import cr0s.warpdrive.data.EnumGlobalRegionType;
 import cr0s.warpdrive.data.InventoryWrapper;
 import cr0s.warpdrive.data.ParticleBunch;
-import cr0s.warpdrive.data.EnumStarMapEntryType;
 import cr0s.warpdrive.data.SoundEvents;
 import cr0s.warpdrive.data.TrajectoryPoint;
 import cr0s.warpdrive.data.Vector3;
@@ -61,7 +61,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.Optional;
 
-public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrController implements IStarMapRegistryTileEntity {
+public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrController implements IGlobalRegionProvider {
 	
 	private static final int      ACCELERATOR_COOLDOWN_TICKS = 300;
 	private static final int      ACCELERATOR_GUIDE_UPDATE_TICKS = 300;
@@ -695,7 +695,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		
 		// WarpDrive.logger.info(this + " rebootAccelerator");
 		
-		markDirtyStarMapEntry();
+		markDirtyGlobalRegion();
 		updateChillers(acceleratorSetup, false, false, isChunkLoading);
 		legacy_isOn = false;
 		if (isLeaking) {
@@ -1146,14 +1146,14 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 		return super.CC_callMethod(methodName, arguments);
 	}
 	
-	// IStarMapRegistryTileEntity overrides
+	// IGlobalRegionProvider overrides
 	@Override
-	public EnumStarMapEntryType getStarMapType() {
-		return EnumStarMapEntryType.ACCELERATOR;
+	public EnumGlobalRegionType getGlobalRegionType() {
+		return EnumGlobalRegionType.ACCELERATOR;
 	}
 	
 	@Override
-	public AxisAlignedBB getStarMapArea() {
+	public AxisAlignedBB getGlobalRegionArea() {
 		if (acceleratorSetup == null) {
 			return null;
 		}

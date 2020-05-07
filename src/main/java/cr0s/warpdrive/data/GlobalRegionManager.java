@@ -3,7 +3,7 @@ package cr0s.warpdrive.data;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.LocalProfiler;
 import cr0s.warpdrive.WarpDrive;
-import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
+import cr0s.warpdrive.api.IGlobalRegionProvider;
 import cr0s.warpdrive.block.atomic.BlockAcceleratorCore;
 import cr0s.warpdrive.block.detection.BlockVirtualAssistant;
 import cr0s.warpdrive.block.detection.TileEntityVirtualAssistant;
@@ -40,66 +40,67 @@ import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 /**
  * Registry of all known ships, jumpgates, etc. in the world
  * 
  * @author LemADEC
  */
-public class StarMapRegistry {
+public class GlobalRegionManager {
 	
 	public static String GALAXY_UNDEFINED = "???";
 	
-	private static final HashMap<Integer, CopyOnWriteArraySet<StarMapRegistryItem>> registry = new HashMap<>();
+	private static final HashMap<Integer, CopyOnWriteArraySet<GlobalRegion>> registry = new HashMap<>();
 	private static int countAdd = 0;
 	private static int countRemove = 0;
 	private static int countRead = 0;
 	
-	public static void updateInRegistry(final IStarMapRegistryTileEntity tileEntity) {
+	public static void updateInRegistry(@Nonnull final IGlobalRegionProvider globalRegionProvider) {
 		// validate context
-		assert tileEntity instanceof TileEntity;
 		if (!Commons.isSafeThread()) {
-			WarpDrive.logger.error(String.format("Non-threadsafe call to StarMapRegistry:updateInRegistry outside main thread, for %s",
-			                                     tileEntity));
+			WarpDrive.logger.error(String.format("Non-threadsafe call to GlobalRegionManager:updateInRegistry outside main thread, for %s",
+			                                     globalRegionProvider ));
 			return;
 		}
-		if (tileEntity.getSignatureUUID() == null) {
-			WarpDrive.logger.error(String.format("Ignoring invalid StarMapRegistryItem with no UUID %s",
-			                                     tileEntity));
+		if (globalRegionProvider.getSignatureUUID() == null) {
+			WarpDrive.logger.error(String.format("Ignoring invalid IGlobalRegionProvider with no UUID %s",
+			                                     globalRegionProvider ));
 			return;
 		}
 		
 		// update statistics
 		countRead++;
-		if (WarpDriveConfig.LOGGING_STARMAP) {
+		if (WarpDriveConfig.LOGGING_GLOBAL_REGION_REGISTRY) {
 			if (countRead % 1000 == 0) {
-				WarpDrive.logger.info(String.format("Starmap registry stats: read %d add %d remove %d => %.2f%% read",
+				WarpDrive.logger.info(String.format("Global region registry stats: read %d add %d remove %d => %.2f%% read",
 				                                    countRead, countAdd, countRemove, ((float) countRead) / (countRemove + countRead + countAdd)));
 			}
 		}
 		
 		// get dimension
-		CopyOnWriteArraySet<StarMapRegistryItem> setRegistryItems = registry.get(((TileEntity) tileEntity).getWorld().provider.getDimension());
+		CopyOnWriteArraySet<GlobalRegion> setRegistryItems = registry.get(globalRegionProvider.getDimension());
 		if (setRegistryItems == null) {
 			setRegistryItems = new CopyOnWriteArraySet<>();
 		}
 		
 		// get entry
-		final ArrayList<StarMapRegistryItem> listToRemove = new ArrayList<>(3);
-		final UUID uuidTileEntity = tileEntity.getSignatureUUID();
-		for (final StarMapRegistryItem registryItem : setRegistryItems) {
+		final ArrayList<GlobalRegion> listToRemove = new ArrayList<>(3);
+		final UUID uuidTileEntity = globalRegionProvider.getSignatureUUID();
+		for (final GlobalRegion registryItem : setRegistryItems) {
 			if (registryItem.uuid == null) {
-				WarpDrive.logger.error(String.format("Removing invalid StarMapRegistryItem %s",
+				WarpDrive.logger.error(String.format("Removing invalid IGlobalRegionProvider %s",
 				                                     registryItem));
 				listToRemove.add(registryItem);
 				continue;
 			}
 			
-			if ( registryItem.type.equals(tileEntity.getStarMapType())
+			if ( registryItem.type.equals(globalRegionProvider.getGlobalRegionType())
 			  && registryItem.uuid.equals(uuidTileEntity) ) {// already registered
-				registryItem.update(tileEntity);    // in-place update only works as long as hashcode remains unchanged
+				registryItem.update(globalRegionProvider);    // in-place update only works as long as hashcode remains unchanged
 				setRegistryItems.removeAll(listToRemove);
 				return;
-			} else if (registryItem.sameCoordinates(tileEntity)) {
+			} else if (registryItem.sameCoordinates(globalRegionProvider)) {
 				listToRemove.add(registryItem);
 			}
 		}
@@ -107,25 +108,24 @@ public class StarMapRegistry {
 		
 		// not found => add
 		countAdd++;
-		setRegistryItems.add(new StarMapRegistryItem(tileEntity));
-		registry.put(((TileEntity) tileEntity).getWorld().provider.getDimension(), setRegistryItems);
-		if (WarpDriveConfig.LOGGING_STARMAP) {
+		setRegistryItems.add(new GlobalRegion(globalRegionProvider));
+		registry.put(globalRegionProvider.getDimension(), setRegistryItems);
+		if (WarpDriveConfig.LOGGING_GLOBAL_REGION_REGISTRY) {
 			printRegistry("added");
 		}
 	}
 	
-	public static void removeFromRegistry(final IStarMapRegistryTileEntity tileEntity) {
-		assert tileEntity instanceof TileEntity;
+	public static void removeFromRegistry(@Nonnull final IGlobalRegionProvider globalRegionProvider) {
 		
 		countRead++;
-		final Set<StarMapRegistryItem> setRegistryItems = registry.get(((TileEntity) tileEntity).getWorld().provider.getDimension());
+		final Set<GlobalRegion> setRegistryItems = registry.get(globalRegionProvider.getDimension());
 		if (setRegistryItems == null) {
 			// noting to remove
 			return;
 		}
 		
-		for (final StarMapRegistryItem registryItem : setRegistryItems) {
-			if (registryItem.sameCoordinates(tileEntity)) {
+		for (final GlobalRegion registryItem : setRegistryItems) {
+			if (registryItem.sameCoordinates(globalRegionProvider)) {
 				// found it, remove and exit
 				countRemove++;
 				setRegistryItems.remove(registryItem);
@@ -135,18 +135,19 @@ public class StarMapRegistry {
 		// not found => ignore it
 	}
 	
-	public static StarMapRegistryItem getByName(final EnumStarMapEntryType enumStarMapEntryType, final String name) {
+	@Nullable
+	public static GlobalRegion getByName(final EnumGlobalRegionType enumGlobalRegionType, final String name) {
 		for (final Integer dimensionId : registry.keySet()) {
-			final CopyOnWriteArraySet<StarMapRegistryItem> setStarMapRegistryItems = registry.get(dimensionId);
-			if (setStarMapRegistryItems == null) {
+			final CopyOnWriteArraySet<GlobalRegion> setGlobalRegions = registry.get(dimensionId);
+			if (setGlobalRegions == null) {
 				continue;
 			}
 			
-			for (final StarMapRegistryItem starMapRegistryItem : setStarMapRegistryItems) {
-				if ( enumStarMapEntryType == null
-				  || starMapRegistryItem.type == enumStarMapEntryType ) {
-					if (starMapRegistryItem.name.equals(name)) {
-						return starMapRegistryItem;
+			for (final GlobalRegion globalRegion : setGlobalRegions) {
+				if (enumGlobalRegionType == null
+				    || globalRegion.type == enumGlobalRegionType) {
+					if (globalRegion.name.equals(name)) {
+						return globalRegion;
 					}
 				}
 			}
@@ -154,18 +155,19 @@ public class StarMapRegistry {
 		return null;
 	}
 	
-	public static StarMapRegistryItem getByUUID(final EnumStarMapEntryType enumStarMapEntryType, final UUID uuid) {
+	@Nullable
+	public static GlobalRegion getByUUID(final EnumGlobalRegionType enumGlobalRegionType, final UUID uuid) {
 		for (final Integer dimensionId : registry.keySet()) {
-			final CopyOnWriteArraySet<StarMapRegistryItem> setStarMapRegistryItems = registry.get(dimensionId);
-			if (setStarMapRegistryItems == null) {
+			final CopyOnWriteArraySet<GlobalRegion> setGlobalRegions = registry.get(dimensionId);
+			if (setGlobalRegions == null) {
 				continue;
 			}
 			
-			for (final StarMapRegistryItem starMapRegistryItem : setStarMapRegistryItems) {
-				if ( enumStarMapEntryType == null
-				  || starMapRegistryItem.type == enumStarMapEntryType ) {
-					if (starMapRegistryItem.uuid.equals(uuid)) {
-						return starMapRegistryItem;
+			for (final GlobalRegion globalRegion : setGlobalRegions) {
+				if (enumGlobalRegionType == null
+				    || globalRegion.type == enumGlobalRegionType) {
+					if (globalRegion.uuid.equals(uuid)) {
+						return globalRegion;
 					}
 				}
 			}
@@ -173,49 +175,52 @@ public class StarMapRegistry {
 		return null;
 	}
 	
-	public static String find(final String nameShip) {
+	public static String listByKeyword(final EnumGlobalRegionType enumGlobalRegionType, final String keyword) {
 		final int MAX_LENGTH = 2000;
 		final StringBuilder resultMatch = new StringBuilder();
 		final StringBuilder resultCaseInsensitive = new StringBuilder();
 		final StringBuilder resultContains = new StringBuilder();
 		for (final Integer dimensionId : registry.keySet()) {
-			final CopyOnWriteArraySet<StarMapRegistryItem> setStarMapRegistryItems = registry.get(dimensionId);
-			if (setStarMapRegistryItems == null) {
+			final CopyOnWriteArraySet<GlobalRegion> setGlobalRegions = registry.get(dimensionId);
+			if (setGlobalRegions == null) {
 				continue;
 			}
 			
-			for (final StarMapRegistryItem starMapRegistryItem : setStarMapRegistryItems) {
-				if (starMapRegistryItem.type == EnumStarMapEntryType.SHIP) {
-					if (starMapRegistryItem.name.equals(nameShip)) {
+			for (final GlobalRegion globalRegion : setGlobalRegions) {
+				if (globalRegion.type == enumGlobalRegionType) {
+					if (globalRegion.name.equals(keyword)) {
 						if (resultMatch.length() < MAX_LENGTH) {
 							if (resultMatch.length() > 0) {
 								resultMatch.append("\n");
 							}
-							resultContains.append(String.format("Ship '%s' found in %s",
-							                                    starMapRegistryItem.name,
-							                                    starMapRegistryItem.getFormattedLocation()));
+							resultContains.append(String.format("%s '%s' found in %s",
+							                                    WordUtils.capitalize(enumGlobalRegionType.getName()),
+							                                    globalRegion.name,
+							                                    globalRegion.getFormattedLocation()));
 						} else {
 							resultMatch.append(".");
 						}
-					} else if (starMapRegistryItem.name.equalsIgnoreCase(nameShip)) {
+					} else if (globalRegion.name.equalsIgnoreCase(keyword)) {
 						if (resultCaseInsensitive.length() < MAX_LENGTH) {
 							if (resultCaseInsensitive.length() > 0) {
 								resultCaseInsensitive.append("\n");
 							}
-							resultContains.append(String.format("Ship '%s' found in %s",
-							                                    starMapRegistryItem.name,
-							                                    starMapRegistryItem.getFormattedLocation()));
+							resultContains.append(String.format("%s '%s' found in %s",
+							                                    WordUtils.capitalize(enumGlobalRegionType.getName()),
+							                                    globalRegion.name,
+							                                    globalRegion.getFormattedLocation()));
 						} else {
 							resultCaseInsensitive.append(".");
 						}
-					} else if (starMapRegistryItem.name.contains(nameShip)) {
+					} else if (globalRegion.name.contains(keyword)) {
 						if (resultContains.length() < MAX_LENGTH) {
 							if (resultContains.length() > 0) {
 								resultContains.append("\n");
 							}
-							resultContains.append(String.format("Ship '%s' found in %s",
-							                                    starMapRegistryItem.name,
-							                                    starMapRegistryItem.getFormattedLocation()));
+							resultContains.append(String.format("%s '%s' found in %s",
+							                                    WordUtils.capitalize(enumGlobalRegionType.getName()),
+							                                    globalRegion.name,
+							                                    globalRegion.getFormattedLocation()));
 						} else {
 							resultContains.append(".");
 						}
@@ -233,31 +238,33 @@ public class StarMapRegistry {
 		if (resultContains.length() > 0) {
 			return resultContains.toString();
 		}
-		return String.format("No ship found with name '%s'", nameShip);
+		return String.format("No %s found with name '%s'",
+		                     enumGlobalRegionType.getName(), keyword );
 	}
 	
-	public static StarMapRegistryItem findNearest(final EnumStarMapEntryType enumStarMapEntryType, @Nonnull final World world, @Nonnull final BlockPos blockPos) {
-		final CopyOnWriteArraySet<StarMapRegistryItem> setStarMapRegistryItems = registry.get(world.provider.getDimension());
-		if (setStarMapRegistryItems == null) {
+	@Nullable
+	public static GlobalRegion getNearest(final EnumGlobalRegionType enumGlobalRegionType, @Nonnull final World world, @Nonnull final BlockPos blockPos) {
+		final CopyOnWriteArraySet<GlobalRegion> setGlobalRegions = registry.get(world.provider.getDimension());
+		if (setGlobalRegions == null) {
 			return null;
 		}
 		
 		double distanceSquared_min = Double.MAX_VALUE;
-		StarMapRegistryItem result = null;
-		for (final StarMapRegistryItem starMapRegistryItem : setStarMapRegistryItems) {
-			if ( enumStarMapEntryType != null
-			  && starMapRegistryItem.type != enumStarMapEntryType ) {
+		GlobalRegion result = null;
+		for (final GlobalRegion globalRegion : setGlobalRegions) {
+			if (enumGlobalRegionType != null
+			    && globalRegion.type != enumGlobalRegionType) {
 				continue;
 			}
 			
-			final double dX = starMapRegistryItem.x - blockPos.getX();
-			final double dY = starMapRegistryItem.y - blockPos.getY();
-			final double dZ = starMapRegistryItem.z - blockPos.getZ();
+			final double dX = globalRegion.x - blockPos.getX();
+			final double dY = globalRegion.y - blockPos.getY();
+			final double dZ = globalRegion.z - blockPos.getZ();
 			final double distanceSquared = dX * dX + dY * dY + dZ * dZ;
 			
 			if ( distanceSquared < distanceSquared_min) {
 				distanceSquared_min = distanceSquared;
-				result = starMapRegistryItem;
+				result = globalRegion;
 			}
 		}
 		
@@ -266,20 +273,20 @@ public class StarMapRegistry {
 	
 	public static boolean onBlockUpdating(@Nullable final Entity entity, @Nonnull final World world, @Nonnull final BlockPos blockPos, final IBlockState blockState) {
 		if (!Commons.isSafeThread()) {
-			WarpDrive.logger.error(String.format("Non-threadsafe call to StarMapRegistry:onBlockUpdating outside main thread, for %s %s",
+			WarpDrive.logger.error(String.format("Non-threadsafe call to GlobalRegionManager:onBlockUpdating outside main thread, for %s %s",
 			                                     blockState, Commons.format(world, blockPos) ));
 			return false;
 		}
-		final CopyOnWriteArraySet<StarMapRegistryItem> setStarMapRegistryItems = registry.get(world.provider.getDimension());
-		if (setStarMapRegistryItems == null) {
+		final CopyOnWriteArraySet<GlobalRegion> setGlobalRegions = registry.get(world.provider.getDimension());
+		if (setGlobalRegions == null) {
 			return true;
 		}
 		boolean isAllowed = true;
-		for (final StarMapRegistryItem registryItem : setStarMapRegistryItems) {
+		for (final GlobalRegion registryItem : setGlobalRegions) {
 			if (registryItem.contains(blockPos)) {
-				final TileEntity tileEntity = world.getTileEntity(new BlockPos(registryItem.x, registryItem.y, registryItem.z));
-				if (tileEntity instanceof IStarMapRegistryTileEntity) {
-					isAllowed = isAllowed && ((IStarMapRegistryTileEntity) tileEntity).onBlockUpdatingInArea(entity, blockPos, blockState);
+				final TileEntity tileEntity = world.getTileEntity(registryItem.getBlockPos());
+				if (tileEntity instanceof IGlobalRegionProvider) {
+					isAllowed = isAllowed && ((IGlobalRegionProvider) tileEntity).onBlockUpdatingInArea(entity, blockPos, blockState);
 				}
 			}
 		}
@@ -288,20 +295,20 @@ public class StarMapRegistry {
 	
 	public static boolean onChatReceived(@Nonnull final EntityPlayer entityPlayer, @Nonnull final String message) {
 		if (!Commons.isSafeThread()) {
-			WarpDrive.logger.error(String.format("Non-threadsafe call to StarMapRegistry:onChatReceived outside main thread, for %s %s",
+			WarpDrive.logger.error(String.format("Non-threadsafe call to GlobalRegionManager:onChatReceived outside main thread, for %s %s",
 			                                     entityPlayer, message ));
 			return false;
 		}
-		final CopyOnWriteArraySet<StarMapRegistryItem> setStarMapRegistryItems = registry.get(entityPlayer.world.provider.getDimension());
-		if (setStarMapRegistryItems == null) {
+		final CopyOnWriteArraySet<GlobalRegion> setGlobalRegions = registry.get(entityPlayer.world.provider.getDimension());
+		if (setGlobalRegions == null) {
 			return true;
 		}
 		final BlockPos blockPos = entityPlayer.getPosition();
 		boolean isCancelled = false;
-		for (final StarMapRegistryItem registryItem : setStarMapRegistryItems) {
-			if ( registryItem.type == EnumStarMapEntryType.VIRTUAL_ASSISTANT
+		for (final GlobalRegion registryItem : setGlobalRegions) {
+			if (registryItem.type == EnumGlobalRegionType.VIRTUAL_ASSISTANT
 			  && registryItem.contains(blockPos) ) {
-				final TileEntity tileEntity = entityPlayer.world.getTileEntity(new BlockPos(registryItem.x, registryItem.y, registryItem.z));
+				final TileEntity tileEntity = entityPlayer.world.getTileEntity(registryItem.getBlockPos());
 				if (tileEntity instanceof TileEntityVirtualAssistant) {
 					isCancelled = isCancelled || ((TileEntityVirtualAssistant) tileEntity).onChatReceived(entityPlayer, message);
 				}
@@ -310,82 +317,8 @@ public class StarMapRegistry {
 		return isCancelled;
 	}
 	
-	public static double getGravity(final Entity entity) {
-		final CelestialObject celestialObject = CelestialObjectManager.get(entity.world, (int) entity.posX, (int) entity.posZ);
-		return celestialObject == null ? 1.0D : celestialObject.getGravity();
-	}
-	
-	public static int getSpaceDimensionId(final World world, final int x, final int z) {
-		CelestialObject celestialObject = CelestialObjectManager.get(world, x, z);
-		if (celestialObject == null) {
-			return world.provider.getDimension();
-		}
-		// already in space?
-		if (celestialObject.isSpace()) {
-			return celestialObject.dimensionId;
-		}
-		// coming from hyperspace?
-		if (celestialObject.isHyperspace()) {
-			celestialObject = CelestialObjectManager.getClosestChild(world, x, z);
-			return celestialObject == null ? 0 : celestialObject.dimensionId;
-		}
-		// coming from a planet?
-		while (celestialObject != null && !celestialObject.isSpace()) {
-			celestialObject = celestialObject.parent;
-		}
-		return celestialObject == null ? 0 : celestialObject.dimensionId;
-	}
-	
-	public static int getHyperspaceDimensionId(final World world, final int x, final int z) {
-		CelestialObject celestialObject = CelestialObjectManager.get(world, x, z);
-		if (celestialObject == null) {
-			return world.provider.getDimension();
-		}
-		// already in hyperspace?
-		if (celestialObject.isHyperspace()) {
-			return celestialObject.dimensionId;
-		}
-		// coming from space?
-		if (celestialObject.isSpace()) {
-			return celestialObject.parent.dimensionId;
-		}
-		// coming from a planet?
-		while (celestialObject != null && !celestialObject.isSpace()) {
-			celestialObject = celestialObject.parent;
-		}
-		return celestialObject == null || celestialObject.parent == null ? 0 : celestialObject.parent.dimensionId;
-	}
-	
-	public static int getDimensionId(final String stringDimension, final Entity entity) {
-		switch (stringDimension.toLowerCase()) {
-		case "world":
-		case "overworld":
-		case "0":
-			return 0;
-		case "nether":
-		case "thenether":
-		case "-1":
-			return -1;
-		case "s":
-		case "space":
-			return getSpaceDimensionId(entity.world, (int) entity.posX, (int) entity.posZ);
-		case "h":
-		case "hyper":
-		case "hyperspace":
-			return getHyperspaceDimensionId(entity.world, (int) entity.posX, (int) entity.posZ);
-		default:
-			try {
-				return Integer.parseInt(stringDimension);
-			} catch (final Exception exception) {
-				// exception.printStackTrace(WarpDrive.printStreamError);
-				WarpDrive.logger.info(String.format("Invalid dimension %s, expecting integer or overworld/nether/end/theend/space/hyper/hyperspace",
-				                                    stringDimension));
-			}
-		}
-		return 0;
-	}
-	
-	public static ArrayList<RadarEcho> getRadarEchos(final TileEntity tileEntity, final int radius) {
+	@Nonnull
+	public static ArrayList<RadarEcho> getRadarEchos(@Nonnull final TileEntity tileEntity, final int radius) {
 		final ArrayList<RadarEcho> arrayListRadarEchos = new ArrayList<>(registry.size());
 		cleanup();
 		
@@ -395,12 +328,12 @@ public class StarMapRegistry {
 			tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ());
 		// printRegistry();
 		final int radius2 = radius * radius;
-		for (final Map.Entry<Integer, CopyOnWriteArraySet<StarMapRegistryItem>> entryDimension : registry.entrySet()) {
-			for (final StarMapRegistryItem starMapRegistryItem : entryDimension.getValue()) {
-				if (!starMapRegistryItem.type.hasRadarEcho()) {
+		for (final Map.Entry<Integer, CopyOnWriteArraySet<GlobalRegion>> entryDimension : registry.entrySet()) {
+			for (final GlobalRegion globalRegion : entryDimension.getValue()) {
+				if (!globalRegion.type.hasRadarEcho()) {
 					continue;
 				}
-				final Vector3 vectorItem = starMapRegistryItem.getUniversalCoordinates(tileEntity.getWorld().isRemote);
+				final Vector3 vectorItem = globalRegion.getUniversalCoordinates(tileEntity.getWorld().isRemote);
 				if (vectorItem == null) {
 					continue;
 				}
@@ -411,15 +344,15 @@ public class StarMapRegistry {
 				if (distance2 > radius2) {
 					continue;
 				}
-				if ( starMapRegistryItem.isolationRate != 0.0D
-				  && tileEntity.getWorld().rand.nextDouble() < starMapRegistryItem.isolationRate) {
+				if (globalRegion.isolationRate != 0.0D
+				    && tileEntity.getWorld().rand.nextDouble() < globalRegion.isolationRate) {
 					continue;
 				}
 				
-				arrayListRadarEchos.add( new RadarEcho(starMapRegistryItem.type.getName(),
+				arrayListRadarEchos.add( new RadarEcho(globalRegion.type.getName(),
 				                                       vectorItem,
-				                                       starMapRegistryItem.mass,
-				                                       starMapRegistryItem.name) );
+				                                       globalRegion.mass,
+				                                       globalRegion.name));
 			}
 		}
 		
@@ -460,12 +393,12 @@ public class StarMapRegistry {
 	}
 	
 	public static void printRegistry(final String trigger) {
-		WarpDrive.logger.info(String.format("Starmap registry (%s entries after %s):",
+		WarpDrive.logger.info(String.format("Global region registry (%s entries after %s):",
 		                                    registry.size(), trigger));
 		
-		for (final Map.Entry<Integer, CopyOnWriteArraySet<StarMapRegistryItem>> entryDimension : registry.entrySet()) {
+		for (final Map.Entry<Integer, CopyOnWriteArraySet<GlobalRegion>> entryDimension : registry.entrySet()) {
 			final StringBuilder message = new StringBuilder();
-			for (final StarMapRegistryItem registryItem : entryDimension.getValue()) {
+			for (final GlobalRegion registryItem : entryDimension.getValue()) {
 				message.append(String.format("\n- %s '%s' @ DIM%d (%d %d %d) with %.3f isolation rate",
 				                             registryItem.type, registryItem.name,
 				                             registryItem.dimensionId, registryItem.x, registryItem.y, registryItem.z,
@@ -484,17 +417,17 @@ public class StarMapRegistry {
 			                                     shipCore1));
 			return null;
 		}
-		final AxisAlignedBB aabb1 = shipCore1.getStarMapArea();		
+		final AxisAlignedBB aabb1 = shipCore1.getGlobalRegionArea();		
 		
-		final CopyOnWriteArraySet<StarMapRegistryItem> setRegistryItems = registry.get(shipCore1.getWorld().provider.getDimension());
+		final CopyOnWriteArraySet<GlobalRegion> setRegistryItems = registry.get(shipCore1.getWorld().provider.getDimension());
 		if (setRegistryItems == null) {
 			return null;
 		}
-		for (final StarMapRegistryItem registryItem : setRegistryItems) {
+		for (final GlobalRegion registryItem : setRegistryItems) {
 			assert registryItem.dimensionId == shipCore1.getWorld().provider.getDimension();
 			
 			// only check ships
-			if (registryItem.type != EnumStarMapEntryType.SHIP) {
+			if (registryItem.type != EnumGlobalRegionType.SHIP) {
 				continue;
 			}
 			
@@ -512,7 +445,7 @@ public class StarMapRegistry {
 			}
 			
 			// Skip missing ship cores
-			final TileEntity tileEntity = shipCore1.getWorld().getTileEntity(new BlockPos(registryItem.x, registryItem.y, registryItem.z));
+			final TileEntity tileEntity = shipCore1.getWorld().getTileEntity(registryItem.getBlockPos());
 			if (!(tileEntity instanceof TileEntityShipCore)) {
 				continue;
 			}
@@ -543,19 +476,19 @@ public class StarMapRegistry {
 	// do not call during tileEntity construction (readFromNBT and validate)
 	private static boolean isExceptionReported = false;
 	private static void cleanup() {
-		if (!Commons.throttleMe("Starmap registry cleanup", 180000)) {
+		if (!Commons.throttleMe("Global region registry cleanup", 180000)) {
 			return;
 		}
-		LocalProfiler.start("Starmap registry cleanup");
+		LocalProfiler.start("Global region registry cleanup");
 		
 		boolean isValid;
-		for (final Map.Entry<Integer, CopyOnWriteArraySet<StarMapRegistryItem>> entryDimension : registry.entrySet()) {
+		for (final Map.Entry<Integer, CopyOnWriteArraySet<GlobalRegion>> entryDimension : registry.entrySet()) {
 			final WorldServer world = DimensionManager.getWorld(entryDimension.getKey());
 			// skip unloaded worlds
 			if (world == null) {
 				continue;
 			}
-			for (final StarMapRegistryItem registryItem : entryDimension.getValue()) {
+			for (final GlobalRegion registryItem : entryDimension.getValue()) {
 				isValid = false;
 				if (registryItem != null) {
 					
@@ -568,7 +501,7 @@ public class StarMapRegistry {
 						} catch (final NoSuchFieldError exception) {
 							if (!isExceptionReported) {
 								exception.printStackTrace(WarpDrive.printStreamError);
-								WarpDrive.logger.info(String.format("Unable to check non-loaded chunks for star map entry %s",
+								WarpDrive.logger.info(String.format("Unable to check non-loaded chunks for GlobalRegion %s",
 								                                    registryItem));
 								isExceptionReported = true;
 							}
@@ -580,16 +513,16 @@ public class StarMapRegistry {
 					// skip unloaded chunks
 					if (!isLoaded) {
 						if (WarpDrive.isDev) {
-							WarpDrive.logger.info(String.format("Skipping non-loaded star map entry %s",
+							WarpDrive.logger.info(String.format("Skipping non-loaded GlobalRegion %s",
 							                                    registryItem));
 						}
 						continue;
 					}
 					
 					// get block and tile entity
-					final Block block = world.getBlockState(new BlockPos(registryItem.x, registryItem.y, registryItem.z)).getBlock();
+					final Block block = world.getBlockState(registryItem.getBlockPos()).getBlock();
 					
-					final TileEntity tileEntity = world.getTileEntity(new BlockPos(registryItem.x, registryItem.y, registryItem.z));
+					final TileEntity tileEntity = world.getTileEntity(registryItem.getBlockPos());
 					isValid = true;
 					switch (registryItem.type) {
 					case UNDEFINED:
@@ -623,15 +556,13 @@ public class StarMapRegistry {
 				}
 				
 				if (!isValid) {
-					// if (WarpDriveConfig.LOGGING_STARMAP) {
-						if (registryItem == null) {
-							WarpDrive.logger.info("Cleaning up starmap object ~null~");
-						} else {
-							WarpDrive.logger.info(String.format("Cleaning up starmap object %s at dimension %d (%d %d %d)",
-							                                    registryItem.type,
-							                                    registryItem.dimensionId, registryItem.x, registryItem.y, registryItem.z));
-						}
-					// }
+					if (registryItem == null) {
+						WarpDrive.logger.warn("Cleaning up global region object ~null~");
+					} else {
+						WarpDrive.logger.warn(String.format("Cleaning up global region object %s at dimension %d (%d %d %d)",
+						                                    registryItem.type,
+						                                    registryItem.dimensionId, registryItem.x, registryItem.y, registryItem.z ));
+					}
 					countRemove++;
 					entryDimension.getValue().remove(registryItem);
 				}
@@ -642,52 +573,59 @@ public class StarMapRegistry {
 	}
 	
 	public static void readFromNBT(@Nullable final NBTTagCompound tagCompound) {
-		if (tagCompound == null || !tagCompound.hasKey("starMapRegistryItems")) {
+		if ( tagCompound == null
+		  || ( !tagCompound.hasKey("starMapRegistryItems")
+		    && !tagCompound.hasKey("globalRegions") ) ) {
 			registry.clear();
 			return;
 		}
 		
 		// read all entries in a flat structure
-		final NBTTagList tagList = tagCompound.getTagList("starMapRegistryItems", Constants.NBT.TAG_COMPOUND);
-		final StarMapRegistryItem[] registryFlat = new StarMapRegistryItem[tagList.tagCount()];
+		final NBTTagList tagList;
+		if (tagCompound.hasKey("starMapRegistryItems")) {
+			tagList = tagCompound.getTagList("starMapRegistryItems", Constants.NBT.TAG_COMPOUND);
+		} else {
+			tagList = tagCompound.getTagList("globalRegions", Constants.NBT.TAG_COMPOUND);
+		}
+		final GlobalRegion[] registryFlat = new GlobalRegion[tagList.tagCount()];
 		final HashMap<Integer, Integer> sizeDimensions = new HashMap<>();
 		for (int index = 0; index < tagList.tagCount(); index++) {
-			final StarMapRegistryItem starMapRegistryItem = new StarMapRegistryItem(tagList.getCompoundTagAt(index));
-			registryFlat[index] = starMapRegistryItem;
+			final GlobalRegion globalRegion = new GlobalRegion(tagList.getCompoundTagAt(index));
+			registryFlat[index] = globalRegion;
 			
 			// update stats
-			Integer count = sizeDimensions.computeIfAbsent(starMapRegistryItem.dimensionId, k -> 0);
+			Integer count = sizeDimensions.computeIfAbsent(globalRegion.dimensionId, k -> 0);
 			count++;
-			sizeDimensions.put(starMapRegistryItem.dimensionId, count);
+			sizeDimensions.put(globalRegion.dimensionId, count);
 		}
 		
 		// pre-build the local collections using known stats to avoid re-allocations
-		final HashMap<Integer, ArrayList<StarMapRegistryItem>> registryLocal = new HashMap<>();
+		final HashMap<Integer, ArrayList<GlobalRegion>> registryLocal = new HashMap<>();
 		for (final Entry<Integer, Integer> entryDimension : sizeDimensions.entrySet()) {
 			registryLocal.put(entryDimension.getKey(), new ArrayList<>(entryDimension.getValue()));
 		}
 		
 		// fill the local collections
-		for (final StarMapRegistryItem starMapRegistryItem : registryFlat) {
-			registryLocal.get(starMapRegistryItem.dimensionId).add(starMapRegistryItem);
+		for (final GlobalRegion globalRegion : registryFlat) {
+			registryLocal.get(globalRegion.dimensionId).add(globalRegion);
 		}
 		
 		// transfer to main one
 		registry.clear();
-		for (final Entry<Integer, ArrayList<StarMapRegistryItem>> entry : registryLocal.entrySet()) {
+		for (final Entry<Integer, ArrayList<GlobalRegion>> entry : registryLocal.entrySet()) {
 			registry.put(entry.getKey(), new CopyOnWriteArraySet<>(entry.getValue()));
 		}
 	}
 	
 	public static void writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		final NBTTagList tagList = new NBTTagList();
-		for (final CopyOnWriteArraySet<StarMapRegistryItem> starMapRegistryItems : registry.values()) {
-			for (final StarMapRegistryItem starMapRegistryItem : starMapRegistryItems) {
+		for (final CopyOnWriteArraySet<GlobalRegion> globalRegions : registry.values()) {
+			for (final GlobalRegion globalRegion : globalRegions) {
 				final NBTTagCompound tagCompoundItem = new NBTTagCompound();
-				starMapRegistryItem.writeToNBT(tagCompoundItem);
+				globalRegion.writeToNBT(tagCompoundItem);
 				tagList.appendTag(tagCompoundItem);
 			}
 		}
-		tagCompound.setTag("starMapRegistryItems", tagList);
+		tagCompound.setTag("globalRegions", tagList);
 	}
 }

@@ -17,6 +17,7 @@ public class GlobalPosition {
 	
 	public final int dimensionId;
 	public final int x, y, z;
+	private BlockPos cache_blockPos;
 	
 	public GlobalPosition(final int dimensionId, final int x, final int y, final int z) {
 		this.dimensionId = dimensionId;
@@ -78,15 +79,17 @@ public class GlobalPosition {
 	
 	public Vector3 getUniversalCoordinates(final boolean isRemote) {
 		final CelestialObject celestialObject = CelestialObjectManager.get(isRemote, dimensionId, x, z);
-		return StarMapRegistry.getUniversalCoordinates(celestialObject, x, y, z);
-	}
-	
-	public VectorI getVectorI() {
-		return new VectorI(x, y, z);
+		return GlobalRegionManager.getUniversalCoordinates(celestialObject, x, y, z);
 	}
 	
 	public BlockPos getBlockPos() {
-		return new BlockPos(x, y, z);
+		if ( cache_blockPos == null
+		  || cache_blockPos.getX() != x
+		  || cache_blockPos.getY() != y
+		  || cache_blockPos.getZ() != z ) {
+			cache_blockPos = new BlockPos(x, y, z);
+		}
+		return cache_blockPos;
 	}
 	
 	public int distance2To(@Nonnull final TileEntity tileEntity) {

@@ -1,22 +1,30 @@
 package cr0s.warpdrive.api;
 
 import cr0s.warpdrive.api.computer.ICoreSignature;
-import cr0s.warpdrive.data.EnumStarMapEntryType;
+import cr0s.warpdrive.data.EnumGlobalRegionType;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
-public interface IStarMapRegistryTileEntity extends ICoreSignature {
+public interface IGlobalRegionProvider extends ICoreSignature {
+	
+	// providers are TileEntities, so we reuse the base class methods
+	default int getDimension() {
+		assert this instanceof TileEntity;
+		return ((TileEntity) this).getWorld().provider.getDimension();
+	}
+	BlockPos getPos();
 	
 	// get the registry type
-	EnumStarMapEntryType getStarMapType();
+	EnumGlobalRegionType getGlobalRegionType();
 	
 	// get the area controlled by this tile entity 
-	AxisAlignedBB getStarMapArea();
+	AxisAlignedBB getGlobalRegionArea();
 	
 	// mass of the multi-block
 	int getMass();

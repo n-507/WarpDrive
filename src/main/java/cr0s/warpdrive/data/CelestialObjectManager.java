@@ -9,6 +9,7 @@ import cr0s.warpdrive.config.XmlFileManager;
 import javax.annotation.Nonnull;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
@@ -99,6 +100,81 @@ public class CelestialObjectManager extends XmlFileManager {
 		final CelestialObject celestialObject = get(world, x, z);
 		return celestialObject == null
 		    || (!celestialObject.isSpace() && !celestialObject.isHyperspace());
+	}
+	
+	public static double getGravity(@Nonnull final Entity entity) {
+		final CelestialObject celestialObject = get(entity.world, (int) Math.floor(entity.posX), (int) Math.floor(entity.posZ));
+		return celestialObject == null ? 1.0D : celestialObject.getGravity();
+	}
+	
+	public static int getSpaceDimensionId(final World world, final int x, final int z) {
+		CelestialObject celestialObject = get(world, x, z);
+		if (celestialObject == null) {
+			return world.provider.getDimension();
+		}
+		// already in space?
+		if (celestialObject.isSpace()) {
+			return celestialObject.dimensionId;
+		}
+		// coming from hyperspace?
+		if (celestialObject.isHyperspace()) {
+			celestialObject = getClosestChild(world, x, z);
+			return celestialObject == null ? 0 : celestialObject.dimensionId;
+		}
+		// coming from a planet?
+		while (celestialObject != null && !celestialObject.isSpace()) {
+			celestialObject = celestialObject.parent;
+		}
+		return celestialObject == null ? 0 : celestialObject.dimensionId;
+	}
+	
+	public static int getHyperspaceDimensionId(final World world, final int x, final int z) {
+		CelestialObject celestialObject = get(world, x, z);
+		if (celestialObject == null) {
+			return world.provider.getDimension();
+		}
+		// already in hyperspace?
+		if (celestialObject.isHyperspace()) {
+			return celestialObject.dimensionId;
+		}
+		// coming from space?
+		if (celestialObject.isSpace()) {
+			return celestialObject.parent.dimensionId;
+		}
+		// coming from a planet?
+		while (celestialObject != null && !celestialObject.isSpace()) {
+			celestialObject = celestialObject.parent;
+		}
+		return celestialObject == null || celestialObject.parent == null ? 0 : celestialObject.parent.dimensionId;
+	}
+	
+	public static int getDimensionId(final String stringDimension, final Entity entity) {
+		switch (stringDimension.toLowerCase()) {
+		case "world":
+		case "overworld":
+		case "0":
+			return 0;
+		case "nether":
+		case "thenether":
+		case "-1":
+			return -1;
+		case "s":
+		case "space":
+			return getSpaceDimensionId(entity.world, (int) entity.posX, (int) entity.posZ);
+		case "h":
+		case "hyper":
+		case "hyperspace":
+			return getHyperspaceDimensionId(entity.world, (int) entity.posX, (int) entity.posZ);
+		default:
+			try {
+				return Integer.parseInt(stringDimension);
+			} catch (final Exception exception) {
+				// exception.printStackTrace(WarpDrive.printStreamError);
+				WarpDrive.logger.info(String.format("Invalid dimension %s, expecting integer or overworld/nether/end/theend/space/hyper/hyperspace",
+				                                    stringDimension));
+			}
+		}
+		return 0;
 	}
 	
 	public static double getMaxWorldBorder(final World world) {

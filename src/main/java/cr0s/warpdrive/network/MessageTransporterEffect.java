@@ -8,7 +8,6 @@ import cr0s.warpdrive.data.EntityFXRegistry;
 import cr0s.warpdrive.data.GlobalPosition;
 import cr0s.warpdrive.data.MovingEntity;
 import cr0s.warpdrive.data.Vector3;
-import cr0s.warpdrive.data.VectorI;
 import cr0s.warpdrive.render.AbstractEntityFX;
 import cr0s.warpdrive.render.EntityFXDot;
 import cr0s.warpdrive.render.EntityFXEnergizing;
@@ -147,11 +146,11 @@ public class MessageTransporterEffect implements IMessage, IMessageHandler<Messa
 		
 		// add flying particles in area of effect when in the wild
 		if (!isTransporterRoom) {
-			spawnParticlesInArea(world, globalPosition.getVectorI(), false,
+			spawnParticlesInArea(world, globalPosition.getBlockPos(), false,
 					0.4F, 0.7F, 0.9F,
 					0.10F, 0.15F, 0.10F);
 		} else {
-			spawnParticlesInTransporterRoom(world, globalPosition.getVectorI(), false,
+			spawnParticlesInTransporterRoom(world, globalPosition.getBlockPos(), false,
 			                                0.4F, 0.7F, 0.9F,
 			                                0.10F, 0.15F, 0.10F);
 		}
@@ -188,18 +187,18 @@ public class MessageTransporterEffect implements IMessage, IMessageHandler<Messa
 	}
 	
 	@SideOnly(Side.CLIENT)
-	private void spawnParticlesInArea(final World world, final VectorI vCenter, final boolean isFalling,
+	private void spawnParticlesInArea(final World world, final BlockPos blockPosCenter, final boolean isFalling,
 	                                  final float redBase, final float greenBase, final float blueBase,
 	                                  final float redFactor, final float greenFactor, final float blueFactor) {
 		
 		// compute area of effect
 		final AxisAlignedBB aabb = new AxisAlignedBB(
-				vCenter.x - WarpDriveConfig.TRANSPORTER_ENTITY_GRAB_RADIUS_BLOCKS,
-				vCenter.y - 1.0D,
-				vCenter.z - WarpDriveConfig.TRANSPORTER_ENTITY_GRAB_RADIUS_BLOCKS,
-				vCenter.x + WarpDriveConfig.TRANSPORTER_ENTITY_GRAB_RADIUS_BLOCKS + 1.0D,
-				vCenter.y + 2.0D,
-				vCenter.z + WarpDriveConfig.TRANSPORTER_ENTITY_GRAB_RADIUS_BLOCKS + 1.0D);
+				blockPosCenter.getX() - WarpDriveConfig.TRANSPORTER_ENTITY_GRAB_RADIUS_BLOCKS,
+				blockPosCenter.getY() - 1.0D,
+				blockPosCenter.getZ() - WarpDriveConfig.TRANSPORTER_ENTITY_GRAB_RADIUS_BLOCKS,
+				blockPosCenter.getX() + WarpDriveConfig.TRANSPORTER_ENTITY_GRAB_RADIUS_BLOCKS + 1.0D,
+				blockPosCenter.getY() + 2.0D,
+				blockPosCenter.getZ() + WarpDriveConfig.TRANSPORTER_ENTITY_GRAB_RADIUS_BLOCKS + 1.0D );
 		
 		final Vector3 v3Motion = new Vector3(0.0D, 0.0D, 0.0D);
 		final Vector3 v3Acceleration = new Vector3(0.0D, isFalling ? -0.001D : 0.001D, 0.0D);
@@ -248,15 +247,15 @@ public class MessageTransporterEffect implements IMessage, IMessageHandler<Messa
 	}
 	
 	@SideOnly(Side.CLIENT)
-	private void spawnParticlesInTransporterRoom(final World world, final VectorI vTransporter, final boolean isFalling,
+	private void spawnParticlesInTransporterRoom(final World world, final BlockPos blockPosTransporter, final boolean isFalling,
 	                                             final float redBase, final float greenBase, final float blueBase,
 	                                             final float redFactor, final float greenFactor, final float blueFactor) {
 		
-		final TileEntity tileEntity = vTransporter.getTileEntity(world);
+		final TileEntity tileEntity = world.getTileEntity(blockPosTransporter);
 		if (!(tileEntity instanceof TileEntityTransporterCore)) {
-			if (WarpDrive.isDev) {
+			if (Commons.throttleMe(String.format("spawnParticlesInTransporterRoom %s", Commons.format(world, blockPosTransporter)))) {
 				WarpDrive.logger.warn(String.format("Missing transporter core at %s, is chunk loaded yet? %s",
-				                                    vTransporter, tileEntity));
+				                                    blockPosTransporter, tileEntity ));
 			}
 			return;
 		}
@@ -268,7 +267,7 @@ public class MessageTransporterEffect implements IMessage, IMessageHandler<Messa
 		final Collection<BlockPos> vContainments = ((TileEntityTransporterCore) tileEntity).getContainments();
 		if (vContainments == null) {
 			WarpDrive.logger.error(String.format("No containments blocks identified for transporter core at %s",
-			                                     vTransporter));
+			                                     blockPosTransporter ));
 			return;
 		}
 		for (final BlockPos vContainment : vContainments) {

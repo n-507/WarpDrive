@@ -190,7 +190,7 @@ public class AcceleratorSetup extends GlobalPosition {
 			WarpDrive.blockElectromagnets_glass[3],
 			WarpDrive.blockVoidShellPlain,
 			WarpDrive.blockVoidShellGlass);
-		final Set<BlockPos> connections = Commons.getConnectedBlocks(world, new BlockPos(x, y, z), Commons.DIRECTIONS_ANY, whitelist, 3);
+		final Set<BlockPos> connections = Commons.getConnectedBlocks(world, getBlockPos(), Commons.DIRECTIONS_ANY, whitelist, 3);
 		VectorI firstVoidShell = null;
 		for (final BlockPos connection : connections) {
 			final Block block = world.getBlockState(connection).getBlock();
@@ -294,7 +294,7 @@ public class AcceleratorSetup extends GlobalPosition {
 	}
 	
 	private boolean isInRange(@Nonnull final TrajectoryPoint trajectoryPoint) {
-		final double distanceSquared = trajectoryPoint.distance2To(new VectorI(x, y, z));
+		final double distanceSquared = trajectoryPoint.distance2To(getBlockPos());
 		return distanceSquared <= ACCELERATOR_MAX_RANGE_SQUARED;
 	}
 	

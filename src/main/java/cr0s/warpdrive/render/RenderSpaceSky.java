@@ -5,7 +5,7 @@ import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObject;
 import cr0s.warpdrive.data.CelestialObject.RenderData;
-import cr0s.warpdrive.data.StarMapRegistry;
+import cr0s.warpdrive.data.GlobalRegionManager;
 import cr0s.warpdrive.data.Vector3;
 
 import javax.annotation.Nonnull;
@@ -186,7 +186,7 @@ public class RenderSpaceSky extends IRenderHandler {
 		
 		// Planets
 		if (celestialObject != null && celestialObject.opacityCelestialObjects > 0.0F) {
-			final Vector3 vectorPlayer = StarMapRegistry.getUniversalCoordinates(celestialObject, vec3Player.x, vec3Player.y, vec3Player.z);
+			final Vector3 vectorPlayer = GlobalRegionManager.getUniversalCoordinates(celestialObject, vec3Player.x, vec3Player.y, vec3Player.z);
 			for (final CelestialObject celestialObjectChild : CelestialObjectManager.getRenderStack()) {
 				if (celestialObject == celestialObjectChild) {
 					continue;
@@ -268,14 +268,16 @@ public class RenderSpaceSky extends IRenderHandler {
 		// @TODO compute relative coordinates for rendering on celestialObject
 		
 		// get universal coordinates
-		final Vector3 vectorCenter = StarMapRegistry.getUniversalCoordinates(celestialObject,
-				celestialObject.dimensionCenterX,
+		final Vector3 vectorCenter = GlobalRegionManager.getUniversalCoordinates(
+				celestialObject,
+		        celestialObject.dimensionCenterX,
 		        64,
-		        celestialObject.dimensionCenterZ);
-		final Vector3 vectorBorderPos = StarMapRegistry.getUniversalCoordinates(celestialObject,
+		        celestialObject.dimensionCenterZ );
+		final Vector3 vectorBorderPos = GlobalRegionManager.getUniversalCoordinates(
+				celestialObject,
 				celestialObject.dimensionCenterX + celestialObject.borderRadiusX,
 				64,
-				celestialObject.dimensionCenterZ + celestialObject.borderRadiusZ);
+				celestialObject.dimensionCenterZ + celestialObject.borderRadiusZ );
 		if (vectorCenter == null || vectorBorderPos == null) {// probably an invalid celestial object tree
 			return;
 		}
