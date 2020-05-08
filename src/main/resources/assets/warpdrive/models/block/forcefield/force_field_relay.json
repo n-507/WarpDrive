@@ -4,8 +4,9 @@
 	"textures": {
 		"coils": "warpdrive:blocks/forcefield/relay-coils",
 		"bottom": "warpdrive:blocks/forcefield/relay-bottom",
-		"front": "warpdrive:blocks/forcefield/relay-front",
-		"particle": "warpdrive:blocks/forcefield/relay-side_basic"
+		"front": "warpdrive:blocks/forcefield/relay.basic-front",
+		"side": "warpdrive:blocks/forcefield/relay-side",
+		"particle": "warpdrive:blocks/forcefield/relay-side"
 	},
 	"elements": [
 		{
