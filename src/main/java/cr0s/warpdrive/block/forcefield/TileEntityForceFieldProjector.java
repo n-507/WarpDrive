@@ -9,7 +9,6 @@ import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnumForceFieldShape;
-import cr0s.warpdrive.data.EnumForceFieldState;
 import cr0s.warpdrive.data.EnumForceFieldUpgrade;
 import cr0s.warpdrive.data.FluidWrapper;
 import cr0s.warpdrive.data.ForceFieldSetup;
@@ -74,7 +73,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	private Vector3 v3Min = new Vector3(-1.0D, -1.0D, -1.0D);
 	private Vector3 v3Max = new Vector3( 1.0D,  1.0D,  1.0D);
 	private Vector3 v3Translation = new Vector3( 0.0D,  0.0D,  0.0D);
-	private boolean legacy_isOn = false;
+	private boolean isActive = false;
 	
 	// computed properties
 	private int cooldownTicks;
@@ -84,13 +83,10 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	private int guideTicks;
 	private double damagesEnergyCost = 0.0D;
 	private final HashSet<UUID> setInteractedEntities = new HashSet<>();
-	private boolean isPowered = true;
 	private ForceFieldSetup cache_forceFieldSetup;
 	private ForceFieldSetup legacy_forceFieldSetup;
 	private double consumptionLeftOver = 0.0D;
 	public EnumFacing enumFacing = EnumFacing.UP;
-	public float rotation_deg = 0.0F;
-	public float rotationSpeed_degPerTick = 2.0F;
 	
 	// carry over speed to next tick, useful for slow interactions
 	private float carryScanSpeed;
@@ -144,7 +140,15 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		updateTicks = world.rand.nextInt(PROJECTOR_PROJECTION_UPDATE_TICKS);
 		guideTicks = PROJECTOR_GUIDE_UPDATE_TICKS;
 		enumFacing = world.getBlockState(pos).getValue(BlockProperties.FACING);
-		rotation_deg = world.rand.nextFloat() * 360.0F;
+		
+		// recover is_double_sided from blockstate property
+		final IBlockState blockState = world.getBlockState(pos);
+		if (blockState.getValue(BlockForceFieldProjector.IS_DOUBLE_SIDED)) {
+			isDoubleSided = true;
+		} else if (isDoubleSided) {
+			// up to 1.5.13, blockstate wasn't set properly so we resynchronize here
+			world.setBlockState(pos, blockState.withProperty(BlockForceFieldProjector.IS_DOUBLE_SIDED, true));
+		}
 	}
 	
 	@Override
@@ -152,9 +156,6 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		super.update();
 		
 		if (world.isRemote) {
-			rotation_deg += rotationSpeed_degPerTick;
-			rotationSpeed_degPerTick = 0.98F * rotationSpeed_degPerTick
-			                         + 0.02F * getState().getRotationSpeed_degPerTick();
 			return;
 		}
 		
@@ -203,7 +204,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		
 		// Powered ?
 		final int energyRequired;
-		if (!legacy_isOn) {
+		if (!isActive) {
 			energyRequired = (int) Math.round(forceFieldSetup.startupEnergyCost + forceFieldSetup.placeEnergyCost * forceFieldSetup.placeSpeed * PROJECTOR_PROJECTION_UPDATE_TICKS / 20.0F);
 		} else {
 			energyRequired = (int) Math.round(                                    forceFieldSetup.scanEnergyCost * forceFieldSetup.scanSpeed * PROJECTOR_PROJECTION_UPDATE_TICKS / 20.0F);
@@ -212,21 +213,17 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			WarpDrive.logger.error(String.format("Force field projector requires %d to get started bu can only store %d",
 			                                     energyRequired, energy_getMaxStorage()));
 		}
-		final boolean new_isPowered = energy_getEnergyStored() >= energyRequired;
-		if (isPowered != new_isPowered) {
-			isPowered = new_isPowered;
-			markDirty();
-		}
+		final boolean isPowered = energy_getEnergyStored() >= energyRequired;
 		
 		final boolean isEnabledAndValid = isEnabled && isAssemblyValid;
-		final boolean isOn = isEnabledAndValid && cooldownTicks <= 0 && isPowered;
-		if (isOn) {
-			if (!legacy_isOn) {
+		final boolean new_isActive = isEnabledAndValid && cooldownTicks <= 0 && isPowered;
+		if (new_isActive) {
+			if (!isActive) {
 				consumeEnergy(forceFieldSetup.startupEnergyCost, false);
 				if (WarpDriveConfig.LOGGING_FORCE_FIELD) {
 					WarpDrive.logger.info(String.format("%s starting up...", this));
 				}
-				legacy_isOn = true;
+				isActive = true;
 				markDirty();
 			}
 			cooldownTicks = 0;
@@ -253,11 +250,11 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			}
 			
 		} else {
-			if (legacy_isOn) {
+			if (isActive) {
 				if (WarpDriveConfig.LOGGING_FORCE_FIELD) {
 					WarpDrive.logger.info(String.format("%s shutting down...", this));
 				}
-				legacy_isOn = false;
+				isActive = false;
 				markDirty();
 				cooldownTicks = PROJECTOR_COOLDOWN_TICKS;
 				guideTicks = 0;
@@ -344,8 +341,8 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		calculation_done();
 	}
 	
-	boolean isOn() {
-		return legacy_isOn;
+	boolean isActive() {
+		return isActive;
 	}
 	
 	boolean isPartOfForceField(final VectorI vector) {
@@ -794,7 +791,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		}
 		
 		// force a reboot
-		legacy_isOn = false;
+		isActive = false;
 		
 		// invalidate() can be multi-threaded, so we're delaying the destruction
 		if (Commons.isSafeThread()) {
@@ -932,22 +929,6 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		}
 	}
 	
-	public EnumForceFieldState getState() {
-		EnumForceFieldState forceFieldState = EnumForceFieldState.NOT_CONNECTED;
-		if (isConnected && isAssemblyValid) {
-			if (isPowered) {
-				if (isOn()) {
-					forceFieldState = EnumForceFieldState.CONNECTED_POWERED;
-				} else {
-					forceFieldState = EnumForceFieldState.CONNECTED_OFFLINE;
-				}
-			} else {
-				forceFieldState = EnumForceFieldState.CONNECTED_NOT_POWERED;
-			}
-		}
-		return forceFieldState;
-	}
-	
 	public Vector3 getTranslation() {
 		assert EnumForceFieldUpgrade.TRANSLATION.getProjectorUpgradeSlot() != null;
 		if (hasUpgrade(EnumForceFieldUpgrade.TRANSLATION.getProjectorUpgradeSlot())) {
@@ -1014,9 +995,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		
 		setTranslation(tagCompound.getFloat("translationX"), tagCompound.getFloat("translationY"), tagCompound.getFloat("translationZ"));
 		
-		legacy_isOn = tagCompound.getBoolean("isOn");
-		
-		isPowered = tagCompound.getBoolean("isPowered");
+		isActive = tagCompound.getBoolean("isOn");
 	}
 	
 	@Nonnull
@@ -1054,9 +1033,8 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			tagCompound.setFloat("translationZ", (float)v3Translation.z);
 		}
 		
-		tagCompound.setBoolean("isOn", legacy_isOn);
+		tagCompound.setBoolean("isOn", isActive);
 		
-		tagCompound.setBoolean("isPowered", isPowered);
 		return tagCompound;
 	}
 	
@@ -1128,7 +1106,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	private Object[] state() {    // isConnected, isPowered, shape
 		final long energy = energy_getEnergyStored();
 		final String status = getStatusHeaderInPureText();
-		return new Object[] { status, isEnabled, isConnected, isPowered, getShape().name(), energy };
+		return new Object[] { status, isEnabled, isConnected, isActive, getShape().name(), energy };
 	}
 	
 	public Object[] min(final Object[] arguments) {

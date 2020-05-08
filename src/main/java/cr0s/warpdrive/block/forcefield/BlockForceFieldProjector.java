@@ -5,14 +5,11 @@ import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.TileEntityAbstractBase.UpgradeSlot;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnumForceFieldShape;
-import cr0s.warpdrive.data.EnumForceFieldState;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.item.ItemForceFieldShape;
 import cr0s.warpdrive.item.ItemForceFieldUpgrade;
-import cr0s.warpdrive.render.TileEntityForceFieldProjectorRenderer;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -36,19 +33,13 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.common.property.Properties;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockForceFieldProjector extends BlockAbstractForceField {
 	
 	public static final PropertyBool IS_DOUBLE_SIDED = PropertyBool.create("is_double_sided");
-	public static final IUnlistedProperty<EnumForceFieldShape> SHAPE = Properties.toUnlisted(PropertyEnum.create("shape", EnumForceFieldShape.class));
-	public static final IUnlistedProperty<EnumForceFieldState> STATE = Properties.toUnlisted(PropertyEnum.create("state", EnumForceFieldState.class));
+	public static final PropertyEnum<EnumForceFieldShape> SHAPE = PropertyEnum.create("shape", EnumForceFieldShape.class);
 	
 	private static final AxisAlignedBB AABB_DOWN  = new AxisAlignedBB(0.00D, 0.27D, 0.00D, 1.00D, 0.73D, 1.00D);
 	private static final AxisAlignedBB AABB_UP    = new AxisAlignedBB(0.00D, 0.27D, 0.00D, 1.00D, 0.73D, 1.00D);
@@ -63,17 +54,17 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 		setTranslationKey("warpdrive.force_field.projector." + enumTier.getName());
 		
 		setDefaultState(getDefaultState()
+				                .withProperty(BlockProperties.ACTIVE, false)
 				                .withProperty(BlockProperties.FACING, EnumFacing.DOWN)
 				                .withProperty(IS_DOUBLE_SIDED, false)
+				                .withProperty(SHAPE, EnumForceFieldShape.NONE)
 		               );
 	}
 	
 	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new ExtendedBlockState(this,
-				new IProperty[] { BlockProperties.FACING, IS_DOUBLE_SIDED },
-				new IUnlistedProperty[] { SHAPE, STATE });
+		return new BlockStateContainer(this, BlockProperties.ACTIVE, BlockProperties.FACING, IS_DOUBLE_SIDED, SHAPE);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -88,36 +79,21 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 	@Override
 	public int getMetaFromState(@Nonnull final IBlockState blockState) {
 		return blockState.getValue(BlockProperties.FACING).getIndex()
-		       + (blockState.getValue(IS_DOUBLE_SIDED) ? 8 : 0);
+		     + (blockState.getValue(IS_DOUBLE_SIDED) ? 8 : 0);
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public IBlockState getExtendedState(@Nonnull final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
-		if (!(blockState instanceof IExtendedBlockState)) {
+	public IBlockState getActualState(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
+		if (tileEntity instanceof TileEntityForceFieldProjector) {
+			return blockState
+					       .withProperty(BlockProperties.ACTIVE, ((TileEntityForceFieldProjector) tileEntity).isActive())
+					       .withProperty(SHAPE, ((TileEntityForceFieldProjector) tileEntity).getShape());
+		} else {
 			return blockState;
 		}
-		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
-		EnumForceFieldShape forceFieldShape = EnumForceFieldShape.NONE;
-		EnumForceFieldState forceFieldState = EnumForceFieldState.NOT_CONNECTED;
-		if (tileEntity instanceof TileEntityForceFieldProjector) {
-			final TileEntityForceFieldProjector tileEntityForceFieldProjector = (TileEntityForceFieldProjector) tileEntity;
-			forceFieldShape = tileEntityForceFieldProjector.getShape();
-			forceFieldState = tileEntityForceFieldProjector.getState();
-		}
-		
-		return ((IExtendedBlockState) blockState)
-				.withProperty(SHAPE, forceFieldShape)
-				.withProperty(STATE, forceFieldState);
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void modelInitialisation() {
-		super.modelInitialisation();
-		
-		// Bind our TESR to our tile entity
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityForceFieldProjector.class, new TileEntityForceFieldProjectorRenderer());
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -129,19 +105,19 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isBlockNormalCube(final IBlockState blockState) {
+	public boolean isBlockNormalCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isOpaqueCube(final IBlockState blockState) {
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isFullCube(final IBlockState blockState) {
+	public boolean isFullCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
@@ -174,7 +150,7 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void getSubBlocks(final CreativeTabs creativeTab, final NonNullList<ItemStack> list) {
+	public void getSubBlocks(@Nonnull final CreativeTabs creativeTab, @Nonnull final NonNullList<ItemStack> list) {
 		for (int i = 0; i < 2; ++i) {
 			list.add(new ItemStack(this, 1, i));
 		}
@@ -183,6 +159,15 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 	@Override
 	public int damageDropped(final IBlockState blockState) {
 		return blockState.getValue(IS_DOUBLE_SIDED) ? 1 : 0;
+	}
+	
+	@Nonnull
+	@Override
+	public IBlockState getStateForPlacement(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing,
+	                                        final float hitX, final float hitY, final float hitZ, final int metadata,
+	                                        @Nonnull final EntityLivingBase entityLivingBase, @Nonnull final EnumHand enumHand) {
+		final IBlockState blockState = super.getStateForPlacement(world, blockPos, facing, hitX, hitY, hitZ, metadata, entityLivingBase, enumHand);
+		return blockState.withProperty(IS_DOUBLE_SIDED, metadata == 1);
 	}
 	
 	@Override
