@@ -241,10 +241,10 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 			}
 			if (isEnabled && !enableRequest) {
 				setIsEnabled(false);
-				sendEvent("disabled");
+				sendEvent("disabled", name);
 			} else if (!isEnabled && enableRequest) {
 				setIsEnabled(true);
-				sendEvent("enabled");
+				sendEvent("enabled", name);
 			}
 		}
 		return new Object[] { isEnabled };
