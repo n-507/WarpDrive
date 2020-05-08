@@ -72,7 +72,7 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		setFront(tagCompound.getInteger("front"));
@@ -95,7 +95,7 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		tagCompound.setInteger("front", getFront());

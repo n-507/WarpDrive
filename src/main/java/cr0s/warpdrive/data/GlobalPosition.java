@@ -1,5 +1,7 @@
 package cr0s.warpdrive.data;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -15,6 +17,7 @@ public class GlobalPosition {
 	
 	public final int dimensionId;
 	public final int x, y, z;
+	private BlockPos cache_blockPos;
 	
 	public GlobalPosition(final int dimensionId, final int x, final int y, final int z) {
 		this.dimensionId = dimensionId;
@@ -76,18 +79,20 @@ public class GlobalPosition {
 	
 	public Vector3 getUniversalCoordinates(final boolean isRemote) {
 		final CelestialObject celestialObject = CelestialObjectManager.get(isRemote, dimensionId, x, z);
-		return StarMapRegistry.getUniversalCoordinates(celestialObject, x, y, z);
-	}
-	
-	public VectorI getVectorI() {
-		return new VectorI(x, y, z);
+		return GlobalRegionManager.getUniversalCoordinates(celestialObject, x, y, z);
 	}
 	
 	public BlockPos getBlockPos() {
-		return new BlockPos(x, y, z);
+		if ( cache_blockPos == null
+		  || cache_blockPos.getX() != x
+		  || cache_blockPos.getY() != y
+		  || cache_blockPos.getZ() != z ) {
+			cache_blockPos = new BlockPos(x, y, z);
+		}
+		return cache_blockPos;
 	}
 	
-	public int distance2To(final TileEntity tileEntity) {
+	public int distance2To(@Nonnull final TileEntity tileEntity) {
 		if (tileEntity.getWorld().provider.getDimension() != dimensionId) {
 			return Integer.MAX_VALUE;
 		}
@@ -97,7 +102,7 @@ public class GlobalPosition {
 		return newX * newX + newY * newY + newZ * newZ;
 	}
 	
-	public double distance2To(final Entity entity) {
+	public double distance2To(@Nonnull final Entity entity) {
 		if (entity.world.provider.getDimension() != dimensionId) {
 			return Double.MAX_VALUE;
 		}
@@ -107,21 +112,21 @@ public class GlobalPosition {
 		return newX * newX + newY * newY + newZ * newZ;
 	}
 	
-	public GlobalPosition(final NBTTagCompound tagCompound) {
+	public GlobalPosition(@Nonnull final NBTTagCompound tagCompound) {
 		dimensionId = tagCompound.getInteger("dimensionId");
 		x = tagCompound.getInteger("x");
 		y = tagCompound.getInteger("y");
 		z = tagCompound.getInteger("z");
 	}
 	
-	public void writeToNBT(final NBTTagCompound tagCompound) {
+	public void writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		tagCompound.setInteger("dimensionId", dimensionId);
 		tagCompound.setInteger("x", x);
 		tagCompound.setInteger("y", y);
 		tagCompound.setInteger("z", z);
 	}
 	
-	public boolean equals(final TileEntity tileEntity) {
+	public boolean equals(@Nonnull final TileEntity tileEntity) {
 		return dimensionId == tileEntity.getWorld().provider.getDimension()
 			&& x == tileEntity.getPos().getX() && y == tileEntity.getPos().getY() && z == tileEntity.getPos().getZ();
 	}

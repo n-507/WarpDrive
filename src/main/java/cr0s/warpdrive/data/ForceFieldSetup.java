@@ -310,7 +310,7 @@ public class ForceFieldSetup extends GlobalPosition {
 	
 	public int onEntityEffect(final World world, final BlockPos blockPos, final Entity entity) {
 		int countdown = 0;
-		final TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+		final TileEntity tileEntity = world.getTileEntity(getBlockPos());
 		if (tileEntity instanceof TileEntityForceFieldProjector) {
 			if (((TileEntityForceFieldProjector) tileEntity).onEntityInteracted(entity.getUniqueID())) {
 				for (final Map.Entry<IForceFieldUpgradeEffector, Float> entry : upgrades.entrySet()) {
@@ -331,7 +331,7 @@ public class ForceFieldSetup extends GlobalPosition {
 	
 	public double applyDamage(final World world, final DamageSource damageSource, final double damageLevel) {
 		assert damageSource != null;
-		final TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+		final TileEntity tileEntity = world.getTileEntity(getBlockPos());
 		if (tileEntity instanceof TileEntityForceFieldProjector) {
 			final double scaledDamage;
 			if (damageSource.damageType.contains("explosion")) {

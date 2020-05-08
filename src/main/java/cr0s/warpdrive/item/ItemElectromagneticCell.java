@@ -125,7 +125,7 @@ public class ItemElectromagneticCell extends ItemAbstractBase implements IPartic
 	}
 	
 	@Override
-	public boolean hasContainerItem(final ItemStack stack) {
+	public boolean hasContainerItem(@Nonnull final ItemStack itemStack) {
 		return true;
 	}
 	
@@ -321,7 +321,7 @@ public class ItemElectromagneticCell extends ItemAbstractBase implements IPartic
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(@Nonnull final ItemStack itemStack, @Nullable final World world,
-	                           @Nonnull final List<String> list, @Nullable final ITooltipFlag advancedItemTooltips) {
+	                           @Nonnull final List<String> list, @Nonnull final ITooltipFlag advancedItemTooltips) {
 		super.addInformation(itemStack, world, list, advancedItemTooltips);
 		
 		if (!(itemStack.getItem() instanceof  ItemElectromagneticCell)) {

@@ -97,7 +97,7 @@ public class TileEntityAcceleratorControlPoint extends TileEntityAbstractMachine
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		controlChannel = tagCompound.getInteger(CONTROL_CHANNEL_TAG);
@@ -105,7 +105,7 @@ public class TileEntityAcceleratorControlPoint extends TileEntityAbstractMachine
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		tagCompound.setInteger(CONTROL_CHANNEL_TAG, controlChannel);

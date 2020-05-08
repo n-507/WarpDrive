@@ -150,7 +150,9 @@ public class ItemTuningFork extends ItemAbstractBase implements IWarpTool {
 	}
 	
 	@Override
-	public boolean doesSneakBypassUse(final ItemStack itemStack, final IBlockAccess blockAccess, final BlockPos blockPos, final EntityPlayer player) {
+	public boolean doesSneakBypassUse(@Nonnull final ItemStack itemStack,
+	                                  @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos,
+	                                  @Nonnull final EntityPlayer player) {
 		final Block block = blockAccess.getBlockState(blockPos).getBlock();
 		return block instanceof BlockCapacitor || super.doesSneakBypassUse(itemStack, blockAccess, blockPos, player);
 	}
@@ -158,7 +160,7 @@ public class ItemTuningFork extends ItemAbstractBase implements IWarpTool {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(@Nonnull final ItemStack itemStack, @Nullable final World world,
-	                           @Nonnull final List<String> list, @Nullable final ITooltipFlag advancedItemTooltips) {
+	                           @Nonnull final List<String> list, @Nonnull final ITooltipFlag advancedItemTooltips) {
 		super.addInformation(itemStack, world, list, advancedItemTooltips);
 		
 		final WarpDriveText textTooltip = new WarpDriveText();

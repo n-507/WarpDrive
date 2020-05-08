@@ -1756,13 +1756,13 @@ public class JumpSequencer extends AbstractSequencer {
 	}
 	
 	@Override
-	protected void readFromNBT(final NBTTagCompound tagCompound) {
+	protected void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		WarpDrive.logger.error(String.format("%s readFromNBT()",
 		                                     this));
 	}
 	
 	@Override
-	protected NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+	protected NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		WarpDrive.logger.error(String.format("%s writeToNBT()",
 		                                     this));
 		return tagCompound;
@@ -1770,7 +1770,7 @@ public class JumpSequencer extends AbstractSequencer {
 	
 	@Override
 	public String toString() {
-		return String.format("%s/%d \'%s\' @ %s (%d %d %d) #%d",
+		return String.format("%s/%d '%s' @ %s (%d %d %d) #%d",
 		                     getClass().getSimpleName(), hashCode(),
 		                     (ship == null || ship.shipCore == null) ? "~NULL~" : (ship.shipCore.uuid + ":" + ship.shipCore.name),
 		                     Commons.format(worldSource),

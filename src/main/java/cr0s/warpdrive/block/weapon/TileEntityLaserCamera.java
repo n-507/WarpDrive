@@ -85,14 +85,14 @@ public class TileEntityLaserCamera extends TileEntityLaser implements IVideoChan
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		setVideoChannel(tagCompound.getInteger("cameraFrequency") + tagCompound.getInteger(VIDEO_CHANNEL_TAG));
 	}
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		tagCompound.setInteger(VIDEO_CHANNEL_TAG, videoChannel);
 		return tagCompound;
@@ -139,7 +139,7 @@ public class TileEntityLaserCamera extends TileEntityLaser implements IVideoChan
 	
 	@Override
 	public String toString() {
-		return String.format("%s Beam \'%d\' Camera \'%d\' %s",
+		return String.format("%s Beam '%d' Camera '%d' %s",
 		                     getClass().getSimpleName(),
 		                     beamFrequency,
 		                     videoChannel,

@@ -47,7 +47,7 @@ public class FakeChunk extends Chunk {
 	
 	@Nonnull
 	@Override
-	public IBlockState getBlockState(final BlockPos blockPos) {
+	public IBlockState getBlockState(@Nonnull final BlockPos blockPos) {
 		return world.getBlockState(blockPos);
 	}
 	
@@ -57,27 +57,27 @@ public class FakeChunk extends Chunk {
 	}
 	
 	@Override
-	public int getLightFor(final EnumSkyBlock enumSkyBlock, final BlockPos blockPos) {
+	public int getLightFor(@Nonnull final EnumSkyBlock enumSkyBlock, @Nonnull final BlockPos blockPos) {
 		return enumSkyBlock.defaultLightValue;
 	}
 	
 	@Override
-	public void setLightFor(final EnumSkyBlock enumSkyBlock, final BlockPos blockPos, final int value) {
+	public void setLightFor(@Nonnull final EnumSkyBlock enumSkyBlock, @Nonnull final BlockPos blockPos, final int value) {
 		// no operation
 	}
 	
 	@Override
-	public int getLightSubtracted(final BlockPos blockPos, final int amount) {
+	public int getLightSubtracted(@Nonnull final BlockPos blockPos, final int amount) {
 		return 0;
 	}
 	
 	@Override
-	public void addEntity(final Entity entity) {
+	public void addEntity(@Nonnull final Entity entity) {
 		// no operation
 	}
 	
 	@Override
-	public void removeEntity(final Entity entity) {
+	public void removeEntity(@Nonnull final Entity entity) {
 		// no operation
 	}
 	
@@ -87,23 +87,23 @@ public class FakeChunk extends Chunk {
 	}
 	
 	@Override
-	public boolean canSeeSky(final BlockPos blockPos)	{
+	public boolean canSeeSky(@Nonnull final BlockPos blockPos)	{
 		return false;
 	}
 	
 	@Nullable
 	@Override
-	public TileEntity getTileEntity(@Nonnull final BlockPos blockPos, final Chunk.EnumCreateEntityType creationMode) {
+	public TileEntity getTileEntity(@Nonnull final BlockPos blockPos, @Nonnull final Chunk.EnumCreateEntityType creationMode) {
 		return world.getTileEntity(blockPos);
 	}
 	
 	@Override
-	public void addTileEntity(final TileEntity tileEntity) {
+	public void addTileEntity(@Nonnull final TileEntity tileEntity) {
 		// no operation
 	}
 	
 	@Override
-	public void addTileEntity(@Nonnull final BlockPos blockPos, final TileEntity tileEntity) {
+	public void addTileEntity(@Nonnull final BlockPos blockPos, @Nonnull final TileEntity tileEntity) {
 		// no operation
 	}
 	
@@ -128,14 +128,14 @@ public class FakeChunk extends Chunk {
 	}
 	
 	@Override
-	public void getEntitiesWithinAABBForEntity(@Nullable final Entity entityIn, final AxisAlignedBB aabb,
-	                                           @Nonnull final List<Entity> listToFill, final Predicate<? super Entity> filter) {
+	public void getEntitiesWithinAABBForEntity(@Nullable final Entity entityIn, @Nonnull final AxisAlignedBB aabb,
+	                                           @Nonnull final List<Entity> listToFill, @Nullable final Predicate<? super Entity> filter) {
 		// no operation
 	}
 	
 	@Override
-	public <T extends Entity> void getEntitiesOfTypeWithinAABB(@Nonnull final Class<? extends T> entityClass, final AxisAlignedBB aabb,
-	                                                           @Nonnull final List<T> listToFill, final Predicate<? super T> filter) {
+	public <T extends Entity> void getEntitiesOfTypeWithinAABB(@Nonnull final Class<? extends T> entityClass, @Nonnull final AxisAlignedBB aabb,
+	                                                           @Nonnull final List<T> listToFill, @Nullable final Predicate<? super T> filter) {
 		// no operation
 	}
 	

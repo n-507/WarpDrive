@@ -39,7 +39,7 @@ public class TileEntityForceField extends TileEntity {
 	
 	// saved properties
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		if (tagCompound.hasKey("projector")) {// are we server side and is it a valid force field block?
@@ -75,7 +75,7 @@ public class TileEntityForceField extends TileEntity {
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		if (blockPosProjector != null) {
@@ -112,7 +112,7 @@ public class TileEntityForceField extends TileEntity {
 	}
 	
 	@Override
-	public void onDataPacket(final NetworkManager networkManager, final SPacketUpdateTileEntity packet) {
+	public void onDataPacket(@Nonnull final NetworkManager networkManager, @Nonnull final SPacketUpdateTileEntity packet) {
 		final NBTTagCompound tagCompound = packet.getNbtCompound();
 		readFromNBT(tagCompound);
 	}

@@ -152,14 +152,14 @@ public class TileEntityIC2reactorLaserMonitor extends TileEntityAbstractLaser {
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		tagCompound.setInteger("ticks", ticks);
 		return tagCompound;
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		ticks = tagCompound.getInteger("ticks");
 	}

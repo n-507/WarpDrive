@@ -1,5 +1,6 @@
 package cr0s.warpdrive.render;
 
+import cr0s.warpdrive.compat.CompatMatterOverdrive;
 import cr0s.warpdrive.BreathingManager;
 import cr0s.warpdrive.api.ExceptionChunkNotLoaded;
 import cr0s.warpdrive.block.breathing.BlockAirShield;
@@ -58,6 +59,12 @@ public class RenderOverlayAir {
 		// get celestial object
 		final CelestialObject celestialObject = CelestialObjectManager.get(entityPlayer.world, x, z);
 		if (celestialObject == null || celestialObject.hasAtmosphere()) {// skip (no display) if environment is breathable
+			return;
+		}
+		
+		// bypass for androids
+		if ( WarpDriveConfig.isMatterOverdriveLoaded
+		  && CompatMatterOverdrive.isAndroid(entityPlayer) ) {
 			return;
 		}
 		

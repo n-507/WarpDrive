@@ -86,7 +86,7 @@ public class GenericSet<E extends IXmlRepresentableUnit> implements IXmlRepresen
 		}
 	}
 	
-	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		if (group != null) {
 			tagCompound.setString("group", group);
 		}

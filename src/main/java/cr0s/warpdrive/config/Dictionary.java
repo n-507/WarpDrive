@@ -1,5 +1,6 @@
 package cr0s.warpdrive.config;
 
+import cr0s.warpdrive.compat.CompatMatterOverdrive;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.block.BlockAbstractBase;
 import cr0s.warpdrive.block.BlockAbstractContainer;
@@ -17,6 +18,7 @@ import java.util.Map.Entry;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -816,6 +818,12 @@ public class Dictionary {
 	}
 	
 	public static boolean isLivingWithoutAir(final Entity entity) {
+		// bypass for androids
+		if ( WarpDriveConfig.isMatterOverdriveLoaded
+		  && entity instanceof EntityPlayer ) {
+			return CompatMatterOverdrive.isAndroid((EntityPlayer) entity);
+		}
+		
 		final ResourceLocation resourceLocation = EntityList.getKey(entity);
 		return ENTITIES_LIVING_WITHOUT_AIR.contains(resourceLocation);
 	}

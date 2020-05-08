@@ -9,8 +9,9 @@ import cr0s.warpdrive.block.TileEntityAbstractEnergyConsumer;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnergyWrapper;
-import cr0s.warpdrive.data.StarMapRegistryItem;
-import cr0s.warpdrive.data.EnumStarMapEntryType;
+import cr0s.warpdrive.data.GlobalRegion;
+import cr0s.warpdrive.data.GlobalRegionManager;
+import cr0s.warpdrive.data.EnumGlobalRegionType;
 
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -23,7 +24,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 
 import net.minecraftforge.fml.common.Optional;
@@ -108,22 +108,22 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 	}
 	
 	private boolean pingTransporter() {
-		final StarMapRegistryItem starMapRegistryItem = WarpDrive.starMap.getByUUID(EnumStarMapEntryType.TRANSPORTER, uuidTransporterCore);
-		if (starMapRegistryItem == null) {
+		final GlobalRegion globalRegion = GlobalRegionManager.getByUUID(EnumGlobalRegionType.TRANSPORTER, uuidTransporterCore);
+		if (globalRegion == null) {
 			return false;
 		}
 		
-		final WorldServer worldTransporter = Commons.getOrCreateWorldServer(starMapRegistryItem.dimensionId);
+		final WorldServer worldTransporter = Commons.getOrCreateWorldServer(globalRegion.dimensionId);
 		if (worldTransporter == null) {
 			WarpDrive.logger.error(String.format("%s Unable to load dimension %d for transporter with UUID %s",
-			                                     this, starMapRegistryItem.dimensionId, uuidTransporterCore));
+			                                     this, globalRegion.dimensionId, uuidTransporterCore));
 			return false;
 		}
 		
-		final TileEntity tileEntity = worldTransporter.getTileEntity(new BlockPos(starMapRegistryItem.x, starMapRegistryItem.y, starMapRegistryItem.z));
+		final TileEntity tileEntity = worldTransporter.getTileEntity(globalRegion.getBlockPos());
 		if (!(tileEntity instanceof TileEntityTransporterCore)) {
 			WarpDrive.logger.warn(String.format("%s Transporter has gone missing for %s, found %s",
-			                                    this, starMapRegistryItem, tileEntity));
+			                                    this, globalRegion, tileEntity));
 			return false;
 		}
 		
@@ -224,7 +224,7 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 	// Forge overrides
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		if (uuidTransporterCore != null) {
@@ -238,7 +238,7 @@ public class TileEntityTransporterBeacon extends TileEntityAbstractEnergyConsume
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		nameTransporterCore = tagCompound.getString(ICoreSignature.NAME_TAG);

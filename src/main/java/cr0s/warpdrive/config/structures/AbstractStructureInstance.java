@@ -1,5 +1,6 @@
 package cr0s.warpdrive.config.structures;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -66,7 +67,7 @@ public abstract class AbstractStructureInstance extends WorldGenerator {
 		}
 	}
 	
-	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		tagCompound.setString("group", structure.group);
 		tagCompound.setString("name", structure.name);
 		

@@ -141,14 +141,14 @@ public class BlockHullSlab extends BlockAbstractBase implements IBlockBase, IDam
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public AxisAlignedBB getBoundingBox(@Nonnull final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
+	public AxisAlignedBB getBoundingBox(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		return getBlockBoundsFromState(blockState);
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Nullable
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+	public AxisAlignedBB getCollisionBoundingBox(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		return getBlockBoundsFromState(blockState);
 	}
 	
@@ -193,7 +193,7 @@ public class BlockHullSlab extends BlockAbstractBase implements IBlockBase, IDam
 	@Override
 	public IBlockState getStateForPlacement(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing,
 	                                        final float hitX, final float hitY, final float hitZ, final int metadata,
-	                                        @Nonnull final EntityLivingBase entityLivingBase, final EnumHand enumHand) {
+	                                        @Nonnull final EntityLivingBase entityLivingBase, @Nonnull final EnumHand enumHand) {
 		final IBlockState blockState = getStateFromMeta(metadata);
 		
 		// full block?

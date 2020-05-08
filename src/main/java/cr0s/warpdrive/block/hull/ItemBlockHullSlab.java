@@ -29,7 +29,7 @@ public class ItemBlockHullSlab extends ItemBlockHull {
 	
 	@Nonnull
 	@Override
-	public String getTranslationKey(final ItemStack itemstack) {
+	public String getTranslationKey(@Nonnull final ItemStack itemstack) {
 		return getTranslationKey();
 	}
 	

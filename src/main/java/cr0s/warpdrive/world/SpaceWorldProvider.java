@@ -1,7 +1,8 @@
 package cr0s.warpdrive.world;
 
 import cr0s.warpdrive.WarpDrive;
-import cr0s.warpdrive.data.StarMapRegistry;
+import cr0s.warpdrive.data.CelestialObjectManager;
+import cr0s.warpdrive.data.GlobalRegionManager;
 
 import javax.annotation.Nonnull;
 
@@ -97,13 +98,12 @@ public class SpaceWorldProvider extends AbstractWorldProvider {
 	}
 		
 	@Override
-	public int getRespawnDimension(final EntityPlayerMP entityPlayerMP) {
-		if ( entityPlayerMP == null
-		  || entityPlayerMP.world == null ) {
+	public int getRespawnDimension(@Nonnull final EntityPlayerMP entityPlayerMP) {
+		if (entityPlayerMP.world == null) {
 			WarpDrive.logger.error(String.format("Invalid player passed to getRespawnDimension: %s", entityPlayerMP));
 			return 0;
 		}
-		return StarMapRegistry.getSpaceDimensionId(entityPlayerMP.world, (int) entityPlayerMP.posX, (int) entityPlayerMP.posZ);
+		return CelestialObjectManager.getSpaceDimensionId(entityPlayerMP.world, (int) entityPlayerMP.posX, (int) entityPlayerMP.posZ);
 	}
 	
 	@Nonnull
@@ -124,12 +124,12 @@ public class SpaceWorldProvider extends AbstractWorldProvider {
 	}
 	
 	@Override
-	public boolean canDoLightning(final Chunk chunk) {
+	public boolean canDoLightning(@Nonnull final Chunk chunk) {
 		return false;
 	}
 	
 	@Override
-	public boolean canDoRainSnowIce(final Chunk chunk) {
+	public boolean canDoRainSnowIce(@Nonnull final Chunk chunk) {
 		return false;
 	}
 }

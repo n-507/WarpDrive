@@ -56,7 +56,7 @@ public class ParticleStack {
 		return stack;
 	}
 	
-	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		tagCompound.setString("name", ParticleRegistry.getParticleName(getParticle()));
 		tagCompound.setInteger("amount", amount);
 		

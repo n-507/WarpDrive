@@ -7,6 +7,7 @@ import cr0s.warpdrive.client.ClientProxy;
 import cr0s.warpdrive.data.EnumTier;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
@@ -39,7 +40,7 @@ public class ItemWarpArmor extends ItemArmor implements IItemBase, IBreathingHel
 	
 	@Nonnull
 	@Override
-	public String getArmorTexture(final ItemStack itemStack, final Entity entity, final EntityEquipmentSlot slot, final String renderingType) {
+	public String getArmorTexture(@Nonnull final ItemStack itemStack, final Entity entity, final EntityEquipmentSlot slot, @Nullable final String renderingType) {
 		return "warpdrive:textures/armor/warp_armor_" + (armorType == EntityEquipmentSlot.LEGS ? 2 : 1) + ".png";
 	}
 	

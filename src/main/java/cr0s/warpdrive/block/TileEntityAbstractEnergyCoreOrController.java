@@ -1,13 +1,13 @@
 package cr0s.warpdrive.block;
 
 import cr0s.warpdrive.Commons;
-import cr0s.warpdrive.WarpDrive;
-import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
+import cr0s.warpdrive.api.IGlobalRegionProvider;
 import cr0s.warpdrive.api.computer.ICoreSignature;
 import cr0s.warpdrive.api.computer.IEnergyConsumer;
 import cr0s.warpdrive.api.computer.IMultiBlockCoreOrController;
 import cr0s.warpdrive.api.computer.IMultiBlockCore;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.GlobalRegionManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,8 +26,8 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 	// computed properties
 	private boolean isDirtyParameters = true;
 	private int tickUpdateParameters = 0;
-	private boolean isDirtyStarMapEntry = true;
-	private int tickUpdateStarMapEntry = 0;
+	private boolean isDirtyGlobalRegion = true;
+	private int tickUpdateGlobalRegion = 0;
 	
 	public TileEntityAbstractEnergyCoreOrController() {
 		super();
@@ -58,24 +58,20 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 			doUpdateParameters(isDirty);
 		}
 		
-		// update starmap registry upon request or periodically to recover whatever may have desynchronized it
-		if (this instanceof IStarMapRegistryTileEntity) {
-			if (isDirtyStarMapEntry) {
-				tickUpdateStarMapEntry = 0;
+		// update registration upon request or periodically to recover whatever may have desynchronized it
+		if (this instanceof IGlobalRegionProvider) {
+			if (isDirtyGlobalRegion) {
+				tickUpdateGlobalRegion = 0;
 			}
-			tickUpdateStarMapEntry--;
-			if (tickUpdateStarMapEntry <= 0) {
-				tickUpdateStarMapEntry = WarpDriveConfig.STARMAP_REGISTRY_UPDATE_INTERVAL_TICKS;
-				final boolean isDirty = isDirtyStarMapEntry;
-				isDirtyStarMapEntry = false;
+			tickUpdateGlobalRegion--;
+			if (tickUpdateGlobalRegion <= 0) {
+				tickUpdateGlobalRegion = WarpDriveConfig.G_REGISTRY_UPDATE_INTERVAL_TICKS;
+				final boolean isDirty = isDirtyGlobalRegion;
+				isDirtyGlobalRegion = false;
 				
-				doRegisterStarMapEntry(isDirty);
+				doRegisterGlobalRegion(isDirty);
 			}
 		}
-	}
-	
-	public boolean isDirtyParameters() {
-		return isDirtyParameters;
 	}
 	
 	protected void markDirtyParameters() {
@@ -84,28 +80,24 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 	
 	protected abstract void doUpdateParameters(final boolean isDirty);
 	
-	public boolean isDirtyStarMapEntry() {
-		return isDirtyStarMapEntry;
+	protected void markDirtyGlobalRegion() {
+		assert this instanceof IGlobalRegionProvider;
+		isDirtyGlobalRegion = true;
 	}
 	
-	protected void markDirtyStarMapEntry() {
-		assert this instanceof IStarMapRegistryTileEntity;
-		isDirtyStarMapEntry = true;
-	}
-	
-	protected void doRegisterStarMapEntry(final boolean isDirty) {
+	protected void doRegisterGlobalRegion(final boolean isDirty) {
 		if (uuid == null || (uuid.getMostSignificantBits() == 0L && uuid.getLeastSignificantBits() == 0L)) {
 			uuid = UUID.randomUUID();
 		}
 		
-		WarpDrive.starMap.updateInRegistry((IStarMapRegistryTileEntity) this);
+		GlobalRegionManager.updateInRegistry((IGlobalRegionProvider) this);
 	}
 	
 	@Override
 	public void onBlockBroken(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
 		if ( !world.isRemote
-		  && this instanceof IStarMapRegistryTileEntity ) {
-			WarpDrive.starMap.removeFromRegistry((IStarMapRegistryTileEntity) this);
+		  && this instanceof IGlobalRegionProvider ) {
+			GlobalRegionManager.removeFromRegistry((IGlobalRegionProvider) this);
 		}
 		
 		super.onBlockBroken(world, blockPos, blockState);
@@ -118,7 +110,7 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		uuid = new UUID(tagCompound.getLong(ICoreSignature.UUID_MOST_TAG), tagCompound.getLong(ICoreSignature.UUID_LEAST_TAG));
@@ -129,7 +121,7 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		if ( uuid != null

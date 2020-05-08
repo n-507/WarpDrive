@@ -1,47 +1,47 @@
 package cr0s.warpdrive.data;
 
 import cr0s.warpdrive.WarpDrive;
-import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
+import cr0s.warpdrive.api.IGlobalRegionProvider;
 import cr0s.warpdrive.api.computer.ICoreSignature;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
-public class StarMapRegistryItem extends GlobalPosition {
+public class GlobalRegion extends GlobalPosition {
 	
 	// persistent properties
-	public final EnumStarMapEntryType type;
+	public final EnumGlobalRegionType type;
 	public final UUID uuid;
+	public String name;
+	
 	public int maxX, maxY, maxZ;
 	public int minX, minY, minZ;
+	
 	public int mass;
 	public double isolationRate;
-	public String name;
 	
 	// computed properties
 	private AxisAlignedBB cache_aabbArea;
 	
-	public StarMapRegistryItem(
-	                          final EnumStarMapEntryType type, final UUID uuid,
-	                          final int dimensionId, final int x, final int y, final int z,
-	                          final AxisAlignedBB aabbArea,
-	                          final int mass, final double isolationRate,
-	                          final String name) {
-		super(dimensionId, x, y, z);
+	private GlobalRegion(
+			final int dimensionId, final BlockPos blockPos,
+			final EnumGlobalRegionType type, final UUID uuid, final String name,
+			final AxisAlignedBB aabbArea,
+			final int mass, final double isolationRate) {
+		super(dimensionId, blockPos);
 		this.type = type;
 		this.uuid = uuid;
 		if (aabbArea == null) {
-			this.minX = x;
-			this.minY = y;
-			this.minZ = z;
-			this.maxX = x;
-			this.maxY = y;
-			this.maxZ = z;
+			this.minX = blockPos.getX();
+			this.minY = blockPos.getY();
+			this.minZ = blockPos.getZ();
+			this.maxX = blockPos.getX();
+			this.maxY = blockPos.getY();
+			this.maxZ = blockPos.getZ();
 		} else {
 			this.minX = (int) aabbArea.minX;
 			this.minY = (int) aabbArea.minY;
@@ -57,31 +57,26 @@ public class StarMapRegistryItem extends GlobalPosition {
 		this.cache_aabbArea = null;
 	}
 	
-	public StarMapRegistryItem(final IStarMapRegistryTileEntity tileEntity) {
-		this(
-			tileEntity.getStarMapType(), tileEntity.getSignatureUUID(),
-			((TileEntity) tileEntity).getWorld().provider.getDimension(),
-			((TileEntity) tileEntity).getPos().getX(), ((TileEntity) tileEntity).getPos().getY(), ((TileEntity) tileEntity).getPos().getZ(),
-			tileEntity.getStarMapArea(),
-			tileEntity.getMass(), tileEntity.getIsolationRate(),
-			tileEntity.getSignatureName() );
+	public GlobalRegion(final IGlobalRegionProvider globalRegionProvider) {
+		this(globalRegionProvider.getDimension(), globalRegionProvider.getPos(),
+		     globalRegionProvider.getGlobalRegionType(), globalRegionProvider.getSignatureUUID(), globalRegionProvider.getSignatureName(),
+		     globalRegionProvider.getGlobalRegionArea(),
+		     globalRegionProvider.getMass(), globalRegionProvider.getIsolationRate() );
 	}
 	
-	public boolean sameCoordinates(final IStarMapRegistryTileEntity tileEntity) {
-		assert tileEntity instanceof TileEntity;
-		return dimensionId == ((TileEntity) tileEntity).getWorld().provider.getDimension()
-			&& x == ((TileEntity) tileEntity).getPos().getX()
-			&& y == ((TileEntity) tileEntity).getPos().getY()
-			&& z == ((TileEntity) tileEntity).getPos().getZ();
+	public boolean sameCoordinates(final IGlobalRegionProvider globalRegionProvider) {
+		return dimensionId == globalRegionProvider.getDimension()
+			&& x == globalRegionProvider.getPos().getX()
+			&& y == globalRegionProvider.getPos().getY()
+			&& z == globalRegionProvider.getPos().getZ();
 	}
 	
-	public void update(final IStarMapRegistryTileEntity tileEntity) {
+	public void update(final IGlobalRegionProvider globalRegionProvider) {
 		if (WarpDrive.isDev) {
-			assert tileEntity instanceof TileEntity;
-			assert type == tileEntity.getStarMapType();
-			assert uuid.equals(tileEntity.getSignatureUUID());
+			assert type == globalRegionProvider.getGlobalRegionType();
+			assert uuid.equals(globalRegionProvider.getSignatureUUID());
 		}
-		final AxisAlignedBB aabbAreaUpdated = tileEntity.getStarMapArea();
+		final AxisAlignedBB aabbAreaUpdated = globalRegionProvider.getGlobalRegionArea();
 		if (aabbAreaUpdated != null) {
 			minX = (int) aabbAreaUpdated.minX;
 			minY = (int) aabbAreaUpdated.minY;
@@ -91,9 +86,9 @@ public class StarMapRegistryItem extends GlobalPosition {
 			maxZ = (int) aabbAreaUpdated.maxZ - 1;
 			cache_aabbArea = null;
 		}
-		mass = tileEntity.getMass();
-		isolationRate = tileEntity.getIsolationRate();
-		name = tileEntity.getSignatureName();
+		mass = globalRegionProvider.getMass();
+		isolationRate = globalRegionProvider.getIsolationRate();
+		name = globalRegionProvider.getSignatureName();
 	}
 	
 	public boolean contains(@Nonnull final BlockPos blockPos) {
@@ -109,9 +104,9 @@ public class StarMapRegistryItem extends GlobalPosition {
 		return cache_aabbArea;
 	}
 	
-	public StarMapRegistryItem(final NBTTagCompound tagCompound) {
+	public GlobalRegion(final NBTTagCompound tagCompound) {
 		super(tagCompound);
-		type = EnumStarMapEntryType.getByName(tagCompound.getString("type"));
+		type = EnumGlobalRegionType.getByName(tagCompound.getString("type"));
 		name = tagCompound.getString(ICoreSignature.NAME_TAG);
 		UUID uuidLocal = new UUID(tagCompound.getLong(ICoreSignature.UUID_MOST_TAG), tagCompound.getLong(ICoreSignature.UUID_LEAST_TAG));
 		if (uuidLocal.getMostSignificantBits() == 0L && uuidLocal.getLeastSignificantBits() == 0L) {
@@ -131,7 +126,7 @@ public class StarMapRegistryItem extends GlobalPosition {
 	}
 	
 	@Override
-	public void writeToNBT(final NBTTagCompound tagCompound) {
+	public void writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
 		tagCompound.setString("type", type.getName());
 		if (name != null && !name.isEmpty()) {

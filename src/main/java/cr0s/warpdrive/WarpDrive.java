@@ -125,7 +125,6 @@ import cr0s.warpdrive.data.EnumAirTankTier;
 import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumHullPlainType;
 import cr0s.warpdrive.data.EnumTier;
-import cr0s.warpdrive.data.StarMapRegistry;
 import cr0s.warpdrive.entity.EntityLaserExploder;
 import cr0s.warpdrive.entity.EntityNPC;
 import cr0s.warpdrive.entity.EntityParticleBunch;
@@ -222,6 +221,7 @@ import javax.annotation.Nullable;
                   + "after:gregtech;"
                   + "after:ic2;"
                   + "after:icbmclassic@[1.12.2-4.0.0,);"
+                  + "after:matteroverdrive;"
                   + "after:metalchests@[v5.8.1,);"
                   + "after:opencomputers;"
 //                + "after:sgcraft@[2.0.0,);"
@@ -366,7 +366,6 @@ public class WarpDrive {
 	@SidedProxy(clientSide = "cr0s.warpdrive.client.ClientProxy", serverSide = "cr0s.warpdrive.CommonProxy")
 	public static CommonProxy proxy;
 	
-	public static StarMapRegistry starMap;
 	public static CloakManager cloaks;
 	public static CamerasRegistry cameras;
 	
@@ -632,7 +631,6 @@ public class WarpDrive {
 		dimensionTypeHyperSpace = DimensionType.register("hyperspace", "_hyperspace", WarpDriveConfig.G_HYPERSPACE_PROVIDER_ID, HyperSpaceWorldProvider.class, true);
 		
 		// Registers
-		starMap = new StarMapRegistry();
 		cloaks = new CloakManager();
 		cameras = new CamerasRegistry();
 		

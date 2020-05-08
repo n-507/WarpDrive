@@ -1,6 +1,6 @@
 package cr0s.warpdrive;
 
-import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
+import cr0s.warpdrive.api.IGlobalRegionProvider;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
@@ -31,7 +31,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -1041,16 +1040,16 @@ public class Commons {
 		}
 	}
 	
-	public static void messageToAllPlayersInArea(@Nonnull final IStarMapRegistryTileEntity tileEntity, @Nonnull final WarpDriveText textComponent) {
-		assert tileEntity instanceof TileEntity;
-		final AxisAlignedBB starMapArea = tileEntity.getStarMapArea();
-		final WarpDriveText messagePrefixed = Commons.getNamedPrefix(tileEntity.getSignatureName())
+	public static void messageToAllPlayersInArea(@Nonnull final IGlobalRegionProvider globalRegionProvider, @Nonnull final WarpDriveText textComponent) {
+		final AxisAlignedBB globalRegionArea = globalRegionProvider.getGlobalRegionArea();
+		final WarpDriveText messagePrefixed = Commons.getNamedPrefix(globalRegionProvider.getSignatureName())
 		                                             .appendSibling(textComponent);
 		
 		WarpDrive.logger.info(String.format("%s messageToAllPlayersInArea: %s",
-		                                    tileEntity, textComponent.getFormattedText()));
-		for (final EntityPlayer entityPlayer : ((TileEntity) tileEntity).getWorld().playerEntities) {
-			if (!entityPlayer.getEntityBoundingBox().intersects(starMapArea)) {
+		                                    globalRegionProvider, textComponent.getFormattedText()));
+		final WorldServer worldServer = Commons.getOrCreateWorldServer(globalRegionProvider.getDimension());
+		for (final EntityPlayer entityPlayer : worldServer.playerEntities) {
+			if (!entityPlayer.getEntityBoundingBox().intersects(globalRegionArea)) {
 				continue;
 			}
 			

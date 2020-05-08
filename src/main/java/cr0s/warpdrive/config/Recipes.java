@@ -606,7 +606,7 @@ public class Recipes {
 		} else {
 			WarpDrive.register(new RecipeParticleShapedOre(groupMachines,
 			                                               ItemComponent.getItemStack(EnumComponentType.REACTOR_CORE), false, "chc", "hph", "cec",
-			                                               'p', ItemElectromagneticCell.getItemStackNoCache(EnumTier.ADVANCED, ParticleRegistry.PROTON, 1000),
+			                                               'p', ItemElectromagneticCell.getItemStackNoCache(EnumTier.ADVANCED, ParticleRegistry.ION, 1000),
 			                                               'h', "blockHull3_plain",
 			                                               'c', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL),
 			                                               'e', ItemComponent.getItemStack(EnumComponentType.EMERALD_CRYSTAL)));
@@ -1271,7 +1271,7 @@ public class Recipes {
 		                                       'i', WarpDrive.blockIridium,
 		                                       'c', WarpDrive.blockCloakingCoil,
 		                                       's', WarpDrive.blockShipControllers[EnumTier.SUPERIOR.getIndex()],
-		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE)));
+		                                       'p', ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR) ));
 		
 		// Cloaking coil is 1 Titanium plate, 4 Reinforced iridium plate, 1 EV Machine casing (Ti) or 1 Beacon, 4 Emerald, 4 Diamond
 		final Object oreGoldIngotOrCoil = WarpDriveConfig.getOreOrItemStack(
@@ -1336,7 +1336,7 @@ public class Recipes {
 		                                       'A', oreRadarSensor,
 		                                       'c', ItemComponent.getItemStack(EnumComponentType.COMPUTER_INTERFACE),
 		                                       'm', itemStackMachineCasings[2],
-		                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE)));
+		                                       'p', ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR) ));
 		
 		// Sirens
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,

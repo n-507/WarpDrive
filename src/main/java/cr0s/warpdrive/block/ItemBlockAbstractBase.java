@@ -55,9 +55,8 @@ public class ItemBlockAbstractBase extends ItemBlock implements IItemBase {
 	
 	@Nonnull
 	@Override
-	public String getTranslationKey(final ItemStack itemStack) {
+	public String getTranslationKey(@Nonnull final ItemStack itemStack) {
 		if ( hasUniqueName
-		  || itemStack == null
 		  || !(block instanceof BlockAbstractContainer)
 		  || !((BlockAbstractContainer) block).hasSubBlocks ) {
 			return getTranslationKey();
@@ -130,7 +129,7 @@ public class ItemBlockAbstractBase extends ItemBlock implements IItemBase {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void addInformation(@Nonnull final ItemStack itemStack, @Nullable final World world,
-	                           @Nonnull final List<String> list, @Nullable final ITooltipFlag advancedItemTooltips) {
+	                           @Nonnull final List<String> list, @Nonnull final ITooltipFlag advancedItemTooltips) {
 		final String tooltipItemStack = getTranslationKey(itemStack) + ".tooltip";
 		if (I18n.hasKey(tooltipItemStack)) {
 			Commons.addTooltip(list, new TextComponentTranslation(tooltipItemStack).getFormattedText());

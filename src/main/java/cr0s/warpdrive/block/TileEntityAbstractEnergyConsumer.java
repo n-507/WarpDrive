@@ -53,7 +53,7 @@ public abstract class TileEntityAbstractEnergyConsumer extends TileEntityAbstrac
 	
 	@Override
 	public String toString() {
-		return String.format("%s \'%s\' %s",
+		return String.format("%s '%s' %s",
 		                     getClass().getSimpleName(),
 		                     name,
 		                     Commons.format(world, pos));

@@ -2,7 +2,8 @@ package cr0s.warpdrive.command;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
-import cr0s.warpdrive.data.StarMapRegistry;
+import cr0s.warpdrive.data.CelestialObjectManager;
+import cr0s.warpdrive.data.GlobalRegionManager;
 
 import javax.annotation.Nonnull;
 
@@ -51,7 +52,7 @@ public class CommandDebug extends AbstractCommand {
 		final int block;
 		final String actions;
 		try {
-			dim = StarMapRegistry.getDimensionId(args[0], (EntityPlayer) commandSender);
+			dim = CelestialObjectManager.getDimensionId(args[0], (EntityPlayer) commandSender);
 			x = Integer.parseInt(args[1]);
 			y = Integer.parseInt(args[2]);
 			z = Integer.parseInt(args[3]);

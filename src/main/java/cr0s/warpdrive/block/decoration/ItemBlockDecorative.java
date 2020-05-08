@@ -15,10 +15,7 @@ public class ItemBlockDecorative extends ItemBlockAbstractBase {
 	
 	@Nonnull
 	@Override
-	public String getTranslationKey(final ItemStack itemStack) {
-		if (itemStack == null) {
-			return getTranslationKey();
-		}
+	public String getTranslationKey(@Nonnull final ItemStack itemStack) {
 		return getTranslationKey() + EnumDecorativeType.byMetadata(itemStack.getItemDamage()).getName();
 	}
 }

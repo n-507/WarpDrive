@@ -148,7 +148,7 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 	@Nonnull
 	@SuppressWarnings("deprecation")
 	@Override
-	public AxisAlignedBB getBoundingBox(final IBlockState blockState, final IBlockAccess source, final BlockPos pos) {
+	public AxisAlignedBB getBoundingBox(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		switch (blockState.getValue(BlockProperties.FACING)) {
 			case DOWN : return AABB_DOWN ;
 			case UP   : return AABB_UP   ;
@@ -186,8 +186,8 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 	}
 	
 	@Override
-	public void onBlockPlacedBy(final World world, final BlockPos blockPos, final IBlockState blockState,
-	                            final EntityLivingBase entityLivingBase, final ItemStack itemStack) {
+	public void onBlockPlacedBy(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState,
+	                            @Nonnull final EntityLivingBase entityLivingBase, @Nonnull final ItemStack itemStack) {
 		super.onBlockPlacedBy(world, blockPos, blockState, entityLivingBase, itemStack);
 		final TileEntityForceFieldProjector tileEntityForceFieldProjector = (TileEntityForceFieldProjector) world.getTileEntity(blockPos);
 		if (!itemStack.hasTagCompound() && tileEntityForceFieldProjector != null) {
@@ -196,9 +196,9 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 	}
 	
 	@Override
-	public boolean onBlockActivated(final World world, final BlockPos blockPos, final IBlockState blockState,
-	                                final EntityPlayer entityPlayer, final EnumHand enumHand,
-	                                final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
+	public boolean onBlockActivated(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState,
+	                                @Nonnull final EntityPlayer entityPlayer, @Nonnull final EnumHand enumHand,
+	                                @Nonnull final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
 		if (world.isRemote) {
 			return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 		}

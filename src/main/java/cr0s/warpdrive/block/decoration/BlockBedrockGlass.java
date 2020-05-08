@@ -54,7 +54,7 @@ public class BlockBedrockGlass extends BlockAbstractBase {
 	}
 	
 	@Override
-	public boolean isAir(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos pos) {
+	public boolean isAir(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
 		return false;
 	}
 	

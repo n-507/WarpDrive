@@ -6,6 +6,7 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObject;
+import cr0s.warpdrive.data.GlobalRegionManager;
 import cr0s.warpdrive.network.PacketHandler;
 
 import java.util.List;
@@ -190,15 +191,15 @@ public class WorldHandler {
 			                                             : ((BlockEvent.EntityMultiPlaceEvent) blockEvent).getReplacedBlockSnapshots();
 			for (final BlockSnapshot blockSnapshot : listBlockSnapshots) {
 				final IBlockState blockStateCurrent = blockSnapshot.getCurrentBlock();
-				isAllowed = isAllowed && WarpDrive.starMap.onBlockUpdating(entity, blockEvent.getWorld(), blockSnapshot.getPos(), blockStateCurrent);
+				isAllowed = isAllowed && GlobalRegionManager.onBlockUpdating(entity, blockEvent.getWorld(), blockSnapshot.getPos(), blockStateCurrent);
 				if (blockStateCurrent != blockSnapshot.getReplacedBlock()) {
-					isAllowed = isAllowed && WarpDrive.starMap.onBlockUpdating(entity, blockEvent.getWorld(), blockSnapshot.getPos(), blockSnapshot.getReplacedBlock());
+					isAllowed = isAllowed && GlobalRegionManager.onBlockUpdating(entity, blockEvent.getWorld(), blockSnapshot.getPos(), blockSnapshot.getReplacedBlock());
 				}
 			}
 		} else if (blockEvent instanceof BlockEvent.PortalSpawnEvent) {
 			isAllowed = isAllowed && CelestialObjectManager.onOpeningNetherPortal(blockEvent.getWorld(), blockEvent.getPos());
 		} else {
-			isAllowed = isAllowed && WarpDrive.starMap.onBlockUpdating(entity, blockEvent.getWorld(), blockEvent.getPos(), blockEvent.getState());
+			isAllowed = isAllowed && GlobalRegionManager.onBlockUpdating(entity, blockEvent.getWorld(), blockEvent.getPos(), blockEvent.getState());
 		}
 		if (!isAllowed) {
 			if (blockEvent.isCancelable()) {

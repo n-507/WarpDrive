@@ -147,6 +147,7 @@ public class WarpDriveConfig {
 	public static boolean              isGregtechLoaded = false;
 	public static boolean              isICBMClassicLoaded = false;
 	public static boolean              isIndustrialCraft2Loaded = false;
+	public static boolean              isMatterOverdriveLoaded = false;
 	public static boolean              isNotEnoughItemsLoaded = false;
 	public static boolean              isOpenComputersLoaded = false;
 	public static boolean              isThermalExpansionLoaded = false;
@@ -179,6 +180,9 @@ public class WarpDriveConfig {
 	private static int                 G_ASSEMBLY_SCAN_INTERVAL_SECONDS = 10;
 	public static int                  G_ASSEMBLY_SCAN_INTERVAL_TICKS = 20 * WarpDriveConfig.G_ASSEMBLY_SCAN_INTERVAL_SECONDS;
 	public static int                  G_PARAMETERS_UPDATE_INTERVAL_TICKS = 20;
+	private static int                 G_REGISTRY_UPDATE_INTERVAL_SECONDS = 10;
+	public static int                  G_REGISTRY_UPDATE_INTERVAL_TICKS = 20 * WarpDriveConfig.G_REGISTRY_UPDATE_INTERVAL_SECONDS;
+	public static boolean              G_ENFORCE_VALID_CELESTIAL_OBJECTS = true;
 	public static int                  G_BLOCKS_PER_TICK = 3500;
 	public static boolean              G_ENABLE_FAST_SET_BLOCKSTATE = false;
 	public static boolean              G_ENABLE_PROTECTION_CHECKS = true;
@@ -246,7 +250,7 @@ public class WarpDriveConfig {
 	public static boolean LOGGING_PROFILING_MEMORY_ALLOCATION = false;
 	public static boolean LOGGING_PROFILING_THREAD_SAFETY = false;
 	public static boolean LOGGING_DICTIONARY = false;
-	public static boolean LOGGING_STARMAP = false;
+	public static boolean LOGGING_GLOBAL_REGION_REGISTRY = false;
 	public static boolean LOGGING_BREAK_PLACE = false;
 	public static boolean LOGGING_FORCE_FIELD = false;
 	public static boolean LOGGING_FORCE_FIELD_REGISTRY = false;
@@ -268,11 +272,6 @@ public class WarpDriveConfig {
 	public static float            ENERGY_OVERVOLTAGE_SHOCK_FACTOR = 1.0F;
 	public static float            ENERGY_OVERVOLTAGE_EXPLOSION_FACTOR = 1.0F;
 	public static int              ENERGY_SCAN_INTERVAL_TICKS = 20;
-	
-	// Starmap
-	private static int             STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS = 10;
-	public static int              STARMAP_REGISTRY_UPDATE_INTERVAL_TICKS = 20 * WarpDriveConfig.STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS;
-	public static boolean          STARMAP_ALLOW_OVERLAPPING_CELESTIAL_OBJECTS = false;
 	
 	// Space generator
 	public static int              SPACE_GENERATOR_Y_MIN_CENTER = 55;
@@ -769,6 +768,7 @@ public class WarpDriveConfig {
 		isAdvancedRepulsionSystemLoaded = Loader.isModLoaded("AdvancedRepulsionSystems");
 		isForgeMultipartLoaded = Loader.isModLoaded("forgemultipartcbe");
 		isICBMClassicLoaded = Loader.isModLoaded("icbmclassic");
+		isMatterOverdriveLoaded = Loader.isModLoaded("matteroverdrive");
 		isNotEnoughItemsLoaded = Loader.isModLoaded("NotEnoughItems");
 		isThermalExpansionLoaded = Loader.isModLoaded("thermalexpansion");
 		isThermalFoundationLoaded = Loader.isModLoaded("thermalfoundation");
@@ -807,13 +807,22 @@ public class WarpDriveConfig {
 		G_SCHEMATICS_LOCATION = config.get("general", "schematics_location", G_SCHEMATICS_LOCATION, "Root folder where to load and save ship schematics").getString();
 		
 		G_ASSEMBLY_SCAN_INTERVAL_SECONDS = Commons.clamp(0, 300,
-		                                                 config.get("general", "assembly_scanning_interval", G_ASSEMBLY_SCAN_INTERVAL_SECONDS, "(measured in seconds)").getInt());
+				config.get("general", "assembly_scanning_interval", G_ASSEMBLY_SCAN_INTERVAL_SECONDS,
+				           "Reaction delay when updating blocks in an assembly (measured in seconds)").getInt());
 		G_ASSEMBLY_SCAN_INTERVAL_TICKS = 20 * WarpDriveConfig.G_ASSEMBLY_SCAN_INTERVAL_SECONDS;
 		G_PARAMETERS_UPDATE_INTERVAL_TICKS = Commons.clamp(0, 300,
-		                                                   config.get("general", "parameters_update_interval", G_PARAMETERS_UPDATE_INTERVAL_TICKS, "(measured in ticks)").getInt());
+				config.get("general", "parameters_update_interval", G_PARAMETERS_UPDATE_INTERVAL_TICKS,
+				           "Complex computation delay in an assembly (measured in ticks)").getInt());
+		G_REGISTRY_UPDATE_INTERVAL_SECONDS = Commons.clamp(0, 300,
+		        config.get("general", "registry_update_interval", G_REGISTRY_UPDATE_INTERVAL_SECONDS,
+		                   "Registration period for an assembly (measured in seconds)").getInt());
+		G_REGISTRY_UPDATE_INTERVAL_TICKS = 20 * WarpDriveConfig.G_REGISTRY_UPDATE_INTERVAL_SECONDS;
+		G_ENFORCE_VALID_CELESTIAL_OBJECTS =
+				config.get("general", "enforce_valid_celestial_objects", G_ENFORCE_VALID_CELESTIAL_OBJECTS,
+				           "Disable to boot the game even when celestial objects are invalid. Use at your own risk!").getBoolean();
 		G_BLOCKS_PER_TICK = Commons.clamp(100, 100000,
 				config.get("general", "blocks_per_tick", G_BLOCKS_PER_TICK,
-						"Number of blocks to move per ticks, too high will cause lag spikes on ship jumping or deployment, too low may break the ship wirings").getInt());
+				           "Number of blocks to move per ticks, too high will cause lag spikes on ship jumping or deployment, too low may break the ship wirings").getInt());
 		G_ENABLE_FAST_SET_BLOCKSTATE = config.get("general", "enable_fast_set_blockstate", G_ENABLE_FAST_SET_BLOCKSTATE,
 		                                          "Enable fast blockstate placement, skipping light computation. Disable if you have world implementations conflicts").getBoolean(G_ENABLE_FAST_SET_BLOCKSTATE);
 		G_ENABLE_PROTECTION_CHECKS = config.get("general", "enable_protection_checks", G_ENABLE_PROTECTION_CHECKS,
@@ -947,7 +956,7 @@ public class WarpDriveConfig {
 		LOGGING_PROFILING_MEMORY_ALLOCATION = config.get("logging", "enable_profiling_memory_allocation", LOGGING_PROFILING_MEMORY_ALLOCATION, "Profiling logs for memory allocation, enable it to check for lag").getBoolean(true);
 		LOGGING_PROFILING_THREAD_SAFETY = config.get("logging", "enable_profiling_thread_safety", LOGGING_PROFILING_THREAD_SAFETY, "Profiling logs for multi-threading, enable it to check for ConcurrentModificationException").getBoolean(false);
 		LOGGING_DICTIONARY = config.get("logging", "enable_dictionary_logs", LOGGING_DICTIONARY, "Dictionary logs, enable it to dump blocks hardness and blast resistance at boot").getBoolean(true);
-		LOGGING_STARMAP = config.get("logging", "enable_starmap_logs", LOGGING_STARMAP, "Starmap logs, enable it to dump starmap registry updates").getBoolean(false);
+		LOGGING_GLOBAL_REGION_REGISTRY = config.get("logging", "enable_global_region_registry_logs", LOGGING_GLOBAL_REGION_REGISTRY, "GlobalRegion registry logs, enable it to dump global region registry updates").getBoolean(false);
 		LOGGING_BREAK_PLACE = config.get("logging", "enable_break_place_logs", LOGGING_BREAK_PLACE, "Detailed break/place event logs to help debug the mod, enable it before reporting a bug").getBoolean(false);
 		LOGGING_FORCE_FIELD = config.get("logging", "enable_force_field_logs", LOGGING_FORCE_FIELD, "Detailed force field logs to help debug the mod, enable it before reporting a bug").getBoolean(false);
 		LOGGING_FORCE_FIELD_REGISTRY = config.get("logging", "enable_force_field_registry_logs", LOGGING_FORCE_FIELD_REGISTRY, "ForceField registry logs, enable it to dump force field registry updates").getBoolean(false);
@@ -966,18 +975,11 @@ public class WarpDriveConfig {
 		ENERGY_ENABLE_IC2_EU = config.get("energy", "enable_IC2_EU", ENERGY_ENABLE_IC2_EU, "Enable IC2 EU energy support when the IndustrialCraft2 mod is present, disable otherwise").getBoolean(true);
 		ENERGY_ENABLE_RF = config.get("energy", "enable_RF", ENERGY_ENABLE_RF, "Enable RF energy support when the RedstoneFlux mod is present, disable otherwise").getBoolean(true);
 		ENERGY_OVERVOLTAGE_SHOCK_FACTOR = Commons.clamp(0.0F, 10.0F,
-			(float) config.get("energy", "overvoltage_shock_factor", ENERGY_OVERVOLTAGE_SHOCK_FACTOR, "Shock damage factor to entities in case of EU voltage overload, set to 0 to disable completely").getDouble());
+				(float) config.get("energy", "overvoltage_shock_factor", ENERGY_OVERVOLTAGE_SHOCK_FACTOR, "Shock damage factor to entities in case of EU voltage overload, set to 0 to disable completely").getDouble());
 		ENERGY_OVERVOLTAGE_EXPLOSION_FACTOR = Commons.clamp(0.0F, 10.0F,
-			(float) config.get("energy", "overvoltage_explosion_factor", ENERGY_OVERVOLTAGE_EXPLOSION_FACTOR, "Explosion strength factor in case of EU voltage overload, set to 0 to disable completely").getDouble());
+				(float) config.get("energy", "overvoltage_explosion_factor", ENERGY_OVERVOLTAGE_EXPLOSION_FACTOR, "Explosion strength factor in case of EU voltage overload, set to 0 to disable completely").getDouble());
 		ENERGY_SCAN_INTERVAL_TICKS = Commons.clamp(1, 300,
-		                                           config.get("energy", "scan_interval_ticks", ENERGY_SCAN_INTERVAL_TICKS, "delay between scan for energy receivers (measured in ticks)").getInt());
-		
-		// Starmap registry
-		STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS = Commons.clamp(0, 300,
-			config.get("starmap", "registry_update_interval", STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS, "(measured in seconds)").getInt());
-		STARMAP_REGISTRY_UPDATE_INTERVAL_TICKS = 20 * WarpDriveConfig.STARMAP_REGISTRY_UPDATE_INTERVAL_SECONDS;
-		STARMAP_ALLOW_OVERLAPPING_CELESTIAL_OBJECTS = 
-			config.get("starmap", "allow_overlapping_celestial_objects", STARMAP_ALLOW_OVERLAPPING_CELESTIAL_OBJECTS, "Enable to bypass the check at boot. Use at your own risk!").getBoolean();
+		        config.get("energy", "scan_interval_ticks", ENERGY_SCAN_INTERVAL_TICKS, "delay between scan for energy receivers (measured in ticks)").getInt());
 		
 		// Ship movement costs
 		SHIP_MOVEMENT_COSTS_FACTORS = new ShipMovementCosts.Factors[EnumShipMovementType.length];

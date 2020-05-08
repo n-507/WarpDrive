@@ -993,7 +993,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		isDoubleSided = tagCompound.getBoolean("isDoubleSided");
 		
@@ -1021,7 +1021,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		tagCompound.setBoolean("isDoubleSided", isDoubleSided);
 		

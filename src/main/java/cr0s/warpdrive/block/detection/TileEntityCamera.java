@@ -100,7 +100,7 @@ public class TileEntityCamera extends TileEntityAbstractMachine implements IVide
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		videoChannel = tagCompound.getInteger("frequency") + tagCompound.getInteger(VIDEO_CHANNEL_TAG);
 		if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
@@ -110,7 +110,7 @@ public class TileEntityCamera extends TileEntityAbstractMachine implements IVide
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		tagCompound.setInteger(VIDEO_CHANNEL_TAG, videoChannel);
 		if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {

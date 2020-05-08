@@ -4,7 +4,7 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.CelestialObject;
-import cr0s.warpdrive.data.StarMapRegistry;
+import cr0s.warpdrive.data.GlobalRegionManager;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
 
@@ -65,7 +65,7 @@ public class CommandSpace extends AbstractCommand {
 			if (entityPlayerMPs_found != null) {
 				entityPlayerMPs = entityPlayerMPs_found;
 			} else if (commandSender instanceof EntityPlayer) {
-				dimensionIdTarget = StarMapRegistry.getDimensionId(args[0], (EntityPlayer) commandSender);
+				dimensionIdTarget = CelestialObjectManager.getDimensionId(args[0], (EntityPlayer) commandSender);
 			} else {
 				Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.player_not_found", args[0]).setStyle(Commons.getStyleWarning())));
 				return;
@@ -79,7 +79,7 @@ public class CommandSpace extends AbstractCommand {
 				Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.player_not_found", args[0]).setStyle(Commons.getStyleWarning())));
 				return;
 			}
-			dimensionIdTarget = StarMapRegistry.getDimensionId(args[1], entityPlayerMPs[0]);
+			dimensionIdTarget = CelestialObjectManager.getDimensionId(args[1], entityPlayerMPs[0]);
 			
 		} else {
 			Commons.addChatMessage(commandSender, getPrefix().appendSibling(new TextComponentTranslation("warpdrive.command.too_many_arguments", args.length).setStyle(Commons.getStyleWarning())));

@@ -1,6 +1,8 @@
 package cr0s.warpdrive.data;
 
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -227,13 +229,13 @@ public class VectorI implements Cloneable {
 		return vector;
 	}
 	
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		x = tagCompound.getInteger("x");
 		y = tagCompound.getInteger("y");
 		z = tagCompound.getInteger("z");
 	}
 	
-	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		tagCompound.setInteger("x", x);
 		tagCompound.setInteger("y", y);
 		tagCompound.setInteger("z", z);
@@ -247,6 +249,13 @@ public class VectorI implements Cloneable {
 		final int newY = vector.y - y;
 		final int newZ = vector.z - z;
 		return Math.sqrt(newX * newX + newY * newY + newZ * newZ);
+	}
+	
+	public int distance2To(final BlockPos blockPos) {
+		final int newX = blockPos.getX() - x;
+		final int newY = blockPos.getY() - y;
+		final int newZ = blockPos.getZ() - z;
+		return (newX * newX + newY * newY + newZ * newZ);
 	}
 	
 	public int distance2To(final VectorI vector) {

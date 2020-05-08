@@ -33,9 +33,9 @@ public class BlockBiometricScanner extends BlockAbstractRotatingContainer {
 	}
 	
 	@Override
-	public boolean onBlockActivated(final World world, final BlockPos blockPos, final IBlockState blockState,
-	                                final EntityPlayer entityPlayer, final EnumHand enumHand,
-	                                final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
+	public boolean onBlockActivated(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState,
+	                                @Nonnull final EntityPlayer entityPlayer, @Nonnull final EnumHand enumHand,
+	                                @Nonnull final EnumFacing enumFacing, final float hitX, final float hitY, final float hitZ) {
 		if (world.isRemote) {
 			return super.onBlockActivated(world, blockPos, blockState, entityPlayer, enumHand, enumFacing, hitX, hitY, hitZ);
 		}

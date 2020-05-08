@@ -33,7 +33,7 @@ public class SpaceChunkProvider extends ChunkGeneratorOverworld {
 	public Chunk generateChunk(final int x, final int z) {
 		rand.setSeed(x * 341873128712L + z * 132897987541L);
 		
-		ChunkPrimer chunkprimer = new ChunkPrimer();
+		final ChunkPrimer chunkprimer = new ChunkPrimer();
 		// setBlocksInChunk(x, z, chunkprimer);
 		
 		final Chunk chunk = new Chunk(world, chunkprimer, x, z);
@@ -58,13 +58,13 @@ public class SpaceChunkProvider extends ChunkGeneratorOverworld {
 	}
 	
 	@Override
-	public @Nonnull List<Biome.SpawnListEntry> getPossibleCreatures(@Nonnull final EnumCreatureType creatureType, @Nonnull final BlockPos pos) {
+	public @Nonnull List<Biome.SpawnListEntry> getPossibleCreatures(@Nonnull final EnumCreatureType creatureType, @Nonnull final BlockPos blockPos) {
 		return new ArrayList<>();
 	}
 	
 	@Nullable
 	@Override
-	public BlockPos getNearestStructurePos(@Nonnull final World world, final String structureName, @Nonnull final BlockPos position, boolean findUnexplored) {
+	public BlockPos getNearestStructurePos(@Nonnull final World world, final String structureName, @Nonnull final BlockPos blockPos, boolean findUnexplored) {
 		return null;
 	}
 	

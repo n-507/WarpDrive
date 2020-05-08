@@ -67,14 +67,14 @@ public abstract class BlockAbstractAir extends BlockAbstractBase {
 	}
 	
 	@Override
-	public boolean isAir(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos pos) {
+	public boolean isAir(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
 		return true;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Nullable
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+	public AxisAlignedBB getCollisionBoundingBox(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		return NULL_AABB;
 	}
 	

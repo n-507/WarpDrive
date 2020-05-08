@@ -2,10 +2,10 @@ package cr0s.warpdrive.block.movement;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
-import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
+import cr0s.warpdrive.api.IGlobalRegionProvider;
 import cr0s.warpdrive.block.TileEntityAbstractEnergyCoreOrController;
 import cr0s.warpdrive.config.WarpDriveConfig;
-import cr0s.warpdrive.data.EnumStarMapEntryType;
+import cr0s.warpdrive.data.EnumGlobalRegionType;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.render.EntityFXBoundingBox;
 
@@ -22,7 +22,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrController implements IStarMapRegistryTileEntity {
+public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrController implements IGlobalRegionProvider {
 	
 	private static final int BOUNDING_BOX_INTERVAL_TICKS = 60;
 	
@@ -112,7 +112,7 @@ public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrContro
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		minX = tagCompound.getInteger("minX");
@@ -127,7 +127,7 @@ public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrContro
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		tagCompound.setInteger("minX", minX);
@@ -142,14 +142,14 @@ public class TileEntityJumpGateCore extends TileEntityAbstractEnergyCoreOrContro
 		return tagCompound;
 	}
 	
-	// IStarMapRegistryTileEntity overrides
+	// IGlobalRegionProvider overrides
 	@Override
-	public EnumStarMapEntryType getStarMapType() {
-		return EnumStarMapEntryType.JUMP_GATE;
+	public EnumGlobalRegionType getGlobalRegionType() {
+		return EnumGlobalRegionType.JUMP_GATE;
 	}
 	
 	@Override
-	public AxisAlignedBB getStarMapArea() {
+	public AxisAlignedBB getGlobalRegionArea() {
 		return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 	

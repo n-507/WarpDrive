@@ -37,7 +37,7 @@ public class GravityManager {
 	
 	@SuppressWarnings("unused") // Core mod
 	public static void applyEntityItemGravity(@Nonnull final EntityItem entityItem) {
-		final double gravity = StarMapRegistry.getGravity(entityItem);
+		final double gravity = CelestialObjectManager.getGravity(entityItem);
 		if (gravity == CelestialObject.GRAVITY_NORMAL) {// reroute to AdvancedRocketry if we're set to normal, they'll reroute to Galacticraft on their own
 			if (!isAdvancedRocketryLoaded) {
 				isAdvancedRocketryLoaded = true;
@@ -67,8 +67,7 @@ public class GravityManager {
 	
 	@SuppressWarnings("unused") // Core mod
 	public static double getGravityForEntity(final Entity entity) {
-		
-		final double gravity = StarMapRegistry.getGravity(entity);
+		final double gravity = CelestialObjectManager.getGravity(entity);
 		if (gravity == CelestialObject.GRAVITY_NONE) {
 			return SPACE_VOID_GRAVITY;
 		}
@@ -120,7 +119,7 @@ public class GravityManager {
 	
 	@SuppressWarnings("unused") // Core mod
 	public static double getItemGravity(final EntityItem entity) {
-		final double gravity = StarMapRegistry.getGravity(entity);
+		final double gravity = CelestialObjectManager.getGravity(entity);
 		if (gravity == CelestialObject.GRAVITY_NONE) {
 			return SPACE_VOID_GRAVITY;
 		}
@@ -142,7 +141,7 @@ public class GravityManager {
 	
 	@SuppressWarnings("unused") // Core mod
 	public static double getItemGravity2(final EntityItem entity) {
-		final double gravity = StarMapRegistry.getGravity(entity);
+		final double gravity = CelestialObjectManager.getGravity(entity);
 		if (gravity == CelestialObject.GRAVITY_NONE) {
 			return SPACE_VOID_GRAVITY;
 		}

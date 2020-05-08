@@ -1,9 +1,9 @@
 package cr0s.warpdrive.api.computer;
 
 import cr0s.warpdrive.api.IBeamFrequency;
-import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
+import cr0s.warpdrive.api.IGlobalRegionProvider;
 
-public interface ITransporterCore extends IEnergyConsumer, IBeamFrequency, IStarMapRegistryTileEntity {
+public interface ITransporterCore extends IEnergyConsumer, IBeamFrequency, IGlobalRegionProvider {
 	
 	Object[] state();
 	

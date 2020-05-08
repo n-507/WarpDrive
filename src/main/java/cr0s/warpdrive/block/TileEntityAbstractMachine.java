@@ -2,7 +2,7 @@ package cr0s.warpdrive.block;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
-import cr0s.warpdrive.api.IStarMapRegistryTileEntity;
+import cr0s.warpdrive.api.IGlobalRegionProvider;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.api.computer.ICoreSignature;
 import cr0s.warpdrive.api.computer.IMachine;
@@ -142,7 +142,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	}
 	
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		
 		name = tagCompound.getString(ICoreSignature.NAME_TAG);
@@ -151,7 +151,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
 		if (!name.equals("")) {
@@ -173,8 +173,8 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	                                                                                               && entityPlayerMP.isEntityAlive()
 	                                                                                               && !entityPlayerMP.isSpectator();
 	public String getAllPlayersInArea() {
-		final AxisAlignedBB axisalignedbb = this instanceof IStarMapRegistryTileEntity
-		                                  ? ((IStarMapRegistryTileEntity) this).getStarMapArea()
+		final AxisAlignedBB axisalignedbb = this instanceof IGlobalRegionProvider
+		                                  ? ((IGlobalRegionProvider) this).getGlobalRegionArea()
 		                                  : new AxisAlignedBB(pos).grow(10.0D);
 		
 		final List<EntityPlayerMP> entityPlayers = world.getPlayers(EntityPlayerMP.class, ALIVE_NOT_SPECTATING_PLAYER::test);
@@ -241,10 +241,10 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 			}
 			if (isEnabled && !enableRequest) {
 				setIsEnabled(false);
-				sendEvent("disabled");
+				sendEvent("disabled", name);
 			} else if (!isEnabled && enableRequest) {
 				setIsEnabled(true);
-				sendEvent("enabled");
+				sendEvent("enabled", name);
 			}
 		}
 		return new Object[] { isEnabled };

@@ -412,7 +412,7 @@ public abstract class BlockAbstractOmnipanel extends BlockAbstractBase {
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public AxisAlignedBB getBoundingBox(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
+	public AxisAlignedBB getBoundingBox(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		final MutableBlockPos mutableBlockPos = new MutableBlockPos(blockPos);
 		
 		// get direct connections

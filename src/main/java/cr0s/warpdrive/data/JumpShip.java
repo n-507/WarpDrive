@@ -10,6 +10,7 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.config.WarpDriveDataFixer;
 import cr0s.warpdrive.network.PacketHandler;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -619,7 +620,7 @@ public class JumpShip {
 		return true;
 	}
 	
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		core = new BlockPos(tagCompound.getInteger("coreX"), tagCompound.getInteger("coreY"), tagCompound.getInteger("coreZ"));
 		dx = tagCompound.getInteger("dx");
 		dz = tagCompound.getInteger("dz");
@@ -638,7 +639,7 @@ public class JumpShip {
 		}
 	}
 	
-	public void writeToNBT(final NBTTagCompound tagCompound) {
+	public void writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		tagCompound.setInteger("coreX", core.getX());
 		tagCompound.setInteger("coreY", core.getY());
 		tagCompound.setInteger("coreZ", core.getZ());

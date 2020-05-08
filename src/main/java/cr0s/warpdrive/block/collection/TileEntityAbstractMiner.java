@@ -124,14 +124,14 @@ public abstract class TileEntityAbstractMiner extends TileEntityAbstractLaser {
 	
 	// NBT DATA
 	@Override
-	public void readFromNBT(final NBTTagCompound tagCompound) {
+	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		enableSilktouch = tagCompound.getBoolean("enableSilktouch");
 	}
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		tagCompound.setBoolean("enableSilktouch", enableSilktouch);
 		return tagCompound;

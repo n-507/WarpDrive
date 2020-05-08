@@ -167,7 +167,7 @@ end
 function transporter_page_writeEnergy(energyStored, energyMax, energyUnits)
   w.setCursorPos(19, 8)
   w.setColorNormal()
-  w.write(w.format_integer(energyStored, 7) .. " / " .. energyMax .. " " .. energyUnits .. "  ")
+  w.write(w.format_integer(energyStored, 8) .. " / " .. energyMax .. " " .. energyUnits .. "  ")
 end
 
 function transporter_page_writeLockStrength(lockStrength)

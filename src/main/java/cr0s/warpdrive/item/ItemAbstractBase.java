@@ -68,7 +68,7 @@ public class ItemAbstractBase extends Item implements IItemBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(@Nonnull final ItemStack itemStack, @Nullable final World world,
-	                           @Nonnull final List<String> list, @Nullable final ITooltipFlag advancedItemTooltips) {
+	                           @Nonnull final List<String> list, @Nonnull final ITooltipFlag advancedItemTooltips) {
 		super.addInformation(itemStack, world, list, advancedItemTooltips);
 		
 		final String tooltipName1 = getTranslationKey(itemStack) + ".tooltip";
