@@ -1149,6 +1149,10 @@ local function run()
   w.event_register("timer_status" , function() w.status_tick() return false end )
   w.event_timer_start("refresh", run_refreshPeriod_s, "timer_refresh")
   
+  -- register common events
+  w.event_register("enabled" , function(eventName, param) w.status_showWarning("Enabled '" .. w.format_string(param) .. "'") end )
+  w.event_register("disabled", function(eventName, param) w.status_showWarning("Disabled '" .. w.format_string(param) .. "'") end )
+  
   -- main loop
   selectPage('0')
   repeat
