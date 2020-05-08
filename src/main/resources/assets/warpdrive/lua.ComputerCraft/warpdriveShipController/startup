@@ -657,6 +657,39 @@ function ship_key_navigation(character, keycode)
   return false
 end
 
+function ship_page_advanced()
+  w.page_begin(w.data_getName() .. " - Advanced")
+  
+  w.setCursorPos(1, 5)
+  local command, _ = ship.command()
+  w.writeLn("Ship is in " .. command .. " mode")
+  
+  w.setCursorPos(1, 16)
+  w.setColorControl()
+  w.writeFullLine(" OFFLINE/disabled mode (O), MAINTENANCE mode (M)")
+  w.writeFullLine(" IDLE/online mode (I)")
+end
+
+function ship_key_advanced(character, keycode)
+  if character == 'o' or character == 'O' then -- O
+    ship.command("OFFLINE", false)
+    ship.command("OFFLINE", true)
+    ship.enable(false)
+    return true
+  elseif character == 'm' or character == 'M' then -- M
+    ship.command("MAINTENANCE", false)
+    ship.enable(true)
+    ship.command("MAINTENANCE", true)
+    return true
+  elseif character == 'i' or character == 'I' then -- I
+    ship.command("IDLE", false)
+    ship.enable(true)
+    ship.command("IDLE", true)
+    return true
+  end
+  return false
+end
+
 function ship_register()
   w.device_register("warpdriveShipController",
       function(deviceType, address, wrap) ship = wrap end,
@@ -715,11 +748,12 @@ end
 
 ----------- Boot sequence
 
-w.page_setEndText(" Home (0), Controls (1), Crew (2), Navigation (3)")
+w.page_setEndText(" Home (0), Ctrl (1), Crew (2), Nav (3), Advncd (4) ")
 w.page_register('0', connections_page, nil)
 w.page_register('1', ship_page_controls, ship_key_controls)
 w.page_register('2', ship_page_crew, ship_key_crew)
 w.page_register('3', ship_page_navigation, ship_key_navigation)
+w.page_register('4', ship_page_advanced, ship_key_advanced)
 ship_register()
 
 w.boot()
