@@ -1,0 +1,6 @@
+{
+    "parent": "warpdrive:block/forcefield/shape",
+    "textures": {
+        "shape": "warpdrive:items/forcefield/shape-tunnel"
+    }
+}

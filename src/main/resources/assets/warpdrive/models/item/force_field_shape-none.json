@@ -1,6 +1,3 @@
 {
-	"parent": "item/generated",
-	"textures": {
-		"layer0": "warpdrive:items/forcefield/shape-none"
-	}
+	"parent": "warpdrive:block/forcefield/shape-none"
 }
