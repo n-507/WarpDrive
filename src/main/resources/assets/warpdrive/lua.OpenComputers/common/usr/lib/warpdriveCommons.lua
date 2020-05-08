@@ -778,9 +778,9 @@ local function event_clock()
   return computer.uptime()
 end
 
-local function event_timer_start(name, period_s, eventId)
-  local name = name or "-nameless-"
-  local eventId = eventId or "timer_" .. name
+local function event_timer_start(name_, period_s_, eventId_)
+  local name = name_ or "-nameless-"
+  local eventId = eventId_ or "timer_" .. name
   -- check for an already active timer
   local countActives = 0
   for id, entry in pairs(event_timers) do
@@ -795,7 +795,7 @@ local function event_timer_start(name, period_s, eventId)
     return
   end
   -- start a new timer
-  local period_s = period_s or 1.0
+  local period_s = period_s_ or 1.0
   local id = event.timer(period_s, function () w.event_timer_tick(name) end, math.huge)
   event_timers[id] = {
     active = true,
@@ -805,8 +805,8 @@ local function event_timer_start(name, period_s, eventId)
   }
 end
 
-local function event_timer_stop(name)
-  local name = name or "-nameless-"
+local function event_timer_stop(name_)
+  local name = name_ or "-nameless-"
   for id, entry in pairs(event_timers) do
     if entry.name == name then
       if entry.active then -- kill any active one
@@ -968,21 +968,21 @@ end
 
 local function data_setName()
   -- check if any named component is connected
-  local component = "computer"
+  local componentName = "computer"
   for name, handlers in pairs(data_handlers) do
     if handlers.name ~= nil then
-      component = name
+      componentName = name
     end
   end
   
   -- ask for a new name
-  w.page_begin("<==== Set " .. component .. " name ====>")
+  w.page_begin("<==== Set " .. componentName .. " name ====>")
   w.setCursorPos(1, 4)
   w.setColorHelp()
   w.writeFullLine(" Press enter to validate.")
   w.setCursorPos(1, 3)
   w.setColorNormal()
-  w.write("Enter " .. component .. " name: ")
+  w.write("Enter " .. componentName .. " name: ")
   data_name = w.input_readText(data_name)
   
   -- OpenComputers only allows to label filesystems => out
@@ -1022,8 +1022,8 @@ local function data_shouldUpdateName()
   return shouldUpdateName
 end
 
-local function data_splitString(source, sep)
-  local sep = sep or ":"
+local function data_splitString(source, sep_)
+  local sep = sep_ or ":"
   local fields = {}
   local pattern = string.format("([^%s]+)", sep)
   source:gsub(pattern, function(c) fields[#fields + 1] = c end)

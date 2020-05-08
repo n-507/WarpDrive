@@ -72,7 +72,7 @@ function ship_boot()
     -- don't reboot as the player might need to set new dimensions to fix it
   else
     w.setColorSuccess()
-    w.writeLn("validated")
+    w.writeLn("passed")
   end
   w.sleep(0.2)
   
