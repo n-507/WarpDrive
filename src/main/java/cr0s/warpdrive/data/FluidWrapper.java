@@ -6,6 +6,7 @@ import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -95,11 +96,12 @@ public class FluidWrapper {
 	}
 	
 	// WarpDrive methods
-	public static boolean isFluid(final IBlockState blockState) {
+	public static boolean isFluid(@Nonnull final IBlockState blockState) {
 		return getFluid(blockState) != null;
 	}
 	
-	public static Fluid getFluid(final IBlockState blockState) {
+	@Nullable
+	public static Fluid getFluid(@Nonnull final IBlockState blockState) {
 		final Block block = blockState.getBlock();
 		if ( block instanceof BlockLiquid
 		  || block instanceof IFluidBlock ) {
@@ -128,22 +130,22 @@ public class FluidWrapper {
 		return null;
 	}
 	
-	public static boolean isSourceBlock(final World world, final BlockPos blockPos, final IBlockState blockState) {
+	public static boolean isSourceBlock(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
 		final Block block = blockState.getBlock();
 		final int metadata = block.getMetaFromState(blockState);
 		return ( block instanceof BlockLiquid && metadata == 0 )
 		    || ( block instanceof IFluidBlock && ((IFluidBlock) block).canDrain(world, blockPos) );
 	}
 	
-	public static boolean isFluidContainer(final ItemStack itemStack) {
+	public static boolean isFluidContainer(@Nonnull final ItemStack itemStack) {
 		return itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
 	}
 	
-	public static boolean isFluidContainer(final TileEntity tileEntity) {
+	public static boolean isFluidContainer(@Nonnull final TileEntity tileEntity) {
 		return tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
 	}
 	
-	public static FluidStack drain(final ItemStack itemStack, final FluidStack fluidStack, final boolean doNotSimulate) {
+	public static FluidStack drain(@Nonnull final ItemStack itemStack, @Nonnull final FluidStack fluidStack, final boolean doNotSimulate) {
 		final IFluidHandler fluidHandler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
 		if (fluidHandler == null) {
 			return new FluidStack(fluidStack, 0);
@@ -151,7 +153,7 @@ public class FluidWrapper {
 		return fluidHandler.drain(fluidStack, doNotSimulate);
 	}
 	
-	public static int fill(final ItemStack itemStack, final FluidStack fluidStack, final boolean doNotSimulate) {
+	public static int fill(@Nonnull final ItemStack itemStack, @Nonnull final FluidStack fluidStack, final boolean doNotSimulate) {
 		final IFluidHandler fluidHandler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
 		if (fluidHandler == null) {
 			return 0;
@@ -159,7 +161,8 @@ public class FluidWrapper {
 		return fluidHandler.fill(fluidStack, doNotSimulate);
 	}
 	
-	public static FluidStack getFluidStored(final ItemStack itemStack) {
+	@Nullable
+	public static FluidStack getFluidStored(@Nonnull final ItemStack itemStack) {
 		final IFluidHandler fluidHandler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
 		if (fluidHandler == null) {
 			return null;

@@ -52,7 +52,7 @@ public class CommonProxy {
 		EntityPlayer entityFakePlayer = (weakFakePlayer == null) ? null : weakFakePlayer.get();
 		if (entityFakePlayer == null) {
 			entityFakePlayer = FakePlayerFactory.get(world, gameProfile);
-			((EntityPlayerMP)entityFakePlayer).interactionManager.setGameType(GameType.SURVIVAL);
+			((EntityPlayerMP) entityFakePlayer).interactionManager.setGameType(GameType.SURVIVAL);
 			weakFakePlayer = new WeakReference<>(entityFakePlayer);
 			fakePlayers.put(gameProfile, weakFakePlayer);
 		} else {

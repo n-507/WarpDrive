@@ -481,7 +481,6 @@ public class WarpDriveConfig {
 	public static int              TRANSPORTER_MAX_ENERGY_STORED = 1000000;
 	public static int              TRANSPORTER_ENERGY_STORED_UPGRADE_BONUS = TRANSPORTER_MAX_ENERGY_STORED / 2;
 	public static int              TRANSPORTER_ENERGY_STORED_UPGRADE_MAX_QUANTITY = 8;
-	public static int              TRANSPORTER_SETUP_UPDATE_PARAMETERS_TICKS = 1 * 20;
 	public static int              TRANSPORTER_SETUP_SCANNER_RANGE_XZ_BLOCKS = 8;
 	public static int              TRANSPORTER_SETUP_SCANNER_RANGE_Y_BELOW_BLOCKS = 3;
 	public static int              TRANSPORTER_SETUP_SCANNER_RANGE_Y_ABOVE_BLOCKS = 1;

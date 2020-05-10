@@ -165,8 +165,8 @@ public class EntityParticleBunch extends Entity {
 	
 	@Nonnull
 	@Override
-	public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound compound) {
-		return super.writeToNBT(compound);
+	public NBTTagCompound writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
+		return super.writeToNBT(tagCompound);
 	}
 	
 	// prevent saving entity to chunk

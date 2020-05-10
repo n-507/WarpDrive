@@ -23,7 +23,7 @@ public class BlockElectromagnetGlass extends BlockElectromagnetPlain {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isOpaqueCube(final IBlockState blockState) {
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	

@@ -44,7 +44,7 @@ public class BlockSiren extends BlockAbstractRotatingContainer {
 	}
 	
 	@Override
-	public int damageDropped(final IBlockState blockState) {
+	public int damageDropped(@Nonnull final IBlockState blockState) {
 		return 0;
 	}
 	

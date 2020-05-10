@@ -129,19 +129,19 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isBlockNormalCube(final IBlockState blockState) {
+	public boolean isBlockNormalCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isOpaqueCube(final IBlockState blockState) {
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isFullCube(final IBlockState blockState) {
+	public boolean isFullCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
@@ -174,14 +174,14 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void getSubBlocks(final CreativeTabs creativeTab, final NonNullList<ItemStack> list) {
+	public void getSubBlocks(@Nonnull final CreativeTabs creativeTab, @Nonnull final NonNullList<ItemStack> list) {
 		for (int i = 0; i < 2; ++i) {
 			list.add(new ItemStack(this, 1, i));
 		}
 	}
 	
 	@Override
-	public int damageDropped(final IBlockState blockState) {
+	public int damageDropped(@Nonnull final IBlockState blockState) {
 		return blockState.getValue(IS_DOUBLE_SIDED) ? 1 : 0;
 	}
 	

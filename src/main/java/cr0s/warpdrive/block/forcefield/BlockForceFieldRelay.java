@@ -76,7 +76,7 @@ public class BlockForceFieldRelay extends BlockAbstractForceField {
 	}
 	
 	@Override
-	public int damageDropped(final IBlockState blockState) {
+	public int damageDropped(@Nonnull final IBlockState blockState) {
 		return blockState.getBlock().getMetaFromState(blockState);
 	}
 	

@@ -69,7 +69,7 @@ public class BlockDecorative extends BlockAbstractBase {
 	}
 	
 	@Override
-	public void getSubBlocks(final CreativeTabs creativeTab, final NonNullList<ItemStack> list) {
+	public void getSubBlocks(@Nonnull final CreativeTabs creativeTab, @Nonnull final NonNullList<ItemStack> list) {
 		for (final EnumDecorativeType enumDecorativeType : EnumDecorativeType.values()) {
 			list.add(new ItemStack(this, 1, enumDecorativeType.ordinal()));
 		}
@@ -90,13 +90,13 @@ public class BlockDecorative extends BlockAbstractBase {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isOpaqueCube(final IBlockState blockState) {
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
 		return blockState.getValue(TYPE) != EnumDecorativeType.GLASS;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isTranslucent(final IBlockState blockState) {
+	public boolean isTranslucent(@Nonnull final IBlockState blockState) {
 		return blockState.getValue(TYPE) == EnumDecorativeType.GLASS;
 	}
 	
@@ -126,7 +126,7 @@ public class BlockDecorative extends BlockAbstractBase {
 	}
 	
 	@Override
-	public int damageDropped(final IBlockState blockState) {
+	public int damageDropped(@Nonnull final IBlockState blockState) {
 		return blockState.getBlock().getMetaFromState(blockState);
 	}
 	

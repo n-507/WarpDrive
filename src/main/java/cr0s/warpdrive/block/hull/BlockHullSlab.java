@@ -100,13 +100,13 @@ public class BlockHullSlab extends BlockAbstractBase implements IBlockBase, IDam
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public EnumPushReaction getPushReaction(final IBlockState blockState) {
+	public EnumPushReaction getPushReaction(@Nonnull final IBlockState blockState) {
 		return EnumPushReaction.BLOCK;
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(final CreativeTabs creativeTab, @Nonnull final NonNullList<ItemStack> list) {
+	public void getSubBlocks(@Nonnull final CreativeTabs creativeTab, @Nonnull final NonNullList<ItemStack> list) {
 		list.add(new ItemStack(this, 1, 0));
 		list.add(new ItemStack(this, 1, 2));
 		list.add(new ItemStack(this, 1, 6));
@@ -118,7 +118,7 @@ public class BlockHullSlab extends BlockAbstractBase implements IBlockBase, IDam
 	}
 	
 	@Override
-	public int damageDropped(final IBlockState blockState) {
+	public int damageDropped(@Nonnull final IBlockState blockState) {
 		final int metadata = getMetaFromState(blockState);
 		return metadata <= 1 ? 0    // plain horizontal
 		     : metadata <= 5 ? 2    // plain vertical
@@ -169,12 +169,12 @@ public class BlockHullSlab extends BlockAbstractBase implements IBlockBase, IDam
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public BlockFaceShape getBlockFaceShape(@Nonnull final IBlockAccess blockAccess, @Nonnull final IBlockState blockState, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing) {
+	public BlockFaceShape getBlockFaceShape(@Nonnull final IBlockAccess blockAccess, @Nonnull final IBlockState blockState, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing enumFacing) {
 		final EnumVariant variant = blockState.getValue(VARIANT);
 		if (variant.getIsDouble()) {
 			return BlockFaceShape.SOLID;
 		}
-		return facing == variant.getFacing() ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
+		return enumFacing == variant.getFacing() ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -254,7 +254,7 @@ public class BlockHullSlab extends BlockAbstractBase implements IBlockBase, IDam
 	}
 	
 	@Override
-	public int quantityDropped(final Random random) {
+	public int quantityDropped(@Nonnull final Random random) {
 		return 1;
 	}
 	
@@ -285,7 +285,7 @@ public class BlockHullSlab extends BlockAbstractBase implements IBlockBase, IDam
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isSideSolid(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, final EnumFacing side) {
+	public boolean isSideSolid(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing side) {
 		final EnumFacing enumFacing = blockState.getValue(VARIANT).getFacing();
 		return enumFacing == side;
 	}

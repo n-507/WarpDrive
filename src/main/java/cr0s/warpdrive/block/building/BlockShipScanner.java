@@ -67,7 +67,7 @@ public class BlockShipScanner extends BlockAbstractContainer {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isTranslucent(final IBlockState blockState) {
+	public boolean isTranslucent(@Nonnull final IBlockState blockState) {
 		return true;
 	}
 	

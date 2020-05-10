@@ -26,7 +26,7 @@ public class BlockAirShield extends BlockAbstractOmnipanel {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean causesSuffocation(final IBlockState blockState) {
+	public boolean causesSuffocation(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
@@ -44,7 +44,7 @@ public class BlockAirShield extends BlockAbstractOmnipanel {
 	}
 	
 	@Override
-	public boolean canCollideCheck(final IBlockState blockState, final boolean hitIfLiquid) {
+	public boolean canCollideCheck(@Nonnull final IBlockState blockState, final boolean hitIfLiquid) {
 		return !hitIfLiquid;
 	}
 	

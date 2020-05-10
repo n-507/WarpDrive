@@ -53,13 +53,13 @@ public class EntityNPC extends EntityLiving {
 	}
 	
 	@Override
-	public void readEntityFromNBT(final NBTTagCompound compound) {
-		super.readEntityFromNBT(compound);
+	public void readEntityFromNBT(@Nonnull final NBTTagCompound tagCompound) {
+		super.readEntityFromNBT(tagCompound);
 	}
 	
 	@Override
-	public void writeEntityToNBT(final NBTTagCompound compound) {
-		super.writeEntityToNBT(compound);
+	public void writeEntityToNBT(@Nonnull final NBTTagCompound tagCompound) {
+		super.writeEntityToNBT(tagCompound);
 	}
 	
 	// always save this entity, even when it's dead

@@ -44,30 +44,30 @@ public abstract class BlockAbstractAir extends BlockAbstractBase {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean causesSuffocation(final IBlockState blockState) {
+	public boolean causesSuffocation(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isOpaqueCube(final IBlockState blockState) {
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isFullBlock(final IBlockState blockState) {
+	public boolean isFullBlock(@Nonnull final IBlockState blockState) {
 		return true;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isFullCube(final IBlockState state) {
+	public boolean isFullCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@Override
-	public boolean isAir(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
+	public boolean isAir(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		return true;
 	}
 	
@@ -79,53 +79,50 @@ public abstract class BlockAbstractAir extends BlockAbstractBase {
 	}
 	
 	@Override
-	public boolean isReplaceable(final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+	public boolean isReplaceable(@Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		return true;
 	}
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean canPlaceBlockAt(final World world, @Nonnull final BlockPos blockPos) {
+	public boolean canPlaceBlockAt(@Nonnull final World world, @Nonnull final BlockPos blockPos) {
 		return true;
 	}
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean canCollideCheck(final IBlockState blockState, final boolean hitIfLiquid) {
+	public boolean canCollideCheck(@Nonnull final IBlockState blockState, final boolean hitIfLiquid) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public BlockFaceShape getBlockFaceShape(final IBlockAccess blockAccess, final IBlockState blockState, final BlockPos blockPos, final EnumFacing enumFacing) {
+	public BlockFaceShape getBlockFaceShape(@Nonnull final IBlockAccess blockAccess, @Nonnull final IBlockState blockState, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing enumFacing) {
 		return BlockFaceShape.UNDEFINED;
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(final CreativeTabs creativeTab, final NonNullList<ItemStack> list) {
+	public void getSubBlocks(@Nonnull final CreativeTabs creativeTab, @Nonnull final NonNullList<ItemStack> list) {
 		// hide in NEI
-		for (int i = 0; i < 16; i++) {
-			Commons.hideItemStack(new ItemStack(this, 1, i));
-		}
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public EnumPushReaction getPushReaction(final IBlockState blockState) {
+	public EnumPushReaction getPushReaction(@Nonnull final IBlockState blockState) {
 		return EnumPushReaction.DESTROY;
 	}
 	
 	@Nonnull
 	@Override
-	public Item getItemDropped(final IBlockState blockState, final Random rand, final int fortune) {
+	public Item getItemDropped(@Nonnull final IBlockState blockState, @Nonnull final Random rand, final int fortune) {
 		return Items.AIR;
 	}
 	
 	@Override
-	public int quantityDropped(final Random random) {
+	public int quantityDropped(@Nonnull final Random random) {
 		return 0;
 	}
 	

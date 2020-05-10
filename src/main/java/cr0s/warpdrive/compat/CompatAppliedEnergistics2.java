@@ -161,23 +161,23 @@ public class CompatAppliedEnergistics2 implements IBlockTransformer {
 			for (final String key : keys) {
 				if ( (key.startsWith("def:") && !key.equals("def:6"))
 				  || (key.startsWith("extra:") && !key.equals("extra:6"))) {
-					final NBTTagCompound compound = (NBTTagCompound) nbtTileEntity.getCompoundTag(key).copy();
+					final NBTTagCompound tagCompound = nbtTileEntity.getCompoundTag(key).copy();
 					final String[] parts = key.split(":");
 					if (parts.length != 2 || !rotTagSuffix.containsKey(parts[1])) {
 						// skip
 					} else {
 						switch (rotationSteps) {
 						case 1:
-							tagsRotated.put(parts[0] + ":" + rotTagSuffix.get(parts[1]), compound);
+							tagsRotated.put(parts[0] + ":" + rotTagSuffix.get(parts[1]), tagCompound);
 							break;
 						case 2:
-							tagsRotated.put(parts[0] + ":" + rotTagSuffix.get(rotTagSuffix.get(parts[1])), compound);
+							tagsRotated.put(parts[0] + ":" + rotTagSuffix.get(rotTagSuffix.get(parts[1])), tagCompound);
 							break;
 						case 3:
-							tagsRotated.put(parts[0] + ":" + rotTagSuffix.get(rotTagSuffix.get(rotTagSuffix.get(parts[1]))), compound);
+							tagsRotated.put(parts[0] + ":" + rotTagSuffix.get(rotTagSuffix.get(rotTagSuffix.get(parts[1]))), tagCompound);
 							break;
 						default:
-							tagsRotated.put(key, compound);
+							tagsRotated.put(key, tagCompound);
 							break;
 						}
 						nbtTileEntity.removeTag(key);

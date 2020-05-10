@@ -1016,10 +1016,11 @@ public class Commons {
 		return null;
 	}
 	
-	public static EntityPlayerMP getOnlinePlayerByName(final String playerName) {
+	@Nullable
+	public static EntityPlayerMP getOnlinePlayerByName(final String namePlayer) {
 		final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		assert server != null;
-		return server.getPlayerList().getPlayerByUsername(playerName);
+		return server.getPlayerList().getPlayerByUsername(namePlayer);
 	}
 	
 	public static int colorARGBtoInt(final int alpha, final int red, final int green, final int blue) {
@@ -1027,17 +1028,6 @@ public class Commons {
 		     + (clamp(0, 255, red  ) << 16)
 			 + (clamp(0, 255, green) <<  8)
 			 +  clamp(0, 255, blue );
-	}
-	
-	@Optional.Method(modid = "NotEnoughItems")
-	public static void NEI_hideItemStack(final ItemStack itemStack) {
-		// @TODO MC1.10: codechicken.nei.api.API.hideItem(itemStack);
-	}
-	
-	public static void hideItemStack(final ItemStack itemStack) {
-		if (WarpDriveConfig.isNotEnoughItemsLoaded) {
-			NEI_hideItemStack(itemStack);
-		}
 	}
 	
 	public static void messageToAllPlayersInArea(@Nonnull final IGlobalRegionProvider globalRegionProvider, @Nonnull final WarpDriveText textComponent) {

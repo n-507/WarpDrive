@@ -19,7 +19,7 @@ public class RenderEntityNPC extends RenderBiped<EntityNPC> {
 	}
 	
 	@Override
-	protected void preRenderCallback(final EntityNPC entityNPC, final float partialTickTime) {
+	protected void preRenderCallback(@Nonnull final EntityNPC entityNPC, final float partialTickTime) {
 		super.preRenderCallback(entityNPC, partialTickTime);
 		
 		final float sizeScale = entityNPC.getSizeScale();

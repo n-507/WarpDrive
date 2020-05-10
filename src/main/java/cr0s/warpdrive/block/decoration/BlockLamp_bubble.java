@@ -44,7 +44,7 @@ public class BlockLamp_bubble extends BlockAbstractLamp {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isTranslucent(final IBlockState blockState) {
+	public boolean isTranslucent(@Nonnull final IBlockState blockState) {
 		return true;
 	}
 	
