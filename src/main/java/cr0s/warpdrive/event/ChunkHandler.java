@@ -8,6 +8,7 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.ChunkData;
 import cr0s.warpdrive.data.GlobalRegionManager;
+import cr0s.warpdrive.data.OfflineAvatarManager;
 import cr0s.warpdrive.data.StateAir;
 
 import javax.annotation.Nonnull;
@@ -59,6 +60,7 @@ public class ChunkHandler {
 			final String filename = String.format("%s/%s.dat", event.getWorld().getSaveHandler().getWorldDirectory().getPath(), WarpDrive.MODID);
 			final NBTTagCompound tagCompound = Commons.readNBTFromFile(filename);
 			GlobalRegionManager.readFromNBT(tagCompound);
+			OfflineAvatarManager.readFromNBT(tagCompound);
 			
 			// enforce vanilla's WorldBorder diameter consistency
 			final WorldBorder worldBorder = event.getWorld().getWorldBorder();
@@ -174,6 +176,7 @@ public class ChunkHandler {
 		final String filename = String.format("%s/%s.dat", event.getWorld().getSaveHandler().getWorldDirectory().getPath(), WarpDrive.MODID);
 		final NBTTagCompound tagCompound = new NBTTagCompound();
 		GlobalRegionManager.writeToNBT(tagCompound);
+		OfflineAvatarManager.writeToNBT(tagCompound);
 		Commons.writeNBTToFile(filename, tagCompound);
 	}
 	

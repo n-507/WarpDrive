@@ -18,6 +18,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.EntitySelector;
@@ -31,6 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -53,7 +55,6 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Optional;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -72,13 +73,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+
+import com.mojang.authlib.GameProfile;
 
 /**
  * Common static methods
@@ -92,6 +101,9 @@ public class Commons {
 		EnumBlockRenderType.ENTITYBLOCK_ANIMATED,
 		EnumBlockRenderType.MODEL
 	);
+	
+	private static final ExecutorService THREAD_POOL = new ThreadPoolExecutor(0, 2, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<>());
+	private static final CopyOnWriteArraySet<UUID> uuidGameProfileFilling = new CopyOnWriteArraySet<>();
 	
 	private static Method methodThrowable_getStackTraceElement;
 	
@@ -1021,6 +1033,60 @@ public class Commons {
 		final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		assert server != null;
 		return server.getPlayerList().getPlayerByUsername(namePlayer);
+	}
+	
+	@Nullable
+	public static EntityPlayerMP getOnlinePlayerByUUID(@Nonnull final UUID uuidPlayer) {
+		final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+		assert server != null;
+		return server.getPlayerList().getPlayerByUUID(uuidPlayer);
+	}
+	
+	public interface ProfilePropertiesAvailableCallback {
+		void profilePropertiesAvailable(@Nonnull final GameProfile gameProfile);
+	}
+	
+	@Nonnull
+	public static GameProfile getGameProfile(@Nonnull final UUID uuidPlayer, @Nonnull final String namePlayer,
+	                                         final ProfilePropertiesAvailableCallback profilePropertiesAvailableCallback) {
+		// validate context
+		if ( TileEntitySkull.profileCache == null
+		  || TileEntitySkull.sessionService == null ) {
+			return new GameProfile(uuidPlayer, namePlayer);
+		}
+		
+		// check the cache first
+		final GameProfile gameProfileCached = TileEntitySkull.profileCache.getProfileByUUID(uuidPlayer);
+		if ( gameProfileCached != null
+		  && !gameProfileCached.getProperties().isEmpty() ) {
+			if (profilePropertiesAvailableCallback != null) {
+				profilePropertiesAvailableCallback.profilePropertiesAvailable(gameProfileCached);
+			}
+			return gameProfileCached;
+		}
+		final GameProfile gameProfileEmpty = gameProfileCached != null ? gameProfileCached : new GameProfile(uuidPlayer, namePlayer);
+		// return directly if properties aren't required or filling is already ongoing
+		if ( profilePropertiesAvailableCallback == null
+		  || uuidGameProfileFilling.contains(uuidPlayer) ) {
+			return gameProfileEmpty;
+		}
+		
+		// return an empty profile while a thread will query the server
+		uuidGameProfileFilling.add(uuidPlayer);
+		THREAD_POOL.submit(() -> {
+			final GameProfile gameProfileFilled = TileEntitySkull.sessionService.fillProfileProperties(gameProfileEmpty, true);
+			
+			// return to main thread before updating our cache and informing caller
+			Minecraft.getMinecraft().addScheduledTask(() -> {
+				if (gameProfileEmpty != gameProfileFilled) {// when successful, a new object is created, so we might as well use it
+					TileEntitySkull.profileCache.addEntry(gameProfileFilled);
+				}
+				profilePropertiesAvailableCallback.profilePropertiesAvailable(gameProfileFilled);
+				uuidGameProfileFilling.remove(uuidPlayer);
+			});
+		});
+		
+		return gameProfileEmpty;
 	}
 	
 	public static int colorARGBtoInt(final int alpha, final int red, final int green, final int blue) {

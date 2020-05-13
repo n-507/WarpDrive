@@ -4,6 +4,7 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.event.EMPReceiver;
 import cr0s.warpdrive.event.ItemHandler;
 import cr0s.warpdrive.event.LivingHandler;
+import cr0s.warpdrive.event.PlayerHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -126,6 +127,7 @@ public class CommonProxy {
 		// event handlers
 		MinecraftForge.EVENT_BUS.register(new ItemHandler());
 		MinecraftForge.EVENT_BUS.register(new LivingHandler());
+		MinecraftForge.EVENT_BUS.register(new PlayerHandler());
 		MinecraftForge.EVENT_BUS.register(EMPReceiver.class);
 	}
 }

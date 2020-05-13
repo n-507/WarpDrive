@@ -127,6 +127,7 @@ import cr0s.warpdrive.data.EnumHullPlainType;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.entity.EntityLaserExploder;
 import cr0s.warpdrive.entity.EntityNPC;
+import cr0s.warpdrive.entity.EntityOfflineAvatar;
 import cr0s.warpdrive.entity.EntityParticleBunch;
 import cr0s.warpdrive.entity.EntitySeat;
 import cr0s.warpdrive.event.ChatHandler;
@@ -1136,6 +1137,13 @@ public class WarpDrive {
 		                                .entity(EntityNPC.class).factory(EntityNPC::new)
 		                                .tracker(200, 1, false)
 		                                .id("entity_npc", WarpDriveConfig.G_ENTITY_NPC_ID).name("EntityNPC")
+		                                .build();
+		event.getRegistry().register(entityEntry);
+		
+		entityEntry = EntityEntryBuilder.create()
+		                                .entity(EntityOfflineAvatar.class).factory(EntityOfflineAvatar::new)
+		                                .tracker(200, 1, false)
+		                                .id("entity_offline_avatar", WarpDriveConfig.G_ENTITY_OFFLINE_AVATAR_ID).name("EntityOfflineAvatar")
 		                                .build();
 		event.getRegistry().register(entityEntry);
 		

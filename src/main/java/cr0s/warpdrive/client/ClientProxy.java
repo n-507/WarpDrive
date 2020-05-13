@@ -6,6 +6,7 @@ import cr0s.warpdrive.api.IBlockBase;
 import cr0s.warpdrive.api.IItemBase;
 import cr0s.warpdrive.block.breathing.BlockColorAirShield;
 import cr0s.warpdrive.entity.EntityNPC;
+import cr0s.warpdrive.entity.EntityOfflineAvatar;
 import cr0s.warpdrive.entity.EntityParticleBunch;
 import cr0s.warpdrive.event.ClientHandler;
 import cr0s.warpdrive.event.ModelBakeEventHandler;
@@ -13,6 +14,7 @@ import cr0s.warpdrive.event.TooltipHandler;
 import cr0s.warpdrive.render.ClientCameraHandler;
 import cr0s.warpdrive.render.CustomModelLoaderProjector;
 import cr0s.warpdrive.render.RenderEntityNPC;
+import cr0s.warpdrive.render.RenderEntityOfflineAvatar;
 import cr0s.warpdrive.render.RenderEntityParticleBunch;
 import cr0s.warpdrive.render.RenderOverlayAir;
 import cr0s.warpdrive.render.RenderOverlayCamera;
@@ -65,6 +67,13 @@ public class ClientProxy extends CommonProxy {
 			@Override
 			public Render<EntityNPC> createRenderFor(final RenderManager manager) {
 				return new RenderEntityNPC(manager);
+			}
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityOfflineAvatar.class, new IRenderFactory<EntityOfflineAvatar>() {
+			@Nonnull
+			@Override
+			public Render<EntityOfflineAvatar> createRenderFor(final RenderManager manager) {
+				return new RenderEntityOfflineAvatar(manager);
 			}
 		});
 		RenderingRegistry.registerEntityRenderingHandler(EntityParticleBunch.class, new IRenderFactory<EntityParticleBunch>() {
