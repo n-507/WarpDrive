@@ -4,18 +4,42 @@ import cr0s.warpdrive.entity.EntityNPC;
 
 import javax.annotation.Nonnull;
 
-import java.io.File;
-
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderBiped;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderEntityNPC extends RenderBiped<EntityNPC> {
+public class RenderEntityNPC extends RenderLivingBase<EntityNPC> {
 	
-	public RenderEntityNPC(@Nonnull final RenderManager renderManager, @Nonnull final ModelBiped modelBiped, final float shadowSize) {
-		super(renderManager, modelBiped, shadowSize);
+	public RenderEntityNPC(@Nonnull final RenderManager renderManager) {
+		super(renderManager, new ModelBiped(), 0.5F);
+		
+		/*
+		@TODO: a redesign needed so that we dispatch to original renderers instead of reimplementing them
+		
+		// textures/entity/steve.png
+		// textures/entity/alex.png
+		final boolean useSmallArms = true;
+		final ModelBiped modelPlayer = new ModelPlayer(0.0F, useSmallArms);
+		mainModel = modelPlayer;
+		addLayer(new LayerBipedArmor(this));
+		addLayer(new LayerHeldItem(this));
+		addLayer(new LayerArrow(this));
+		addLayer(new LayerCustomHead(modelPlayer.bipedHead));
+		addLayer(new LayerElytra(this));
+		
+		// textures/entity/zombie/zombie.png
+		mainModel = new ModelZombie();
+		addLayer(new LayerBipedArmor(this) {
+			@Override
+			protected void initArmor() {
+				this.modelLeggings = new ModelZombie(0.5F, true);
+				this.modelArmor = new ModelZombie(1.0F, true);
+			}
+		});
+		/**/
 	}
 	
 	@Override
@@ -31,16 +55,13 @@ public class RenderEntityNPC extends RenderBiped<EntityNPC> {
 		
 		final String textureString = entityNPC.getTextureString();
 		if (!textureString.isEmpty()) {
-			String path = "WarpDriveConfig.config.getConfigFile().getAbsolutePath()";
-			path = path.substring(0, path.length() - 4 - 10);
-			final File fileTexture = new File(path + "/assets/npctextures/" + textureString + ".png");
-			
-			if (fileTexture.exists()) {
-				return new ResourceLocation("npctextures", textureString + ".png");
+			if ( textureString.contains(":")
+			  || textureString.contains("/") ) {
+				return new ResourceLocation(textureString);
 			}
 		}
 		
-		return super.getEntityTexture(entityNPC);
+		return TextureMap.LOCATION_MISSING_TEXTURE;
 	}
 	
 	@Override

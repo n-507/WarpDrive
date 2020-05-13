@@ -26,7 +26,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -65,7 +64,7 @@ public class ClientProxy extends CommonProxy {
 			@Nonnull
 			@Override
 			public Render<EntityNPC> createRenderFor(final RenderManager manager) {
-				return new RenderEntityNPC(manager, new ModelBiped(), 0.5F);
+				return new RenderEntityNPC(manager);
 			}
 		});
 		RenderingRegistry.registerEntityRenderingHandler(EntityParticleBunch.class, new IRenderFactory<EntityParticleBunch>() {
