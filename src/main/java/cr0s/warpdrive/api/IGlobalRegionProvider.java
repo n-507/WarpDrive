@@ -18,7 +18,10 @@ public interface IGlobalRegionProvider extends ICoreSignature {
 		assert this instanceof TileEntity;
 		return ((TileEntity) this).getWorld().provider.getDimension();
 	}
-	BlockPos getPos();
+	default BlockPos getBlockPos() {
+		assert this instanceof TileEntity;
+		return ((TileEntity) this).getPos();
+	}
 	
 	// get the registry type
 	EnumGlobalRegionType getGlobalRegionType();

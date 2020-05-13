@@ -58,7 +58,7 @@ public class GlobalRegion extends GlobalPosition {
 	}
 	
 	public GlobalRegion(final IGlobalRegionProvider globalRegionProvider) {
-		this(globalRegionProvider.getDimension(), globalRegionProvider.getPos(),
+		this(globalRegionProvider.getDimension(), globalRegionProvider.getBlockPos(),
 		     globalRegionProvider.getGlobalRegionType(), globalRegionProvider.getSignatureUUID(), globalRegionProvider.getSignatureName(),
 		     globalRegionProvider.getGlobalRegionArea(),
 		     globalRegionProvider.getMass(), globalRegionProvider.getIsolationRate() );
@@ -66,9 +66,9 @@ public class GlobalRegion extends GlobalPosition {
 	
 	public boolean sameCoordinates(final IGlobalRegionProvider globalRegionProvider) {
 		return dimensionId == globalRegionProvider.getDimension()
-			&& x == globalRegionProvider.getPos().getX()
-			&& y == globalRegionProvider.getPos().getY()
-			&& z == globalRegionProvider.getPos().getZ();
+			&& x == globalRegionProvider.getBlockPos().getX()
+			&& y == globalRegionProvider.getBlockPos().getY()
+			&& z == globalRegionProvider.getBlockPos().getZ();
 	}
 	
 	public void update(final IGlobalRegionProvider globalRegionProvider) {
