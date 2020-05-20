@@ -10,8 +10,8 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class AbstractSequencer {
 	
-	private static AtomicBoolean isUpdating = new AtomicBoolean(false);
-	private static ConcurrentHashMap<AbstractSequencer, Boolean> sequencers = new ConcurrentHashMap<>(10);
+	private static final AtomicBoolean isUpdating = new AtomicBoolean(false);
+	private static final ConcurrentHashMap<AbstractSequencer, Boolean> sequencers = new ConcurrentHashMap<>(10);
 	
 	public static void updateTick() {
 		if (sequencers.isEmpty()) {

@@ -6,6 +6,7 @@ import cr0s.warpdrive.api.ExceptionChunkNotLoaded;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.event.ChunkHandler;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -415,7 +416,7 @@ public class ChunkData {
 		return false;
 	}
 	
-	public void updateTick(final World world) {
+	public void updateTick(@Nonnull final World world) {
 		// skip empty chunk
 		if (dataAirSegments == null) {
 			return;

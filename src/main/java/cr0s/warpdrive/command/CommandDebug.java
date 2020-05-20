@@ -3,7 +3,6 @@ package cr0s.warpdrive.command;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.data.CelestialObjectManager;
-import cr0s.warpdrive.data.GlobalRegionManager;
 
 import javax.annotation.Nonnull;
 

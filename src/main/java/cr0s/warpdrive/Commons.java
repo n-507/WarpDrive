@@ -490,7 +490,7 @@ public class Commons {
 		}
 		return String.format("@ %s (%d %d %d)",
 		                     blockAccess,
-		                     blockPos.getX(), blockPos.getY(), blockPos.getZ());
+		                     blockPos.getX(), blockPos.getY(), blockPos.getZ() );
 	}
 	
 	public static String format(final World world, @Nonnull final BlockPos blockPos) {
@@ -500,7 +500,7 @@ public class Commons {
 	public static String format(final World world, final int x, final int y, final int z) {
 		return String.format("@ %s (%d %d %d)",
 		                     format(world),
-		                     x, y, z);
+		                     x, y, z );
 	}
 	
 	public static String format(final World world, @Nonnull final Vector3 vector3) {
@@ -510,7 +510,7 @@ public class Commons {
 	public static String format(final World world, final double x, final double y, final double z) {
 		return String.format("@ %s (%.2f %.2f %.2f)",
 		                     format(world),
-		                     x, y, z);
+		                     x, y, z );
 	}
 	
 	public static String format(@Nonnull final ItemStack itemStack) {

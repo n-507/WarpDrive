@@ -5,6 +5,7 @@ import cr0s.warpdrive.api.IBeamFrequency;
 import cr0s.warpdrive.block.forcefield.TileEntityForceFieldRelay;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -127,7 +128,7 @@ public class ForceFieldRegistry {
 		return setEntries;
 	}
 	
-	public static void updateInRegistry(final IBeamFrequency tileEntity) {
+	public static void updateInRegistry(@Nonnull final IBeamFrequency tileEntity) {
 		assert tileEntity instanceof TileEntity;
 		
 		countRead++;
@@ -150,7 +151,7 @@ public class ForceFieldRegistry {
 		}
 	}
 	
-	public static void removeFromRegistry(final IBeamFrequency tileEntity) {
+	public static void removeFromRegistry(@Nonnull final IBeamFrequency tileEntity) {
 		assert tileEntity instanceof TileEntity;
 		
 		countRead++;
@@ -172,7 +173,7 @@ public class ForceFieldRegistry {
 	
 	public static void printRegistry(final String trigger) {
 		WarpDrive.logger.info(String.format("Force field registry (%d entries after %s):",
-		                                    registry.size(), trigger));
+		                                    registry.size(), trigger ));
 		
 		for (final Map.Entry<Integer, CopyOnWriteArraySet<GlobalPosition>> entry : registry.entrySet()) {
 			final StringBuilder message = new StringBuilder();

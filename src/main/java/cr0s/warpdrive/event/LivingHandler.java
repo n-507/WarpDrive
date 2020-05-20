@@ -86,7 +86,8 @@ public class LivingHandler {
 	
 	@SubscribeEvent
 	public void onLivingUpdate(@Nonnull final LivingUpdateEvent event) {
-		if (event.getEntityLiving() == null || event.getEntityLiving().world.isRemote) {
+		if ( event.getEntityLiving() == null
+		  || event.getEntityLiving().world.isRemote ) {
 			return;
 		}
 		

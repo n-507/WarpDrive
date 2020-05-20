@@ -14,12 +14,12 @@ import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -83,7 +83,7 @@ public class RenderSpaceSky extends IRenderHandler {
 	}
 	
 	@Override
-	public void render(final float partialTicks, final WorldClient world, final Minecraft mc) {
+	public void render(final float partialTicks, @Nonnull final WorldClient world, @Nonnull final Minecraft mc) {
 		final Vec3d vec3Player = mc.player.getPositionEyes(partialTicks);
 		final CelestialObject celestialObject = world.provider == null ? null
 				: CelestialObjectManager.get(world, (int) vec3Player.x, (int) vec3Player.z);
@@ -263,6 +263,7 @@ public class RenderSpaceSky extends IRenderHandler {
 	static final double PLANET_FAR = 1786.0D;
 	static final double PLANET_APPROACHING = 512.0D;
 	static final double PLANET_ORBIT = 128.0D;
+	
 	private static void renderCelestialObject(final Tessellator tessellator, final CelestialObject celestialObject,
 	                                          final float alphaSky, final Vector3 vectorPlayer) {
 		// @TODO compute relative coordinates for rendering on celestialObject
@@ -337,7 +338,7 @@ public class RenderSpaceSky extends IRenderHandler {
 		
 		// angles
 		final double angleH = Math.atan2(distanceToCenterX, distanceToCenterZ);
-		final double angleV_far = Math.atan2(Math.sqrt(distanceToCenterX * distanceToCenterX + distanceToCenterZ * distanceToCenterZ), planetY);
+		final double angleV_far = Math.atan2(distanceToCenter, planetY);
 		final double angleV = Math.PI * (1.0D - transitionOrbit) + angleV_far * transitionOrbit;
 		final double angleS = 0.15D * celestialObject.dimensionId * transitionApproaching // + (world.getTotalWorldTime() + partialTicks) * Math.PI / 6000.0D;
 							+ angleH * (1.0D - transitionApproaching);
@@ -553,15 +554,15 @@ public class RenderSpaceSky extends IRenderHandler {
 	public static float getSkyBrightness(final float par1) {
 		final float var2 = FMLClientHandler.instance().getClient().world.getCelestialAngle(par1);
 		float var3 = 1.0F - (MathHelper.sin(var2 * (float) Math.PI * 2.0F) * 2.0F + 0.25F);
-
+		
 		if (var3 < 0.0F) {
 			var3 = 0.0F;
 		}
-
+		
 		if (var3 > 1.0F) {
 			var3 = 1.0F;
 		}
-
+		
 		return var3 * var3 * 1F;
 	}
 }

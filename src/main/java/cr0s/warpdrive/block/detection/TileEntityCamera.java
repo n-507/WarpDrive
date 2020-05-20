@@ -102,6 +102,7 @@ public class TileEntityCamera extends TileEntityAbstractMachine implements IVide
 	@Override
 	public void readFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
+		
 		videoChannel = tagCompound.getInteger("frequency") + tagCompound.getInteger(VIDEO_CHANNEL_TAG);
 		if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 			WarpDrive.logger.info(this + " readFromNBT");
@@ -112,15 +113,17 @@ public class TileEntityCamera extends TileEntityAbstractMachine implements IVide
 	@Override
 	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
+		
 		tagCompound.setInteger(VIDEO_CHANNEL_TAG, videoChannel);
 		if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 			WarpDrive.logger.info(this + " writeToNBT");
 		}
+		
 		return tagCompound;
 	}
 	
 	// Common OC/CC methods
-	public Object[] videoChannel(final Object[] arguments) {
+	public Object[] videoChannel(@Nonnull final Object[] arguments) {
 		if (arguments.length == 1) {
 			setVideoChannel(Commons.toInt(arguments[0]));
 		}
@@ -151,6 +154,6 @@ public class TileEntityCamera extends TileEntityAbstractMachine implements IVide
 		return String.format("%s %d %s",
 		                     getClass().getSimpleName(), 
 		                     videoChannel,
-		                     Commons.format(world, pos));
+		                     Commons.format(world, pos) );
 	}
 }

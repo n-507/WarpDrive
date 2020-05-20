@@ -351,7 +351,7 @@ public class ParticleBunch extends Vector3 {
 				energy);
 	}
 	
-	private void doIrradiation(final World world, final double radius, final float strength) {
+	private void doIrradiation(@Nonnull final World world, final double radius, final float strength) {
 		final AxisAlignedBB axisAlignedBB = new AxisAlignedBB(
 			x + 0.5D - radius, y + 0.5D - radius, z + 0.5D - radius,
 			x + 0.5D + radius, y + 0.5D + radius, z + 0.5D + radius);

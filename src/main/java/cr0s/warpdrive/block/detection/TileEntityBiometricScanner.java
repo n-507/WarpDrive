@@ -87,9 +87,10 @@ public class TileEntityBiometricScanner extends TileEntityAbstractMachine {
 			tickScanning--;
 			
 			// check for exclusive player presence
-			final List<EntityPlayerMP> playersInRange = world.getEntitiesWithinAABB(EntityPlayerMP.class, aabbRange, entityPlayerMP -> entityPlayerMP != null
-			                                                                                                                        && entityPlayerMP.isEntityAlive()
-			                                                                                                                        && !entityPlayerMP.isSpectator() );
+			final List<EntityPlayerMP> playersInRange = world.getEntitiesWithinAABB(EntityPlayerMP.class, aabbRange,
+			                                                                        entityPlayerMP -> entityPlayerMP != null
+			                                                                                       && entityPlayerMP.isEntityAlive()
+			                                                                                       && !entityPlayerMP.isSpectator() );
 			boolean isJammed = false;
 			boolean isPresent = false;
 			for (final EntityPlayerMP entityPlayerMP : playersInRange) {
@@ -168,7 +169,7 @@ public class TileEntityBiometricScanner extends TileEntityAbstractMachine {
 	public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound tagCompound) {
 		tagCompound = super.writeToNBT(tagCompound);
 		
-		// only save is scanning has concluded
+		// only save if scanning has concluded
 		if ( tickScanning < 0
 		  && uuidLastPlayer != null
 		  && uuidLastPlayer.getMostSignificantBits() != 0L
@@ -184,6 +185,7 @@ public class TileEntityBiometricScanner extends TileEntityAbstractMachine {
 	}
 	
 	// TileEntityAbstractBase overrides
+	@Nonnull
 	private WarpDriveText getScanStatus() {
 		if (tickScanning >= 0) {
 			return new WarpDriveText(Commons.getStyleWarning(), "warpdrive.biometric_scanner.status_line.scan_in_progress",

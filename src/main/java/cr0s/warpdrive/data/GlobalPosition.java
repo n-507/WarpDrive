@@ -26,18 +26,18 @@ public class GlobalPosition {
 		this.z = z;
 	}
 	
-	public GlobalPosition(final int dimensionId, final BlockPos blockPos) {
+	public GlobalPosition(final int dimensionId, @Nonnull final BlockPos blockPos) {
 		this.dimensionId = dimensionId;
 		this.x = blockPos.getX();
 		this.y = blockPos.getY();
 		this.z = blockPos.getZ();
 	}
 	
-	public GlobalPosition(final TileEntity tileEntity) {
+	public GlobalPosition(@Nonnull final TileEntity tileEntity) {
 		this(tileEntity.getWorld().provider.getDimension(), tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ());
 	}
 	
-	public GlobalPosition(final Entity entity) {
+	public GlobalPosition(@Nonnull final Entity entity) {
 		this(entity.world.provider.getDimension(),
 			(int) Math.floor(entity.posX),
 			(int) Math.floor(entity.posY),

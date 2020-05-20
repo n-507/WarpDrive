@@ -1048,19 +1048,26 @@ public class WarpDriveConfig {
 		
 		// Offline avatar
 		OFFLINE_AVATAR_ENABLE =
-				config.get("offline_avatar", "enable", OFFLINE_AVATAR_ENABLE, "Enable creation of offline avatars to follow ship movements. This only disable creating new ones.").getBoolean(OFFLINE_AVATAR_ENABLE);
+				config.get("offline_avatar", "enable", OFFLINE_AVATAR_ENABLE,
+				           "Enable creation of offline avatars to follow ship movements. This only disable creating new ones.").getBoolean(OFFLINE_AVATAR_ENABLE);
 		OFFLINE_AVATAR_CREATE_ONLY_ABOARD_SHIPS =
-				config.get("offline_avatar", "create_only_aboard_ships", OFFLINE_AVATAR_CREATE_ONLY_ABOARD_SHIPS, "Only create an offline avatar when player disconnects while inside a ship. Disabling may cause lag in spawn areas...").getBoolean(OFFLINE_AVATAR_CREATE_ONLY_ABOARD_SHIPS);
+				config.get("offline_avatar", "create_only_aboard_ships", OFFLINE_AVATAR_CREATE_ONLY_ABOARD_SHIPS,
+				           "Only create an offline avatar when player disconnects while inside a ship. Disabling may cause lag in spawn areas...").getBoolean(OFFLINE_AVATAR_CREATE_ONLY_ABOARD_SHIPS);
 		OFFLINE_AVATAR_FORGET_ON_DEATH =
-				config.get("offline_avatar", "forget_on_death", OFFLINE_AVATAR_FORGET_ON_DEATH, "Enable to forget current avatar position when it's killed, or disable player teleportation to last known avatar's position").getBoolean(OFFLINE_AVATAR_FORGET_ON_DEATH);
+				config.get("offline_avatar", "forget_on_death", OFFLINE_AVATAR_FORGET_ON_DEATH,
+				           "Enable to forget current avatar position when it's killed, or disable player teleportation to last known avatar's position").getBoolean(OFFLINE_AVATAR_FORGET_ON_DEATH);
 		OFFLINE_AVATAR_MODEL_SCALE = (float) Commons.clamp(0.20D, 2.00D,
-				config.get("offline_avatar", "model_scale", OFFLINE_AVATAR_MODEL_SCALE, "Scale of offline avatar compared to a normal player").getDouble(OFFLINE_AVATAR_MODEL_SCALE));
+				config.get("offline_avatar", "model_scale", OFFLINE_AVATAR_MODEL_SCALE,
+				           "Scale of offline avatar compared to a normal player").getDouble(OFFLINE_AVATAR_MODEL_SCALE));
 		OFFLINE_AVATAR_ALWAYS_RENDER_NAME_TAG =
-				config.get("offline_avatar", "always_render_name_tag", OFFLINE_AVATAR_ALWAYS_RENDER_NAME_TAG, "Should avatar name tag always be visible?").getBoolean(OFFLINE_AVATAR_ALWAYS_RENDER_NAME_TAG);
+				config.get("offline_avatar", "always_render_name_tag", OFFLINE_AVATAR_ALWAYS_RENDER_NAME_TAG, 
+				           "Should avatar name tag always be visible?").getBoolean(OFFLINE_AVATAR_ALWAYS_RENDER_NAME_TAG);
 		OFFLINE_AVATAR_MIN_RANGE_FOR_REMOVAL = (float) Commons.clamp(0.10D, 10.00D,
-				config.get("offline_avatar", "min_range_for_removal", OFFLINE_AVATAR_MIN_RANGE_FOR_REMOVAL, "Minimum range between a player and their avatar to consider it for removal (i.e. ensuring connection was successful)").getDouble(OFFLINE_AVATAR_MIN_RANGE_FOR_REMOVAL));
+				config.get("offline_avatar", "min_range_for_removal", OFFLINE_AVATAR_MIN_RANGE_FOR_REMOVAL,
+				           "Minimum range between a player and their avatar to consider it for removal (i.e. ensuring connection was successful)").getDouble(OFFLINE_AVATAR_MIN_RANGE_FOR_REMOVAL));
 		OFFLINE_AVATAR_MAX_RANGE_FOR_REMOVAL = (float) Commons.clamp(Math.max(3.00D, OFFLINE_AVATAR_MIN_RANGE_FOR_REMOVAL), Float.MAX_VALUE,
-				config.get("offline_avatar", "max_range_for_removal", OFFLINE_AVATAR_MAX_RANGE_FOR_REMOVAL, "Maximum range between a player and his/her avatar to consider it for removal").getDouble(OFFLINE_AVATAR_MAX_RANGE_FOR_REMOVAL));
+				config.get("offline_avatar", "max_range_for_removal", OFFLINE_AVATAR_MAX_RANGE_FOR_REMOVAL,
+				           "Maximum range between a player and his/her avatar to consider it for removal").getDouble(OFFLINE_AVATAR_MAX_RANGE_FOR_REMOVAL));
 		
 		// Radar
 		RADAR_MAX_ENERGY_STORED = Commons.clamp(0, Integer.MAX_VALUE,

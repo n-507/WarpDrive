@@ -62,6 +62,11 @@ public class PlayerTextureManager {
 						case CAPE:
 							playerTextures.resourceLocationCape = location;
 							break;
+							
+						default:
+							WarpDrive.logger.warn(String.format("Unsupported texture type %s with location %s profile %s for %s",
+							                                    type, location, profileTexture, gameProfileFilled ));
+							break;
 						}
 					}, true) );
 			

@@ -12,6 +12,7 @@ import cr0s.warpdrive.data.OfflineAvatarManager;
 import cr0s.warpdrive.data.StateAir;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -45,7 +46,7 @@ public class ChunkHandler {
 	
 	/* event catchers */
 	@SubscribeEvent
-	public void onLoadWorld(final WorldEvent.Load event) {
+	public void onLoadWorld(@Nonnull final WorldEvent.Load event) {
 		if (event.getWorld().isRemote || event.getWorld().provider.getDimension() == 0) {
 			if (WarpDriveConfig.LOGGING_CHUNK_HANDLER) {
 				WarpDrive.logger.info(String.format("%s world %s load.",
@@ -76,7 +77,7 @@ public class ChunkHandler {
 	}
 	
 	// new chunks aren't loaded
-	public static void onGenerated(final World world, final int chunkX, final int chunkZ) {
+	public static void onGenerated(@Nonnull final World world, final int chunkX, final int chunkZ) {
 		if (WarpDriveConfig.LOGGING_CHUNK_HANDLER) {
 			WarpDrive.logger.info(String.format("%s world %s chunk [%d, %d] generating",
 			                                    world.isRemote ? "Client" : "Server",
@@ -94,7 +95,7 @@ public class ChunkHandler {
 	
 	// (server side only)
 	@SubscribeEvent
-	public void onLoadChunkData(final ChunkDataEvent.Load event) {
+	public void onLoadChunkData(@Nonnull final ChunkDataEvent.Load event) {
 		if (WarpDriveConfig.LOGGING_CHUNK_HANDLER) {
 			WarpDrive.logger.info(String.format("%s world %s chunk %s loading data (1)", 
 			                                    event.getWorld().isRemote ? "Client" : "Server",
@@ -109,7 +110,7 @@ public class ChunkHandler {
 	
 	// (called after data loading, or before a late generation, or on client side) 
 	@SubscribeEvent
-	public void onLoadChunk(final ChunkEvent.Load event) {
+	public void onLoadChunk(@Nonnull final ChunkEvent.Load event) {
 		if (WarpDriveConfig.LOGGING_CHUNK_HANDLER) {
 			WarpDrive.logger.info(String.format("%s world %s chunk %s loaded (2)",
 			                                    event.getWorld().isRemote ? "Client" : "Server",
@@ -138,7 +139,7 @@ public class ChunkHandler {
 	// (server side only)
 	// not called when chunk wasn't changed since last save?
 	@SubscribeEvent
-	public void onSaveChunkData(final ChunkDataEvent.Save event) {
+	public void onSaveChunkData(@Nonnull final ChunkDataEvent.Save event) {
 		if (WarpDriveConfig.LOGGING_CHUNK_HANDLER) {
 			WarpDrive.logger.info(String.format("%s world %s chunk %s save data",
 			                                    event.getWorld().isRemote ? "Client" : "Server",
@@ -158,7 +159,7 @@ public class ChunkHandler {
 	
 	// (server side only)
 	@SubscribeEvent
-	public void onSaveWorld(final WorldEvent.Save event) {
+	public void onSaveWorld(@Nonnull final WorldEvent.Save event) {
 		if (event.getWorld().provider.getDimension() != 0) {
 			return;
 		}
@@ -181,7 +182,7 @@ public class ChunkHandler {
 	}
 	
 	@SubscribeEvent
-	public void onUnloadWorld(final WorldEvent.Unload event) {
+	public void onUnloadWorld(@Nonnull final WorldEvent.Unload event) {
 		if (WarpDriveConfig.LOGGING_CHUNK_HANDLER) {
 			WarpDrive.logger.info(String.format("%s world %s unload",
 			                                    event.getWorld().isRemote ? "Client" : "Server",
@@ -208,7 +209,7 @@ public class ChunkHandler {
 	
 	// (not called when closing SSP game)
 	@SubscribeEvent
-	public void onUnloadChunk(final Unload event) {
+	public void onUnloadChunk(@Nonnull final Unload event) {
 		if (WarpDriveConfig.LOGGING_CHUNK_HANDLER) {
 			WarpDrive.logger.info(String.format("%s world %s chunk %s unload",
 			                                    event.getWorld().isRemote ? "Client" : "Server",
@@ -241,7 +242,7 @@ public class ChunkHandler {
 	}
 	/**/
 	@SubscribeEvent
-	public void onWorldTick(final WorldTickEvent event) {
+	public void onWorldTick(@Nonnull final WorldTickEvent event) {
 		if (event.side != Side.SERVER || event.phase != Phase.END) {
 			return;
 		}
@@ -269,7 +270,7 @@ public class ChunkHandler {
 	/**
 	 * Return null and spam logs if chunk isn't already generated or loaded 
 	 */
-	public static ChunkData getChunkData(final World world, final int x, final int y, final int z) {
+	public static ChunkData getChunkData(@Nonnull final World world, final int x, final int y, final int z) {
 		final ChunkData chunkData = getChunkData(world.isRemote, world.provider.getDimension(), x, y, z);
 		if (chunkData == null) {
 			if (Commons.throttleMe("ChunkHandler get data from an non-loaded chunk")) {
@@ -292,6 +293,7 @@ public class ChunkHandler {
 		return getChunkData(isRemote, dimensionId, x >> 4, z >> 4, false);
 	}
 	
+	@Nullable
 	private static ChunkData getChunkData(final boolean isRemote, final int dimensionId, final int xChunk, final int zChunk, final boolean doCreate) {
 		// get dimension data
 		LocalProfiler.updateCallStat("getChunkData");
@@ -338,7 +340,7 @@ public class ChunkHandler {
 		return chunkData;
 	}
 	
-	private static boolean isLoaded(final TLongObjectHashMap<ChunkData> mapRegistryItems, final int xChunk, final int zChunk) {
+	private static boolean isLoaded(@Nonnull final TLongObjectHashMap<ChunkData> mapRegistryItems, final int xChunk, final int zChunk) {
 		// get chunk data
 		final long index = ChunkPos.asLong(xChunk, zChunk);
 		final ChunkData chunkData = mapRegistryItems.get(index);
@@ -346,13 +348,14 @@ public class ChunkHandler {
 	}
 	
 	/* commons */
-	public static boolean isLoaded(final World world, final int x, final int y, final int z) {
+	public static boolean isLoaded(@Nonnull final World world, final int x, final int y, final int z) {
 		final ChunkData chunkData = getChunkData(world.isRemote, world.provider.getDimension(), x, y, z);
 		return chunkData != null && chunkData.isLoaded();
 	}
 	
 	/* air handling */
-	public static StateAir getStateAir(final World world, final int x, final int y, final int z) {
+	@Nullable
+	public static StateAir getStateAir(@Nonnull final World world, final int x, final int y, final int z) {
 		final ChunkData chunkData = getChunkData(world, x, y, z);
 		if (chunkData == null) {
 			// chunk isn't loaded, skip it
@@ -367,7 +370,7 @@ public class ChunkHandler {
 		}
 	}
 	
-	private static void updateTick(final World world) {
+	private static void updateTick(@Nonnull final World world) {
 		// get dimension data
 		LocalProfiler.updateCallStat("updateTick");
 		final TIntObjectHashMap<TLongObjectHashMap<ChunkData>> registry = world.isRemote ? registryClient : registryServer;
@@ -432,7 +435,7 @@ public class ChunkHandler {
 	}
 	
 	// apparently, the GC triggers sooner when using sub-function here?
-	private static void updateTickLoopStep(final World world, final TLongObjectHashMap<ChunkData> mapRegistryItems, final ChunkData chunkData) {
+	private static void updateTickLoopStep(@Nonnull final World world, @Nonnull final TLongObjectHashMap<ChunkData> mapRegistryItems, @Nonnull final ChunkData chunkData) {
 		final ChunkPos chunkCoordIntPair = chunkData.getChunkCoords();
 		// skip empty chunks (faster and more frequent)
 		// ship chunk with unloaded neighbours
