@@ -54,11 +54,10 @@ public class RenderEntityNPC extends RenderLivingBase<EntityNPC> {
 	protected ResourceLocation getEntityTexture(@Nonnull final EntityNPC entityNPC) {
 		
 		final String textureString = entityNPC.getTextureString();
-		if (!textureString.isEmpty()) {
-			if ( textureString.contains(":")
-			  || textureString.contains("/") ) {
-				return new ResourceLocation(textureString);
-			}
+		if ( !textureString.isEmpty()
+		  && ( textureString.contains(":")
+			|| textureString.contains("/") ) ) {
+			return new ResourceLocation(textureString);
 		}
 		
 		return TextureMap.LOCATION_MISSING_TEXTURE;

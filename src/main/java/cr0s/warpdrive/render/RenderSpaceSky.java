@@ -337,7 +337,7 @@ public class RenderSpaceSky extends IRenderHandler {
 		
 		// angles
 		final double angleH = Math.atan2(distanceToCenterX, distanceToCenterZ);
-		final double angleV_far = Math.atan2(Math.sqrt(distanceToCenterX * distanceToCenterX + distanceToCenterZ * distanceToCenterZ), planetY);
+		final double angleV_far = Math.atan2(distanceToCenter, planetY);
 		final double angleV = Math.PI * (1.0D - transitionOrbit) + angleV_far * transitionOrbit;
 		final double angleS = 0.15D * celestialObject.dimensionId * transitionApproaching // + (world.getTotalWorldTime() + partialTicks) * Math.PI / 6000.0D;
 							+ angleH * (1.0D - transitionApproaching);

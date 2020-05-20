@@ -1409,7 +1409,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 				blockPos.getY() + 2.00D,
 				blockPos.getZ() + 1.05D);
 		
-		final List entities = world.getEntitiesWithinAABBExcludingEntity(null, aabb);
+		final List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(null, aabb);
 		Entity entityReturn = null;
 		int countEntities = 0;
 		for (final Object object : entities) {
@@ -1467,7 +1467,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 			globalPosition.y + 2.0D,
 			globalPosition.z + WarpDriveConfig.TRANSPORTER_ENTITY_GRAB_RADIUS_BLOCKS + 1.0D);
 		
-		final List entities = world.getEntitiesWithinAABBExcludingEntity(null, aabb);
+		final List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(null, aabb);
 		final LinkedHashSet<Entity> entitiesReturn = new LinkedHashSet<>(entities.size());
 		for (final Object object : entities) {
 			if (!(object instanceof Entity)) {

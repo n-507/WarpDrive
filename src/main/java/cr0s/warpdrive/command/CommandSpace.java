@@ -4,7 +4,6 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.CelestialObject;
-import cr0s.warpdrive.data.GlobalRegionManager;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
 

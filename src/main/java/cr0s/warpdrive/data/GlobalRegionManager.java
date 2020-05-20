@@ -144,11 +144,10 @@ public class GlobalRegionManager {
 			}
 			
 			for (final GlobalRegion globalRegion : setGlobalRegions) {
-				if (enumGlobalRegionType == null
-				    || globalRegion.type == enumGlobalRegionType) {
-					if (globalRegion.name.equals(name)) {
-						return globalRegion;
-					}
+				if ( ( enumGlobalRegionType == null
+				    || globalRegion.type == enumGlobalRegionType )
+				  && globalRegion.name.equals(name) ) {
+					return globalRegion;
 				}
 			}
 		}
@@ -164,11 +163,10 @@ public class GlobalRegionManager {
 			}
 			
 			for (final GlobalRegion globalRegion : setGlobalRegions) {
-				if (enumGlobalRegionType == null
-				    || globalRegion.type == enumGlobalRegionType) {
-					if (globalRegion.uuid.equals(uuid)) {
-						return globalRegion;
-					}
+				if ( ( enumGlobalRegionType == null
+				    || globalRegion.type == enumGlobalRegionType )
+				  && globalRegion.uuid.equals(uuid) ) {
+					return globalRegion;
 				}
 			}
 		}
