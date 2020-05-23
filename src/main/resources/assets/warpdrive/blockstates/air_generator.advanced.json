@@ -3,13 +3,13 @@
 	"defaults": {
 		"model": "minecraft:cube_directional",
 		"textures": {
-			"particle": "warpdrive:blocks/breathing/air_generator-side_inactive",
-			"down"    : "warpdrive:blocks/breathing/air_generator-connection",
-			"up"      : "warpdrive:blocks/breathing/air_generator-connection",
-			"north"   : "warpdrive:blocks/breathing/air_generator-side_active",
-			"south"   : "warpdrive:blocks/breathing/air_generator-connection",
-			"west"    : "warpdrive:blocks/breathing/air_generator-connection",
-			"east"    : "warpdrive:blocks/breathing/air_generator-connection"
+			"particle": "warpdrive:blocks/breathing/air_generator.advanced-front_inactive",
+			"down"    : "warpdrive:blocks/breathing/air_generator-side",
+			"up"      : "warpdrive:blocks/breathing/air_generator-side",
+			"north"   : "warpdrive:blocks/breathing/air_generator.advanced-front_active",
+			"south"   : "warpdrive:blocks/breathing/air_generator-back",
+			"west"    : "warpdrive:blocks/breathing/air_generator-side",
+			"east"    : "warpdrive:blocks/breathing/air_generator-side"
 		},
 		"transform": "forge:default-block"
 	},
@@ -19,7 +19,7 @@
 		"active": {
 			"false": {
 				"textures": {
-					"north"   : "warpdrive:blocks/breathing/air_generator-side_inactive"
+					"north"   : "warpdrive:blocks/breathing/air_generator.advanced-front_inactive"
 				}
 			},
 			"true": { }
