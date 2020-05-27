@@ -11,6 +11,7 @@ import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObject;
 import cr0s.warpdrive.data.EnumTier;
+import cr0s.warpdrive.data.OfflineAvatarManager;
 import cr0s.warpdrive.data.StateAir;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
@@ -178,6 +179,11 @@ public class LivingHandler {
 			if ( WarpDriveConfig.BREATHING_AIR_AT_ENTITY_DEBUG
 			  && entityLivingBase.world.getWorldTime() % 20 == 0 ) {
 				StateAir.dumpAroundEntity((EntityPlayer) entityLivingBase);
+			}
+			
+			// *** offline avatar handling
+			if (WarpDriveConfig.OFFLINE_AVATAR_ENABLE) {
+				OfflineAvatarManager.onTick((EntityPlayer) entityLivingBase);
 			}
 		}
 		

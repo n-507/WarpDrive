@@ -1,8 +1,8 @@
 package cr0s.warpdrive.entity;
 
-import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.GlobalPosition;
 import cr0s.warpdrive.data.OfflineAvatarManager;
 
 import javax.annotation.Nonnull;
@@ -27,6 +27,7 @@ public class EntityOfflineAvatar extends EntityLiving {
 	private static final DataParameter<String>         DATA_PLAYER_NAME = EntityDataManager.createKey(EntityOfflineAvatar.class, DataSerializers.STRING);
 	
 	// computed properties
+	private GlobalPosition cache_globalPosition;
 	private boolean isDirtyGlobalPosition = true;
 	private int tickUpdateGlobalPosition = 0;
 	
@@ -70,6 +71,13 @@ public class EntityOfflineAvatar extends EntityLiving {
 			return;
 		}
 		
+		// detect position change
+		if ( cache_globalPosition == null
+		  || cache_globalPosition.distance2To(this) > 1.0D ) {
+			isDirtyGlobalPosition = true;
+			cache_globalPosition = new GlobalPosition(this);
+		}
+		
 		// update registry
 		if (isDirtyGlobalPosition) {
 			tickUpdateGlobalPosition = 0;
@@ -89,25 +97,11 @@ public class EntityOfflineAvatar extends EntityLiving {
 				}
 				
 			} else {
-				// cleanup online players
-				final EntityPlayer entityPlayer = Commons.getOnlinePlayerByUUID(uuidPlayer);
-				if ( entityPlayer != null
-				  && world.provider.getDimension() == entityPlayer.world.provider.getDimension()
-				  && isInRange(entityPlayer) ) {// (actually online in close proximity)
-					OfflineAvatarManager.remove(this);
-					setDead();
-					
-				} else {// (actually offline or far away)
-					OfflineAvatarManager.update(this);
-				}
+				// update registry
+				// note: since offline avatars can be killed while keeping last known position, the removal is handled by the manager
+				OfflineAvatarManager.update(this);
 			}
 		}
-	}
-	
-	private boolean isInRange(@Nonnull final EntityPlayer entityPlayer) {
-		final float distance = entityPlayer.getDistance(this);
-		return distance >= WarpDriveConfig.OFFLINE_AVATAR_MIN_RANGE_FOR_REMOVAL
-		    && distance <= WarpDriveConfig.OFFLINE_AVATAR_MAX_RANGE_FOR_REMOVAL; 
 	}
 	
 	@Override
@@ -156,8 +150,8 @@ public class EntityOfflineAvatar extends EntityLiving {
 	}
 	
 	@Override
-	public void onLivingUpdate() {
-		super.onLivingUpdate();
+	public boolean canBeLeashedTo(@Nonnull final EntityPlayer entityPlayer) {
+		return false;
 	}
 	
 	@Override

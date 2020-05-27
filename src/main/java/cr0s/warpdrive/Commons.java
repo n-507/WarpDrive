@@ -6,6 +6,7 @@ import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.BlockStatePos;
+import cr0s.warpdrive.data.GlobalPosition;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
 import cr0s.warpdrive.event.ChunkHandler;
@@ -511,6 +512,21 @@ public class Commons {
 		return String.format("@ %s (%.2f %.2f %.2f)",
 		                     format(world),
 		                     x, y, z );
+	}
+	
+	public static String format(@Nonnull final Entity entity) {
+		if (entity.world != null) {
+			return format(entity.world, entity.posX, entity.posY, entity.posZ);
+		}
+		return String.format("@ DIM%d (%.2f %.2f %.2f)",
+		                     entity.dimension,
+		                     entity.posX, entity.posY, entity.posZ );
+	}
+	
+	public static String format(@Nonnull final GlobalPosition globalPosition) {
+		return String.format("@ DIM%d (%d %d %d)",
+		                     globalPosition.dimensionId,
+		                     globalPosition.x, globalPosition.y, globalPosition.z );
 	}
 	
 	public static String format(@Nonnull final ItemStack itemStack) {

@@ -263,6 +263,7 @@ public class WarpDriveConfig {
 	public static boolean LOGGING_ENTITY_FX = false;
 	public static boolean LOGGING_CLIENT_SYNCHRONIZATION = false;
 	public static boolean LOGGING_GRAVITY = false;
+	public static boolean LOGGING_OFFLINE_AVATAR = true;
 	
 	// Energy
 	public static String           ENERGY_DISPLAY_UNITS = "RF";
@@ -311,6 +312,8 @@ public class WarpDriveConfig {
 	public static boolean          OFFLINE_AVATAR_ALWAYS_RENDER_NAME_TAG = false;
 	public static float            OFFLINE_AVATAR_MIN_RANGE_FOR_REMOVAL = 1.0F;
 	public static float            OFFLINE_AVATAR_MAX_RANGE_FOR_REMOVAL = 5.0F;
+	public static int              OFFLINE_AVATAR_DELAY_FOR_REMOVAL_SECONDS = 1;
+	public static int              OFFLINE_AVATAR_DELAY_FOR_REMOVAL_TICKS = 20 * OFFLINE_AVATAR_DELAY_FOR_REMOVAL_SECONDS;
 	
 	// Radar
 	public static int              RADAR_MAX_ENERGY_STORED = 100000000; // 100kk eU
@@ -978,6 +981,7 @@ public class WarpDriveConfig {
 		LOGGING_CHUNK_LOADING = config.get("logging", "enable_chunk_loading_logs", LOGGING_CHUNK_LOADING, "Chunk loading logs, enable it to report chunk loaders updates").getBoolean(false);
 		LOGGING_ENTITY_FX = config.get("logging", "enable_entity_fx_logs", LOGGING_ENTITY_FX, "EntityFX logs, enable it to dump entityFX registry updates").getBoolean(false);
 		LOGGING_GRAVITY = config.get("logging", "enable_gravity_logs", LOGGING_GRAVITY, "Gravity logs, enable it before reporting fall damage and related issues").getBoolean(false);
+		LOGGING_OFFLINE_AVATAR = config.get("logging", "enable_offline_avatar_logs", LOGGING_OFFLINE_AVATAR, "Offline avatar logs, enable it before reporting fall damage and related issues").getBoolean(true);
 		
 		// Energy handling
 		ENERGY_DISPLAY_UNITS = config.get("energy", "display_units", ENERGY_DISPLAY_UNITS, "display units for energy (EU, RF, FE, \u0230I)").getString();
@@ -1068,6 +1072,10 @@ public class WarpDriveConfig {
 		OFFLINE_AVATAR_MAX_RANGE_FOR_REMOVAL = (float) Commons.clamp(Math.max(3.00D, OFFLINE_AVATAR_MIN_RANGE_FOR_REMOVAL), Float.MAX_VALUE,
 				config.get("offline_avatar", "max_range_for_removal", OFFLINE_AVATAR_MAX_RANGE_FOR_REMOVAL,
 				           "Maximum range between a player and his/her avatar to consider it for removal").getDouble(OFFLINE_AVATAR_MAX_RANGE_FOR_REMOVAL));
+		OFFLINE_AVATAR_DELAY_FOR_REMOVAL_SECONDS = Commons.clamp(0, 300,
+		        config.get("offline_avatar", "delay_for_removal_s", OFFLINE_AVATAR_DELAY_FOR_REMOVAL_SECONDS,
+		                   "Delay before removing an avatar when their related player is in range (measured in seconds)").getInt());
+		OFFLINE_AVATAR_DELAY_FOR_REMOVAL_TICKS = OFFLINE_AVATAR_DELAY_FOR_REMOVAL_SECONDS * 20;
 		
 		// Radar
 		RADAR_MAX_ENERGY_STORED = Commons.clamp(0, Integer.MAX_VALUE,
