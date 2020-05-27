@@ -71,7 +71,7 @@ public class TileEntityShipScannerRenderer extends TileEntitySpecialRenderer<Til
 	}
 	
 	@Override
-	public boolean isGlobalRenderer(final TileEntityShipScanner tileEntityShipScanner) {
+	public boolean isGlobalRenderer(@Nonnull final TileEntityShipScanner tileEntityShipScanner) {
 		return true;
 	}
 }

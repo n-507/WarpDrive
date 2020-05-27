@@ -157,7 +157,7 @@ public class BlockForceFieldProjector extends BlockAbstractForceField {
 	}
 	
 	@Override
-	public int damageDropped(final IBlockState blockState) {
+	public int damageDropped(@Nonnull final IBlockState blockState) {
 		return blockState.getValue(IS_DOUBLE_SIDED) ? 1 : 0;
 	}
 	

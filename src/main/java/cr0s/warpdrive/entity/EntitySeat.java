@@ -52,12 +52,12 @@ public class EntitySeat extends Entity {
 	}
 	
 	@Override
-	public void readEntityFromNBT(@Nonnull final NBTTagCompound compound) {
+	public void readEntityFromNBT(@Nonnull final NBTTagCompound tagCompound) {
 		// no operation, abstract parent
 	}
 	
 	@Override
-	public void writeEntityToNBT(@Nonnull final NBTTagCompound compound) {
+	public void writeEntityToNBT(@Nonnull final NBTTagCompound tagCompound) {
 		// no operation, abstract parent
 	}
 	

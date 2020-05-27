@@ -46,7 +46,7 @@ public class BlockHullOmnipanel extends BlockAbstractOmnipanel implements IDamag
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public EnumPushReaction getPushReaction(final IBlockState blockState) {
+	public EnumPushReaction getPushReaction(@Nonnull final IBlockState blockState) {
 		return EnumPushReaction.BLOCK;
 	}
 	

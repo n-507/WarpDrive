@@ -73,37 +73,37 @@ public class BlockGas extends BlockAbstractBase {
 	}
 	
 	@Override
-	public void getSubBlocks(final CreativeTabs creativeTab, final NonNullList<ItemStack> list) {
+	public void getSubBlocks(@Nonnull final CreativeTabs creativeTab, @Nonnull final NonNullList<ItemStack> list) {
 		for (final EnumGasColor enumGasColor : EnumGasColor.values()) {
 			list.add(new ItemStack(this, 1, enumGasColor.ordinal()));
 		}
 	}
 	
 	@Override
-	public int damageDropped(final IBlockState blockState) {
+	public int damageDropped(@Nonnull final IBlockState blockState) {
 		return blockState.getBlock().getMetaFromState(blockState);
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean causesSuffocation(final IBlockState blockState) {
+	public boolean causesSuffocation(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isOpaqueCube(final IBlockState blockState) {
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isFullBlock(final IBlockState blockState) {
+	public boolean isFullBlock(@Nonnull final IBlockState blockState) {
 		return true;
 	}
 	
 	@Override
-	public boolean isAir(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
+	public boolean isAir(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		return true;
 	}
 	
@@ -115,41 +115,41 @@ public class BlockGas extends BlockAbstractBase {
 	}
 	
 	@Override
-	public boolean isReplaceable(final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+	public boolean isReplaceable(@Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		return true;
 	}
 	
 	@Override
-	public boolean canPlaceBlockAt(final World world, @Nonnull final BlockPos blockPos) {
+	public boolean canPlaceBlockAt(@Nonnull final World world, @Nonnull final BlockPos blockPos) {
 		return true;
 	}
 	
 	@Override
-	public boolean canCollideCheck(final IBlockState blockState, final boolean hitIfLiquid) {
+	public boolean canCollideCheck(@Nonnull final IBlockState blockState, final boolean hitIfLiquid) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public EnumPushReaction getPushReaction(final IBlockState blockState) {
+	public EnumPushReaction getPushReaction(@Nonnull final IBlockState blockState) {
 		return EnumPushReaction.DESTROY;
 	}
 	
 	@Nonnull
 	@Override
-	public Item getItemDropped(final IBlockState blockState, final Random rand, final int fortune) {
+	public Item getItemDropped(@Nonnull final IBlockState blockState, @Nonnull final Random rand, final int fortune) {
 		return Items.AIR;
 	}
 	
 	@Override
-	public int quantityDropped(final Random random) {
+	public int quantityDropped(@Nonnull final Random random) {
 		return 0;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isTranslucent(final IBlockState blockState) {
+	public boolean isTranslucent(@Nonnull final IBlockState blockState) {
 		return true;
 	}
 	
@@ -179,7 +179,7 @@ public class BlockGas extends BlockAbstractBase {
 	}
 	
 	@Override
-	public void onBlockAdded(final World world, final BlockPos blockPos, final IBlockState blockState) {
+	public void onBlockAdded(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
 		// Gas blocks are only allowed in space
 		if (CelestialObjectManager.hasAtmosphere(world, blockPos.getX(), blockPos.getZ())) {
 			world.setBlockToAir(blockPos);

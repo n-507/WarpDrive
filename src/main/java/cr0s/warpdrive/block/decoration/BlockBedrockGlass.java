@@ -37,52 +37,52 @@ public class BlockBedrockGlass extends BlockAbstractBase {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean causesSuffocation(final IBlockState blockState) {
+	public boolean causesSuffocation(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isOpaqueCube(final IBlockState blockState) {
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isFullBlock(final IBlockState blockState) {
+	public boolean isFullBlock(@Nonnull final IBlockState blockState) {
 		return true;
 	}
 	
 	@Override
-	public boolean isAir(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
+	public boolean isAir(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		return false;
 	}
 	
 	@Override
-	public boolean isReplaceable(final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+	public boolean isReplaceable(@Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		return false;
 	}
 	
 	@Override
-	public boolean canPlaceBlockAt(final World world, @Nonnull final BlockPos blockPos) {
+	public boolean canPlaceBlockAt(@Nonnull final World world, @Nonnull final BlockPos blockPos) {
 		return true;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public EnumPushReaction getPushReaction(final IBlockState blockState) {
+	public EnumPushReaction getPushReaction(@Nonnull final IBlockState blockState) {
 		return EnumPushReaction.BLOCK;
 	}
 	
 	@Nonnull
 	@Override
-	public Item getItemDropped(final IBlockState blockState, final Random rand, final int fortune) {
+	public Item getItemDropped(@Nonnull final IBlockState blockState, @Nonnull final Random rand, final int fortune) {
 		return Items.AIR;
 	}
 	
 	@Override
-	public int quantityDropped(final Random random) {
+	public int quantityDropped(@Nonnull final Random random) {
 		return 0;
 	}
 	

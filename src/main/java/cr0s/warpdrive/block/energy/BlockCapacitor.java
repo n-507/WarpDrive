@@ -134,13 +134,13 @@ public class BlockCapacitor extends BlockAbstractContainer implements IExplosion
 	}
 	
 	@Override
-	public int damageDropped(final IBlockState blockState) {
+	public int damageDropped(@Nonnull final IBlockState blockState) {
 		return getMetaFromState(blockState);
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(final CreativeTabs creativeTab, final NonNullList<ItemStack> list) {
+	public void getSubBlocks(@Nonnull final CreativeTabs creativeTab, @Nonnull final NonNullList<ItemStack> list) {
 		ItemStack itemStack = new ItemStack(this, 1, 0);
 		list.add(itemStack);
 		if (enumTier != EnumTier.CREATIVE) {

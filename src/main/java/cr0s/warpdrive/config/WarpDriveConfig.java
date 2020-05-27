@@ -169,7 +169,8 @@ public class WarpDriveConfig {
 	public static int                  G_ENTITY_PARTICLE_BUNCH_ID = 244;
 	public static int                  G_ENTITY_LASER_EXPLODER_ID = 245;
 	public static int                  G_ENTITY_NPC_ID = 246;
-	public static int                  G_ENTITY_SEAT_ID = 247;
+	public static int                  G_ENTITY_OFFLINE_AVATAR_ID = 247;
+	public static int                  G_ENTITY_SEAT_ID = 248;
 	
 	public static final int            LUA_SCRIPTS_NONE = 0;
 	public static final int            LUA_SCRIPTS_TEMPLATES = 1;
@@ -301,6 +302,15 @@ public class WarpDriveConfig {
 	// Biometric scanner
 	public static int              BIOMETRIC_SCANNER_DURATION_TICKS = 100;
 	public static int              BIOMETRIC_SCANNER_RANGE_BLOCKS = 3;
+	
+	// Offline avatar
+	public static boolean          OFFLINE_AVATAR_ENABLE = true;
+	public static boolean          OFFLINE_AVATAR_CREATE_ONLY_ABOARD_SHIPS = true;
+	public static boolean          OFFLINE_AVATAR_FORGET_ON_DEATH = false;
+	public static float            OFFLINE_AVATAR_MODEL_SCALE = 0.5F;
+	public static boolean          OFFLINE_AVATAR_ALWAYS_RENDER_NAME_TAG = false;
+	public static float            OFFLINE_AVATAR_MIN_RANGE_FOR_REMOVAL = 1.0F;
+	public static float            OFFLINE_AVATAR_MAX_RANGE_FOR_REMOVAL = 5.0F;
 	
 	// Radar
 	public static int              RADAR_MAX_ENERGY_STORED = 100000000; // 100kk eU
@@ -481,7 +491,6 @@ public class WarpDriveConfig {
 	public static int              TRANSPORTER_MAX_ENERGY_STORED = 1000000;
 	public static int              TRANSPORTER_ENERGY_STORED_UPGRADE_BONUS = TRANSPORTER_MAX_ENERGY_STORED / 2;
 	public static int              TRANSPORTER_ENERGY_STORED_UPGRADE_MAX_QUANTITY = 8;
-	public static int              TRANSPORTER_SETUP_UPDATE_PARAMETERS_TICKS = 1 * 20;
 	public static int              TRANSPORTER_SETUP_SCANNER_RANGE_XZ_BLOCKS = 8;
 	public static int              TRANSPORTER_SETUP_SCANNER_RANGE_Y_BELOW_BLOCKS = 3;
 	public static int              TRANSPORTER_SETUP_SCANNER_RANGE_Y_ABOVE_BLOCKS = 1;
@@ -798,6 +807,8 @@ public class WarpDriveConfig {
 				config.get("general", "entity_laser_exploder_id", G_ENTITY_LASER_EXPLODER_ID, "Entity laser exploder ID").getInt());
 		G_ENTITY_NPC_ID = Commons.clamp(Integer.MIN_VALUE, Integer.MAX_VALUE,
 		        config.get("general", "entity_NPC_id", G_ENTITY_NPC_ID, "Entity NPC ID").getInt());
+		G_ENTITY_OFFLINE_AVATAR_ID = Commons.clamp(Integer.MIN_VALUE, Integer.MAX_VALUE,
+		        config.get("general", "entity_offline_avatar_id", G_ENTITY_OFFLINE_AVATAR_ID, "Entity offline avatar ID").getInt());
 		G_ENTITY_SEAT_ID = Commons.clamp(Integer.MIN_VALUE, Integer.MAX_VALUE,
 		        config.get("general", "entity_seat_id", G_ENTITY_SEAT_ID, "Entity seat ID").getInt());
 		
@@ -1034,6 +1045,22 @@ public class WarpDriveConfig {
 		JUMP_GATE_SIZE_MAX_PER_SIDE_BY_TIER =
 				config.get("jump_gate", "size_max_per_side_by_tier", JUMP_GATE_SIZE_MAX_PER_SIDE_BY_TIER, "Maximum jump gate size on each axis in blocks, for a given tier").getIntList();
 		clampByTier(1, Integer.MAX_VALUE, JUMP_GATE_SIZE_MAX_PER_SIDE_BY_TIER);
+		
+		// Offline avatar
+		OFFLINE_AVATAR_ENABLE =
+				config.get("offline_avatar", "enable", OFFLINE_AVATAR_ENABLE, "Enable creation of offline avatars to follow ship movements. This only disable creating new ones.").getBoolean(OFFLINE_AVATAR_ENABLE);
+		OFFLINE_AVATAR_CREATE_ONLY_ABOARD_SHIPS =
+				config.get("offline_avatar", "create_only_aboard_ships", OFFLINE_AVATAR_CREATE_ONLY_ABOARD_SHIPS, "Only create an offline avatar when player disconnects while inside a ship. Disabling may cause lag in spawn areas...").getBoolean(OFFLINE_AVATAR_CREATE_ONLY_ABOARD_SHIPS);
+		OFFLINE_AVATAR_FORGET_ON_DEATH =
+				config.get("offline_avatar", "forget_on_death", OFFLINE_AVATAR_FORGET_ON_DEATH, "Enable to forget current avatar position when it's killed, or disable player teleportation to last known avatar's position").getBoolean(OFFLINE_AVATAR_FORGET_ON_DEATH);
+		OFFLINE_AVATAR_MODEL_SCALE = (float) Commons.clamp(0.20D, 2.00D,
+				config.get("offline_avatar", "model_scale", OFFLINE_AVATAR_MODEL_SCALE, "Scale of offline avatar compared to a normal player").getDouble(OFFLINE_AVATAR_MODEL_SCALE));
+		OFFLINE_AVATAR_ALWAYS_RENDER_NAME_TAG =
+				config.get("offline_avatar", "always_render_name_tag", OFFLINE_AVATAR_ALWAYS_RENDER_NAME_TAG, "Should avatar name tag always be visible?").getBoolean(OFFLINE_AVATAR_ALWAYS_RENDER_NAME_TAG);
+		OFFLINE_AVATAR_MIN_RANGE_FOR_REMOVAL = (float) Commons.clamp(0.10D, 10.00D,
+				config.get("offline_avatar", "min_range_for_removal", OFFLINE_AVATAR_MIN_RANGE_FOR_REMOVAL, "Minimum range between a player and their avatar to consider it for removal (i.e. ensuring connection was successful)").getDouble(OFFLINE_AVATAR_MIN_RANGE_FOR_REMOVAL));
+		OFFLINE_AVATAR_MAX_RANGE_FOR_REMOVAL = (float) Commons.clamp(Math.max(3.00D, OFFLINE_AVATAR_MIN_RANGE_FOR_REMOVAL), Float.MAX_VALUE,
+				config.get("offline_avatar", "max_range_for_removal", OFFLINE_AVATAR_MAX_RANGE_FOR_REMOVAL, "Maximum range between a player and his/her avatar to consider it for removal").getDouble(OFFLINE_AVATAR_MAX_RANGE_FOR_REMOVAL));
 		
 		// Radar
 		RADAR_MAX_ENERGY_STORED = Commons.clamp(0, Integer.MAX_VALUE,

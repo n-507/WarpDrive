@@ -127,6 +127,7 @@ import cr0s.warpdrive.data.EnumHullPlainType;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.entity.EntityLaserExploder;
 import cr0s.warpdrive.entity.EntityNPC;
+import cr0s.warpdrive.entity.EntityOfflineAvatar;
 import cr0s.warpdrive.entity.EntityParticleBunch;
 import cr0s.warpdrive.entity.EntitySeat;
 import cr0s.warpdrive.event.ChatHandler;
@@ -1096,6 +1097,7 @@ public class WarpDrive {
 		
 		EntityEntry entityEntry;
 		
+		// @TODO: MC1.15 change id to lower case
 		entityEntry = EntityEntryBuilder.create()
 		                                .entity(EntitySphereGen.class).factory(EntitySphereGen::new)
 		                                .tracker(200, 1, false)
@@ -1106,42 +1108,49 @@ public class WarpDrive {
 		entityEntry = EntityEntryBuilder.create()
 		                                .entity(EntityStarCore.class).factory(EntityStarCore::new)
 		                                .tracker(300, 1, false)
-		                                .id("entityStarCore", WarpDriveConfig.G_ENTITY_STAR_CORE_ID).name("EntityStarCore")
+		                                .id("entity_star_sore", WarpDriveConfig.G_ENTITY_STAR_CORE_ID).name("EntityStarCore")
 		                                .build();
 		event.getRegistry().register(entityEntry);
 		
 		entityEntry = EntityEntryBuilder.create()
 		                                .entity(EntityCamera.class).factory(EntityCamera::new)
 		                                .tracker(300, 1, false)
-		                                .id("entityCamera", WarpDriveConfig.G_ENTITY_CAMERA_ID).name("EntityCamera")
+		                                .id("entity_camera", WarpDriveConfig.G_ENTITY_CAMERA_ID).name("EntityCamera")
 		                                .build();
 		event.getRegistry().register(entityEntry);
 		
 		entityEntry = EntityEntryBuilder.create()
 		                                .entity(EntityParticleBunch.class).factory(EntityParticleBunch::new)
 		                                .tracker(300, 1, false)
-		                                .id("entityParticleBunch", WarpDriveConfig.G_ENTITY_PARTICLE_BUNCH_ID).name("EntityParticleBunch")
+		                                .id("entity_particle_bunch", WarpDriveConfig.G_ENTITY_PARTICLE_BUNCH_ID).name("EntityParticleBunch")
 		                                .build();
 		event.getRegistry().register(entityEntry);
 		
 		entityEntry = EntityEntryBuilder.create()
 		                                .entity(EntityLaserExploder.class).factory(EntityLaserExploder::new)
 		                                .tracker(8, 1000, false)
-		                                .id("entityLaserExploder", WarpDriveConfig.G_ENTITY_LASER_EXPLODER_ID).name("entityLaserExploder")
+		                                .id("entity_laser_exploder", WarpDriveConfig.G_ENTITY_LASER_EXPLODER_ID).name("entityLaserExploder")
 		                                .build();
 		event.getRegistry().register(entityEntry);
 		
 		entityEntry = EntityEntryBuilder.create()
 		                                .entity(EntityNPC.class).factory(EntityNPC::new)
 		                                .tracker(200, 1, false)
-		                                .id("entityNPC", WarpDriveConfig.G_ENTITY_NPC_ID).name("EntityNPC")
+		                                .id("entity_npc", WarpDriveConfig.G_ENTITY_NPC_ID).name("EntityNPC")
+		                                .build();
+		event.getRegistry().register(entityEntry);
+		
+		entityEntry = EntityEntryBuilder.create()
+		                                .entity(EntityOfflineAvatar.class).factory(EntityOfflineAvatar::new)
+		                                .tracker(200, 1, false)
+		                                .id("entity_offline_avatar", WarpDriveConfig.G_ENTITY_OFFLINE_AVATAR_ID).name("EntityOfflineAvatar")
 		                                .build();
 		event.getRegistry().register(entityEntry);
 		
 		entityEntry = EntityEntryBuilder.create()
 		                                .entity(EntitySeat.class).factory(EntitySeat::new)
 		                                .tracker(200, 1, false)
-		                                .id("entitySeat", WarpDriveConfig.G_ENTITY_SEAT_ID).name("EntitySeat")
+		                                .id("entity_seat", WarpDriveConfig.G_ENTITY_SEAT_ID).name("EntitySeat")
 		                                .build();
 		event.getRegistry().register(entityEntry);
 		

@@ -87,20 +87,20 @@ public class BlockTransporterBeacon extends BlockAbstractContainer {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isOpaqueCube(final IBlockState blockState) {
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isFullCube(final IBlockState blockState) {
+	public boolean isFullCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public BlockFaceShape getBlockFaceShape(final IBlockAccess blockAccess, final IBlockState blockState, final BlockPos blockPos, final EnumFacing enumFacing) {
+	public BlockFaceShape getBlockFaceShape(@Nonnull final IBlockAccess blockAccess, @Nonnull final IBlockState blockState, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing enumFacing) {
 		return enumFacing == EnumFacing.DOWN ? BlockFaceShape.CENTER : BlockFaceShape.UNDEFINED;
 	}
 	
@@ -126,7 +126,7 @@ public class BlockTransporterBeacon extends BlockAbstractContainer {
 	}
 	
 	@Override
-	public int getLightValue(@Nonnull final IBlockState blockState, final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+	public int getLightValue(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		final boolean isActive = blockState.getValue(BlockProperties.ACTIVE);
 		return isActive ? 6 : 0;
 	}

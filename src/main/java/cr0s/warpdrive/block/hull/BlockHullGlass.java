@@ -51,34 +51,34 @@ public class BlockHullGlass extends BlockColored implements IBlockBase, IDamageR
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public EnumPushReaction getPushReaction(final IBlockState blockState) {
+	public EnumPushReaction getPushReaction(@Nonnull final IBlockState blockState) {
 		return EnumPushReaction.BLOCK;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isOpaqueCube(final IBlockState blockState) {
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	// return true to support pressure plates, etc. since it's glass material
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isTopSolid(final IBlockState blockState) {
+	public boolean isTopSolid(@Nonnull final IBlockState blockState) {
 		return true;
 	}
 	
 	// return false to give full rendering transparency (but loose vertical redstone wire)
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isBlockNormalCube(final IBlockState blockState) {
+	public boolean isBlockNormalCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	// return true to give proper door placement since it's glass material
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isNormalCube(final IBlockState blockState) {
+	public boolean isNormalCube(@Nonnull final IBlockState blockState) {
 		return true;
 	}
 	

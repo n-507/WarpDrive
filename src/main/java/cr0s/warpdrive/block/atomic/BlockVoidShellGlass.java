@@ -23,7 +23,7 @@ public class BlockVoidShellGlass extends BlockVoidShellPlain {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isOpaqueCube(final IBlockState blockState) {
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	

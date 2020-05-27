@@ -95,9 +95,9 @@ public class BlockEnvironmentalSensor extends BlockAbstractRotatingContainer {
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public BlockFaceShape getBlockFaceShape(@Nonnull final IBlockAccess blockAccess, @Nonnull final IBlockState blockState, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing) {
-		final EnumFacing enumFacing = blockState.getValue(BlockProperties.FACING);
-		return facing == enumFacing.getOpposite() ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
+	public BlockFaceShape getBlockFaceShape(@Nonnull final IBlockAccess blockAccess, @Nonnull final IBlockState blockState, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing enumFacing) {
+		final EnumFacing enumFacingState = blockState.getValue(BlockProperties.FACING);
+		return enumFacing == enumFacingState.getOpposite() ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -135,7 +135,7 @@ public class BlockEnvironmentalSensor extends BlockAbstractRotatingContainer {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isSideSolid(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, final EnumFacing side) {
+	public boolean isSideSolid(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing side) {
 		final EnumFacing enumFacing = blockState.getValue(BlockProperties.FACING);
 		return enumFacing.getOpposite() == side;
 	}

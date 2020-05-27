@@ -200,13 +200,13 @@ public abstract class BlockAbstractOmnipanel extends BlockAbstractBase {
 	}
 	
 	@Override
-	public int damageDropped(final IBlockState blockState) {
+	public int damageDropped(@Nonnull final IBlockState blockState) {
 		return blockState.getValue(BlockColored.COLOR).getMetadata();
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(final CreativeTabs creativeTab, final NonNullList<ItemStack> list) {
+	public void getSubBlocks(@Nonnull final CreativeTabs creativeTab, @Nonnull final NonNullList<ItemStack> list) {
 		for (final EnumDyeColor enumDyeColor : EnumDyeColor.values()) {
 			list.add(new ItemStack(this, 1, enumDyeColor.getMetadata()));
 		}
@@ -236,7 +236,7 @@ public abstract class BlockAbstractOmnipanel extends BlockAbstractBase {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isBlockNormalCube(final IBlockState blockState) {
+	public boolean isBlockNormalCube(@Nonnull final IBlockState blockState) {
 		// not supposed to be called, upstream should use isNormalCube(IBlockState, IBlockAccess, BlockPos) instead
 		// practically, Forge still use it in WorldEntitySpawner.isValidEmptySpawnBlock(), Block.getAmbientOcclusionLightValue(), BlockRedstoneWire.getAttachPosition()
 		// calling BlockStateContainer$StateImplementation.isBlockNormalCube()
@@ -244,25 +244,25 @@ public abstract class BlockAbstractOmnipanel extends BlockAbstractBase {
 	}
 	
 	@Override
-	public boolean isNormalCube(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
+	public boolean isNormalCube(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isOpaqueCube(final IBlockState blockState) {
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isFullCube(final IBlockState blockState) {
+	public boolean isFullCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isFullBlock(final IBlockState blockState) {
+	public boolean isFullBlock(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	

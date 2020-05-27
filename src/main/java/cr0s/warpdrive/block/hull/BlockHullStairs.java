@@ -45,7 +45,7 @@ public class BlockHullStairs extends BlockStairs implements IBlockBase, IDamageR
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	@Override
-	public EnumPushReaction getPushReaction(final IBlockState blockState) {
+	public EnumPushReaction getPushReaction(@Nonnull final IBlockState blockState) {
 		return EnumPushReaction.BLOCK;
 	}
 	

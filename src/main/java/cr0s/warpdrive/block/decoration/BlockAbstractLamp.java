@@ -83,25 +83,25 @@ public class BlockAbstractLamp extends BlockAbstractBase {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isBlockNormalCube(final IBlockState blockState) {
+	public boolean isBlockNormalCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isOpaqueCube(final IBlockState blockState) {
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isFullCube(final IBlockState blockState) {
+	public boolean isFullCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public int getLightValue(final IBlockState blockState) {
+	public int getLightValue(@Nonnull final IBlockState blockState) {
 		if (blockState.getValue(BlockProperties.ACTIVE)) {
 			return 14;
 		} else {
@@ -140,7 +140,8 @@ public class BlockAbstractLamp extends BlockAbstractBase {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public void neighborChanged(final IBlockState blockState, final World world, final BlockPos blockPos, final Block block, final BlockPos blockPosFrom) {
+	public void neighborChanged(@Nonnull final IBlockState blockState, @Nonnull final World world, @Nonnull final BlockPos blockPos,
+	                            @Nonnull final Block block, @Nonnull final BlockPos blockPosFrom) {
 		// check if we are still attached
 		if (canPlaceBlockOnSide(world, blockPos, blockState.getValue(BlockProperties.FACING))) {
 			return;

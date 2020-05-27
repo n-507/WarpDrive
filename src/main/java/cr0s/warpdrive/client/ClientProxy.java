@@ -6,12 +6,14 @@ import cr0s.warpdrive.api.IBlockBase;
 import cr0s.warpdrive.api.IItemBase;
 import cr0s.warpdrive.block.breathing.BlockColorAirShield;
 import cr0s.warpdrive.entity.EntityNPC;
+import cr0s.warpdrive.entity.EntityOfflineAvatar;
 import cr0s.warpdrive.entity.EntityParticleBunch;
 import cr0s.warpdrive.event.ClientHandler;
 import cr0s.warpdrive.event.ModelBakeEventHandler;
 import cr0s.warpdrive.event.TooltipHandler;
 import cr0s.warpdrive.render.ClientCameraHandler;
 import cr0s.warpdrive.render.RenderEntityNPC;
+import cr0s.warpdrive.render.RenderEntityOfflineAvatar;
 import cr0s.warpdrive.render.RenderEntityParticleBunch;
 import cr0s.warpdrive.render.RenderOverlayAir;
 import cr0s.warpdrive.render.RenderOverlayCamera;
@@ -25,7 +27,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -62,7 +63,14 @@ public class ClientProxy extends CommonProxy {
 			@Nonnull
 			@Override
 			public Render<EntityNPC> createRenderFor(final RenderManager manager) {
-				return new RenderEntityNPC(manager, new ModelBiped(), 0.5F);
+				return new RenderEntityNPC(manager);
+			}
+		});
+		RenderingRegistry.registerEntityRenderingHandler(EntityOfflineAvatar.class, new IRenderFactory<EntityOfflineAvatar>() {
+			@Nonnull
+			@Override
+			public Render<EntityOfflineAvatar> createRenderFor(final RenderManager manager) {
+				return new RenderEntityOfflineAvatar(manager);
 			}
 		});
 		RenderingRegistry.registerEntityRenderingHandler(EntityParticleBunch.class, new IRenderFactory<EntityParticleBunch>() {

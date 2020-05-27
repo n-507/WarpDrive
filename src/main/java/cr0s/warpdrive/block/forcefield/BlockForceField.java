@@ -152,11 +152,8 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(final CreativeTabs creativeTab, final NonNullList<ItemStack> list) {
+	public void getSubBlocks(@Nonnull final CreativeTabs creativeTab, @Nonnull final NonNullList<ItemStack> list) {
 		// hide in NEI
-		for (int i = 0; i < 16; i++) {
-			Commons.hideItemStack(new ItemStack(this, 1, i));
-		}
 	}
 	
 	@Nonnull
@@ -181,19 +178,19 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean causesSuffocation(final IBlockState blockState) {
+	public boolean causesSuffocation(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isOpaqueCube(final IBlockState blockState) {
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean isFullBlock(final IBlockState blockState) {
+	public boolean isFullBlock(@Nonnull final IBlockState blockState) {
 		return false;
 	}
 	
@@ -205,7 +202,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	}
 	
 	@Override
-	public int quantityDropped(final Random random) {
+	public int quantityDropped(@Nonnull final Random random) {
 		return 0;
 	}
 	
@@ -381,7 +378,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	}
 	
 	@Override
-	public int getLightValue(@Nonnull final IBlockState blockState, final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+	public int getLightValue(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
 		final TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
 		if (tileEntity instanceof TileEntityForceField) {
 			return ((TileEntityForceField) tileEntity).cache_lightCamouflage;
