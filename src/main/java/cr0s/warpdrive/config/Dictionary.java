@@ -421,6 +421,7 @@ public class Dictionary {
 			config.get("item_tags", "botania:terrasteelhelmreveal"                 , "BreathingHelmet").getString();
 			config.get("item_tags", "conarm:helmet"                                , "BreathingHelmet").getString();
 			config.get("item_tags", "enderio:item_dark_steel_helmet"               , "BreathingHelmet").getString();
+			config.get("item_tags", "enderio:item_end_steel_helmet"                , "BreathingHelmet").getString();
 			config.get("item_tags", "ic2:hazmat_helmet"                            , "BreathingHelmet").getString();
 			config.get("item_tags", "ic2:solar_helmet"                             , "BreathingHelmet").getString();
 			config.get("item_tags", "ic2:nano_helmet"                              , "BreathingHelmet").getString();
