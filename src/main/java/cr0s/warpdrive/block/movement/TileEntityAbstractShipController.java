@@ -25,7 +25,6 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	// persistent properties
 	private int front, right, up;
 	private int back, left, down;
-	private boolean isResized = true;
 	
 	private int moveFront = 0;
 	private int moveUp = 0;
@@ -52,23 +51,6 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 				"rotationSteps",
 				"targetName",
 				});
-	}
-	
-	@Override
-	public void update() {
-		super.update();
-		
-		if (world.isRemote) {
-			return;
-		}
-		
-		// update bounding box
-		if (isResized) {
-			if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
-				WarpDrive.logger.info(String.format("%s was resized, updating...", this));
-			}
-			updateAfterResize();
-		}
 	}
 	
 	@Override
@@ -175,7 +157,7 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	
 	private void setFront(final int front) {
 		this.front = front;
-		isResized = true;
+		markDirtyParameters();
 	}
 	
 	protected int getRight() {
@@ -184,7 +166,7 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	
 	private void setRight(final int right) {
 		this.right = right;
-		isResized = true;
+		markDirtyParameters();
 	}
 	
 	protected int getUp() {
@@ -193,7 +175,7 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	
 	private void setUp(final int up) {
 		this.up = up;
-		isResized = true;
+		markDirtyParameters();
 	}
 	
 	protected int getBack() {
@@ -202,7 +184,7 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	
 	private void setBack(final int back) {
 		this.back = back;
-		isResized = true;
+		markDirtyParameters();
 	}
 	
 	protected int getLeft() {
@@ -211,7 +193,7 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	
 	private void setLeft(final int left) {
 		this.left = left;
-		isResized = true;
+		markDirtyParameters();
 	}
 	
 	protected int getDown() {
@@ -220,11 +202,7 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	
 	private void setDown(final int down) {
 		this.down = down;
-		isResized = true;
-	}
-	
-	protected void updateAfterResize() {
-		isResized = false;
+		markDirtyParameters();
 	}
 	
 	protected VectorI getMovement() {

@@ -437,6 +437,15 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 		return Commons.removeFormatting( getStatusHeader().getUnformattedText() );
 	}
 	
+	public String getInternalStatus() {
+		return String.format("%s\n"
+		                   + "NBT %s\n"
+		                   + "isConstructed %s isFirstTick %s isDirty %s",
+		                     this,
+		                     writeToNBT(new NBTTagCompound()),
+		                     isConstructed, isFirstTick, isDirty );
+	}
+	
 	// upgrade system
 	public static class UpgradeSlot {
 		

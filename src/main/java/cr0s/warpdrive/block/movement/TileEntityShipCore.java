@@ -624,7 +624,59 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	
 	@Override
 	protected void doUpdateParameters(final boolean isDirty) {
-		// no operation
+		// compute dimensions in game coordinates
+		final int old_minX = minX, old_maxX = maxX;
+		final int old_minY = minY, old_maxY = maxY;
+		final int old_minZ = minZ, old_maxZ = maxZ;
+		if (facing.getXOffset() == 1) {
+			minX = pos.getX() - getBack();
+			maxX = pos.getX() + getFront();
+			minZ = pos.getZ() - getLeft();
+			maxZ = pos.getZ() + getRight();
+		} else if (facing.getXOffset() == -1) {
+			minX = pos.getX() - getFront();
+			maxX = pos.getX() + getBack();
+			minZ = pos.getZ() - getRight();
+			maxZ = pos.getZ() + getLeft();
+		} else if (facing.getZOffset() == 1) {
+			minZ = pos.getZ() - getBack();
+			maxZ = pos.getZ() + getFront();
+			minX = pos.getX() - getRight();
+			maxX = pos.getX() + getLeft();
+		} else if (facing.getZOffset() == -1) {
+			minZ = pos.getZ() - getFront();
+			maxZ = pos.getZ() + getBack();
+			minX = pos.getX() - getLeft();
+			maxX = pos.getX() + getRight();
+		}
+		
+		minY = pos.getY() - getDown();
+		maxY = pos.getY() + getUp();
+		
+		// recover in case of cache failure
+		boolean isDirty2 = false;
+		if ( minX != old_minX || maxX != old_maxX
+		  || minY != old_minY || maxY != old_maxY
+		  || minZ != old_minZ || maxZ != old_maxZ ) {
+			if (!isDirty) {
+				WarpDrive.logger.error(String.format("Dimensions changed but not dirty, please report this to mod author!\n%s",
+				                                     getInternalStatus() ));
+				isDirty2 = true;
+			}
+		}
+		
+		// update dimensions to client
+		if (!isDirty) {
+			markDirty();
+		}
+		
+		// request new ship scan
+		if (isDirty || isDirty2) {
+			shipMass = 0;
+			shipVolume = 0;
+			cache_aabbArea = null;
+			timeLastShipScanDone = -1;
+		}
 	}
 	
 	private void makePlayersOnShipDrunk(final int tickDuration) {
@@ -651,7 +703,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			WarpDrive.logger.warn(this + " No player given to summonOwnerOnDeploy()");
 			return false;
 		}
-		updateAfterResize();
+		doUpdateParameters(false);
 		if (!isAssemblyValid) {
 			Commons.addChatMessage(entityPlayerMP, new WarpDriveText(Commons.getStyleHeader(), !name.isEmpty() ? name : "ShipCore")
 					                                       .appendSibling(textValidityIssues));
@@ -715,46 +767,6 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	
 	private void summonPlayer(@Nonnull final EntityPlayerMP player, @Nonnull final BlockPos blockPos) {
 		Commons.moveEntity(player, world, new Vector3(blockPos.getX() + 0.5D, blockPos.getY(), blockPos.getZ() + 0.5D));
-	}
-	
-	@Override
-	protected void updateAfterResize() {
-		super.updateAfterResize();
-		shipMass = 0;
-		shipVolume = 0;
-		
-		// compute dimensions in game coordinates
-		if (facing.getXOffset() == 1) {
-			minX = pos.getX() - getBack();
-			maxX = pos.getX() + getFront();
-			minZ = pos.getZ() - getLeft();
-			maxZ = pos.getZ() + getRight();
-		} else if (facing.getXOffset() == -1) {
-			minX = pos.getX() - getFront();
-			maxX = pos.getX() + getBack();
-			minZ = pos.getZ() - getRight();
-			maxZ = pos.getZ() + getLeft();
-		} else if (facing.getZOffset() == 1) {
-			minZ = pos.getZ() - getBack();
-			maxZ = pos.getZ() + getFront();
-			minX = pos.getX() - getRight();
-			maxX = pos.getX() + getLeft();
-		} else if (facing.getZOffset() == -1) {
-			minZ = pos.getZ() - getFront();
-			maxZ = pos.getZ() + getBack();
-			minX = pos.getX() - getLeft();
-			maxX = pos.getX() + getRight();
-		}
-		
-		minY = pos.getY() - getDown();
-		maxY = pos.getY() + getUp();
-		cache_aabbArea = null;
-		
-		// update dimensions to client
-		markDirty();
-		
-		// request new ship scan
-		timeLastShipScanDone = -1;
 	}
 	
 	private boolean validateShipMovementParameters(final WarpDriveText reason) {
@@ -1099,6 +1111,18 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	public ITextComponent getBoundingBoxStatus() {
 		return super.getStatusPrefix()
 			.appendSibling(new TextComponentTranslation(showBoundingBox ? "tile.warpdrive.movement.ship_core.bounding_box.enabled" : "tile.warpdrive.movement.ship_core.bounding_box.disabled"));
+	}
+	
+	@Override
+	public String getInternalStatus() {
+		return String.format("%s\n"
+		                   + "max %d %d %d min %d %d %d mass %d volume %d aabb %s\n"
+		                   + "state %s command %s shipMovementType %s timeLastShipScanDone %d shipScanner %s shipMovementCosts %s\n"
+		                   + "distanceSquared %d isCooldownReported %s isMotionSicknessApplied %s isSoundPlayed %s isWarmupReported %s randomWarmupAddition_ticks %d\n",
+		                     super.getInternalStatus(),
+		                     maxX, maxY, maxZ, minX, minY, minZ, shipMass, shipVolume, cache_aabbArea,
+		                     stateCurrent, commandCurrent, shipMovementType, timeLastShipScanDone, shipScanner, shipMovementCosts,
+		                     distanceSquared, isCooldownReported, isMotionSicknessApplied, isSoundPlayed, isWarmupReported, randomWarmupAddition_ticks );
 	}
 	
 	@Override
