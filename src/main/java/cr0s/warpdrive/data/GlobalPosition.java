@@ -154,4 +154,10 @@ public class GlobalPosition {
 	public int hashCode() {
 		return dimensionId << 24 + (x >> 10) << 12 + y << 10 + (z >> 10);
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("GlobalPosition{DIM%d (%d %d %d)}",
+		                     dimensionId, x, y, z );
+	}
 }
