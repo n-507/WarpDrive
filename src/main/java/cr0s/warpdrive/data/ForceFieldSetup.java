@@ -126,7 +126,7 @@ public class ForceFieldSetup extends GlobalPosition {
 	}
 	
 	private void refresh() {
-		final Set<TileEntity> tileEntities = ForceFieldRegistry.getTileEntities(beamFrequency, getWorldServerIfLoaded(), x, y, z);
+		final Set<TileEntity> tileEntities = ForceFieldRegistry.getTileEntities(beamFrequency, getWorldServerIfLoaded(), getBlockPos());
 		final HashMap<IForceFieldUpgradeEffector, Float> upgradeValues = new HashMap<>(EnumForceFieldUpgrade.length);
 		Vector3 v3Min = new Vector3(-1.0D, -1.0D, -1.0D);
 		Vector3 v3Max = new Vector3( 1.0D,  1.0D,  1.0D);
