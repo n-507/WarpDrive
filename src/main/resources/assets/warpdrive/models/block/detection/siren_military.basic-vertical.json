@@ -1,0 +1,6 @@
+{
+    "parent": "warpdrive:block/detection/siren_military-vertical",
+    "textures": {
+        "cone": "warpdrive:blocks/detection/siren_military.basic"
+    }
+}

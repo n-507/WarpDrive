@@ -1,20 +1,20 @@
 {
 	"forge_marker": 1,
 	"variants": {
-		"inventory": { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.basic"    } },
+		"inventory": { "model": "warpdrive:detection/siren_military.basic-vertical"           },
 		
-		"active=false,facing=down" : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.basic"    } },
-		"active=false,facing=up"   : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.basic"    } },
-		"active=false,facing=north": { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.basic"    } },
-		"active=false,facing=south": { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.basic"    } },
-		"active=false,facing=east" : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.basic"    } },
-		"active=false,facing=west" : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.basic"    } },
+        "active=false,facing=down" : { "model": "warpdrive:detection/siren_military.basic-vertical", "x": 180 },
+        "active=false,facing=up"   : { "model": "warpdrive:detection/siren_military.basic-vertical"           },
+        "active=false,facing=north": { "model": "warpdrive:detection/siren_military.basic-horizontal"           },
+        "active=false,facing=south": { "model": "warpdrive:detection/siren_military.basic-horizontal", "y": 180 },
+        "active=false,facing=west" : { "model": "warpdrive:detection/siren_military.basic-horizontal", "y": 270 },
+        "active=false,facing=east" : { "model": "warpdrive:detection/siren_military.basic-horizontal", "y":  90 },
 		
-		"active=true,facing=down"  : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.basic"    } },
-		"active=true,facing=up"    : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.basic"    } },
-		"active=true,facing=north" : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.basic"    } },
-		"active=true,facing=south" : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.basic"    } },
-		"active=true,facing=east"  : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.basic"    } },
-		"active=true,facing=west"  : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.basic"    } }
-	}
+        "active=true,facing=down" : { "model": "warpdrive:detection/siren_military.basic-vertical", "x": 180 },
+        "active=true,facing=up"   : { "model": "warpdrive:detection/siren_military.basic-vertical"           },
+        "active=true,facing=north": { "model": "warpdrive:detection/siren_military.basic-horizontal"           },
+        "active=true,facing=south": { "model": "warpdrive:detection/siren_military.basic-horizontal", "y": 180 },
+        "active=true,facing=west" : { "model": "warpdrive:detection/siren_military.basic-horizontal", "y": 270 },
+        "active=true,facing=east" : { "model": "warpdrive:detection/siren_military.basic-horizontal", "y":  90 }
+    }
 }

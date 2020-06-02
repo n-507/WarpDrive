@@ -4,6 +4,7 @@ import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.BlockAbstractRotatingContainer;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnumTier;
 
 import javax.annotation.Nonnull;
@@ -12,17 +13,37 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockSiren extends BlockAbstractRotatingContainer {
+	
+	private static final AxisAlignedBB AABB_INDUSTRIAL_DOWN   = new AxisAlignedBB(0.0000D, 0.3125D, 0.0000D, 1.0000D, 0.6875D, 1.0000D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_UP     = new AxisAlignedBB(0.0000D, 0.3125D, 0.0000D, 1.0000D, 0.6875D, 1.0000D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_NORTH  = new AxisAlignedBB(0.0000D, 0.3125D, 0.4375D, 1.0000D, 0.6875D, 0.8125D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_SOUTH  = new AxisAlignedBB(0.0000D, 0.3125D, 0.1875D, 1.0000D, 0.6875D, 0.5625D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_WEST   = new AxisAlignedBB(0.4375D, 0.3125D, 0.0000D, 0.8125D, 0.6875D, 1.0000D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_EAST   = new AxisAlignedBB(0.1875D, 0.3125D, 0.0000D, 0.5625D, 0.6875D, 1.0000D);
+	
+	private static final AxisAlignedBB AABB_MILITARY_DOWN   = new AxisAlignedBB(0.0000D, 0.3125D, 0.0000D, 1.0000D, 0.6875D, 1.0000D);
+	private static final AxisAlignedBB AABB_MILITARY_UP     = new AxisAlignedBB(0.0000D, 0.3125D, 0.0000D, 1.0000D, 0.6875D, 1.0000D);
+	private static final AxisAlignedBB AABB_MILITARY_NORTH  = new AxisAlignedBB(0.0000D, 0.3125D, 0.4375D, 1.0000D, 0.6875D, 0.8125D);
+	private static final AxisAlignedBB AABB_MILITARY_SOUTH  = new AxisAlignedBB(0.0000D, 0.3125D, 0.1875D, 1.0000D, 0.6875D, 0.5625D);
+	private static final AxisAlignedBB AABB_MILITARY_WEST   = new AxisAlignedBB(0.4375D, 0.3125D, 0.0000D, 0.8125D, 0.6875D, 1.0000D);
+	private static final AxisAlignedBB AABB_MILITARY_EAST   = new AxisAlignedBB(0.1875D, 0.3125D, 0.0000D, 0.5625D, 0.6875D, 1.0000D);
+	private static final AxisAlignedBB AABB_FULL   = FULL_BLOCK_AABB;
 	
 	private final boolean isIndustrial;
 	
@@ -46,6 +67,107 @@ public class BlockSiren extends BlockAbstractRotatingContainer {
 	@Override
 	public int damageDropped(@Nonnull final IBlockState blockState) {
 		return 0;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public int getLightOpacity(@Nonnull final IBlockState blockState) {
+		return 0;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Nonnull
+	@Override
+	public AxisAlignedBB getBoundingBox(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+		return getBlockBoundsFromState(blockState);
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Nullable
+	@Override
+	public AxisAlignedBB getCollisionBoundingBox(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos) {
+		return getBlockBoundsFromState(blockState);
+	}
+	
+	private AxisAlignedBB getBlockBoundsFromState(final IBlockState blockState) {
+		if (blockState == null) {
+			return AABB_FULL;
+		}
+		if (isIndustrial) {
+			switch (blockState.getValue(BlockProperties.FACING)) {
+			case DOWN : return AABB_INDUSTRIAL_DOWN;
+			case UP   : return AABB_INDUSTRIAL_UP;
+			case NORTH: return AABB_INDUSTRIAL_NORTH;
+			case SOUTH: return AABB_INDUSTRIAL_SOUTH;
+			case WEST : return AABB_INDUSTRIAL_WEST;
+			case EAST : return AABB_INDUSTRIAL_EAST;
+			default: return AABB_FULL;
+			}
+		} else {
+			switch (blockState.getValue(BlockProperties.FACING)) {
+			case DOWN : return AABB_MILITARY_DOWN;
+			case UP   : return AABB_MILITARY_UP;
+			case NORTH: return AABB_MILITARY_NORTH;
+			case SOUTH: return AABB_MILITARY_SOUTH;
+			case WEST : return AABB_MILITARY_WEST;
+			case EAST : return AABB_MILITARY_EAST;
+			default: return AABB_FULL;
+			}
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isTopSolid(@Nonnull final IBlockState blockState) {
+		final EnumFacing enumFacing = blockState.getValue(BlockProperties.FACING);
+		return enumFacing == EnumFacing.DOWN;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Nonnull
+	@Override
+	public BlockFaceShape getBlockFaceShape(@Nonnull final IBlockAccess blockAccess, @Nonnull final IBlockState blockState, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing enumFacing) {
+		final EnumFacing enumFacingState = blockState.getValue(BlockProperties.FACING);
+		return enumFacing == enumFacingState.getOpposite() ? BlockFaceShape.CENTER_BIG : BlockFaceShape.UNDEFINED;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isFullBlock(@Nonnull final IBlockState blockState) {
+		return false;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isFullCube(@Nonnull final IBlockState blockState) {
+		return false;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@SideOnly(Side.CLIENT)
+	@Override
+	public boolean shouldSideBeRendered(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing) {
+		final BlockPos blockPosSide = blockPos.offset(facing);
+		final boolean doesSideBlockRendering = blockAccess.getBlockState(blockPosSide).doesSideBlockRendering(blockAccess, blockPosSide, facing);
+		return !doesSideBlockRendering;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isOpaqueCube(@Nonnull final IBlockState blockState) {
+		return false;
+	}
+	
+	@Override
+	public boolean doesSideBlockRendering(@Nonnull final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos, final EnumFacing side) {
+		return false;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean isSideSolid(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing side) {
+		final EnumFacing enumFacing = blockState.getValue(BlockProperties.FACING);
+		return enumFacing.getOpposite() == side;
 	}
 	
 	@Override
