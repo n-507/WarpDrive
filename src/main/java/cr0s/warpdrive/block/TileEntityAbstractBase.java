@@ -277,6 +277,12 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	
 	// tier
 	public int getTierIndex() {
+		if (!isConstructed) {
+			onConstructed();
+			WarpDrive.logger.error(String.format("%s Tile entity was used before being loaded! this is a forge issue.",
+			                                     this ));
+			new RuntimeException().printStackTrace(WarpDrive.printStreamError);
+		}
 		return enumTier.getIndex();
 	}
 	
