@@ -237,10 +237,11 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		return !blockAccess.isSideSolid(blockPosSide, opposite, false);
 	}
 	
-	protected TileEntityForceFieldProjector getProjector(final World world, @Nonnull final BlockPos blockPos) {
+	protected TileEntityForceFieldProjector getProjector(@Nonnull final World world, @Nonnull final BlockPos blockPos,
+	                                                     @Nullable final TileEntityForceFieldProjector tileEntityForceFieldProjectorCandidate) {
 		final TileEntity tileEntity = world.getTileEntity(blockPos);
 		if (tileEntity instanceof TileEntityForceField) {
-			return ((TileEntityForceField) tileEntity).getProjector();
+			return ((TileEntityForceField) tileEntity).getProjector(tileEntityForceFieldProjectorCandidate);
 		}
 		return null;
 	}
@@ -389,7 +390,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	
 	private void downgrade(final World world, final BlockPos blockPos) {
 		if (enumTier.getIndex() > 1) {
-			final TileEntityForceFieldProjector tileEntityForceFieldProjector = getProjector(world, blockPos);
+			final TileEntityForceFieldProjector tileEntityForceFieldProjector = getProjector(world, blockPos, null);
 			final IBlockState blockState = world.getBlockState(blockPos);
 			final int frequency = blockState.getBlock() == this ? blockState.getValue(FREQUENCY) : 0;
 			world.setBlockState(blockPos, WarpDrive.blockForceFields[enumTier.getIndex() - 1].getDefaultState().withProperty(FREQUENCY, (frequency + 1) % 16), 2);

@@ -134,8 +134,14 @@ public class TileEntityForceField extends TileEntity {
 		world.notifyBlockUpdate(pos, blockState, blockState, 3);
 	}
 	
-	public TileEntityForceFieldProjector getProjector() {
+	public TileEntityForceFieldProjector getProjector(@Nullable final TileEntityForceFieldProjector tileEntityForceFieldProjectorCandidate) {
 		if (blockPosProjector != null) {
+			// test candidate to save a call to getTileEntity()
+			if ( tileEntityForceFieldProjectorCandidate != null
+			  && blockPosProjector.equals(tileEntityForceFieldProjectorCandidate.getPos()) ) {
+				return tileEntityForceFieldProjectorCandidate;
+			}
+			
 			final TileEntity tileEntity = world.getTileEntity(blockPosProjector);
 			if (tileEntity instanceof TileEntityForceFieldProjector) {
 				final TileEntityForceFieldProjector tileEntityForceFieldProjector = (TileEntityForceFieldProjector) tileEntity;
@@ -172,7 +178,7 @@ public class TileEntityForceField extends TileEntity {
 	}
 	
 	public ForceFieldSetup getForceFieldSetup() {
-		final TileEntityForceFieldProjector tileEntityForceFieldProjector = getProjector();
+		final TileEntityForceFieldProjector tileEntityForceFieldProjector = getProjector(null);
 		if (tileEntityForceFieldProjector == null) {
 			return null;
 		}

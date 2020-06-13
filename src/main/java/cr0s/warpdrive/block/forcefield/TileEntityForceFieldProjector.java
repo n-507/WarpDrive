@@ -485,8 +485,8 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 							blockState = Blocks.AIR.getDefaultState();
 							
 						} else {
-							final TileEntityForceField tileEntityForceField = ((TileEntityForceField)tileEntity);
-							final TileEntityForceFieldProjector tileEntityForceFieldProjector = tileEntityForceField.getProjector();
+							final TileEntityForceField tileEntityForceField = ((TileEntityForceField) tileEntity);
+							final TileEntityForceFieldProjector tileEntityForceFieldProjector = tileEntityForceField.getProjector(this);
 							if (tileEntityForceFieldProjector == null) {
 								// orphan force field, probably from an explosion
 								// => recover it
@@ -571,7 +571,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 					// recover forcefield blocks from recalculation or chunk loading
 					if (blockState.getBlock() == WarpDrive.blockForceFields[enumTier.getIndex()] && !vForceFields.contains(vector)) {
 						final TileEntity tileEntity = world.getTileEntity(vector.getBlockPos());
-						if (tileEntity instanceof TileEntityForceField && (((TileEntityForceField) tileEntity).getProjector() == this)) {
+						if (tileEntity instanceof TileEntityForceField && (((TileEntityForceField) tileEntity).getProjector(this) == this)) {
 							vForceFields.add(vector);
 						}
 					}
@@ -584,7 +584,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 				// remove our own force field block
 				if (blockState.getBlock() == WarpDrive.blockForceFields[enumTier.getIndex()]) {
 					assert blockState.getBlock() instanceof BlockForceField;
-					if (((BlockForceField) blockState.getBlock()).getProjector(world, vector.getBlockPos()) == this) {
+					if (((BlockForceField) blockState.getBlock()).getProjector(world, vector.getBlockPos(), this) == this) {
 						world.setBlockToAir(vector.getBlockPos());
 						vForceFields.remove(vector);
 					}
@@ -814,7 +814,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 			if (blockState.getBlock() == WarpDrive.blockForceFields[enumTier.getIndex()]) {
 				final TileEntity tileEntity = world.getTileEntity(blockPos);
 				if ( tileEntity instanceof TileEntityForceField
-				  && (((TileEntityForceField) tileEntity).getProjector() == this) ) {
+				  && (((TileEntityForceField) tileEntity).getProjector(this) == this) ) {
 					world.setBlockToAir(vector.getBlockPos());
 				}
 			}
