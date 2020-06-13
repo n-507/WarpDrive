@@ -24,6 +24,8 @@ import net.minecraftforge.fml.common.Optional;
 
 public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterfaced implements IMachine {
 	
+	private static final WarpDriveText VALIDITY_ISSUES_UNKNOWN = new WarpDriveText(Commons.getStyleWarning(), "unknown");
+	
 	// persistent properties
 	public String name = "";
 	protected boolean isEnabled = true;
@@ -32,7 +34,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	private boolean isDirtyAssembly = true;
 	private int tickScanAssembly = 0;
 	protected boolean isAssemblyValid = true;
-	protected WarpDriveText textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "unknown"); 
+	protected WarpDriveText textValidityIssues = VALIDITY_ISSUES_UNKNOWN;
 	
 	// allow only one computation at a time
 	protected static final AtomicBoolean isGlobalThreadRunning = new AtomicBoolean(false);
