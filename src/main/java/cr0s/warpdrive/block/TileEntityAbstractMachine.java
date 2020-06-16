@@ -36,6 +36,9 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	protected boolean isAssemblyValid = true;
 	protected WarpDriveText textValidityIssues = VALIDITY_ISSUES_UNKNOWN;
 	
+	private boolean isDirtyParameters = true;
+	private int tickUpdateParameters = 0;
+	
 	// allow only one computation at a time
 	protected static final AtomicBoolean isGlobalThreadRunning = new AtomicBoolean(false);
 	// computation is ongoing for this specific tile
@@ -57,6 +60,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	protected void onFirstUpdateTick() {
 		super.onFirstUpdateTick();
 		doScanAssembly(true);
+		doUpdateParameters(true);
 	}
 	
 	@Override
@@ -79,6 +83,20 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 			
 			doScanAssembly(isDirty);
 		}
+		
+		// update operational parameters when dirty or periodically to recover whatever may have desynchronized them
+		if (isDirtyParameters) {
+			tickUpdateParameters = 0;
+		}
+		tickUpdateParameters--;
+		if (tickUpdateParameters <= 0) {
+			tickUpdateParameters = WarpDriveConfig.G_PARAMETERS_UPDATE_INTERVAL_TICKS;
+			final boolean isDirty = isDirtyParameters;
+			isDirtyParameters = false;
+			
+			doUpdateParameters(isDirty);
+		}
+		
 	}
 	
 	public boolean isDirtyAssembly() {
@@ -107,6 +125,14 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	
 	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
 		return true;
+	}
+	
+	protected void markDirtyParameters() {
+		isDirtyParameters = true;
+	}
+	
+	protected void doUpdateParameters(final boolean isDirty) {
+		// no operation
 	}
 	
 	@Override

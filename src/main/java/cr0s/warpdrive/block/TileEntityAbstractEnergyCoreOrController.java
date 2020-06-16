@@ -24,8 +24,6 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 	public UUID uuid = null;
 	
 	// computed properties
-	private boolean isDirtyParameters = true;
-	private int tickUpdateParameters = 0;
 	private boolean isDirtyGlobalRegion = true;
 	private int tickUpdateGlobalRegion = 0;
 	
@@ -45,19 +43,6 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 			return;
 		}
 		
-		// update operational parameters when dirty or periodically to recover whatever may have desynchronized them
-		if (isDirtyParameters) {
-			tickUpdateParameters = 0;
-		}
-		tickUpdateParameters--;
-		if (tickUpdateParameters <= 0) {
-			tickUpdateParameters = WarpDriveConfig.G_PARAMETERS_UPDATE_INTERVAL_TICKS;
-			final boolean isDirty = isDirtyParameters;
-			isDirtyParameters = false;
-			
-			doUpdateParameters(isDirty);
-		}
-		
 		// update registration upon request or periodically to recover whatever may have desynchronized it
 		if (this instanceof IGlobalRegionProvider) {
 			if (isDirtyGlobalRegion) {
@@ -73,12 +58,6 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 			}
 		}
 	}
-	
-	protected void markDirtyParameters() {
-		isDirtyParameters = true;
-	}
-	
-	protected abstract void doUpdateParameters(final boolean isDirty);
 	
 	protected void markDirtyGlobalRegion() {
 		assert this instanceof IGlobalRegionProvider;
