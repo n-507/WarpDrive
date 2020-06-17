@@ -248,6 +248,10 @@ public class Commons {
 	
 	public static void addChatMessage(final ICommandSender commandSender, @Nonnull final ITextComponent textComponent) {
 		final String message = textComponent.getFormattedText();
+		addChatMessage(commandSender, message);
+	}
+	
+	public static void addChatMessage(final ICommandSender commandSender, @Nonnull final String message) {
 		if (commandSender == null) {
 			WarpDrive.logger.error(String.format("Unable to send message to NULL sender: %s",
 			                                     message));

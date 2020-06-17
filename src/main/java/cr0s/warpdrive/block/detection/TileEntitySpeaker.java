@@ -67,7 +67,7 @@ public class TileEntitySpeaker extends TileEntityAbstractMachine {
 			                                                                                       && entityPlayerMP.isEntityAlive()
 			                                                                                       && !entityPlayerMP.isSpectator() );
 			for (final EntityPlayerMP entityPlayerMP : playersInRange) {
-				entityPlayerMP.sendMessage(messageFormatted);
+				Commons.addChatMessage(entityPlayerMP, messageFormatted);
 			}
 			rateMessaging++;
 		}
