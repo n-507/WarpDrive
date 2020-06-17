@@ -3,9 +3,15 @@ package cr0s.warpdrive.block.detection;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IVideoChannel;
+import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.TileEntityAbstractMachine;
+import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnumCameraType;
+import cr0s.warpdrive.data.EnumComponentType;
+import cr0s.warpdrive.data.Vector3;
+import cr0s.warpdrive.item.ItemComponent;
 import cr0s.warpdrive.network.PacketHandler;
 
 import li.cil.oc.api.machine.Arguments;
@@ -14,8 +20,24 @@ import li.cil.oc.api.machine.Context;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.nbt.NBTTagCompound;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.Optional;
 
 public class TileEntityCamera extends TileEntityAbstractMachine implements IVideoChannel {
@@ -24,18 +46,120 @@ public class TileEntityCamera extends TileEntityAbstractMachine implements IVide
 
 	private static final int REGISTRY_UPDATE_INTERVAL_TICKS = 15 * 20;
 	private static final int PACKET_SEND_INTERVAL_TICKS = 60 * 20;
-
+	
+	private static final UpgradeSlot upgradeSlotRecognitionRange = new UpgradeSlot("camera.recognition_range",
+	                                                                               ItemComponent.getItemStackNoCache(EnumComponentType.DIAMOND_CRYSTAL, 1),
+	                                                                               WarpDriveConfig.CAMERA_RANGE_UPGRADE_MAX_QUANTITY );
+	
+	// persistent properties
+	private final CopyOnWriteArrayList<Result> results = new CopyOnWriteArrayList<>();
+	
+	// computed properties
+	private Vec3d vCamera = null;
 	private int packetSendTicks = 10;
 	private int registryUpdateTicks = 20;
-
+	private boolean hasImageRecognition = false;
+	
+	private AxisAlignedBB aabbRange = null;
+	private int tickSensing = 0;
+	
+	
+	private static final class Result {
+		
+		public Vector3 position;
+		public Vector3 motion;
+		public String type;
+		public UUID uniqueId;
+		public String name;
+		private boolean isUpdated;
+		
+		Result(@Nonnull final Vector3 position, @Nonnull final Vector3 motion, @Nonnull final String type,
+		       @Nonnull final UUID uniqueId, @Nonnull final String name) {
+			this.position = position;
+			this.motion = motion;
+			this.type = type;
+			this.uniqueId = uniqueId;
+			this.name = name;
+			this.isUpdated = false;
+		}
+		
+		Result(@Nonnull final Entity entity) {
+			this(new Vector3(entity.posX,
+			                 entity.posY + entity.getEyeHeight(),
+			                 entity.posZ ),
+			     new Vector3(entity.motionX,
+			                 entity.motionY,
+			                 entity.motionZ ),
+			     Dictionary.getId(entity),
+			     entity.getUniqueID(),
+			     entity.getName() );
+			// seen it was created from an entity, it's already updated
+			isUpdated = true;
+		}
+		
+		void markForUpdate() {
+			isUpdated = false;
+		}
+		
+		void update(@Nonnull final Entity entity) {
+			uniqueId = entity.getUniqueID();
+			position.x = entity.posX;
+			position.y = entity.posY + entity.getEyeHeight();
+			position.z = entity.posZ;
+			motion.x = entity.motionX;
+			motion.y = entity.motionY;
+			motion.z = entity.motionZ;
+			isUpdated = true;
+		}
+		
+		boolean isUpdated() {
+			return isUpdated;
+		}
+		
+		@Override
+		public boolean equals(final Object object) {
+			if (this == object) {
+				return true;
+			}
+			if (object == null) {
+				return false;
+			}
+			if (object instanceof Entity) {
+				final Entity entity = (Entity) object;
+				// note: getting an entity type is fairly slow, so we do it as late as possible
+				return (uniqueId == null || entity.getUniqueID().equals(uniqueId))
+				       && entity.getName().equals(name)
+				       && Dictionary.getId(entity).equals(type);
+			}
+			if (getClass() != object.getClass()) {
+				return false;
+			}
+			final Result that = (Result) object;
+			return (uniqueId == null || that.uniqueId == null || that.uniqueId.equals(uniqueId))
+			       && that.name.equals(name)
+			       && that.type.equals(type);
+		}
+		
+		@Override
+		public int hashCode() {
+			return type.hashCode() + name.hashCode();
+		}
+	}
+	
 	public TileEntityCamera() {
 		super();
 		
 		peripheralName = "warpdriveCamera";
 		addMethods(new String[] {
-			"videoChannel"
+			"videoChannel",
+			"getResults",
+			"getResultsCount",
+			"getResult"
 		});
 		doRequireUpgradeToInterface();
+		CC_scripts = Collections.singletonList("recognize");
+		
+		registerUpgradeSlot(upgradeSlotRecognitionRange);
 	}
 	
 	@Override
@@ -58,6 +182,96 @@ public class TileEntityCamera extends TileEntityAbstractMachine implements IVide
 				}
 				WarpDrive.cameras.updateInRegistry(world, pos, videoChannel, EnumCameraType.SIMPLE_CAMERA);
 			}
+			return;
+		}
+		
+		
+		if ( isEnabled
+		  && hasImageRecognition ) {
+			tickSensing--;
+			if (tickSensing < 0) {
+				tickSensing = WarpDriveConfig.CAMERA_IMAGE_RECOGNITION_INTERVAL_TICKS;
+				
+				// clear the markers
+				for (final Result result : results) {
+					result.markForUpdate();
+				}
+				
+				// check for exclusive living entity presence
+				int countAdded = 0;
+				final int countOld = results.size();
+				final List<Entity> entitiesInRange = world.getEntitiesWithinAABB(Entity.class, aabbRange,
+				                                                                 entity -> entity != null
+				                                                                        && entity.isEntityAlive()
+				                                                                        && !entity.isInvisible()
+				                                                                        && ( !(entity instanceof EntityPlayer)
+				                                                                          || !((EntityPlayer) entity).isSpectator() ) );
+				for (final Entity entity : entitiesInRange) {
+					// check for line of sight
+					final Vec3d vEntity = new Vec3d(entity.posX,
+					                                entity.posY,
+					                                entity.posZ );
+					final RayTraceResult rayTraceResult = world.rayTraceBlocks(vCamera, vEntity);
+					if (rayTraceResult != null) {
+						continue;
+					}
+					
+					// check for existing results
+					boolean isNew = true;
+					for (final Result result : results) {
+						if (result.equals(entity)) {
+							result.update(entity);
+							isNew = false;
+							break;
+						}
+					}
+					
+					// add new result
+					if (isNew) {
+						countAdded++;
+						results.add(new Result(entity));
+					}
+				}
+				
+				// clear old results
+				results.removeIf(result -> !result.isUpdated());
+				final int countRemoved = countOld + countAdded - results.size();
+				
+				// trigger LUA event
+				if ( countAdded > 0
+				  || countRemoved > 0 ) {
+					sendEvent("opticalSensorResultsChanged", countAdded, countRemoved);
+				}
+			}
+		}
+	}
+	
+	@Override
+	protected void doUpdateParameters(final boolean isDirty) {
+		super.doUpdateParameters(isDirty);
+		
+		final IBlockState blockState = world.getBlockState(pos);
+		updateBlockState(blockState, BlockProperties.ACTIVE, isEnabled);
+		
+		final int range = WarpDriveConfig.CAMERA_RANGE_BASE_BLOCKS
+		                + WarpDriveConfig.CAMERA_RANGE_UPGRADE_BLOCKS * getUpgradeCount(upgradeSlotRecognitionRange);
+		hasImageRecognition = range > 0;
+		
+		if ( hasImageRecognition
+		  && blockState.getBlock() instanceof BlockCamera ) {
+			final EnumFacing enumFacing = blockState.getValue(BlockProperties.FACING);
+			final float radius = range / 2.0F;
+			vCamera = new Vec3d(
+					pos.getX() + 0.5F + 0.6F * enumFacing.getXOffset(),
+					pos.getY() + 0.5F + 0.6F * enumFacing.getYOffset(),
+					pos.getZ() + 0.5F + 0.6F * enumFacing.getZOffset() );
+			final Vec3d vCenter = new Vec3d(
+					pos.getX() + 0.5F + (radius + 0.5F) * enumFacing.getXOffset(),
+					pos.getY() + 0.5F + (radius + 0.5F) * enumFacing.getYOffset(),
+					pos.getZ() + 0.5F + (radius + 0.5F) * enumFacing.getZOffset() );
+			aabbRange = new AxisAlignedBB(
+					vCenter.x - radius, vCenter.y - radius, vCenter.z - radius,
+					vCenter.x + radius, vCenter.y + radius, vCenter.z + radius );
 		}
 	}
 	
@@ -107,6 +321,24 @@ public class TileEntityCamera extends TileEntityAbstractMachine implements IVide
 		if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {
 			WarpDrive.logger.info(this + " readFromNBT");
 		}
+		
+		final NBTTagList tagList = tagCompound.getTagList("results", NBT.TAG_COMPOUND);
+		for (final NBTBase tagResult : tagList) {
+			final NBTTagCompound tagCompoundResult = (NBTTagCompound) tagResult;
+			try {
+				final Result result = new Result(
+						new Vector3(tagCompoundResult.getDouble("posX"), tagCompoundResult.getDouble("posY"), tagCompoundResult.getDouble("posZ")),
+						new Vector3(tagCompoundResult.getDouble("motionX"), tagCompoundResult.getDouble("motionY"), tagCompoundResult.getDouble("motionZ")),
+						tagCompoundResult.getString("type"),
+						Objects.requireNonNull(tagCompoundResult.getUniqueId("uniqueId")),
+						tagCompoundResult.getString("name") );
+				results.add(result);
+			} catch (final Exception exception) {
+				WarpDrive.logger.error(String.format("%s Exception while reading previous result %s",
+				                                     this, tagCompoundResult ));
+				exception.printStackTrace(WarpDrive.printStreamError);
+			}
+		}
 	}
 	
 	@Nonnull
@@ -119,7 +351,55 @@ public class TileEntityCamera extends TileEntityAbstractMachine implements IVide
 			WarpDrive.logger.info(this + " writeToNBT");
 		}
 		
+		if (!results.isEmpty()) {
+			final NBTTagList tagList = new NBTTagList();
+			for (final Result result : results) {
+				final NBTTagCompound tagCompoundResult = new NBTTagCompound();
+				tagCompoundResult.setDouble("posX", result.position.x);
+				tagCompoundResult.setDouble("posY", result.position.y);
+				tagCompoundResult.setDouble("posZ", result.position.z);
+				tagCompoundResult.setDouble("motionX", result.motion.x);
+				tagCompoundResult.setDouble("motionY", result.motion.y);
+				tagCompoundResult.setDouble("motionZ", result.motion.z);
+				tagCompoundResult.setString("type", result.type);
+				if (result.uniqueId != null) {
+					tagCompoundResult.setUniqueId("uniqueId", result.uniqueId);
+				}
+				if (result.name != null) {
+					tagCompoundResult.setString("name", result.name);
+				}
+				tagList.appendTag(tagCompoundResult);
+			}
+			tagCompound.setTag("results", tagList);
+		} else {
+			tagCompound.removeTag("results");
+		}
+		
 		return tagCompound;
+	}
+	
+	// TileEntityAbstractBase overrides
+	@Nonnull
+	private WarpDriveText getSensorStatus() {
+		if (!hasImageRecognition) {
+			return new WarpDriveText();
+		}
+		if (results.isEmpty()) {
+			return new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.optical_sensor.status_line.no_result");
+		}
+		return new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.optical_sensor.status_line.result_count",
+		                         results.size() );
+	}
+	
+	@Override
+	public WarpDriveText getStatus() {
+		final WarpDriveText textScanStatus = getSensorStatus();
+		if (textScanStatus.getUnformattedText().isEmpty()) {
+			return super.getStatus();
+		} else {
+			return super.getStatus()
+			            .append(textScanStatus);
+		}
 	}
 	
 	// Common OC/CC methods
@@ -130,11 +410,77 @@ public class TileEntityCamera extends TileEntityAbstractMachine implements IVide
 		return new Integer[] { getVideoChannel() };
 	}
 	
+	private Object[] getResults() {
+		if (results == null) {
+			return null;
+		}
+		final Object[] objectResults = new Object[results.size()];
+		int index = 0;
+		for (final Result result : results) {
+			objectResults[index++] = new Object[] {
+					result.type,
+					result.name == null ? "" : result.name,
+					result.position.x, result.position.y, result.position.z,
+					result.motion.x, result.motion.y, result.motion.z };
+		}
+		return objectResults;
+	}
+	
+	private Object[] getResultsCount() {
+		if (results != null) {
+			return new Integer[] { results.size() };
+		}
+		return new Integer[] { -1 };
+	}
+	
+	private Object[] getResult(@Nonnull final Object[] arguments) {
+		if (arguments.length == 1 && (results != null)) {
+			final int index;
+			try {
+				index = Commons.toInt(arguments[0]);
+			} catch(final Exception exception) {
+				return new Object[] { false, COMPUTER_ERROR_TAG, COMPUTER_ERROR_TAG, 0, 0, 0, 0, 0, 0 };
+			}
+			if (index >= 0 && index < results.size()) {
+				final Result result = results.get(index);
+				if (result != null) {
+					return new Object[] {
+							true,
+							result.type,
+							result.name == null ? "" : result.name,
+							result.position.x, result.position.y, result.position.z,
+							result.motion.x, result.motion.y, result.motion.z };
+				}
+			}
+		}
+		return new Object[] { false, COMPUTER_ERROR_TAG, COMPUTER_ERROR_TAG, 0, 0, 0, 0, 0, 0 };
+	}
+	
 	// OpenComputers callback methods
 	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
 	public Object[] videoChannel(final Context context, final Arguments arguments) {
 		return videoChannel(OC_convertArgumentsAndLogCall(context, arguments));
+	}
+	
+	@Callback(direct = true)
+	@Optional.Method(modid = "opencomputers")
+	public Object[] getResults(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
+		return getResults();
+	}
+	
+	@Callback(direct = true)
+	@Optional.Method(modid = "opencomputers")
+	public Object[] getResultsCount(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
+		return getResultsCount();
+	}
+	
+	@Callback(direct = true)
+	@Optional.Method(modid = "opencomputers")
+	public Object[] getResult(final Context context, final Arguments arguments) {
+		return getResult(OC_convertArgumentsAndLogCall(context, arguments));
 	}
 	
 	// ComputerCraft IPeripheral methods
@@ -144,6 +490,15 @@ public class TileEntityCamera extends TileEntityAbstractMachine implements IVide
 		switch (methodName) {
 		case "videoChannel":
 			return videoChannel(arguments);
+			
+		case "getResults":
+			return getResults();
+			
+		case "getResultsCount":
+			return getResultsCount();
+			
+		case "getResult":
+			return getResult(arguments);
 		}
 		
 		return super.CC_callMethod(methodName, arguments);

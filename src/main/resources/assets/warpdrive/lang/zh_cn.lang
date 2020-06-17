@@ -726,6 +726,7 @@ warpdrive.upgrade.description.base.computer_interface=启用电脑连接。
 warpdrive.upgrade.description.chunk_loader.efficiency=减少能量消耗。
 warpdrive.upgrade.description.chunk_loader.range=增加最大距离。
 warpdrive.upgrade.description.mining_laser.pumping=启用流体移除。
+warpdrive.upgrade.description.camera.recognition_range=Increases image recognition range.
 warpdrive.upgrade.description.cloaking.transparency=启用完全穿透。
 warpdrive.upgrade.description.capacitor.efficiency=减少能量传输的损耗。
 warpdrive.upgrade.description.transporter.energy_storage=增大能量存储。

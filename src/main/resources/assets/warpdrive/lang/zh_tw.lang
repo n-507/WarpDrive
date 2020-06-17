@@ -725,6 +725,7 @@ warpdrive.upgrade.description.base.computer_interface=Enables computer connectio
 warpdrive.upgrade.description.chunk_loader.efficiency=Reduces energy cost.
 warpdrive.upgrade.description.chunk_loader.range=Increases maximum range.
 warpdrive.upgrade.description.mining_laser.pumping=Enables fluid removal.
+warpdrive.upgrade.description.camera.recognition_range=Increases image recognition range.
 warpdrive.upgrade.description.cloaking.transparency=Enables full transparency.
 warpdrive.upgrade.description.capacitor.efficiency=Reduces energy transfer loss.
 warpdrive.upgrade.description.transporter.energy_storage=Increases energy storage.

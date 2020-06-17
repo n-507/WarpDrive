@@ -304,6 +304,12 @@ public class WarpDriveConfig {
 	public static int              BIOMETRIC_SCANNER_DURATION_TICKS = 100;
 	public static int              BIOMETRIC_SCANNER_RANGE_BLOCKS = 3;
 	
+	// Camera
+	public static int              CAMERA_IMAGE_RECOGNITION_INTERVAL_TICKS = 20;
+	public static int              CAMERA_RANGE_BASE_BLOCKS = 0;
+	public static int              CAMERA_RANGE_UPGRADE_BLOCKS = 8;
+	public static int              CAMERA_RANGE_UPGRADE_MAX_QUANTITY = 8;
+	
 	// Offline avatar
 	public static boolean          OFFLINE_AVATAR_ENABLE = true;
 	public static boolean          OFFLINE_AVATAR_CREATE_ONLY_ABOARD_SHIPS = true;

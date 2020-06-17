@@ -1,0 +1,57 @@
+local component = require("component")
+local term = require("term")
+
+if not term.isAvailable() then
+  computer.beep()
+  os.exit()
+end
+
+local function showError(message)
+  component.gpu.setBackground(0x000000)
+  component.gpu.setForeground(0xFF0000)
+  local xt, yt = term.getCursor()
+  component.gpu.set(xt, yt, message)
+  component.gpu.setBackground(0x000000)
+  component.gpu.setForeground(0xFFFFFF)
+  print()
+end
+
+local function showErrorAndExit(message)
+  showError(message)
+  os.exit()
+end
+
+if not component.isAvailable("warpdriveCamera") then
+  showErrorAndExit("No camera detected")
+end
+
+local camera = component.warpdriveCamera
+
+local argv = { ... }
+if #argv ~= 0 then
+  showErrorAndExit("Usage: recognition")
+end
+
+local delay = 0
+local count
+repeat
+  count = camera.getResultsCount()
+  os.sleep(0.1)
+  delay = delay + 1
+until (count ~= nil and count ~= -1) or delay > 10
+
+if count ~= nil and count > 0 then
+  for i=0, count-1 do
+    local success, type, name, x, y, z, vx, vy, vz = camera.getResult(i)
+    x = math.floor(x * 10) / 10
+    y = math.floor(y * 10) / 10
+    z = math.floor(z * 10) / 10
+    if success then
+      print(type .. " " .. name .. " @ (" .. x .. " " .. y .. " " .. z .. ")")
+    else
+      showError("Error " .. type)
+    end
+  end
+else
+  print("Nothing was found =(")
+end
