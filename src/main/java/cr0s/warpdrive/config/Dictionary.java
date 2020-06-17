@@ -32,6 +32,7 @@ import net.minecraft.world.Explosion;
 
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -779,6 +780,14 @@ public class Dictionary {
 	
 	@Nonnull
 	public static String getId(final Entity entity) {
+		// player entities aren't registered so we use our own definition
+		if (entity instanceof EntityPlayer) {
+			if (entity instanceof FakePlayer) {
+				return "forge:fake_player";
+			}
+			return "minecraft:player";
+		}
+		
 		final ResourceLocation resourceLocation = EntityList.getKey(entity);
 		return resourceLocation == null ? "-null-" : resourceLocation.toString();
 	}
