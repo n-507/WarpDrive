@@ -1634,14 +1634,6 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		return tagCompound;
 	}
 	
-	@Override
-	public void setIsEnabled(final boolean isEnabled) {
-		super.setIsEnabled(isEnabled);
-		if (isEnabled) {
-			markDirty();
-		}
-	}
-	
 	// Common OC/CC methods
 	@Override
 	public String[] name(final Object[] arguments) {
