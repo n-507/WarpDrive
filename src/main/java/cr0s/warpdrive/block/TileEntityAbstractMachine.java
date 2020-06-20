@@ -146,7 +146,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 		super.readFromNBT(tagCompound);
 		
 		name = tagCompound.getString(ICoreSignature.NAME_TAG);
-		isEnabled = !tagCompound.hasKey("isEnabled") || tagCompound.getBoolean("isEnabled");
+		setIsEnabled( !tagCompound.hasKey("isEnabled") || tagCompound.getBoolean("isEnabled"));
 	}
 	
 	@Nonnull
@@ -200,9 +200,12 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	}
 	
 	public void setIsEnabled(final boolean isEnabled) {
+		final boolean isEnabledOld = this.isEnabled;
 		this.isEnabled = isEnabled;
 		// force update through main thread since CC & OC are running outside the main thread
-		markDirty();
+		if (isEnabledOld != isEnabled) {
+			markDirty();
+		}
 	}
 	
 	// Common OC/CC methods
