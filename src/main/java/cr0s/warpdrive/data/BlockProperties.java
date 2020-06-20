@@ -12,5 +12,6 @@ public class BlockProperties {
 	public static final PropertyBool                   CONNECTED         = PropertyBool.create("connected");
 	public static final PropertyDirection              FACING            = PropertyDirection.create("facing");
 	public static final PropertyDirection              FACING_HORIZONTAL = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+	public static final PropertyDirection              SPINNING          = PropertyDirection.create("spinning", EnumFacing.Plane.HORIZONTAL);
 	
 }

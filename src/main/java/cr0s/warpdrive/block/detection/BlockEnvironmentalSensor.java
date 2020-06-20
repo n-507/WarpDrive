@@ -1,6 +1,6 @@
 package cr0s.warpdrive.block.detection;
 
-import cr0s.warpdrive.block.BlockAbstractRotatingContainer;
+import cr0s.warpdrive.block.BlockAbstractSpinRotatingContainer;
 import cr0s.warpdrive.block.ItemBlockAbstractBase;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnumTier;
@@ -24,14 +24,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockEnvironmentalSensor extends BlockAbstractRotatingContainer {
+public class BlockEnvironmentalSensor extends BlockAbstractSpinRotatingContainer {
 	
-	private static final AxisAlignedBB AABB_DOWN   = new AxisAlignedBB(0.000D, 0.625D, 0.000D, 1.000D, 1.000D, 1.000D);
-	private static final AxisAlignedBB AABB_UP     = new AxisAlignedBB(0.000D, 0.000D, 0.000D, 1.000D, 0.375D, 1.000D);
-	private static final AxisAlignedBB AABB_NORTH  = new AxisAlignedBB(0.000D, 0.000D, 0.625D, 1.000D, 1.000D, 1.000D);
-	private static final AxisAlignedBB AABB_SOUTH  = new AxisAlignedBB(0.000D, 0.000D, 0.000D, 1.000D, 1.000D, 0.375D);
-	private static final AxisAlignedBB AABB_WEST   = new AxisAlignedBB(0.625D, 0.000D, 0.000D, 1.000D, 1.000D, 1.000D);
-	private static final AxisAlignedBB AABB_EAST   = new AxisAlignedBB(0.000D, 0.000D, 0.000D, 0.375D, 1.000D, 1.000D);
+	private static final AxisAlignedBB AABB_DOWN   = new AxisAlignedBB(0.1250D, 0.6875D, 0.1250D, 0.8750D, 1.0000D, 0.8750D);
+	private static final AxisAlignedBB AABB_UP     = new AxisAlignedBB(0.1250D, 0.0000D, 0.1250D, 0.8750D, 0.3125D, 0.8750D);
+	private static final AxisAlignedBB AABB_NORTH  = new AxisAlignedBB(0.1250D, 0.1250D, 0.6875D, 0.8750D, 0.8750D, 1.0000D);
+	private static final AxisAlignedBB AABB_SOUTH  = new AxisAlignedBB(0.1250D, 0.1250D, 0.0000D, 0.8750D, 0.8750D, 0.3125D);
+	private static final AxisAlignedBB AABB_WEST   = new AxisAlignedBB(0.6875D, 0.1250D, 0.1250D, 1.0000D, 0.8750D, 0.8750D);
+	private static final AxisAlignedBB AABB_EAST   = new AxisAlignedBB(0.0000D, 0.1250D, 0.1250D, 0.3125D, 0.8750D, 0.8750D);
 	private static final AxisAlignedBB AABB_FULL   = FULL_BLOCK_AABB;
 	
 	public BlockEnvironmentalSensor(final String registryName, final EnumTier enumTier) {
@@ -97,7 +97,7 @@ public class BlockEnvironmentalSensor extends BlockAbstractRotatingContainer {
 	@Override
 	public BlockFaceShape getBlockFaceShape(@Nonnull final IBlockAccess blockAccess, @Nonnull final IBlockState blockState, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing enumFacing) {
 		final EnumFacing enumFacingState = blockState.getValue(BlockProperties.FACING);
-		return enumFacing == enumFacingState.getOpposite() ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
+		return enumFacing == enumFacingState.getOpposite() ? BlockFaceShape.CENTER_BIG : BlockFaceShape.UNDEFINED;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -128,9 +128,8 @@ public class BlockEnvironmentalSensor extends BlockAbstractRotatingContainer {
 	}
 	
 	@Override
-	public boolean doesSideBlockRendering(@Nonnull final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos, final EnumFacing side) {
-		final EnumFacing enumFacing = blockState.getValue(BlockProperties.FACING);
-		return enumFacing.getOpposite() == side;
+	public boolean doesSideBlockRendering(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing side) {
+		return false;
 	}
 	
 	@SuppressWarnings("deprecation")

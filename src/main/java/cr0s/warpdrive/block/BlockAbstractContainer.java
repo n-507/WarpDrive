@@ -101,6 +101,20 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 		final IBlockState blockState = super.getStateForPlacement(world, blockPos, facing, hitX, hitY, hitZ, metadata, entityLivingBase, enumHand);
 		if (!ignoreFacingOnPlacement) {
 			if (blockState.getProperties().containsKey(BlockProperties.FACING)) {
+				// start with the most complex: spinning down/up & rotating otherwise
+				if (blockState.getProperties().containsKey(BlockProperties.SPINNING)) {
+					final EnumFacing enumSpinning = Commons.getHorizontalDirectionFromEntity(entityLivingBase);
+					if (blockState.isFullBlock()) {
+						final EnumFacing enumFacing = Commons.getFacingFromEntity(entityLivingBase);
+						return blockState.withProperty(BlockProperties.FACING, enumFacing)
+						                 .withProperty(BlockProperties.SPINNING, enumSpinning.getOpposite());
+					} else {
+						return blockState.withProperty(BlockProperties.FACING, facing)
+						                 .withProperty(BlockProperties.SPINNING, enumSpinning);
+					}
+				}
+				
+				// then 6 sided rotating
 				if (blockState.isFullBlock()) {
 					final EnumFacing enumFacing = Commons.getFacingFromEntity(entityLivingBase);
 					return blockState.withProperty(BlockProperties.FACING, enumFacing);
@@ -108,6 +122,8 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 					return blockState.withProperty(BlockProperties.FACING, facing);
 				}
 			}
+			
+			// finally, only rotating horizontally
 			if (blockState.getProperties().containsKey(BlockProperties.FACING_HORIZONTAL)) {
 				final EnumFacing enumFacing = Commons.getHorizontalDirectionFromEntity(entityLivingBase);
 				if (blockState.isFullBlock()) {
