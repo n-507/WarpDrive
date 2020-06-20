@@ -170,7 +170,7 @@ public class BlockGas extends BlockAbstractBase {
 		if (blockStateSide.getBlock() instanceof BlockGas) {
 			return blockState.getValue(COLOR) != blockStateSide.getValue(COLOR);
 		}
-		return !blockAccess.isSideSolid(blockPosSide, opposite, false);
+		return !blockStateSide.doesSideBlockRendering(blockAccess, blockPosSide, opposite);
 	}
 	
 	@Override

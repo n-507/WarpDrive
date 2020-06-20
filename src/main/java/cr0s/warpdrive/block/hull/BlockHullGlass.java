@@ -128,7 +128,7 @@ public class BlockHullGlass extends BlockColored implements IBlockBase, IDamageR
 			return blockState.getBlock().getMetaFromState(blockState)
 				!= blockStateSide.getBlock().getMetaFromState(blockStateSide);
 		}
-		return !blockAccess.isSideSolid(blockPosSide, opposite, false);
+		return !blockStateSide.doesSideBlockRendering(blockAccess, blockPosSide, opposite);
 	}
 	
 	@Override
