@@ -1,25 +1,62 @@
 {
     "forge_marker": 1,
-    "defaults": {
-        "textures": {
-            "front_offline" : "warpdrive:blocks/detection/environmental_sensor-front_offline",
-            "front_online"  : "warpdrive:blocks/detection/environmental_sensor-front_online",
-            "side"          : "warpdrive:blocks/detection/environmental_sensor-side"
-        }
-    },
-    "variants": {
-        "active=false,facing=down"  : { "model": "warpdrive:sensor_down" , "textures": { "front": "#front_offline" } },
-        "active=false,facing=up"    : { "model": "warpdrive:sensor_up"   , "textures": { "front": "#front_offline" } },
-        "active=false,facing=north" : { "model": "warpdrive:sensor_north", "textures": { "front": "#front_offline" } },
-        "active=false,facing=south" : { "model": "warpdrive:sensor_south", "textures": { "front": "#front_offline" } },
-        "active=false,facing=east"  : { "model": "warpdrive:sensor_east" , "textures": { "front": "#front_offline" } },
-        "active=false,facing=west"  : { "model": "warpdrive:sensor_west" , "textures": { "front": "#front_offline" } },
-        "active=true,facing=down"   : { "model": "warpdrive:sensor_down" , "textures": { "front": "#front_online"  } },
-        "active=true,facing=up"     : { "model": "warpdrive:sensor_up"   , "textures": { "front": "#front_online"  } },
-        "active=true,facing=north"  : { "model": "warpdrive:sensor_north", "textures": { "front": "#front_online"  } },
-        "active=true,facing=south"  : { "model": "warpdrive:sensor_south", "textures": { "front": "#front_online"  } },
-        "active=true,facing=east"   : { "model": "warpdrive:sensor_east" , "textures": { "front": "#front_online"  } },
-        "active=true,facing=west"   : { "model": "warpdrive:sensor_west" , "textures": { "front": "#front_online"  } },
-		"inventory"                 : { "model": "warpdrive:sensor_up"   , "textures": { "front": "#front_online"  } }
-    }
+	"defaults": {
+		"textures": {
+			"inactive" : "warpdrive:blocks/detection/environmental_sensor-inactive",
+			"active"  : "warpdrive:blocks/detection/environmental_sensor-active"
+		},
+		"transform": "forge:default-block"
+	},
+	"variants": {
+		"active=false,facing=down,spinning=north" : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#inactive" }, "x": 180, "y": 180 },
+		"active=false,facing=down,spinning=south" : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#inactive" }, "x": 180           },
+		"active=false,facing=down,spinning=east"  : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#inactive" }, "x": 180, "y": 270 },
+		"active=false,facing=down,spinning=west"  : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#inactive" }, "x": 180, "y":  90 },
+		"active=false,facing=up,spinning=north"   : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#inactive" }, "y": 180           },
+		"active=false,facing=up,spinning=south"   : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#inactive" }                     },
+		"active=false,facing=up,spinning=east"    : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#inactive" }, "y": 270           },
+		"active=false,facing=up,spinning=west"    : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#inactive" }, "y":  90           },
+		"active=false,facing=north,spinning=north": { "model": "warpdrive:detection/environmental_sensor-vertical"  , "textures": { "sensor": "#inactive" }, "y": 180           },
+		"active=false,facing=south,spinning=south": { "model": "warpdrive:detection/environmental_sensor-vertical"  , "textures": { "sensor": "#inactive" }                     },
+		"active=false,facing=east,spinning=east"  : { "model": "warpdrive:detection/environmental_sensor-vertical"  , "textures": { "sensor": "#inactive" }, "y": 270           },
+		"active=false,facing=west,spinning=west"  : { "model": "warpdrive:detection/environmental_sensor-vertical"  , "textures": { "sensor": "#inactive" }, "y":  90           },
+		"active=true,facing=down,spinning=north"  : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#active"   }, "x": 180, "y": 180 },
+		"active=true,facing=down,spinning=south"  : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#active"   }, "x": 180           },
+		"active=true,facing=down,spinning=east"   : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#active"   }, "x": 180, "y": 270 },
+		"active=true,facing=down,spinning=west"   : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#active"   }, "x": 180, "y":  90 },
+		"active=true,facing=up,spinning=north"    : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#active"   }, "y": 180           },
+		"active=true,facing=up,spinning=south"    : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#active"   }                     },
+		"active=true,facing=up,spinning=east"     : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#active"   }, "y": 270           },
+		"active=true,facing=up,spinning=west"     : { "model": "warpdrive:detection/environmental_sensor-horizontal", "textures": { "sensor": "#active"   }, "y":  90           },
+		"active=true,facing=north,spinning=north" : { "model": "warpdrive:detection/environmental_sensor-vertical"  , "textures": { "sensor": "#active"   }, "y": 180           },
+		"active=true,facing=south,spinning=south" : { "model": "warpdrive:detection/environmental_sensor-vertical"  , "textures": { "sensor": "#active"   }                     },
+		"active=true,facing=east,spinning=east"   : { "model": "warpdrive:detection/environmental_sensor-vertical"  , "textures": { "sensor": "#active"   }, "y": 270           },
+		"active=true,facing=west,spinning=west"   : { "model": "warpdrive:detection/environmental_sensor-vertical"  , "textures": { "sensor": "#active"   }, "y":  90           },
+		
+		"active=false,facing=north,spinning=south": { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=false,facing=north,spinning=east" : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=false,facing=north,spinning=west" : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=false,facing=south,spinning=north": { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=false,facing=south,spinning=east" : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=false,facing=south,spinning=west" : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=false,facing=east,spinning=north" : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=false,facing=east,spinning=south" : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=false,facing=east,spinning=west"  : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=false,facing=west,spinning=north" : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=false,facing=west,spinning=south" : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=false,facing=west,spinning=east"  : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		
+		"active=true,facing=north,spinning=south" : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=true,facing=north,spinning=east"  : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=true,facing=north,spinning=west"  : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=true,facing=south,spinning=north" : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=true,facing=south,spinning=east"  : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=true,facing=south,spinning=west"  : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=true,facing=east,spinning=north"  : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=true,facing=east,spinning=south"  : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=true,facing=east,spinning=west"   : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=true,facing=west,spinning=north"  : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=true,facing=west,spinning=south"  : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } },
+		"active=true,facing=west,spinning=east"   : { "model": "minecraft:cube_all", "textures": { "all": "warpdrive:blocks/atomic/chiller.basic-online" } }
+	}
 }

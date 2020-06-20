@@ -1,0 +1,47 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"particle": "warpdrive:blocks/detection/environmental_sensor-inactive",
+		"sensor": "warpdrive:blocks/detection/environmental_sensor-active",
+		"bottom": "warpdrive:blocks/detection/environmental_sensor-base"
+	},
+	"elements": [
+		{
+			"from": [2, 2, 0],
+			"to": [14, 14, 4],
+			"faces": {
+				"north": {"uv": [0, 0, 12, 12], "rotation": 180, "texture": "#bottom"},
+				"east": {"uv": [0, 12, 12, 16], "rotation": 270, "texture": "#bottom"},
+				"south": {"uv": [0, 0, 12, 12], "texture": "#sensor"},
+				"west": {"uv": [0, 12, 12, 16], "rotation": 90, "texture": "#bottom"},
+				"up": {"uv": [0, 12, 12, 16], "rotation": 180, "texture": "#bottom"},
+				"down": {"uv": [0, 12, 12, 16], "texture": "#bottom"}
+			}
+		},
+		{
+			"from": [3, 9, 4],
+			"to": [6, 13, 5],
+			"faces": {
+				"north": {"uv": [0, 0, 3, 4], "rotation": 180, "texture": "#sensor"},
+				"east": {"uv": [15, 0, 16, 4], "texture": "#sensor"},
+				"south": {"uv": [12, 0, 15, 4], "texture": "#sensor"},
+				"west": {"uv": [15, 0, 16, 4], "texture": "#sensor"},
+				"up": {"uv": [12, 4, 15, 5], "rotation": 180, "texture": "#sensor"},
+				"down": {"uv": [12, 5, 15, 6], "texture": "#sensor"}
+			}
+		},
+		{
+			"from": [4, 13, 5],
+			"to": [5, 18, 5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [4.5, 13, 5]},
+			"faces": {
+				"north": {"uv": [12, 11, 13, 6], "rotation": 180, "texture": "#sensor"},
+				"east": {"uv": [0, 0, 5, 0], "rotation": 270, "texture": "#sensor"},
+				"south": {"uv": [12, 6, 13, 11], "texture": "#sensor"},
+				"west": {"uv": [0, 0, 5, 0], "rotation": 90, "texture": "#sensor"},
+				"up": {"uv": [0, 0, 1, 0], "rotation": 180, "texture": "#sensor"},
+				"down": {"uv": [0, 0, 1, 0], "texture": "#sensor"}
+			}
+		}
+	]
+}
