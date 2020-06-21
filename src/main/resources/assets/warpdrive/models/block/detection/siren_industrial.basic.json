@@ -1,0 +1,6 @@
+{
+    "parent": "warpdrive:block/detection/siren_industrial",
+    "textures": {
+        "industrial": "warpdrive:blocks/detection/siren_industrial.basic"
+    }
+}
