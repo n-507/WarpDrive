@@ -2,7 +2,7 @@ package cr0s.warpdrive.block.detection;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.api.WarpDriveText;
-import cr0s.warpdrive.block.BlockAbstractRotatingContainer;
+import cr0s.warpdrive.block.BlockAbstractHorizontalSpinningContainer;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnumTier;
@@ -28,22 +28,28 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockSiren extends BlockAbstractRotatingContainer {
+public class BlockSiren extends BlockAbstractHorizontalSpinningContainer {
 	
-	private static final AxisAlignedBB AABB_INDUSTRIAL_DOWN   = new AxisAlignedBB(0.0000D, 0.3125D, 0.0000D, 1.0000D, 0.6875D, 1.0000D);
-	private static final AxisAlignedBB AABB_INDUSTRIAL_UP     = new AxisAlignedBB(0.0000D, 0.3125D, 0.0000D, 1.0000D, 0.6875D, 1.0000D);
-	private static final AxisAlignedBB AABB_INDUSTRIAL_NORTH  = new AxisAlignedBB(0.0000D, 0.3125D, 0.4375D, 1.0000D, 0.6875D, 0.8125D);
-	private static final AxisAlignedBB AABB_INDUSTRIAL_SOUTH  = new AxisAlignedBB(0.0000D, 0.3125D, 0.1875D, 1.0000D, 0.6875D, 0.5625D);
-	private static final AxisAlignedBB AABB_INDUSTRIAL_WEST   = new AxisAlignedBB(0.4375D, 0.3125D, 0.0000D, 0.8125D, 0.6875D, 1.0000D);
-	private static final AxisAlignedBB AABB_INDUSTRIAL_EAST   = new AxisAlignedBB(0.1875D, 0.3125D, 0.0000D, 0.5625D, 0.6875D, 1.0000D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_DOWN_NORTH  = new AxisAlignedBB(0.0000D, 0.1875D, 0.1875D, 1.0000D, 0.8125D, 0.8125D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_DOWN_SOUTH  = new AxisAlignedBB(0.0000D, 0.1875D, 0.1875D, 1.0000D, 0.8125D, 0.8125D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_DOWN_WEST   = new AxisAlignedBB(0.1875D, 0.1875D, 0.0000D, 0.8125D, 0.8125D, 1.0000D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_DOWN_EAST   = new AxisAlignedBB(0.1875D, 0.1875D, 0.0000D, 0.8125D, 0.8125D, 1.0000D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_UP_NORTH    = new AxisAlignedBB(0.0000D, 0.1875D, 0.1875D, 1.0000D, 0.8125D, 0.8125D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_UP_SOUTH    = new AxisAlignedBB(0.0000D, 0.1875D, 0.1875D, 1.0000D, 0.8125D, 0.8125D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_UP_WEST     = new AxisAlignedBB(0.1875D, 0.1875D, 0.0000D, 0.8125D, 0.8125D, 1.0000D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_UP_EAST     = new AxisAlignedBB(0.1875D, 0.1875D, 0.0000D, 0.8125D, 0.8125D, 1.0000D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_NORTH       = new AxisAlignedBB(0.0000D, 0.1875D, 0.1875D, 1.0000D, 0.8125D, 0.8125D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_SOUTH       = new AxisAlignedBB(0.0000D, 0.1875D, 0.1875D, 1.0000D, 0.8125D, 0.8125D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_WEST        = new AxisAlignedBB(0.1875D, 0.1875D, 0.0000D, 0.8125D, 0.8125D, 1.0000D);
+	private static final AxisAlignedBB AABB_INDUSTRIAL_EAST        = new AxisAlignedBB(0.1875D, 0.1875D, 0.0000D, 0.8125D, 0.8125D, 1.0000D);
 	
-	private static final AxisAlignedBB AABB_MILITARY_DOWN   = new AxisAlignedBB(0.0000D, 0.3125D, 0.0000D, 1.0000D, 0.6875D, 1.0000D);
-	private static final AxisAlignedBB AABB_MILITARY_UP     = new AxisAlignedBB(0.0000D, 0.3125D, 0.0000D, 1.0000D, 0.6875D, 1.0000D);
-	private static final AxisAlignedBB AABB_MILITARY_NORTH  = new AxisAlignedBB(0.0000D, 0.3125D, 0.4375D, 1.0000D, 0.6875D, 0.8125D);
-	private static final AxisAlignedBB AABB_MILITARY_SOUTH  = new AxisAlignedBB(0.0000D, 0.3125D, 0.1875D, 1.0000D, 0.6875D, 0.5625D);
-	private static final AxisAlignedBB AABB_MILITARY_WEST   = new AxisAlignedBB(0.4375D, 0.3125D, 0.0000D, 0.8125D, 0.6875D, 1.0000D);
-	private static final AxisAlignedBB AABB_MILITARY_EAST   = new AxisAlignedBB(0.1875D, 0.3125D, 0.0000D, 0.5625D, 0.6875D, 1.0000D);
-	private static final AxisAlignedBB AABB_FULL   = FULL_BLOCK_AABB;
+	private static final AxisAlignedBB AABB_MILITARY_DOWN    = new AxisAlignedBB(0.0000D, 0.3125D, 0.0000D, 1.0000D, 0.6875D, 1.0000D);
+	private static final AxisAlignedBB AABB_MILITARY_UP      = new AxisAlignedBB(0.0000D, 0.3125D, 0.0000D, 1.0000D, 0.6875D, 1.0000D);
+	private static final AxisAlignedBB AABB_MILITARY_NORTH   = new AxisAlignedBB(0.0000D, 0.3125D, 0.4375D, 1.0000D, 0.6875D, 0.8125D);
+	private static final AxisAlignedBB AABB_MILITARY_SOUTH   = new AxisAlignedBB(0.0000D, 0.3125D, 0.1875D, 1.0000D, 0.6875D, 0.5625D);
+	private static final AxisAlignedBB AABB_MILITARY_WEST    = new AxisAlignedBB(0.4375D, 0.3125D, 0.0000D, 0.8125D, 0.6875D, 1.0000D);
+	private static final AxisAlignedBB AABB_MILITARY_EAST    = new AxisAlignedBB(0.1875D, 0.3125D, 0.0000D, 0.5625D, 0.6875D, 1.0000D);
+	private static final AxisAlignedBB AABB_FULL             = FULL_BLOCK_AABB;
 	
 	private final boolean isIndustrial;
 	
@@ -94,17 +100,23 @@ public class BlockSiren extends BlockAbstractRotatingContainer {
 			return AABB_FULL;
 		}
 		if (isIndustrial) {
-			switch (blockState.getValue(BlockProperties.FACING)) {
-			case DOWN : return AABB_INDUSTRIAL_DOWN;
-			case UP   : return AABB_INDUSTRIAL_UP;
-			case NORTH: return AABB_INDUSTRIAL_NORTH;
-			case SOUTH: return AABB_INDUSTRIAL_SOUTH;
-			case WEST : return AABB_INDUSTRIAL_WEST;
-			case EAST : return AABB_INDUSTRIAL_EAST;
+			switch (blockState.getValue(BlockProperties.HORIZONTAL_SPINNING)) {
+			case DOWN_NORTH : return AABB_INDUSTRIAL_DOWN_NORTH;
+			case DOWN_SOUTH : return AABB_INDUSTRIAL_DOWN_SOUTH;
+			case DOWN_WEST  : return AABB_INDUSTRIAL_DOWN_WEST;
+			case DOWN_EAST  : return AABB_INDUSTRIAL_DOWN_EAST;
+			case UP_NORTH   : return AABB_INDUSTRIAL_UP_NORTH;
+			case UP_SOUTH   : return AABB_INDUSTRIAL_UP_SOUTH;
+			case UP_WEST    : return AABB_INDUSTRIAL_UP_WEST;
+			case UP_EAST    : return AABB_INDUSTRIAL_UP_EAST;
+			case NORTH      : return AABB_INDUSTRIAL_NORTH;
+			case SOUTH      : return AABB_INDUSTRIAL_SOUTH;
+			case WEST       : return AABB_INDUSTRIAL_WEST;
+			case EAST       : return AABB_INDUSTRIAL_EAST;
 			default: return AABB_FULL;
 			}
 		} else {
-			switch (blockState.getValue(BlockProperties.FACING)) {
+			switch (blockState.getValue(BlockProperties.HORIZONTAL_SPINNING).facing) {
 			case DOWN : return AABB_MILITARY_DOWN;
 			case UP   : return AABB_MILITARY_UP;
 			case NORTH: return AABB_MILITARY_NORTH;
@@ -119,7 +131,7 @@ public class BlockSiren extends BlockAbstractRotatingContainer {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isTopSolid(@Nonnull final IBlockState blockState) {
-		final EnumFacing enumFacing = blockState.getValue(BlockProperties.FACING);
+		final EnumFacing enumFacing = blockState.getValue(BlockProperties.HORIZONTAL_SPINNING).facing;
 		return enumFacing == EnumFacing.DOWN;
 	}
 	
@@ -127,7 +139,7 @@ public class BlockSiren extends BlockAbstractRotatingContainer {
 	@Nonnull
 	@Override
 	public BlockFaceShape getBlockFaceShape(@Nonnull final IBlockAccess blockAccess, @Nonnull final IBlockState blockState, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing enumFacing) {
-		final EnumFacing enumFacingState = blockState.getValue(BlockProperties.FACING);
+		final EnumFacing enumFacingState = blockState.getValue(BlockProperties.HORIZONTAL_SPINNING).facing;
 		return enumFacing == enumFacingState.getOpposite() ? BlockFaceShape.CENTER_BIG : BlockFaceShape.UNDEFINED;
 	}
 	
@@ -166,7 +178,7 @@ public class BlockSiren extends BlockAbstractRotatingContainer {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isSideSolid(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing side) {
-		final EnumFacing enumFacing = blockState.getValue(BlockProperties.FACING);
+		final EnumFacing enumFacing = blockState.getValue(BlockProperties.HORIZONTAL_SPINNING).facing;
 		return enumFacing.getOpposite() == side;
 	}
 	
