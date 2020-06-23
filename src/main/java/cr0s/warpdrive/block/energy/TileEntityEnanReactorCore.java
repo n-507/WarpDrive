@@ -378,7 +378,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	}
 	
 	Vector3 getCenter() {
-		assert vCenter != null;
+		finishConstruction();
 		return vCenter;
 	}
 	

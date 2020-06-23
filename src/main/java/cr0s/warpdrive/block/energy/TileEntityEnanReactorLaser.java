@@ -39,7 +39,6 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	// computed properties
 	private Vector3 vLaser;
 	private String reactorSignatureName;
-	private Vector3 vReactorCore;
 	private WeakReference<TileEntityEnanReactorCore> weakReactorCore;
 	
 	public TileEntityEnanReactorLaser() {
@@ -113,11 +112,6 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		// update properties
 		this.reactorFace = reactorFace;
 		this.weakReactorCore = reactorCore != null && reactorFace != ReactorFace.UNKNOWN ? new WeakReference<>(reactorCore) : null;
-		
-		// cache reactor coordinates
-		if (reactorCore != null) {
-			vReactorCore = reactorCore.getCenter();
-		}
 	}
 	
 	@Nullable
@@ -132,7 +126,6 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 			if (tileEntity instanceof TileEntityEnanReactorCore) {
 				reactorCore = (TileEntityEnanReactorCore) tileEntity;
 				weakReactorCore = new WeakReference<>(reactorCore);
-				vReactorCore = reactorCore.getCenter();
 			} else {
 				WarpDrive.logger.error(String.format("%s Invalid TileEntityEnanReactorCore %s: %s",
 				                                     this,
@@ -245,7 +238,13 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 			                                    Commons.format(world, pos), reactorFace.name, energy ));
 		}
 		reactorCore.decreaseInstability(reactorFace, energy);
-		PacketHandler.sendBeamPacket(world, vLaser, vReactorCore, 0.1F, 0.2F, 1.0F, 25, 50, 100);
+		final Vector3 vReactorCore = reactorCore.getCenter();
+		if (vReactorCore == null) {
+			WarpDrive.logger.warn(String.format("ReactorLaser %s on %s side has a core %s with no center defined, can't stabilize %d",
+			                                    Commons.format(world, pos), reactorFace.name, reactorCore, energy ));
+		} else {
+			PacketHandler.sendBeamPacket(world, vLaser, vReactorCore, 0.1F, 0.2F, 1.0F, 25, 50, 100);
+		}
 	}
 	
 	@Nonnull

@@ -93,6 +93,10 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	public void finishConstruction() {
 		if (!isConstructed) {
 			onConstructed();
+			if (Commons.throttleMe("finishConstruction")) {
+				new RuntimeException(String.format("%s Recovered from missing call to onConstructed",
+				                                   this )).printStackTrace(WarpDrive.printStreamWarn);
+			}
 		}
 	}
 	
