@@ -111,11 +111,11 @@ repositories {
         name = "CurseForge"
         url = "https://minecraft.curseforge.com/api/maven/"
     }
-    ivy {
-        name "GalacticraftCore"
-        artifactPattern "https://ci.micdoodle8.com/job/Galacticraft-1.12/${config.Galacticraft_build}/artifact/Forge/build/libs/[module]-[revision].[ext]"
-    }
-    mavenLocal()
+//    ivy {
+//        name "GalacticraftCore"
+//        artifactPattern "https://ci.micdoodle8.com/job/Galacticraft-1.12/${config.Galacticraft_build}/artifact/Forge/build/libs/[module]-[revision].[ext]"
+//    }
+//    mavenLocal()
 }
 
 dependencies {
@@ -137,7 +137,7 @@ dependencies {
     provided "cofh:CoFHCore:${config.CoFHCore_version}:universal"
     provided "cofh:RedstoneFlux:${config.RedstoneFlux_version}:universal"
     provided "codechicken:CodeChickenLib:${config.CodeChickenLib_version}:universal"
-    provided name: "GalacticraftCore", version: "${config.Galacticraft_version}.${config.Galacticraft_build}", ext: "jar"
+    // provided name: "GalacticraftCore", version: "${config.Galacticraft_version}.${config.Galacticraft_build}", ext: "jar"
     // provided "com.builtbroken.icbm-classic:ICBM-classic:${config.ICBMclassic_version}"
     provided curse.resolve("icbm-classic", "${config.ICBMclassic_fileid}")
     provided "li.cil.oc:OpenComputers:${config.OpenComputers_version}"
