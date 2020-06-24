@@ -479,6 +479,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		}
 		
 		double strength = explosion.size;
+		float factorResistance = 1.0F;
 		
 		// Typical size/strength values
 		// Vanilla
@@ -517,6 +518,19 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		// ICBM Classic Conventional/Incendiary/Repulsive grenade
 		// icbm.classic.content.entity.EntityGrenade    3.0 tbc
 		
+		// TechGuns
+		// note: that mod is sharing a Vanilla explosion with the player as exploder, so we don't see the mod itself directly
+		// Rocket                                       5.0
+		// Rocket (High Velocity)                       3.75
+		// Tactical Nuke                                25.0
+		
+		if ( explosion.getClass().equals(Explosion.class)
+		  && strength > WarpDriveConfig.FORCE_FIELD_EXPLOSION_STRENGTH_VANILLA_CAP) {
+			// assuming its TechGuns, we caps it to be in par with ICBM Nuclear which actually simulate the shockwave
+			factorResistance = (float) (strength / WarpDriveConfig.FORCE_FIELD_EXPLOSION_STRENGTH_VANILLA_CAP);
+			strength = Math.min(WarpDriveConfig.FORCE_FIELD_EXPLOSION_STRENGTH_VANILLA_CAP, strength);
+		}
+		
 		if (strength == 0.0D) {// (explosion with no size defined, let's check the explosion itself)
 			final String nameExplosion = explosion.getClass().toString();
 			switch (nameExplosion) {
@@ -536,6 +550,13 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 		                                       blockPos.getY() + 0.5D - vExplosion.y,
 		                                       blockPos.getZ() + 0.5D - vExplosion.z );
 		final double magnitude = Math.max(1.0D, vDirection.getMagnitude());
+		if (magnitude > strength) {
+			if (isFirstHit) {
+				WarpDrive.logger.error(String.format("Blocking out of range explosion instance %s %s at %.1f m",
+				                                     vExplosion, explosion, magnitude ));
+			}
+			return Float.MAX_VALUE;
+		}
 		if (magnitude != 0) {// normalize
 			vDirection.scale(1 / magnitude);
 		}
@@ -553,7 +574,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 			                                    vExplosion,
 			                                    strength, magnitude, damageLevel, damageLeft));
 		}
-		return super.getExplosionResistance(world, blockPos, exploder, explosion);
+		return factorResistance * super.getExplosionResistance(world, blockPos, exploder, explosion);
 	}
 	
 	@Override

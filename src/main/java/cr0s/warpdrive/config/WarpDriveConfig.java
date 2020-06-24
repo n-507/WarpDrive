@@ -548,10 +548,11 @@ public class WarpDriveConfig {
 	public static float[]          ENAN_REACTOR_EXPLOSION_STRENGTH_MIN_BY_TIER = { 4.0F, 4.0F, 5.0F, 6.0F };
 	public static float[]          ENAN_REACTOR_EXPLOSION_STRENGTH_MAX_BY_TIER = { 7.0F, 7.0F, 9.0F, 11.0F };
 	
-	// Enantiomorphic power reactor
+	// Force field setup
 	public static int[]            FORCE_FIELD_PROJECTOR_MAX_ENERGY_STORED_BY_TIER = { 20000000, 30000, 90000, 150000 }; // 30000 * (1 + 2 * tier)
 	public static double           FORCE_FIELD_PROJECTOR_EXPLOSION_SCALE = 1000.0D;
 	public static double           FORCE_FIELD_PROJECTOR_MAX_LASER_REQUIRED = 10.0D;
+	public static double           FORCE_FIELD_EXPLOSION_STRENGTH_VANILLA_CAP = 15.0D;
 	
 	// Subspace capacitor
 	public static int[]            CAPACITOR_MAX_ENERGY_STORED_BY_TIER = { 20000000, 800000, 4000000, 20000000 };
@@ -1354,6 +1355,11 @@ public class WarpDriveConfig {
 		FORCE_FIELD_PROJECTOR_MAX_LASER_REQUIRED = Commons.clamp(1.0D, 1000.0D,
 				config.get("force_field", "projector_max_laser_required", FORCE_FIELD_PROJECTOR_MAX_LASER_REQUIRED,
 				           "Number of maxed out laser cannons required to break a superior force field.").getDouble(FORCE_FIELD_PROJECTOR_MAX_LASER_REQUIRED));
+		
+		FORCE_FIELD_EXPLOSION_STRENGTH_VANILLA_CAP = Commons.clamp(3.0D, 1000.0D,
+				config.get("force_field", "explosion_strength_vanilla_cap", FORCE_FIELD_EXPLOSION_STRENGTH_VANILLA_CAP,
+		                   "Maximum strength for vanilla explosion object used by simple explosives like TechGuns rockets.").getDouble(FORCE_FIELD_EXPLOSION_STRENGTH_VANILLA_CAP));
+		
 		
 		// Subspace capacitor
 		CAPACITOR_MAX_ENERGY_STORED_BY_TIER = config.get("capacitor", "max_energy_stored_by_tier", CAPACITOR_MAX_ENERGY_STORED_BY_TIER, "Maximum energy stored for each subspace capacitor tier").getIntList();
