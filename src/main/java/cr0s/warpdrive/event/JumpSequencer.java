@@ -1251,12 +1251,6 @@ public class JumpSequencer extends AbstractSequencer {
 					}
 				}
 			}
-			
-			// remove item drops and such
-			final WarpDriveText reason = new WarpDriveText();
-			if (!ship.removeEntities(reason)) {
-				WarpDrive.logger.error(reason.getUnformattedText());
-			}
 		}
 		
 		LocalProfiler.stop();
@@ -1321,6 +1315,13 @@ public class JumpSequencer extends AbstractSequencer {
 			
 			actualIndexInShip++;
 		}
+		
+		// remove item drops and such
+		final WarpDriveText reason = new WarpDriveText();
+		if (!ship.removeEntities(reason)) {
+			WarpDrive.logger.error(reason.getUnformattedText());
+		}
+		
 		LocalProfiler.stop();
 	}
 	

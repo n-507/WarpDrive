@@ -3,6 +3,8 @@ package cr0s.warpdrive.compat;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.common.blocks.BlockIEMultiblock;
+import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
@@ -75,7 +77,11 @@ public class CompatImmersiveEngineering implements IBlockTransformer {
 	@Override
 	public void removeExternals(final World world, final int x, final int y, final int z,
 	                            final Block block, final int blockMeta, final TileEntity tileEntity) {
-		// nothing to do
+		// since the mod forcefully drops original blocks, it's better to disassemble the whole structure prior to removal
+		if ( block instanceof BlockIEMultiblock
+		  && tileEntity instanceof TileEntityMultiblockPart ) {
+			((TileEntityMultiblockPart<?>) tileEntity).disassemble();
+		}
 	}
 	
 	/*
