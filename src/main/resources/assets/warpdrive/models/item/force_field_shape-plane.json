@@ -1,6 +1,3 @@
 {
-	"parent": "item/generated",
-	"textures": {
-		"layer0": "warpdrive:items/forcefield/shape-plane"
-	}
+	"parent": "warpdrive:block/forcefield/shape-plane"
 }

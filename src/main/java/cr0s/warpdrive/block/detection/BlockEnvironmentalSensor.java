@@ -1,6 +1,6 @@
 package cr0s.warpdrive.block.detection;
 
-import cr0s.warpdrive.block.BlockAbstractRotatingContainer;
+import cr0s.warpdrive.block.BlockAbstractHorizontalSpinningContainer;
 import cr0s.warpdrive.block.ItemBlockAbstractBase;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnumTier;
@@ -24,14 +24,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockEnvironmentalSensor extends BlockAbstractRotatingContainer {
+public class BlockEnvironmentalSensor extends BlockAbstractHorizontalSpinningContainer {
 	
-	private static final AxisAlignedBB AABB_DOWN   = new AxisAlignedBB(0.000D, 0.625D, 0.000D, 1.000D, 1.000D, 1.000D);
-	private static final AxisAlignedBB AABB_UP     = new AxisAlignedBB(0.000D, 0.000D, 0.000D, 1.000D, 0.375D, 1.000D);
-	private static final AxisAlignedBB AABB_NORTH  = new AxisAlignedBB(0.000D, 0.000D, 0.625D, 1.000D, 1.000D, 1.000D);
-	private static final AxisAlignedBB AABB_SOUTH  = new AxisAlignedBB(0.000D, 0.000D, 0.000D, 1.000D, 1.000D, 0.375D);
-	private static final AxisAlignedBB AABB_WEST   = new AxisAlignedBB(0.625D, 0.000D, 0.000D, 1.000D, 1.000D, 1.000D);
-	private static final AxisAlignedBB AABB_EAST   = new AxisAlignedBB(0.000D, 0.000D, 0.000D, 0.375D, 1.000D, 1.000D);
+	private static final AxisAlignedBB AABB_DOWN   = new AxisAlignedBB(0.1250D, 0.6875D, 0.1250D, 0.8750D, 1.0000D, 0.8750D);
+	private static final AxisAlignedBB AABB_UP     = new AxisAlignedBB(0.1250D, 0.0000D, 0.1250D, 0.8750D, 0.3125D, 0.8750D);
+	private static final AxisAlignedBB AABB_NORTH  = new AxisAlignedBB(0.1250D, 0.1250D, 0.6875D, 0.8750D, 0.8750D, 1.0000D);
+	private static final AxisAlignedBB AABB_SOUTH  = new AxisAlignedBB(0.1250D, 0.1250D, 0.0000D, 0.8750D, 0.8750D, 0.3125D);
+	private static final AxisAlignedBB AABB_WEST   = new AxisAlignedBB(0.6875D, 0.1250D, 0.1250D, 1.0000D, 0.8750D, 0.8750D);
+	private static final AxisAlignedBB AABB_EAST   = new AxisAlignedBB(0.0000D, 0.1250D, 0.1250D, 0.3125D, 0.8750D, 0.8750D);
 	private static final AxisAlignedBB AABB_FULL   = FULL_BLOCK_AABB;
 	
 	public BlockEnvironmentalSensor(final String registryName, final EnumTier enumTier) {
@@ -44,16 +44,6 @@ public class BlockEnvironmentalSensor extends BlockAbstractRotatingContainer {
 	@Override
 	public TileEntity createNewTileEntity(@Nonnull final World world, final int metadata) {
 		return new TileEntityEnvironmentalSensor();
-	}
-	
-	@SuppressWarnings("deprecation")
-	@Override
-	public int getLightOpacity(@Nonnull final IBlockState blockState) {
-		final EnumFacing enumFacing = blockState.getValue(BlockProperties.FACING);
-		if (enumFacing.getYOffset() != 0 ) {
-			return 255;
-		}
-		return 0;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -74,7 +64,7 @@ public class BlockEnvironmentalSensor extends BlockAbstractRotatingContainer {
 		if (blockState == null) {
 			return AABB_FULL;
 		}
-		switch (blockState.getValue(BlockProperties.FACING)) {
+		switch (blockState.getValue(BlockProperties.HORIZONTAL_SPINNING).facing) {
 		case DOWN : return AABB_DOWN;
 		case UP   : return AABB_UP;
 		case NORTH: return AABB_NORTH;
@@ -88,7 +78,7 @@ public class BlockEnvironmentalSensor extends BlockAbstractRotatingContainer {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isTopSolid(@Nonnull final IBlockState blockState) {
-		final EnumFacing enumFacing = blockState.getValue(BlockProperties.FACING);
+		final EnumFacing enumFacing = blockState.getValue(BlockProperties.HORIZONTAL_SPINNING).facing;
 		return enumFacing == EnumFacing.DOWN;
 	}
 	
@@ -96,8 +86,8 @@ public class BlockEnvironmentalSensor extends BlockAbstractRotatingContainer {
 	@Nonnull
 	@Override
 	public BlockFaceShape getBlockFaceShape(@Nonnull final IBlockAccess blockAccess, @Nonnull final IBlockState blockState, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing enumFacing) {
-		final EnumFacing enumFacingState = blockState.getValue(BlockProperties.FACING);
-		return enumFacing == enumFacingState.getOpposite() ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
+		final EnumFacing enumFacingState = blockState.getValue(BlockProperties.HORIZONTAL_SPINNING).facing;
+		return enumFacing == enumFacingState.getOpposite() ? BlockFaceShape.CENTER_BIG : BlockFaceShape.UNDEFINED;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -128,15 +118,14 @@ public class BlockEnvironmentalSensor extends BlockAbstractRotatingContainer {
 	}
 	
 	@Override
-	public boolean doesSideBlockRendering(@Nonnull final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos, final EnumFacing side) {
-		final EnumFacing enumFacing = blockState.getValue(BlockProperties.FACING);
-		return enumFacing.getOpposite() == side;
+	public boolean doesSideBlockRendering(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing side) {
+		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isSideSolid(@Nonnull final IBlockState blockState, @Nonnull final IBlockAccess blockAccess, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing side) {
-		final EnumFacing enumFacing = blockState.getValue(BlockProperties.FACING);
+		final EnumFacing enumFacing = blockState.getValue(BlockProperties.HORIZONTAL_SPINNING).facing;
 		return enumFacing.getOpposite() == side;
 	}
 	

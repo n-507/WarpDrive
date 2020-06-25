@@ -12,7 +12,6 @@ import cr0s.warpdrive.event.ClientHandler;
 import cr0s.warpdrive.event.ModelBakeEventHandler;
 import cr0s.warpdrive.event.TooltipHandler;
 import cr0s.warpdrive.render.ClientCameraHandler;
-import cr0s.warpdrive.render.CustomModelLoaderProjector;
 import cr0s.warpdrive.render.RenderEntityNPC;
 import cr0s.warpdrive.render.RenderEntityOfflineAvatar;
 import cr0s.warpdrive.render.RenderEntityParticleBunch;
@@ -38,7 +37,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -57,7 +55,6 @@ public class ClientProxy extends CommonProxy {
 		
 		OBJLoader.INSTANCE.addDomain(WarpDrive.MODID);
 		
-		ModelLoaderRegistry.registerLoader(CustomModelLoaderProjector.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(ModelBakeEventHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(SpriteManager.INSTANCE);
 		

@@ -1,0 +1,65 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"texture": "warpdrive:items/forcefield/upgrade-none"
+	},
+	"elements": [
+		{
+			"name": "base",
+			"from": [3, 5, 0],
+			"to": [13, 8, 6],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 9, 11.5]},
+			"faces": {
+				"north": {"uv": [0, 10, 10, 13], "texture": "#icon"},
+				"east": {"uv": [10, 3, 16, 6], "texture": "#texture"},
+				"south": {"uv": [0, 12, 10, 15], "texture": "#texture"},
+				"west": {"uv": [10, 0, 16, 3], "texture": "#texture"},
+				"up": {"uv": [0, 0, 10, 6], "texture": "#texture"},
+				"down": {"uv": [0, 6, 10, 12], "texture": "#texture"}
+			}
+		},
+		{
+			"name": "icon",
+			"from": [5.5, 8.025, 0.5],
+			"to": [10.5, 8.025, 5.5],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 9, 11.5]},
+			"faces": {
+				"up": {"uv": [10, 10, 0, 0], "texture": "#icon"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 137, 0],
+			"translation": [2.75, 4.25, 0],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 137, 0],
+			"translation": [2.75, 4.25, 0],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"firstperson_righthand": {
+			"rotation": [30.5, 179.25, -32],
+			"translation": [5, 2, -10.75]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, -177, -13.5],
+			"translation": [4.75, -0.25, -12]
+		},
+		"ground": {
+			"translation": [0, 0, 2.5],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"gui": {
+			"rotation": [63, -154, 0],
+			"translation": [-2.5, 5.5, 0],
+			"scale": [1.2, 1.2, 1.2]
+		},
+		"fixed": {
+			"rotation": [-90, 0, 0],
+			"translation": [0, 5, -2.5],
+			"scale": [1.25, 1.25, 1.25]
+		}
+	}
+}

@@ -1,20 +1,35 @@
 {
-	"forge_marker": 1,
+    "forge_marker": 1,
+	"defaults": {
+		"transform": "forge:default-block"
+	},
 	"variants": {
-		"inventory": { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_industrial.superior"    } },
+		"inventory"                       : { "model": "warpdrive:detection/siren_industrial.superior"                     },
 		
-		"active=false,facing=down" : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_industrial.superior"    } },
-		"active=false,facing=up"   : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_industrial.superior"    } },
-		"active=false,facing=north": { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_industrial.superior"    } },
-		"active=false,facing=south": { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_industrial.superior"    } },
-		"active=false,facing=east" : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_industrial.superior"    } },
-		"active=false,facing=west" : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_industrial.superior"    } },
+		"active=false,spinning=down_north": { "model": "warpdrive:detection/siren_industrial.superior", "x": 180, "y": 180 },
+		"active=false,spinning=down_south": { "model": "warpdrive:detection/siren_industrial.superior", "x": 180           },
+		"active=false,spinning=down_east" : { "model": "warpdrive:detection/siren_industrial.superior", "x": 180, "y": 270 },
+		"active=false,spinning=down_west" : { "model": "warpdrive:detection/siren_industrial.superior", "x": 180, "y":  90 },
+		"active=false,spinning=up_north"  : { "model": "warpdrive:detection/siren_industrial.superior",           "y": 180 },
+		"active=false,spinning=up_south"  : { "model": "warpdrive:detection/siren_industrial.superior"                     },
+		"active=false,spinning=up_east"   : { "model": "warpdrive:detection/siren_industrial.superior",           "y": 270 },
+		"active=false,spinning=up_west"   : { "model": "warpdrive:detection/siren_industrial.superior",           "y":  90 },
+		"active=false,spinning=north"     : { "model": "warpdrive:detection/siren_industrial.superior", "x":  90           },
+		"active=false,spinning=south"     : { "model": "warpdrive:detection/siren_industrial.superior", "x":  90, "y": 180 },
+		"active=false,spinning=west"      : { "model": "warpdrive:detection/siren_industrial.superior", "x":  90, "y": 270 },
+		"active=false,spinning=east"      : { "model": "warpdrive:detection/siren_industrial.superior", "x":  90, "y":  90 },
 		
-		"active=true,facing=down"  : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_industrial.superior"    } },
-		"active=true,facing=up"    : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_industrial.superior"    } },
-		"active=true,facing=north" : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_industrial.superior"    } },
-		"active=true,facing=south" : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_industrial.superior"    } },
-		"active=true,facing=east"  : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_industrial.superior"    } },
-		"active=true,facing=west"  : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_industrial.superior"    } }
+		"active=true,spinning=down_north" : { "model": "warpdrive:detection/siren_industrial.superior", "x": 180, "y": 180 },
+		"active=true,spinning=down_south" : { "model": "warpdrive:detection/siren_industrial.superior", "x": 180           },
+		"active=true,spinning=down_east"  : { "model": "warpdrive:detection/siren_industrial.superior", "x": 180, "y": 270 },
+		"active=true,spinning=down_west"  : { "model": "warpdrive:detection/siren_industrial.superior", "x": 180, "y":  90 },
+		"active=true,spinning=up_north"   : { "model": "warpdrive:detection/siren_industrial.superior",           "y": 180 },
+		"active=true,spinning=up_south"   : { "model": "warpdrive:detection/siren_industrial.superior"                     },
+		"active=true,spinning=up_east"    : { "model": "warpdrive:detection/siren_industrial.superior",           "y": 270 },
+		"active=true,spinning=up_west"    : { "model": "warpdrive:detection/siren_industrial.superior",           "y":  90 },
+		"active=true,spinning=north"      : { "model": "warpdrive:detection/siren_industrial.superior", "x":  90           },
+		"active=true,spinning=south"      : { "model": "warpdrive:detection/siren_industrial.superior", "x":  90, "y": 180 },
+		"active=true,spinning=west"       : { "model": "warpdrive:detection/siren_industrial.superior", "x":  90, "y": 270 },
+		"active=true,spinning=east"       : { "model": "warpdrive:detection/siren_industrial.superior", "x":  90, "y":  90 }
 	}
 }

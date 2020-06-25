@@ -3,7 +3,7 @@ package cr0s.warpdrive.block.movement;
 import cr0s.warpdrive.CommonProxy;
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.api.WarpDriveText;
-import cr0s.warpdrive.block.BlockAbstractRotatingContainer;
+import cr0s.warpdrive.block.BlockAbstractContainer;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnumComponentType;
@@ -17,8 +17,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,29 +34,44 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-public class BlockShipCore extends BlockAbstractRotatingContainer {
+public class BlockShipCore extends BlockAbstractContainer {
 	
 	public BlockShipCore(final String registryName, final EnumTier enumTier) {
 		super(registryName, enumTier, Material.IRON);
 		
 		setTranslationKey("warpdrive.movement.ship_core." + enumTier.getName());
-		ignoreFacingOnPlacement = true;
+		
+		setDefaultState(getDefaultState()
+				                .withProperty(BlockProperties.ACTIVE, false)
+				                .withProperty(BlockProperties.FACING_HORIZONTAL, EnumFacing.NORTH)
+		               );
+	}
+	
+	@Nonnull
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, BlockProperties.ACTIVE, BlockProperties.FACING_HORIZONTAL);
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Nonnull
+	@Override
+	public IBlockState getStateFromMeta(final int metadata) {
+		return getDefaultState()
+				       .withProperty(BlockProperties.ACTIVE, (metadata & 0x8) != 0)
+				       .withProperty(BlockProperties.FACING_HORIZONTAL, EnumFacing.byIndex(Commons.clamp(2, 5, metadata & 0x7)));
+	}
+	
+	@Override
+	public int getMetaFromState(@Nonnull final IBlockState blockState) {
+		return (blockState.getValue(BlockProperties.ACTIVE) ? 0x8 : 0x0)
+		     | (blockState.getValue(BlockProperties.FACING_HORIZONTAL).getIndex());
 	}
 	
 	@Nonnull
 	@Override
 	public TileEntity createNewTileEntity(@Nonnull final World world, final int metadata) {
 		return new TileEntityShipCore();
-	}
-	
-	@Nonnull
-	@Override
-	public IBlockState getStateForPlacement(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing facing,
-	                                        final float hitX, final float hitY, final float hitZ, final int metadata,
-	                                        @Nonnull final EntityLivingBase entityLivingBase, @Nonnull final EnumHand enumHand) {
-		final IBlockState blockState = super.getStateForPlacement(world, blockPos, facing, hitX, hitY, hitZ, metadata, entityLivingBase, enumHand);
-		final EnumFacing enumFacing = Commons.getHorizontalDirectionFromEntity(entityLivingBase).getOpposite();
-		return blockState.withProperty(BlockProperties.FACING, enumFacing);
 	}
 	
 	@Override

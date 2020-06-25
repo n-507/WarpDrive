@@ -234,7 +234,7 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 			return blockState.getBlock().getMetaFromState(blockState)
 				!= blockStateSide.getBlock().getMetaFromState(blockStateSide);
 		}
-		return !blockAccess.isSideSolid(blockPosSide, opposite, false);
+		return !blockStateSide.doesSideBlockRendering(blockAccess, blockPosSide, opposite);
 	}
 	
 	protected TileEntityForceFieldProjector getProjector(@Nonnull final World world, @Nonnull final BlockPos blockPos,

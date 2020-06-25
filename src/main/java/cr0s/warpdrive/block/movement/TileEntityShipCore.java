@@ -137,7 +137,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		super.onConstructed();
 		
 		if (world != null) {// skip if we're in item form
-			facing = world.getBlockState(pos).getValue(BlockProperties.FACING);
+			facing = world.getBlockState(pos).getValue(BlockProperties.FACING_HORIZONTAL);
 		}
 		
 		energy_setParameters(WarpDriveConfig.SHIP_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()],

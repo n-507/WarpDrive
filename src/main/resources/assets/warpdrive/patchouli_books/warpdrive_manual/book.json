@@ -4,7 +4,7 @@
 	"book_texture": "warpdrive:textures/gui/patchouli/book.png",
 	"filler_texture": "warpdrive:textures/gui/patchouli/page_filler.png",
 	"crafting_texture": "warpdrive:textures/gui/patchouli/crafting.png",
-	"model": "patchouli:book_blue",
+	"model": "warpdrive:book",
 	"version": 1,
 	"creative_tab": "warpdrive.main"
 }

@@ -1,6 +1,6 @@
 {
-	"parent": "item/handheld",
+	"parent": "warpdrive:item/tool/tuning_fork",
 	"textures": {
-		"layer0": "warpdrive:items/tool/tuning_fork-green"
+		"wool": "minecraft:blocks/wool_colored_green"
 	}
 }

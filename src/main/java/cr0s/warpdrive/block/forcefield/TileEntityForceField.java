@@ -149,7 +149,7 @@ public class TileEntityForceField extends TileEntity {
 					return tileEntityForceFieldProjector;
 					
 				} else if (tileEntityForceFieldProjector.isPartOfForceField(new VectorI(this))) {
-					if (tileEntityForceFieldProjector.isOn()) {
+					if (tileEntityForceFieldProjector.isActive()) {
 						return tileEntityForceFieldProjector;
 					} else {
 						// projector is disabled or out of power

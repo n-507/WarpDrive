@@ -1,20 +1,32 @@
 {
 	"forge_marker": 1,
 	"variants": {
-		"inventory": { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.superior"    } },
+		"inventory"                       : { "model": "warpdrive:detection/siren_military.superior-vertical"             },
 		
-		"active=false,facing=down" : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.superior"    } },
-		"active=false,facing=up"   : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.superior"    } },
-		"active=false,facing=north": { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.superior"    } },
-		"active=false,facing=south": { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.superior"    } },
-		"active=false,facing=east" : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.superior"    } },
-		"active=false,facing=west" : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.superior"    } },
+		"active=false,spinning=down_north": { "model": "warpdrive:detection/siren_military.superior-vertical"  , "x": 180 },
+		"active=false,spinning=down_south": { "model": "warpdrive:detection/siren_military.superior-vertical"  , "x": 180 },
+		"active=false,spinning=down_east" : { "model": "warpdrive:detection/siren_military.superior-vertical"  , "x": 180 },
+		"active=false,spinning=down_west" : { "model": "warpdrive:detection/siren_military.superior-vertical"  , "x": 180 },
+		"active=false,spinning=up_north"  : { "model": "warpdrive:detection/siren_military.superior-vertical"             },
+		"active=false,spinning=up_south"  : { "model": "warpdrive:detection/siren_military.superior-vertical"             },
+		"active=false,spinning=up_east"   : { "model": "warpdrive:detection/siren_military.superior-vertical"             },
+		"active=false,spinning=up_west"   : { "model": "warpdrive:detection/siren_military.superior-vertical"             },
+		"active=false,spinning=north"     : { "model": "warpdrive:detection/siren_military.superior-horizontal"           },
+		"active=false,spinning=south"     : { "model": "warpdrive:detection/siren_military.superior-horizontal", "y": 180 },
+		"active=false,spinning=west"      : { "model": "warpdrive:detection/siren_military.superior-horizontal", "y": 270 },
+		"active=false,spinning=east"      : { "model": "warpdrive:detection/siren_military.superior-horizontal", "y":  90 },
 		
-		"active=true,facing=down"  : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.superior"    } },
-		"active=true,facing=up"    : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.superior"    } },
-		"active=true,facing=north" : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.superior"    } },
-		"active=true,facing=south" : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.superior"    } },
-		"active=true,facing=east"  : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.superior"    } },
-		"active=true,facing=west"  : { "model": "minecraft:cube_all", "textures": { "all" : "warpdrive:blocks/detection/siren_military.superior"    } }
+		"active=true,spinning=down_north" : { "model": "warpdrive:detection/siren_military.superior-vertical"  , "x": 180 },
+		"active=true,spinning=down_south" : { "model": "warpdrive:detection/siren_military.superior-vertical"  , "x": 180 },
+		"active=true,spinning=down_east"  : { "model": "warpdrive:detection/siren_military.superior-vertical"  , "x": 180 },
+		"active=true,spinning=down_west"  : { "model": "warpdrive:detection/siren_military.superior-vertical"  , "x": 180 },
+		"active=true,spinning=up_north"   : { "model": "warpdrive:detection/siren_military.superior-vertical"             },
+		"active=true,spinning=up_south"   : { "model": "warpdrive:detection/siren_military.superior-vertical"             },
+		"active=true,spinning=up_east"    : { "model": "warpdrive:detection/siren_military.superior-vertical"             },
+		"active=true,spinning=up_west"    : { "model": "warpdrive:detection/siren_military.superior-vertical"             },
+		"active=true,spinning=north"      : { "model": "warpdrive:detection/siren_military.superior-horizontal"           },
+		"active=true,spinning=south"      : { "model": "warpdrive:detection/siren_military.superior-horizontal", "y": 180 },
+		"active=true,spinning=west"       : { "model": "warpdrive:detection/siren_military.superior-horizontal", "y": 270 },
+		"active=true,spinning=east"       : { "model": "warpdrive:detection/siren_military.superior-horizontal", "y":  90 }
 	}
 }
