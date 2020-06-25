@@ -18,6 +18,7 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObject;
 import cr0s.warpdrive.data.EnumJumpSequencerState;
 import cr0s.warpdrive.data.EnumShipMovementType;
+import cr0s.warpdrive.data.GlobalRegion;
 import cr0s.warpdrive.data.JumpBlock;
 import cr0s.warpdrive.data.JumpShip;
 import cr0s.warpdrive.data.MovingEntity;
@@ -81,6 +82,7 @@ public class JumpSequencer extends AbstractSequencer {
 	
 	protected final World worldSource;
 	private Ticket ticketSourcePosition;
+	private GlobalRegion globalRegion;
 	protected World worldTarget;
 	private Ticket ticketTargetAnchor;
 	private Ticket ticketTargetPosition;
@@ -194,6 +196,10 @@ public class JumpSequencer extends AbstractSequencer {
 		
 		isEnabled = false;
 		
+		if (globalRegion != null) {
+			removeLock(globalRegion);
+		}
+		
 		final String formattedText = reason == null ? "" : reason.getFormattedText();
 		if (WarpDriveConfig.LOGGING_JUMP) {
 			if (formattedText.isEmpty()) {
@@ -258,6 +264,9 @@ public class JumpSequencer extends AbstractSequencer {
 			
 		case LOAD_SOURCE_CHUNKS:
 			state_chunkLoadingSource();
+			if (ship.shipCore != null) {
+				globalRegion = addLock(ship.shipCore);
+			}
 			if (isEnabled) {
 				actualIndexInShip = 0;
 				enumJumpSequencerState = EnumJumpSequencerState.SAVE_TO_MEMORY;
