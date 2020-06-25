@@ -1,14 +1,36 @@
 {
 	"forge_marker": 1,
 	"defaults": {
-		"model": "minecraft:cube_all",
+		"model": "minecraft:cube_directional",
 		"textures": {
-			"all": "warpdrive:blocks/detection/camera-side"
+			"particle": "warpdrive:blocks/detection/monitor-side",
+			"down"    : "warpdrive:blocks/detection/monitor-side",
+			"up"      : "warpdrive:blocks/detection/monitor-side",
+			"north"   : "warpdrive:blocks/detection/camera-active",
+			"south"   : "warpdrive:blocks/detection/monitor-side",
+			"west"    : "warpdrive:blocks/detection/monitor-side",
+			"east"    : "warpdrive:blocks/detection/monitor-side"
 		},
 		"transform": "forge:default-block"
 	},
 	"variants": {
 		"normal": [{}],
-		"inventory": [{}]
+		"inventory": [{}],
+		"active": {
+			"false": {
+				"textures": {
+					"north": "warpdrive:blocks/detection/camera-inactive"
+				}
+			},
+			"true": { }
+		},
+		"facing": {
+			"north": {},
+			"south": { "y": 180 },
+			"west" : { "y": 270 },
+			"east" : { "y": 90 },
+			"up"   : { "x": -90 },
+			"down" : { "x": 90 }
+		}
 	}
 }
