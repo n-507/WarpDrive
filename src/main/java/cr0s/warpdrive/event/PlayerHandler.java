@@ -2,7 +2,6 @@ package cr0s.warpdrive.event;
 
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBlockBase;
-import cr0s.warpdrive.block.forcefield.BlockAbstractForceField;
 import cr0s.warpdrive.block.forcefield.BlockForceField;
 import cr0s.warpdrive.block.movement.TileEntityShipCore;
 import cr0s.warpdrive.config.WarpDriveConfig;
@@ -15,7 +14,6 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 

@@ -157,7 +157,7 @@ public class EntityFXEnergizing extends AbstractEntityFX {
 		
 		// start drawing
 		final Tessellator tessellator = Tessellator.getInstance();
-		vertexBuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+		vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 		
 		// loop covering 45 deg, using symmetry to cover a full circle
 		final double angleMax = Math.PI / 4.0D;

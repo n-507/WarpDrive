@@ -304,12 +304,13 @@ public class CelestialObject implements Cloneable, IStringSerializable, ICelesti
 		} else {
 			final Element elementSkybox = listSkyboxes.get(0);
 			final String locationSkybox = String.format("Celestial object %s skybox 1/1", id);
-			backgroundColor = getColorData(locationSkybox, elementSkybox, "backgroundColor" , 0.0F, 0.0F, 0.0F );
-			baseStarBrightness =  getFloat(locationSkybox, elementSkybox, "starBrightnessBase", 0.0F);
-			vanillaStarBrightness =  getFloat(locationSkybox, elementSkybox, "starBrightnessVanilla", 1.0F);
+			backgroundColor         = getColorData(locationSkybox, elementSkybox, "backgroundColor" , 0.0F, 0.0F, 0.0F );
+			boxBrightness           = getFloat(locationSkybox, elementSkybox, "boxBrightness", 1.0F);
+			baseStarBrightness      = getFloat(locationSkybox, elementSkybox, "starBrightnessBase", 0.0F);
+			vanillaStarBrightness   = getFloat(locationSkybox, elementSkybox, "starBrightnessVanilla", 1.0F);
 			opacityCelestialObjects = getFloat(locationSkybox, elementSkybox, "celestialObjectOpacity", 1.0F);
-			colorFog  = getColorData(locationSkybox, elementSkybox, "fogColor" , 0.7529412F, 0.84705883F, 1.0F );
-			factorFog = getColorData(locationSkybox, elementSkybox, "fogFactor", 0.94F     , 0.94F      , 0.91F);
+			colorFog                = getColorData(locationSkybox, elementSkybox, "fogColor" , 0.7529412F, 0.84705883F, 1.0F );
+			factorFog               = getColorData(locationSkybox, elementSkybox, "fogFactor", 0.94F     , 0.94F      , 0.91F);
 		}
 		
 		// get optional render element(s)

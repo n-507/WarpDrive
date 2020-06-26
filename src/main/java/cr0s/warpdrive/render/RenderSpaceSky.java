@@ -32,25 +32,31 @@ public class RenderSpaceSky extends IRenderHandler {
 	
 	private static RenderSpaceSky INSTANCE = null;
 	
-	public static final int callListStars = GLAllocation.generateDisplayLists(3);
+	// player distance for transitions
+	private static final double PLANET_FAR = 1786.0D;
+	private static final double PLANET_APPROACHING = 512.0D;
+	private static final double PLANET_ORBIT = 128.0D;
+	
+	private static final int callListRoot = GLAllocation.generateDisplayLists(3);
+	private static final int callListStars = callListRoot;
 	private static float starBrightness = 0.0F;
 	private static final float ALPHA_TOLERANCE = 1.0F / 256.0F;
 	
-	public static final int callListUpperSkyBox = callListStars + 1;
-	public static final int callListBottomSkyBox = callListStars + 2;
+	private static final int callListUpperPlane = callListRoot + 1;
+	private static final int callListLowerPlane = callListRoot + 2;
 	
 	static {
-		// pre-generate skyboxes
+		// pre-generate sky objects
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder vertexBuffer = tessellator.getBuffer();
 		
-		GlStateManager.glNewList(callListUpperSkyBox, GL11.GL_COMPILE);
+		GlStateManager.glNewList(callListUpperPlane, GL11.GL_COMPILE);
 		final int stepSize = 64;
 		final int nbSteps = 256 / stepSize + 2;
-		float y = 16F;
+		float y = 16.0F;
 		for (int x = -stepSize * nbSteps; x <= stepSize * nbSteps; x += stepSize) {
 			for (int z = -stepSize * nbSteps; z <= stepSize * nbSteps; z += stepSize) {
-				vertexBuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+				vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 				vertexBuffer.pos(x           , y, z           ).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
 				vertexBuffer.pos(x + stepSize, y, z           ).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
 				vertexBuffer.pos(x + stepSize, y, z + stepSize).color(0.0F, 0.0F, 0.0F, 1.0F).endVertex();
@@ -60,9 +66,9 @@ public class RenderSpaceSky extends IRenderHandler {
 		}
 		GlStateManager.glEndList();
 		
-		GlStateManager.glNewList(callListBottomSkyBox, GL11.GL_COMPILE);
-		y = -16F;
-		vertexBuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+		GlStateManager.glNewList(callListLowerPlane, GL11.GL_COMPILE);
+		y = -16.0F;
+		vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 		for (int x = -stepSize * nbSteps; x <= stepSize * nbSteps; x += stepSize) {
 			for (int z = -stepSize * nbSteps; z <= stepSize * nbSteps; z += stepSize) {
 				vertexBuffer.pos(x + stepSize, y, z           ).color(0.30F, 0.30F, 0.30F, 1.00F).endVertex();
@@ -89,30 +95,28 @@ public class RenderSpaceSky extends IRenderHandler {
 				: CelestialObjectManager.get(world, (int) vec3Player.x, (int) vec3Player.z);
 		
 		final Tessellator tessellator = Tessellator.getInstance();
-		// final BufferBuilder vertexBuffer = tessellator.getBuffer();
 		
 		GlStateManager.disableTexture2D();
 		GlStateManager.depthMask(false);
 		
-		// draw upper skybox
+		// draw upper sky plane
 		/*
 		final Vec3d skyColor = getCustomSkyColor();
 		float skyColorRed   = (float) skyColor.x * (1 - world.getStarBrightness(partialTicks) * 2);
 		float skyColorGreen = (float) skyColor.y * (1 - world.getStarBrightness(partialTicks) * 2);
 		float skyColorBlue  = (float) skyColor.z * (1 - world.getStarBrightness(partialTicks) * 2);
-		float var8;
-
+		
 		if (mc.gameSettings.anaglyph) {
-			final float var6 = (skyColorRed * 30.0F + skyColorGreen * 59.0F + skyColorBlue * 11.0F) / 100.0F;
-			final float var7 = (skyColorRed * 30.0F + skyColorGreen * 70.0F) / 100.0F;
-			var8 = (skyColorRed * 30.0F + skyColorBlue * 70.0F) / 100.0F;
-			skyColorRed = var6;
-			skyColorGreen = var7;
-			skyColorBlue = var8;
+			final float red2   = (skyColorRed * 30.0F + skyColorGreen * 59.0F + skyColorBlue * 11.0F) / 100.0F;
+			final float green2 = (skyColorRed * 30.0F + skyColorGreen * 70.0F) / 100.0F;
+			final float blue2  = (skyColorRed * 30.0F + skyColorBlue * 70.0F) / 100.0F;
+			skyColorRed = red2;
+			skyColorGreen = green2;
+			skyColorBlue = blue2;
 		}
 		
 		// GlStateManager.enableFog();
-		GlStateManager.callList(callListUpperSkyBox);
+		GlStateManager.callList(callListUpperPlane);
 		// GlStateManager.disableFog();
 		/**/
 		
@@ -140,11 +144,12 @@ public class RenderSpaceSky extends IRenderHandler {
 		// Star
 		/*
 		{
-			GlStateManager.pushMatrix();
 			final double starScale = isSpace ? 30.0D : 40.0D;
 			final double starRange = 150.0D;    // max 190
+			final float celestialAngle_rad = 0.3F; // Vanilla is world.getCelestialAngle(partialTicks)
+			GlStateManager.pushMatrix();
 			GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
-			GlStateManager.rotate(0.3F * 360.0F, 1.0F, 0.0F, 0.0F);    // Vanilla is world.getCelestialAngle(partialTicks) * 360.0F
+			GlStateManager.rotate(celestialAngle_rad * 360.0F, 1.0F, 0.0F, 0.0F);
 			
 			final float alpha = isSpace ? 1.0F : 0.3F;
 			Minecraft.getMinecraft().getTextureManager().bindTexture(textureStar);
@@ -155,6 +160,7 @@ public class RenderSpaceSky extends IRenderHandler {
 			vertexBuffer.pos( starScale, starRange,  starScale).tex(1.0D, 1.0D).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
 			vertexBuffer.pos(-starScale, starRange,  starScale).tex(0.0D, 1.0D).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
 			tessellator.draw();
+			
 			GlStateManager.popMatrix();
 		}
 		/**/
@@ -162,10 +168,11 @@ public class RenderSpaceSky extends IRenderHandler {
 		// CelestialObject
 		/*
 		{
-			GlStateManager.pushMatrix();
 			final double planetScale = 10.0D;
 			final double planetRange = 140.0D;
 			final float planetRotation = (float) (world.getSpawnPoint().getZ() - mc.player.posZ) * 0.1F;
+			
+			GlStateManager.pushMatrix();
 			GlStateManager.scale(0.6F, 0.6F, 0.6F);
 			GlStateManager.rotate(planetRotation, 1.0F, 0.0F, 0.0F);
 			GlStateManager.rotate(190F, 1.0F, 0.0F, 0.0F);
@@ -173,7 +180,8 @@ public class RenderSpaceSky extends IRenderHandler {
 			Minecraft.getMinecraft().getTextureManager().bindTexture(texturePlanet);
 			
 			// world.getMoonPhase();
-			vertexBuffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+			final BufferBuilder vertexBuffer = tessellator.getBuffer();
+			vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 			vertexBuffer.pos(-planetScale, planetRange, -planetScale).tex(0, 1).color(1.0F, 0.0F, 1.0F, 1.0F).endVertex();
 			vertexBuffer.pos( planetScale, planetRange, -planetScale).tex(1, 1).color(1.0F, 0.0F, 1.0F, 1.0F).endVertex();
 			vertexBuffer.pos( planetScale, planetRange,  planetScale).tex(1, 0).color(1.0F, 0.0F, 1.0F, 1.0F).endVertex();
@@ -211,13 +219,14 @@ public class RenderSpaceSky extends IRenderHandler {
 		if (playerAltitude < 0.0D) {
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(0.0F, 12.0F, 0.0F);
-			GlStateManager.callList(callListBottomSkyBox);
+			GlStateManager.callList(callListLowerPlane);
 			GlStateManager.popMatrix();
 			var10 = 1.0F;
 			var11 = -((float) (playerAltitude + 65.0D));
 			var12 = -var10;
 			GlStateManager.color(255, 128, 0, 255);
-			vertexBuffer.begin(7, DefaultVertexFormats.POSITION);
+			final BufferBuilder vertexBuffer = tessellator.getBuffer();
+			vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 			vertexBuffer.pos(-var10, var11,  var10).endVertex();
 			vertexBuffer.pos( var10, var11,  var10).endVertex();
 			vertexBuffer.pos( var10, var12,  var10).endVertex();
@@ -242,12 +251,12 @@ public class RenderSpaceSky extends IRenderHandler {
 		}
 		/**/
 		/*
-		// draw bottom skybox relative to horizon
+		// draw lower sky plane relative to horizon
 		GlStateManager.pushMatrix();
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texturePlanet);
 		
 		// GlStateManager.translate(0.0F, (float)(16.0D - playerAltitude), 0.0F);
-		GlStateManager.callList(callListBottomSkyBox);
+		GlStateManager.callList(callListLowerPlane);
 		GlStateManager.popMatrix();
 		/**/
 		
@@ -259,10 +268,6 @@ public class RenderSpaceSky extends IRenderHandler {
 		GlStateManager.enableTexture2D();
 		GlStateManager.depthMask(true);
 	}
-	
-	static final double PLANET_FAR = 1786.0D;
-	static final double PLANET_APPROACHING = 512.0D;
-	static final double PLANET_ORBIT = 128.0D;
 	
 	private static void renderCelestialObject(final Tessellator tessellator, final CelestialObject celestialObject,
 	                                          final float alphaSky, final Vector3 vectorPlayer) {
@@ -372,10 +377,10 @@ public class RenderSpaceSky extends IRenderHandler {
 			if (renderData.texture != null) {
 				GlStateManager.enableTexture2D();
 				Minecraft.getMinecraft().getTextureManager().bindTexture(renderData.resourceLocation);
-				vertexBuffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+				vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 			} else {
 				GlStateManager.disableTexture2D();
-				vertexBuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+				vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 			}
 			if (renderData.isAdditive) {
 				GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE);
@@ -464,7 +469,7 @@ public class RenderSpaceSky extends IRenderHandler {
 			final double sinS = Math.sin(angleS);
 			final double cosS = Math.cos(angleS);
 			
-			vertexBuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+			vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 			for (int indexVertex = 0; indexVertex < 4; indexVertex++) {
 				final double valZero = 0.0D;
 				final double offset1 = ((indexVertex     & 2) - 1) * renderSize;

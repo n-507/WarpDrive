@@ -109,7 +109,7 @@ public class EntityFXDot extends AbstractEntityFX {
 		}
 		
 		// start drawing (done by caller in layers 0 to 3)
-		// vertexBuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+		// vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 		
 		// get brightness factors
 		final int brightnessForRender = getBrightnessForRender(partialTick);

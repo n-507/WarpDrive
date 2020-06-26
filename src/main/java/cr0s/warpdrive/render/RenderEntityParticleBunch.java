@@ -143,7 +143,7 @@ public class RenderEntityParticleBunch extends RenderEntity {
 			GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
 			GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
 			GlStateManager.rotate(random.nextFloat() * 360.0F + cycleRotation * 90F, 0.0F, 0.0F, 1.0F);
-			vertexBuffer.begin(6, DefaultVertexFormats.POSITION_COLOR);
+			vertexBuffer.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_COLOR);
 			final float rayLength = random.nextFloat() * 15.0F + 5.0F + boost *  5.0F;
 			final float rayWidth  = random.nextFloat() *  2.0F + 1.0F + boost *  1.0F;
 			vertexBuffer.pos( 0.0D             ,      0.0D,  0.0D           ).color(redIn, greenIn, blueIn, (int) (190.0F + 64.0F * (1.0F - boost))).endVertex();

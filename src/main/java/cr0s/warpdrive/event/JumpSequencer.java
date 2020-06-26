@@ -82,7 +82,7 @@ public class JumpSequencer extends AbstractSequencer {
 	
 	protected final World worldSource;
 	private Ticket ticketSourcePosition;
-	private GlobalRegion globalRegion;
+	private GlobalRegion globalRegionLock;
 	protected World worldTarget;
 	private Ticket ticketTargetAnchor;
 	private Ticket ticketTargetPosition;
@@ -196,8 +196,9 @@ public class JumpSequencer extends AbstractSequencer {
 		
 		isEnabled = false;
 		
-		if (globalRegion != null) {
-			removeLock(globalRegion);
+		if (globalRegionLock != null) {
+			removeLock(globalRegionLock);
+			globalRegionLock = null;
 		}
 		
 		final String formattedText = reason == null ? "" : reason.getFormattedText();
@@ -265,7 +266,7 @@ public class JumpSequencer extends AbstractSequencer {
 		case LOAD_SOURCE_CHUNKS:
 			state_chunkLoadingSource();
 			if (ship.shipCore != null) {
-				globalRegion = addLock(ship.shipCore);
+				globalRegionLock = addLock(ship.shipCore);
 			}
 			if (isEnabled) {
 				actualIndexInShip = 0;
@@ -1290,15 +1291,15 @@ public class JumpSequencer extends AbstractSequencer {
 			}
 			
 			if (worldSource != null) {
+				final BlockPos blockPos = new BlockPos(jumpBlock.x, jumpBlock.y, jumpBlock.z);
 				if (jumpBlock.hasTileEntity) {
 					if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
 						WarpDrive.logger.info(String.format("Removing tile entity at (%d %d %d)",
 						                                    jumpBlock.x, jumpBlock.y, jumpBlock.z));
 					}
-					worldSource.removeTileEntity(new BlockPos(jumpBlock.x, jumpBlock.y, jumpBlock.z));
+					worldSource.removeTileEntity(blockPos);
 				}
 				try {
-					final BlockPos blockPos = new BlockPos(jumpBlock.x, jumpBlock.y, jumpBlock.z);
 					boolean isRemoved = FastSetBlockState.setBlockStateNoLight(worldSource, blockPos, Blocks.AIR.getDefaultState(), 2);
 					if ( !isRemoved
 					  && worldSource.getBlockState(blockPos) != Blocks.AIR.getDefaultState() ) {

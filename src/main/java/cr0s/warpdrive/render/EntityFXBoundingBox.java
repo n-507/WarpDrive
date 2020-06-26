@@ -111,14 +111,14 @@ public class EntityFXBoundingBox extends Particle {
 		final Tessellator tessellator = Tessellator.getInstance();
 		
 		// x planes
-		vertexBuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+		vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 		vertexBuffer.pos(xMin, yMin, zMin).tex(uv_yMin, uv_zMin).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		vertexBuffer.pos(xMin, yMin, zMax).tex(uv_yMin, uv_zMax).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		vertexBuffer.pos(xMin, yMax, zMax).tex(uv_yMax, uv_zMax).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		vertexBuffer.pos(xMin, yMax, zMin).tex(uv_yMax, uv_zMin).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		tessellator.draw();
 		
-		vertexBuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+		vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 		vertexBuffer.pos(xMax, yMin, zMin).tex( uv_yMin, uv_zMin).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		vertexBuffer.pos(xMax, yMin, zMax).tex( uv_yMin, uv_zMax).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		vertexBuffer.pos(xMax, yMax, zMax).tex( uv_yMax, uv_zMax).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
@@ -126,14 +126,14 @@ public class EntityFXBoundingBox extends Particle {
 		tessellator.draw();
 		
 		// y planes
-		vertexBuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+		vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 		vertexBuffer.pos(xMin, yMin, zMin).tex(uv_xMin, uv_zMin).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		vertexBuffer.pos(xMin, yMin, zMax).tex(uv_xMin, uv_zMax).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		vertexBuffer.pos(xMax, yMin, zMax).tex(uv_xMax, uv_zMax).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		vertexBuffer.pos(xMax, yMin, zMin).tex(uv_xMax, uv_zMin).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		tessellator.draw();
 		
-		vertexBuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+		vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 		vertexBuffer.pos(xMin, yMax, zMin).tex(uv_xMin, uv_zMin).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		vertexBuffer.pos(xMin, yMax, zMax).tex(uv_xMin, uv_zMax).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		vertexBuffer.pos(xMax, yMax, zMax).tex(uv_xMax, uv_zMax).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
@@ -141,14 +141,14 @@ public class EntityFXBoundingBox extends Particle {
 		tessellator.draw();
 		
 		// z planes
-		vertexBuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+		vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 		vertexBuffer.pos(xMin, yMin, zMin).tex(uv_xMin, uv_yMin).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		vertexBuffer.pos(xMin, yMax, zMin).tex(uv_xMin, uv_yMax).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		vertexBuffer.pos(xMax, yMax, zMin).tex(uv_xMax, uv_yMax).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		vertexBuffer.pos(xMax, yMin, zMin).tex(uv_xMax, uv_yMin).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		tessellator.draw();
 		
-		vertexBuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+		vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 		vertexBuffer.pos(xMin, yMin, zMax).tex(uv_xMin, uv_yMin).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		vertexBuffer.pos(xMin, yMax, zMax).tex(uv_xMin, uv_yMax).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
 		vertexBuffer.pos(xMax, yMax, zMax).tex(uv_xMax, uv_yMax).color(particleRed, particleGreen, particleBlue, alpha).lightmap(brightnessHigh, brightnessLow).endVertex();
