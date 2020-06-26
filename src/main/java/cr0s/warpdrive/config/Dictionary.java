@@ -390,6 +390,7 @@ public class Dictionary {
 			config.get("entity_tags", "thaumcraft:taintswarm"                  , "LivingWithoutAir").getString();
 			config.get("entity_tags", "thaumcraft:wisp"                        , "LivingWithoutAir").getString();
 			config.get("entity_tags", "twilightforest.skeleton_druid"          , "LivingWithoutAir").getString();
+			config.get("entity_tags", "warpdrive:entity_offline_avatar"        , "LivingWithoutAir").getString();
 			
 			// *** read actual values
 			final String[] taggedEntitiesName = categoryEntityTags.getValues().keySet().toArray(new String[0]);
