@@ -5,8 +5,11 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.blocks.BlockIEMultiblock;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorRedstone;
 
 import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.FastSetBlockState;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBlockTransformer;
 import cr0s.warpdrive.api.ITransformation;
@@ -19,6 +22,7 @@ import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -81,6 +85,13 @@ public class CompatImmersiveEngineering implements IBlockTransformer {
 		if ( block instanceof BlockIEMultiblock
 		  && tileEntity instanceof TileEntityMultiblockPart ) {
 			((TileEntityMultiblockPart<?>) tileEntity).disassemble();
+		}
+		// same goes with connectors loosing attachment on each others (for example, an MV connector placed on a MV transformer)
+		if ( tileEntity instanceof TileEntityConnectorLV
+		  || tileEntity instanceof TileEntityConnectorRedstone) {
+			final BlockPos blockPos = tileEntity.getPos();
+			world.removeTileEntity(blockPos);
+			FastSetBlockState.setBlockStateNoLight(world, blockPos, Blocks.STONE.getDefaultState(), 2);
 		}
 	}
 	
