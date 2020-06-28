@@ -5,13 +5,11 @@ import cr0s.warpdrive.api.ITransformation;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.BlockAbstractBase;
 import cr0s.warpdrive.block.BlockAbstractContainer;
-import cr0s.warpdrive.block.BlockAbstractRotatingContainer;
 import cr0s.warpdrive.block.breathing.BlockAirFlow;
 import cr0s.warpdrive.block.breathing.BlockAirSource;
-import cr0s.warpdrive.block.decoration.BlockAbstractLamp;
-import cr0s.warpdrive.block.forcefield.BlockForceFieldProjector;
 import cr0s.warpdrive.block.hull.BlockHullSlab;
 import cr0s.warpdrive.config.WarpDriveConfig;
+import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.ChunkData;
 import cr0s.warpdrive.data.StateAir;
 import cr0s.warpdrive.event.ChunkHandler;
@@ -78,8 +76,10 @@ public class CompatWarpDrive implements IBlockTransformer {
 		}
 	}
 	
-	private static final short[] mrotDirection = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
-	private static final short[] mrotHullSlab  = {  0,  1,  5,  4,  2,  3,  6,  7, 11, 10,  8,  9, 12, 13, 15, 14 };
+	//                                                       0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
+	private static final short[] mrotDirection          = {  0,  1,  5,  4,  2,  3,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15 };
+	private static final short[] mrotHorizontalSpinning = {  3,  2,  0,  1,  7,  6,  4,  5, 11, 10,  8,  9, 12, 13, 14, 15 };
+	private static final short[] mrotHullSlab           = {  0,  1,  5,  4,  2,  3,  6,  7, 11, 10,  8,  9, 12, 13, 15, 14 };
 	// cloaking core will refresh itself
 	
 	private byte[] rotate_byteArray(final byte rotationSteps, final byte[] data) {
@@ -167,9 +167,22 @@ public class CompatWarpDrive implements IBlockTransformer {
 		}
 		
 		// Rotating blocks
-		if ( block instanceof BlockAbstractRotatingContainer
-		  || block instanceof BlockAbstractLamp
-		  || block instanceof BlockForceFieldProjector ) {
+		final IBlockState blockState = block.getStateFromMeta(metadata);
+		if (blockState.getProperties().containsKey(BlockProperties.HORIZONTAL_SPINNING)) {
+			switch (rotationSteps) {
+			case 1:
+				return mrotHorizontalSpinning[metadata];
+			case 2:
+				return mrotHorizontalSpinning[mrotHorizontalSpinning[metadata]];
+			case 3:
+				return mrotHorizontalSpinning[mrotHorizontalSpinning[mrotHorizontalSpinning[metadata]]];
+			default:
+				return metadata;
+			}			
+		}
+		
+		if ( blockState.getProperties().containsKey(BlockProperties.FACING)
+		  || blockState.getProperties().containsKey(BlockProperties.FACING_HORIZONTAL) ) {
 			switch (rotationSteps) {
 			case 1:
 				return mrotDirection[metadata & 0x7] | (metadata & 0x8);

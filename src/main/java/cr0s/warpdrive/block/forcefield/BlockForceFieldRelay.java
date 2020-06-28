@@ -61,13 +61,13 @@ public class BlockForceFieldRelay extends BlockAbstractForceField {
 	public IBlockState getStateFromMeta(final int metadata) {
 		return getDefaultState()
 				       .withProperty(BlockProperties.ACTIVE, (metadata & 0x8) != 0)
-				       .withProperty(BlockProperties.FACING_HORIZONTAL, EnumFacing.byIndex(2 + (metadata & 0x3)));
+				       .withProperty(BlockProperties.FACING_HORIZONTAL, EnumFacing.byIndex(Commons.clamp(2, 5, metadata & 0x7)));
 	}
 	
 	@Override
 	public int getMetaFromState(@Nonnull final IBlockState blockState) {
 		return (blockState.getValue(BlockProperties.ACTIVE) ? 0x8 : 0x0)
-		     | ((blockState.getValue(BlockProperties.FACING_HORIZONTAL).getIndex() - 2) & 0x3);
+		     | (blockState.getValue(BlockProperties.FACING_HORIZONTAL).getIndex() & 0x7);
 	}
 	
 	@SuppressWarnings("deprecation")
