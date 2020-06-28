@@ -19,7 +19,6 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -86,6 +85,9 @@ public class RenderSpaceSky extends IRenderHandler {
 		tessellator.draw();
 		GlStateManager.glEndList();
 	}
+	
+	// private final ResourceLocation textureStar = new ResourceLocation("warpdrive:textures/celestial/star_yellow.png");
+	// private final ResourceLocation texturePlanet = new ResourceLocation("warpdrive:textures/celestial/planet_green.png");
 	
 	public static RenderSpaceSky getInstance() {
 		if (INSTANCE == null) {
@@ -156,26 +158,11 @@ public class RenderSpaceSky extends IRenderHandler {
 		
 		// Star
 		/*
-		{
-			final double starScale = isSpace ? 30.0D : 40.0D;
-			final double starRange = 150.0D;    // max 190
-			final float celestialAngle_rad = 0.3F; // Vanilla is world.getCelestialAngle(partialTicks)
-			GlStateManager.pushMatrix();
-			GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
-			GlStateManager.rotate(celestialAngle_rad * 360.0F, 1.0F, 0.0F, 0.0F);
-			
-			final float alpha = isSpace ? 1.0F : 0.3F;
-			Minecraft.getMinecraft().getTextureManager().bindTexture(textureStar);
-			
-			vertexBuffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-			vertexBuffer.pos(-starScale, starRange, -starScale).tex(0.0D, 0.0D).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-			vertexBuffer.pos( starScale, starRange, -starScale).tex(1.0D, 0.0D).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-			vertexBuffer.pos( starScale, starRange,  starScale).tex(1.0D, 1.0D).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-			vertexBuffer.pos(-starScale, starRange,  starScale).tex(0.0D, 1.0D).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-			tessellator.draw();
-			
-			GlStateManager.popMatrix();
-		}
+		renderStar(tessellator, textureStar, starBrightness,
+		           255 / 255.0F,
+		           194 / 255.0F,
+		           180 / 255.0F,
+		           1.0F );
 		/**/
 		
 		// CelestialObject
@@ -360,6 +347,73 @@ public class RenderSpaceSky extends IRenderHandler {
 		
 		GlStateManager.enableTexture2D();
 		GlStateManager.enableAlpha();
+	}
+	
+	private static void renderStar(@Nonnull final Tessellator tessellator, @Nonnull final ResourceLocation texture, final float brightness,
+	                               final float red, final float green, final float blue, final float alpha) {
+		final BufferBuilder vertexBuffer = tessellator.getBuffer();
+		
+		final double starScale = 40.0D;     // Vanilla is 30.0D
+		final double starRange = 150.0D;    // Vanilla is 100.0D
+		final float celestialAngle_rad = 0.3F; // Vanilla is world.getCelestialAngle(partialTicks)
+		final float redActual   = red * brightness;
+		final float greenActual = green * brightness;
+		final float blueActual  = blue * brightness;
+		
+		GlStateManager.pushMatrix();
+		GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
+		GlStateManager.rotate(celestialAngle_rad * 360.0F, 1.0F, 0.0F, 0.0F);
+		
+		// auras
+		double size;
+		GlStateManager.disableTexture2D();
+		
+		// Small aura
+		vertexBuffer.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_COLOR);
+		vertexBuffer.pos(0.0D, 100.0D, 0.0D).color(redActual, greenActual, blueActual, alpha * 2.0F / brightness).endVertex();
+		size = starScale * 1.125D;
+		vertexBuffer.pos(-size       , starRange, -size       ).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos(    0       , starRange, -size * 1.5D).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos( size       , starRange, -size       ).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos( size * 1.5D, starRange,     0       ).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos( size       , starRange,  size       ).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos(    0       , starRange,  size * 1.5D).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos(-size       , starRange,  size       ).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos(-size * 1.5D, starRange,     0       ).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos(-size       , starRange, -size       ).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		tessellator.draw();
+		
+		// Large aura
+		vertexBuffer.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_COLOR);
+		vertexBuffer.pos(0.0D, 100.0D, 0.0D).color(redActual, greenActual, blueActual, alpha * brightness).endVertex();
+		size = starScale * 1.250D;
+		vertexBuffer.pos(-size       , starRange, -size       ).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos(    0       , starRange, -size * 1.5D).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos( size       , starRange, -size       ).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos( size * 1.5D, starRange,     0       ).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos( size       , starRange,  size       ).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos(    0       , starRange,  size * 1.5D).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos(-size       , starRange,  size       ).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos(-size * 1.5D, starRange,     0       ).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		vertexBuffer.pos(-size       , starRange, -size       ).color(redActual, greenActual, blueActual, 0.01F).endVertex();
+		tessellator.draw();
+		
+		// Texture
+		GlStateManager.enableTexture2D();
+		GlStateManager.enableBlend();
+		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+		GlStateManager.disableAlpha();
+		
+		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
+		
+		vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+		vertexBuffer.pos(-starScale, starRange, -starScale).tex(0.0D, 0.0D).color(redActual, greenActual, blueActual, alpha).endVertex();
+		vertexBuffer.pos( starScale, starRange, -starScale).tex(1.0D, 0.0D).color(redActual, greenActual, blueActual, alpha).endVertex();
+		vertexBuffer.pos( starScale, starRange,  starScale).tex(1.0D, 1.0D).color(redActual, greenActual, blueActual, alpha).endVertex();
+		vertexBuffer.pos(-starScale, starRange,  starScale).tex(0.0D, 1.0D).color(redActual, greenActual, blueActual, alpha).endVertex();
+		tessellator.draw();
+		
+		GlStateManager.popMatrix();
 	}
 	
 	private static void renderCelestialObject(final Tessellator tessellator, final CelestialObject celestialObject,
