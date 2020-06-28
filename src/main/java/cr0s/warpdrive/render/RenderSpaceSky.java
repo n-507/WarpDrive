@@ -19,8 +19,10 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.IRenderHandler;
@@ -37,6 +39,10 @@ public class RenderSpaceSky extends IRenderHandler {
 	private static final double PLANET_APPROACHING = 512.0D;
 	private static final double PLANET_ORBIT = 128.0D;
 	
+	// render distance for objects
+	private static final double BOX_RENDER_RANGE = 100.0D;
+	
+	// call lists
 	private static final int callListRoot = GLAllocation.generateDisplayLists(3);
 	private static final int callListStars = callListRoot;
 	private static float starBrightness = 0.0F;
@@ -98,6 +104,13 @@ public class RenderSpaceSky extends IRenderHandler {
 		
 		GlStateManager.disableTexture2D();
 		GlStateManager.depthMask(false);
+		
+		// draw sky box
+		if ( celestialObject != null
+		  && celestialObject.boxTextures != null
+		  && celestialObject.boxTextures.length > 0 ) {
+			renderSkyBox(tessellator, celestialObject.boxTextures, celestialObject.boxBrightness, celestialObject.boxRepeat);
+		}
 		
 		// draw upper sky plane
 		/*
@@ -267,6 +280,86 @@ public class RenderSpaceSky extends IRenderHandler {
 		
 		GlStateManager.enableTexture2D();
 		GlStateManager.depthMask(true);
+	}
+	
+	// renderSkyBox is loosely inspired by vanilla sky rendering in The End dimension (RenderGlobal::renderSkyEnd)
+	private static void renderSkyBox(@Nonnull final Tessellator tessellator, @Nonnull final ResourceLocation[] textureSkyBox, final float brightness,
+	                                 final int countTextureRepeat) {
+		final BufferBuilder bufferbuilder = tessellator.getBuffer();
+		final double maxUV = countTextureRepeat * 1.0D;
+		
+		GlStateManager.disableFog();
+		GlStateManager.disableAlpha();
+		GlStateManager.enableTexture2D();
+		GlStateManager.enableBlend();
+		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		
+		// bottom
+		Minecraft.getMinecraft().getTextureManager().bindTexture(textureSkyBox[0]);
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+		bufferbuilder.pos(-BOX_RENDER_RANGE, -BOX_RENDER_RANGE, -BOX_RENDER_RANGE).tex( 0.0D,  0.0D).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos(-BOX_RENDER_RANGE, -BOX_RENDER_RANGE,  BOX_RENDER_RANGE).tex( 0.0D, maxUV).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos( BOX_RENDER_RANGE, -BOX_RENDER_RANGE,  BOX_RENDER_RANGE).tex(maxUV, maxUV).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos( BOX_RENDER_RANGE, -BOX_RENDER_RANGE, -BOX_RENDER_RANGE).tex(maxUV,  0.0D).color(brightness, brightness, brightness, 1.0F).endVertex();
+		tessellator.draw();
+		
+		// front
+		if (textureSkyBox.length > 1) {
+			Minecraft.getMinecraft().getTextureManager().bindTexture(textureSkyBox[1]);
+		}
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+		bufferbuilder.pos(-BOX_RENDER_RANGE,  BOX_RENDER_RANGE, -BOX_RENDER_RANGE).tex( 0.0D,  0.0D).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos(-BOX_RENDER_RANGE, -BOX_RENDER_RANGE, -BOX_RENDER_RANGE).tex( 0.0D, maxUV).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos( BOX_RENDER_RANGE, -BOX_RENDER_RANGE, -BOX_RENDER_RANGE).tex(maxUV, maxUV).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos( BOX_RENDER_RANGE,  BOX_RENDER_RANGE, -BOX_RENDER_RANGE).tex(maxUV,  0.0D).color(brightness, brightness, brightness, 1.0F).endVertex();
+		tessellator.draw();
+		
+		// back
+		if (textureSkyBox.length > 1) {
+			Minecraft.getMinecraft().getTextureManager().bindTexture(textureSkyBox[2]);
+		}
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+		bufferbuilder.pos( BOX_RENDER_RANGE,  BOX_RENDER_RANGE,  BOX_RENDER_RANGE).tex( 0.0D,  0.0D).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos( BOX_RENDER_RANGE, -BOX_RENDER_RANGE,  BOX_RENDER_RANGE).tex( 0.0D, maxUV).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos(-BOX_RENDER_RANGE, -BOX_RENDER_RANGE,  BOX_RENDER_RANGE).tex(maxUV, maxUV).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos(-BOX_RENDER_RANGE,  BOX_RENDER_RANGE,  BOX_RENDER_RANGE).tex(maxUV,  0.0D).color(brightness, brightness, brightness, 1.0F).endVertex();
+		tessellator.draw();
+		
+		// top
+		if (textureSkyBox.length > 1) {
+			Minecraft.getMinecraft().getTextureManager().bindTexture(textureSkyBox[3]);
+		}
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+		bufferbuilder.pos(-BOX_RENDER_RANGE,  BOX_RENDER_RANGE, -BOX_RENDER_RANGE).tex( 0.0D, maxUV).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos( BOX_RENDER_RANGE,  BOX_RENDER_RANGE, -BOX_RENDER_RANGE).tex(maxUV, maxUV).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos( BOX_RENDER_RANGE,  BOX_RENDER_RANGE,  BOX_RENDER_RANGE).tex(maxUV,  0.0D).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos(-BOX_RENDER_RANGE,  BOX_RENDER_RANGE,  BOX_RENDER_RANGE).tex( 0.0D,  0.0D).color(brightness, brightness, brightness, 1.0F).endVertex();
+		tessellator.draw();
+		
+		// right
+		if (textureSkyBox.length > 1) {
+			Minecraft.getMinecraft().getTextureManager().bindTexture(textureSkyBox[4]);
+		}
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+		bufferbuilder.pos( BOX_RENDER_RANGE,  BOX_RENDER_RANGE, -BOX_RENDER_RANGE).tex( 0.0D,  0.0D).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos( BOX_RENDER_RANGE, -BOX_RENDER_RANGE, -BOX_RENDER_RANGE).tex( 0.0D, maxUV).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos( BOX_RENDER_RANGE, -BOX_RENDER_RANGE,  BOX_RENDER_RANGE).tex(maxUV, maxUV).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos( BOX_RENDER_RANGE,  BOX_RENDER_RANGE,  BOX_RENDER_RANGE).tex(maxUV,  0.0D).color(brightness, brightness, brightness, 1.0F).endVertex();
+		tessellator.draw();
+		
+		// left
+		if (textureSkyBox.length > 1) {
+			Minecraft.getMinecraft().getTextureManager().bindTexture(textureSkyBox[5]);
+		}
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+		bufferbuilder.pos(-BOX_RENDER_RANGE,  BOX_RENDER_RANGE,  BOX_RENDER_RANGE).tex( 0.0D,  0.0D).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos(-BOX_RENDER_RANGE, -BOX_RENDER_RANGE,  BOX_RENDER_RANGE).tex( 0.0D, maxUV).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos(-BOX_RENDER_RANGE, -BOX_RENDER_RANGE, -BOX_RENDER_RANGE).tex(maxUV, maxUV).color(brightness, brightness, brightness, 1.0F).endVertex();
+		bufferbuilder.pos(-BOX_RENDER_RANGE,  BOX_RENDER_RANGE, -BOX_RENDER_RANGE).tex(maxUV,  0.0D).color(brightness, brightness, brightness, 1.0F).endVertex();
+		tessellator.draw();
+		
+		GlStateManager.enableTexture2D();
+		GlStateManager.enableAlpha();
 	}
 	
 	private static void renderCelestialObject(final Tessellator tessellator, final CelestialObject celestialObject,

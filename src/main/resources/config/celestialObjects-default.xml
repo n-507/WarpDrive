@@ -122,8 +122,23 @@
 				<generate group="asteroids_field" ratio="0.0016" />
 			</dimension>
 			
+			<!--
+              skybox can also define a texture for an actual Sky box. The boxTextures & boxTexture elements are mutually exclusive.
+              skybox.boxTextures defines a set of 6 textures that you can generate using online tools like http://wwwtyro.github.io/space-3d.
+              skybox.boxTexture defines a single texture to repeat like The End dimensions (repeat 16 times the "minecraft:textures/environment/end_sky.png").
+              skybox.boxBrightness defines the brightness of the textures.
+              -->
 			<skybox>
 				<backgroundColor red="0.0" green="0.0" blue="0.0" />
+				<boxTextures
+						 back  ="warpdrive:textures/celestial/skybox-small_blue/back.png"
+						 bottom="warpdrive:textures/celestial/skybox-small_blue/bottom.png"
+						 front ="warpdrive:textures/celestial/skybox-small_blue/front.png"
+						 left  ="warpdrive:textures/celestial/skybox-small_blue/left.png"
+						 right ="warpdrive:textures/celestial/skybox-small_blue/right.png"
+						 top   ="warpdrive:textures/celestial/skybox-small_blue/top.png" />
+				<!-- boxTexture repeat="16" texture="minecraft:textures/environment/end_sky.png" /-->
+				<boxBrightness>1.0</boxBrightness>
 				<starBrightnessBase>0.9</starBrightnessBase>
 				<starBrightnessVanilla>0.0</starBrightnessVanilla>
 				<celestialObjectOpacity>1.0</celestialObjectOpacity>
