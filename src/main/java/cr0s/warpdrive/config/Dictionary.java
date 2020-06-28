@@ -269,6 +269,7 @@ public class Dictionary {
 			config.get("block_tags", "tconstruct:stone_torch"                          , "PlaceLatest").getString();
 			
 			// expendables, a.k.a. "don't blow my ship with this..."
+			config.get("block_tags", "minecraft:snow_layer"                            , "NoMass Expandable").getString();
 			config.get("block_tags", "warpdrive:gas"                                   , "LeftBehind Expandable").getString();
 			config.get("block_tags", "warpdrive:air_flow"                              , "NoMass Expandable PlaceLatest").getString();
 			config.get("block_tags", "warpdrive:air_source"                            , "NoMass Expandable PlaceLatest").getString();
