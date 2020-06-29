@@ -242,7 +242,14 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	@Override
 	public boolean rotateBlock(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final EnumFacing axis) {
 		// already handled by vanilla
-		return super.rotateBlock(world, blockPos, axis);
+		final boolean isRotated = super.rotateBlock(world, blockPos, axis);
+		if (isRotated) {
+			final TileEntity tileEntity = world.getTileEntity(blockPos);
+			if (tileEntity instanceof TileEntityAbstractMachine) {
+				((TileEntityAbstractMachine) tileEntity).markDirtyAssembly();
+			}
+		}
+		return isRotated;
 	}
 	
 	@SuppressWarnings("deprecation")

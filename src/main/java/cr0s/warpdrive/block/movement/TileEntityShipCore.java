@@ -136,10 +136,6 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	protected void onConstructed() {
 		super.onConstructed();
 		
-		if (world != null) {// skip if we're in item form
-			facing = world.getBlockState(pos).getValue(BlockProperties.FACING_HORIZONTAL);
-		}
-		
 		energy_setParameters(WarpDriveConfig.SHIP_MAX_ENERGY_STORED_BY_TIER[enumTier.getIndex()],
 		                     65536, 0,
 		                     "EV", 2, "EV", 0);
@@ -574,6 +570,9 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	@Override
 	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
 		final boolean isValid = super.doScanAssembly(isDirty, textReason);
+		
+		// refresh cache
+		facing = world.getBlockState(pos).getValue(BlockProperties.FACING_HORIZONTAL);
 		
 		// Search block in cube around core
 		final int xMin = pos.getX() - WarpDriveConfig.RADAR_MAX_ISOLATION_RANGE;
