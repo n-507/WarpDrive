@@ -59,7 +59,18 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	@Override
 	protected void onFirstUpdateTick() {
 		super.onFirstUpdateTick();
+		
+		// force full assembly scan and parameters update, only server side, before any other processing
+		if (world.isRemote) {
+			return;
+		}
+		
+		tickScanAssembly = WarpDriveConfig.G_ASSEMBLY_SCAN_INTERVAL_TICKS;
+		isDirtyAssembly = false;
 		doScanAssembly(true);
+		
+		tickUpdateParameters = WarpDriveConfig.G_PARAMETERS_UPDATE_INTERVAL_TICKS;
+		isDirtyParameters = false;
 		doUpdateParameters(true);
 	}
 	
