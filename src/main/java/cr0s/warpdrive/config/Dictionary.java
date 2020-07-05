@@ -112,7 +112,8 @@ public class Dictionary {
 			config.get("block_tags", "minecraft:mycelium"                                   , "Soil").getString();
 			config.get("block_tags", "minecraft:sand"                                       , "Soil").getString();
 			config.get("block_tags", "minecraft:soul_sand"                                  , "Soil").getString();
-			config.get("block_tags", "ic2:rubber_wood"                                      , "Log").getString();
+			config.get("block_tags", "ic2:rubber_wood"                                      , "Log").getString(); // IC2 Experimental
+			config.get("block_tags", "ic2:blockrubwood"                                     , "Log").getString(); // IC2 Classic
 			config.get("block_tags", "tconstruct:slime_congealed"                           , "Log").getString();
 			config.get("block_tags", "tconstruct:slime_leaves"                              , "Leaf").getString();
 			
@@ -156,7 +157,8 @@ public class Dictionary {
 			config.get("block_tags", "extrautils2:creativeharvest"                          , "Anchor SkipMining").getString(); // creative
 			config.get("block_tags", "extrautils2:decorativebedrock"                        , "Anchor SkipMining").getString(); // creative
 			config.get("block_tags", "extrautils2:spike_creative"                           , "Anchor SkipMining").getString(); // creative
-			// @TODO MC1.12 config.get("block_tags", "ic2:blockPersonal"                               , "Anchor SkipMining").getString(); // IC2 personal chest, need property filtering
+			// @TODO MC1.12+ config.get("block_tags", "ic2:te"                                    , "Anchor SkipMining").getString(); // IC2 Experimental personal chest, need property filtering
+			config.get("block_tags", "ic2:blockpersonal"                                    , "Anchor SkipMining").getString(); // IC2 Classic
 			config.get("block_tags", "galacticraftcore:arclamp"                             , "Anchor").getString(); // includes hard links to its fake air lights
 			config.get("block_tags", "galacticraftcore:boss_spawner"                        , "Anchor StopMining").getString(); // includes hard links to the boss room
 			config.get("block_tags", "galacticraftcore:grating"                             , "Anchor StopMining").getString(); // unable to break block without spamming console
@@ -247,11 +249,14 @@ public class Dictionary {
 			config.get("block_tags", "galacticraftcore:unlit_torch_lit"                , "PlaceLatest").getString();
 			config.get("block_tags", "galacticraftplanets:telepad_fake"                , "PlaceLatest").getString();
 			config.get("block_tags", "galacticraftplanets:web_torch"                   , "PlaceLatest").getString();
-			config.get("block_tags", "ic2:foam"                                        , "PlaceEarliest StopMining").getString();
-			// @TODO MC1.12 config.get("block_tags", "ic2:blockAlloy"                                  , "PlaceEarliest StopMining").getString();
-			config.get("block_tags", "ic2:glass"                                       , "PlaceEarliest StopMining").getString();
-			// @TODO MC1.12 config.get("block_tags", "ic2:blockGenerator"                              , "PlaceLater").getString(); // nuclear reactor type:nuclear_reactor
-			// @TODO MC1.12 config.get("block_tags", "ic2:blockReactorChamber"                         , "PlaceLatest").getString(); // reactor chamber type:reactor_chamber
+			// @TODO MC1.12+ config.get("block_tags", "ic2:resource"                                  , "PlaceEarliest StopMining").getString(); // IC2 Experimental Reinforced stone, need property filtering
+			config.get("block_tags", "ic2:glass"                                       , "PlaceEarliest StopMining").getString(); // IC2 Experimental Reinforced glass
+			config.get("block_tags", "ic2:reinforced_door"                             , "PlaceEarliest StopMining").getString(); // IC2 Experimental Reinforced door
+			config.get("block_tags", "ic2:blockutility"                                , "PlaceEarliest StopMining").getString(); // IC2 Classic Reinforced stone & glass
+			// @TODO MC1.12 config.get("block_tags", "ic2:te"                                          , "PlaceLater").getString(); // IC2 Experimental Nuclear reactor, need property filtering type:nuclear_reactor
+			// @TODO MC1.12 config.get("block_tags", "ic2:te"                                          , "PlaceLatest").getString(); // IC2 Experimental Reactor chamber, need property filtering type:reactor_chamber
+			config.get("block_tags", "ic2:blockgenerator"                              , "PlaceLater").getString(); // IC2 Classic Nuclear reactor
+			config.get("block_tags", "ic2:blockchambers"                               , "PlaceLatest").getString(); // IC2 Classic Reactor chamber
 			config.get("block_tags", "immersiveengineering:connector"                  , "PlaceLatest").getString();
 			config.get("block_tags", "industrialforegoing:black_hole_label"            , "PlaceLatest").getString();
 			config.get("block_tags", "modularforcefieldsystem:force_field"             , "PlaceEarlier StopMining NoBlink").getString();
@@ -346,13 +351,16 @@ public class Dictionary {
 			config.get("entity_tags", "minecraft:ender_crystal"                , "NoMass NonLivingTarget").getString();
 			config.get("entity_tags", "minecraft:arrow"                        , "NoMass NonLivingTarget").getString();
 			
-			config.get("entity_tags", "ic2:carbon_boat"                        , "NoMass NonLivingTarget").getString();
-			config.get("entity_tags", "ic2:rubber_boat"                        , "NoMass NonLivingTarget").getString();
-			config.get("entity_tags", "ic2:electric_boat"                      , "NoMass NonLivingTarget").getString();
-			config.get("entity_tags", "ic2:nuke"                               , "NoMass NonLivingTarget").getString();
-			config.get("entity_tags", "ic2:itnt"                               , "NoMass NonLivingTarget").getString();
-			config.get("entity_tags", "ic2:sticky_dynamite"                    , "NoMass NonLivingTarget").getString();
-			config.get("entity_tags", "ic2:dynamite"                           , "NoMass NonLivingTarget").getString();
+			config.get("entity_tags", "ic2:carbon_boat"                        , "NoMass NonLivingTarget").getString(); // IC2 Experimental
+			config.get("entity_tags", "ic2:carbonboat"                        , "NoMass NonLivingTarget").getString(); // IC2 Classic
+			config.get("entity_tags", "ic2:rubber_boat"                        , "NoMass NonLivingTarget").getString(); // IC2 Experimental
+			config.get("entity_tags", "ic2:rubberboat"                        , "NoMass NonLivingTarget").getString(); // IC2 Classic
+			config.get("entity_tags", "ic2:electric_boat"                      , "NoMass NonLivingTarget").getString(); // IC2 Experimental
+			config.get("entity_tags", "ic2:electricboat"                      , "NoMass NonLivingTarget").getString(); // IC2 Classic
+			config.get("entity_tags", "ic2:nuke"                               , "NoMass NonLivingTarget").getString(); // IC2 Experimental & Classic
+			config.get("entity_tags", "ic2:itnt"                               , "NoMass NonLivingTarget").getString(); // IC2 Experimental & Classic
+			config.get("entity_tags", "ic2:sticky_dynamite"                    , "NoMass NonLivingTarget").getString(); // IC2 Experimental
+			config.get("entity_tags", "ic2:dynamite"                           , "NoMass NonLivingTarget").getString(); // IC2 Experimental & Classic
 			
 			// undead and dummies
 			config.get("entity_tags", "minecraft:armor_stand"                  , "LivingWithoutAir").getString();
@@ -425,10 +433,14 @@ public class Dictionary {
 			config.get("item_tags", "conarm:helmet"                                , "BreathingHelmet").getString();
 			config.get("item_tags", "enderio:item_dark_steel_helmet"               , "BreathingHelmet").getString();
 			config.get("item_tags", "enderio:item_end_steel_helmet"                , "BreathingHelmet").getString();
-			config.get("item_tags", "ic2:hazmat_helmet"                            , "BreathingHelmet").getString();
-			config.get("item_tags", "ic2:solar_helmet"                             , "BreathingHelmet").getString();
-			config.get("item_tags", "ic2:nano_helmet"                              , "BreathingHelmet").getString();
-			config.get("item_tags", "ic2:quantum_helmet"                           , "BreathingHelmet").getString();
+			config.get("item_tags", "ic2:hazmat_helmet"                            , "BreathingHelmet").getString(); // IC2 Experimental
+			config.get("item_tags", "ic2:solar_helmet"                             , "BreathingHelmet").getString(); // IC2 Experimental
+			config.get("item_tags", "ic2:nano_helmet"                              , "BreathingHelmet").getString(); // IC2 Experimental
+			config.get("item_tags", "ic2:quantum_helmet"                           , "BreathingHelmet").getString(); // IC2 Experimental
+			config.get("item_tags", "ic2:itemarmorhazmathelmet"                    , "BreathingHelmet").getString(); // IC2 Classic
+			config.get("item_tags", "ic2:itemsolarhelmets"                         , "BreathingHelmet").getString(); // IC2 Classic
+			config.get("item_tags", "ic2:itemarmornanohelmet"                      , "BreathingHelmet").getString(); // IC2 Classic
+			config.get("item_tags", "ic2:itemarmorquantumhelmet"                   , "BreathingHelmet").getString(); // IC2 Classic
 			config.get("item_tags", "pneumaticcraft:pneumatic_helmet"              , "BreathingHelmet").getString();
 			config.get("item_tags", "powersuits:powerarmor_head"                   , "BreathingHelmet").getString();
 			config.get("item_tags", "psi:psimetal_exosuit_helmet"                  , "BreathingHelmet").getString();
@@ -440,15 +452,24 @@ public class Dictionary {
 			config.get("item_tags", "techguns:steam_helmet"                        , "BreathingHelmet").getString();
 			config.get("item_tags", "techguns:tacticalmask"                        , "BreathingHelmet").getString();
 			
-			config.get("item_tags", "ic2:jetpack"                                  , "FlyInSpace NoFallDamage").getString();
-			config.get("item_tags", "ic2:jetpack_electric"                         , "FlyInSpace NoFallDamage").getString();
-			config.get("item_tags", "ic2:quantum_chestplate"                       , "FlyInSpace NoFallDamage").getString();
+			config.get("item_tags", "ic2:jetpack"                                  , "FlyInSpace NoFallDamage").getString(); // IC2 Experimental
+			config.get("item_tags", "ic2:jetpack_electric"                         , "FlyInSpace NoFallDamage").getString(); // IC2 Experimental
+			config.get("item_tags", "ic2:quantum_chestplate"                       , "FlyInSpace NoFallDamage").getString(); // IC2 Experimental
+			config.get("item_tags", "ic2:itemarmorjetpack"                         , "FlyInSpace NoFallDamage").getString(); // IC2 Classic
+			config.get("item_tags", "ic2:itemarmorjetpackelectric"                 , "FlyInSpace NoFallDamage").getString(); // IC2 Classic
+			config.get("item_tags", "ic2:itemarmorjetpacknuclear"                  , "FlyInSpace NoFallDamage").getString(); // IC2 Classic
+			config.get("item_tags", "ic2:itemarmorcombinedjetpack"                 , "FlyInSpace NoFallDamage").getString(); // IC2 Classic
+			config.get("item_tags", "ic2:itemarmornuclearcombindedjetpack"         , "FlyInSpace NoFallDamage").getString(); // IC2 Classic
+			config.get("item_tags", "ic2:itemquantumarmorjetpack"                  , "FlyInSpace NoFallDamage").getString(); // IC2 Classic
+			config.get("item_tags", "ic2:itemquantumarmornuclearjetplate"          , "FlyInSpace NoFallDamage").getString(); // IC2 Classic
 			config.get("item_tags", "gravisuite:advancedjetpack"                   , "FlyInSpace NoFallDamage").getString();
 			config.get("item_tags", "gravisuite:advancednanochestplate"            , "FlyInSpace NoFallDamage").getString();
 			config.get("item_tags", "gravisuite:gravichestplate"                   , "FlyInSpace NoFallDamage").getString();
 			
-			config.get("item_tags", "ic2:rubber_boots"                             , "NoFallDamage").getString();
-			config.get("item_tags", "ic2:quantum_boots"                            , "NoFallDamage").getString();
+			config.get("item_tags", "ic2:rubber_boots"                             , "NoFallDamage").getString(); // IC2 Experimental
+			config.get("item_tags", "ic2:quantum_boots"                            , "NoFallDamage").getString(); // IC2 Experimental
+			config.get("item_tags", "ic2:itemarmorrubboots"                        , "NoFallDamage").getString(); // IC2 Classic
+			config.get("item_tags", "ic2:itemarmorquantumboots"                    , "NoFallDamage").getString(); // IC2 Classic
 			config.get("item_tags", "warpdrive:warp_armor.advanced.leggings"       , "NoFallDamage").getString();
 			config.get("item_tags", "warpdrive:warp_armor.advanced.boots"          , "NoFallDamage").getString();
 			config.get("item_tags", "warpdrive:warp_armor.superior.leggings"       , "NoFallDamage").getString();

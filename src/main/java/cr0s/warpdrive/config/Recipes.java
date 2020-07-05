@@ -137,7 +137,8 @@ public class Recipes {
 		// Add Reinforced iridium plate to ore registry as applicable (it's missing in IC2 without GregTech)
 		if (!OreDictionary.doesOreNameExist("plateAlloyIridium") || OreDictionary.getOres("plateAlloyIridium").isEmpty()) {
 			if (WarpDriveConfig.isIndustrialCraft2Loaded) {
-				final ItemStack iridiumAlloy = WarpDriveConfig.getItemStackOrFire("ic2:crafting", 4); // IC2 Experimental Iridium alloy plate
+				final ItemStack iridiumAlloy = (ItemStack) WarpDriveConfig.getOreOrItemStack("ic2:crafting", 4,     // IC2 Experimental Iridium alloy plate
+				                                                                             "ic2:itemmisc", 258 ); // IC2 Classic Iridium plate
 				OreDictionary.registerOre("plateAlloyIridium", iridiumAlloy);
 			}
 		}
@@ -172,14 +173,18 @@ public class Recipes {
 			itemStackMotorEV = WarpDriveConfig.getItemStackOrFire("gregtech:meta_item_1", 32603); // EV Motor
 			
 		} else if (WarpDriveConfig.isIndustrialCraft2Loaded) {
-			itemStackMachineCasingLV = WarpDriveConfig.getItemStackOrFire("ic2:resource", 12); // Basic machine casing
-			itemStackMachineCasingMV = WarpDriveConfig.getItemStackOrFire("ic2:resource", 13); // Advanced machine casing
+			itemStackMachineCasingLV = (ItemStack) WarpDriveConfig.getOreOrItemStack("ic2:resource", 12,       // IC2 Experimental Basic machine casing
+			                                                                         "ic2:blockmachinelv", 0); // IC2 Classic Machine block
+			itemStackMachineCasingMV = (ItemStack) WarpDriveConfig.getOreOrItemStack("ic2:resource", 13,       // IC2 Experimental Advanced machine casing
+			                                                                         "ic2:blackmachinemv", 0); // IC2 Classic Advanced machine block
 			itemStackMachineCasingHV = new ItemStack(WarpDrive.blockHighlyAdvancedMachine);
 			itemStackMachineCasingEV = new ItemStack(WarpDrive.blockHighlyAdvancedMachine);
 			
 			final ItemStack itemStackMotor = WarpDriveConfig.getItemStackOrFire("ic2:crafting", 6); // IC2 Experimental Electric motor
-			itemStackMotorHV = itemStackMotor;
-			itemStackMotorEV = itemStackMotor;
+			if (!itemStackMotor.isEmpty()) {
+				itemStackMotorHV = itemStackMotor;
+				itemStackMotorEV = itemStackMotor;
+			}
 			
 			WarpDrive.register(new ShapedOreRecipe(groupComponents,
 			                                       new ItemStack(WarpDrive.blockHighlyAdvancedMachine), false, "iii", "imi", "iii",
@@ -566,6 +571,7 @@ public class Recipes {
 		final Object coolant = WarpDriveConfig.getOreOrItemStack(
 				"ore:dustCryotheum", 0,          // comes with ThermalFoundation
 				"ic2:heat_storage", 0,           // IC2 Experimental 10k Coolant Cell
+				"ic2:itemheatstorage", 0,        // IC2 Classic 10k Coolant Cell
 				"ore:blockLapis", 0 );
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR), false, " c ", "pep", " c ",
@@ -967,8 +973,9 @@ public class Recipes {
 		                                       'M', "blockElectromagnet3"));
 		
 		// Lower tier coil is iron, copper or coil
+		// note: IC2 Classic has no coil, so we fallback to other mods or Copper ingot
 		final Object ironIngotOrCopperIngotOrCoil1 = WarpDriveConfig.getOreOrItemStack(
-				"ic2:crafting", 5,                         // IC2 Coil
+				"ic2:crafting", 5,                         // IC2 Experimental Coil
 				"immersiveengineering:wirecoil", 1,        // ImmersiveEngineering MV wire coil
 				"enderio:item_power_conduit", 1,           // EnderIO Enhanced energy conduit
 				"ore:ingotCopper", 0,
@@ -976,7 +983,7 @@ public class Recipes {
 				"minecraft:iron_ingot", 0 );
 		final Object ironIngotOrCopperIngotOrCoil2 = WarpDriveConfig.getOreOrItemStack(
 				"gregtech:wire_coil", 0,                   // GregTech Cupronickel Coil block
-				"ic2:crafting", 5,                         // IC2 Coil
+				"ic2:crafting", 5,                         // IC2 Experimental Coil
 				"thermalfoundation:material", 513,         // ThermalFoundation Redstone reception coil
 				"immersiveengineering:wirecoil", 1,        // ImmersiveEngineering MV wire coil
 				"enderio:item_power_conduit", 1,           // EnderIO Enhanced energy conduit
@@ -1276,7 +1283,7 @@ public class Recipes {
 		// Cloaking coil is 1 Titanium plate, 4 Reinforced iridium plate, 1 EV Machine casing (Ti) or 1 Beacon, 4 Emerald, 4 Diamond
 		final Object oreGoldIngotOrCoil = WarpDriveConfig.getOreOrItemStack(
 				"gregtech:wire_coil", 3,                   // GregTech Tungstensteel Coil block
-				"ic2:crafting", 5,                         // IC2 Coil
+				"ic2:crafting", 5,                         // IC2 Experimental Coil
 				"thermalfoundation:material", 515,         // ThermalFoundation Redstone conductance coil
 				"immersiveengineering:connector", 8,       // ImmersiveEngineering HV Transformer (coils wires are too cheap)
 				"enderio:item_power_conduit", 2,           // EnderIO Ender energy conduit
@@ -1412,19 +1419,21 @@ public class Recipes {
 	private static void initEnergy() {
 		// IC2 needs to be loaded for the following 2 recipes
 		if (WarpDriveConfig.isIndustrialCraft2Loaded) {
-			final ItemStack itemStackOverclockedHeatVent = WarpDriveConfig.getItemStackOrFire("ic2:overclocked_heat_vent", 0); // IC2 Overclocked heat vent
+			final Object overclockedHeatVent = WarpDriveConfig.getOreOrItemStack(
+					"ic2:overclocked_heat_vent", 0,      // IC2 Experimental Overclocked heat vent
+					"ic2:itemheatvent", 2 );             // IC2 Classic Overclocked heat vent (not the electric variant)
 			// (there's no coolant in GT6 version 6.06.05, nor in GregTech CE version 1.12.2-0.4.5.9, so we're falling back to IC2)
-			final ItemStack itemStackReactorCoolant1 = WarpDriveConfig.getItemStackOrFire("ic2:hex_heat_storage", 0);          // IC2 60k coolant cell
-			final ItemStack itemStackReactorCoolant2 = WarpDriveConfig.getItemStackOrFire("ic2:hex_heat_storage", 0);          // IC2 60k coolant cell
+			final Object reactorCoolant = WarpDriveConfig.getOreOrItemStack(
+					"ic2:hex_heat_storage", 0,           // IC2 Experimental 60k Coolant Cell
+					"ic2:itemheatstorage", 2 );          // IC2 Classic 60k Coolant Cell
 			
 			WarpDrive.register(new ShapedOreRecipe(groupMachines,
 			                                       new ItemStack(WarpDrive.itemIC2reactorLaserFocus), false, "cld", "lhl", "dlc",
 			                                       'l', ItemComponent.getItemStack(EnumComponentType.LENS),
-			                                       'h', itemStackOverclockedHeatVent,
-			                                       'c', itemStackReactorCoolant1,
-			                                       'd', itemStackReactorCoolant2 ));
+			                                       'h', overclockedHeatVent,
+			                                       'c', reactorCoolant,
+			                                       'd', reactorCoolant ));
 			
-			final ItemStack itemStackAdvancedMachineCasing = WarpDriveConfig.getItemStackOrFire("ic2:resource", 13);
 			WarpDrive.register(new ShapedOreRecipe(groupMachines,
 			                                       new ItemStack(WarpDrive.blockIC2reactorLaserCooler), false, "gCp", "lme", "gC ",
 			                                       'l', ItemComponent.getItemStack(EnumComponentType.LENS),
@@ -1432,7 +1441,7 @@ public class Recipes {
 			                                       'C', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CRYSTAL),
 			                                       'p', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
 			                                       'g', "paneGlassColorless",
-			                                       'm', itemStackAdvancedMachineCasing ));
+			                                       'm', itemStackMachineCasings[1] ));
 		}
 		
 		// Enantiomorphic reactor core is 1 EV Machine casing, 4 Capacitive crystal, 1 Computer interface, 1 Power interface, 2 Lenses
@@ -1703,12 +1712,13 @@ public class Recipes {
 			//  IC2 Reinforced stone is 1 scaffolding = 7.5 * 144 / 16 = 67.5 mB of Iron
 			//  => 27 mB of Iron per Basic hull
 			if (WarpDriveConfig.isIndustrialCraft2Loaded) {
-				final ItemStack reinforcedStone = WarpDriveConfig.getItemStackOrFire("ic2:resource", 11); // IC2 reinforced stone
+				final ItemStack reinforcedStone = (ItemStack) WarpDriveConfig.getOreOrItemStack("ic2:resource", 11,       // IC2 Experimental Reinforced stone
+				                                                                                "ic2:blockutility", 2 );  // IC2 Classic Reinforced stone (not cracked)
 				WarpDrive.register(new ShapedOreRecipe(groupHulls,
 				                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 10, metadataColor), false, "cbc", "bXb", "cbc",
 				                                       'b', reinforcedStone,
 				                                       'c', Blocks.OBSIDIAN,
-				                                       'X', oreDyes.get(enumDyeColor) ), "_IC2");
+				                                       'X', oreDyes.get(enumDyeColor) ), "_ic2");
 			}
 			
 			// Tier 1 = 1 concrete, 3 iron bars, 1 ceramic gives 4
@@ -1724,7 +1734,8 @@ public class Recipes {
 			// Tier 1 = 5 stone, 4 iron ingots gives 10
 			//  => 57.6 mB of Iron/Steel per hull (twice more expensive using less crafting steps)
 			final Object ingotSteelOrIron = WarpDriveConfig.getOreOrItemStack("ore:ingotSteel", 0,
-			                                                                  "ore:ingotIron", 0);
+			                                                                  "ore:ingotRefinedIron", 0,
+			                                                                  "ore:ingotIron", 0 );
 			WarpDrive.register(new ShapedOreRecipe(groupHulls,
 			                                       new ItemStack(WarpDrive.blockHulls_plain[EnumTier.BASIC.getIndex()][0], 10, metadataColor), false, "cbc", "bXb", "cbc",
 			                                       'b', ingotSteelOrIron,
@@ -1761,7 +1772,8 @@ public class Recipes {
 		// Tier 2 = 4 Tier 1, 4 GregTech 5 TungstenSteel reinforced block, IC2 Carbon plate, DarkSteel ingots or Obsidian, gives 4
 		final Object oreObsidianTungstenSteelPlate = WarpDriveConfig.getOreOrItemStack(
 				"ore:plateTungstenSteel", 0,     // GregTech CE TungstenSteel Plate
-				"ic2:crafting", 15,              // IC2 Carbon plate
+				"ic2:crafting", 15,              // IC2 Experimental Carbon plate
+				"ic2:itemmisc", 256,             // IC2 Classic Carbon plate
 				"thermalfoundation:glass", 3,    // ThermalFoundation Hardened glass
 				"ore:ingotDarkSteel", 0,         // EnderIO DarkSteel ingot
 				"minecraft:obsidian", 0 );
@@ -1985,7 +1997,8 @@ public class Recipes {
 		// Laser lift is ...
 		final Object enderPearlOrMagnetizer = WarpDriveConfig.getOreOrItemStack(
 				"gregtech:machine", 420,         // Gregtech Basic polarizer
-				"ic2:te", 37,                    // IC2 Magnetizer
+				"ic2:te", 37,                    // IC2 Experimental Magnetizer
+				"ic2:blockmachinelv", 10,        // IC2 Classic Magnetizer
 				"ore:ingotPulsatingIron", 0,     // EnderIO iron ingot with ender pearl
 				"minecraft:ender_pearl", 0 );
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,

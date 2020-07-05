@@ -653,16 +653,22 @@ public class WarpDriveConfig {
 			                                    registryName, meta));
 			return null;
 		}
-		final ItemStack itemStack = new ItemStack(item);
-		if (meta != -1) {
-			try {
-				itemStack.setItemDamage(meta);
-			} catch (final Exception exception) {
-				exception.printStackTrace(WarpDrive.printStreamError);
-				WarpDrive.logger.error(String.format("Failed to get mod item for %s@%d",
-				                                     registryName, meta ));
-				return null;
+		final ItemStack itemStack;
+		try {
+			if (meta == -1) {
+				itemStack = new ItemStack(item);
+			} else {
+				itemStack = new ItemStack(item, 1, meta);
+				if (itemStack.getMetadata() != meta) {
+					throw new RuntimeException(String.format("Invalid meta value found %d, expected %d",
+					                                         itemStack.getMetadata(), meta ));
+				}
 			}
+		} catch (final Exception exception) {
+			exception.printStackTrace(WarpDrive.printStreamError);
+			WarpDrive.logger.error(String.format("Failed to get mod item for %s@%d",
+			                                     registryName, meta ));
+			return null;
 		}
 		return itemStack;
 	}
@@ -1755,13 +1761,31 @@ public class WarpDriveConfig {
 	
 	private static void loadIC2() {
 		try {
-			IC2_emptyCell = getItemStackOrFire("ic2:fluid_cell", 0);
-			IC2_compressedAir = getItemStackOrFire("ic2:fluid_cell", 0, "{Fluid:{FluidName:\"ic2air\",Amount:1000}}");
+			// first try IC2 Experimental
+			IC2_emptyCell = (ItemStack) getOreOrItemStack("ic2:fluid_cell", 0);
+			if (!IC2_emptyCell.isEmpty()) {
+				IC2_compressedAir = getItemStackOrFire("ic2:fluid_cell", 0, "{Fluid:{FluidName:\"ic2air\",Amount:1000}}");
+				
+				IC2_rubberWood = getBlockOrFire("ic2:rubber_wood");
+				IC2_Resin = getItemStackOrFire("ic2:misc_resource", 4);
+			} else {
+				// then go with IC2 Classic
+				IC2_emptyCell = getItemStackOrFire("ic2:itemcellempty", 0);
+				IC2_compressedAir = getItemStackOrFire("ic2:itemmisc", 100);
+				
+				IC2_rubberWood = getBlockOrFire("ic2:blockrubwood");
+				IC2_Resin = getItemStackOrFire("ic2:itemharz", 0);
+			}
 			
-			IC2_rubberWood = getBlockOrFire("ic2:rubber_wood");
-			IC2_Resin = getItemStackOrFire("ic2:misc_resource", 4);
+			// finally, validate results
+			if ( IC2_emptyCell.isEmpty()
+			  || IC2_compressedAir.isEmpty()
+			  || IC2_rubberWood == Blocks.FIRE
+			  || IC2_Resin.isEmpty() ) {
+				throw new RuntimeException("Unsupported IC2 blocks & items, unable to proceed further");
+			}
 		} catch (final Exception exception) {
-			WarpDrive.logger.error("Error loading IndustrialCraft2 classes");
+			WarpDrive.logger.error("Error loading IndustrialCraft2 blocks and items");
 			exception.printStackTrace(WarpDrive.printStreamError);
 		}
 	}

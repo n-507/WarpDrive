@@ -16,10 +16,18 @@ import net.minecraft.world.World;
 public class CompatIndustrialCraft2 implements IBlockTransformer {
 	
 	private static Class<?> classIC2tileEntity;
+	private static boolean isExperimental = false;
 	
 	public static void register() {
 		try {
-			classIC2tileEntity = Class.forName("ic2.core.block.TileEntityBlock");
+			try {
+				// first, try IC2 Experimental
+				classIC2tileEntity = Class.forName("ic2.core.block.TileEntityBlock");
+				isExperimental = true;
+			} catch (final ClassNotFoundException exception) {
+				// then, try IC2 Classic
+				classIC2tileEntity = Class.forName("ic2.core.block.base.tile.TileEntityBlock");
+			}
 			WarpDriveConfig.registerBlockTransformer("ic2", new CompatIndustrialCraft2());
 		} catch (final ClassNotFoundException exception) {
 			exception.printStackTrace();
@@ -91,6 +99,12 @@ public class CompatIndustrialCraft2 implements IBlockTransformer {
 	public void restoreExternals(final World world, final BlockPos blockPos,
 	                             final IBlockState blockState, final TileEntity tileEntity,
 	                             final ITransformation transformation, final NBTBase nbtBase) {
-		// nothing to do
+		// IC2 Classic has its own approach to detect energy blocks and connect to them
+		// we need to force a reconnection by simulating chunk unloading and a new 'first tick'
+		if ( !isExperimental
+		  && tileEntity != null ) {
+			tileEntity.onChunkUnload();
+			tileEntity.onLoad();
+		}
 	}
 }
