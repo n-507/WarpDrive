@@ -427,6 +427,17 @@ local function format_address(value)
   return str
 end
 
+local function format_charNumber(value)
+  if  value ~= nil
+  and type(value) == "number"
+  and value <= 65535
+  and value >= 0 then
+    return unicode.char(value)
+  else
+    return string.char(0)
+  end
+end
+
 ----------- Input controls
 
 local function input_readInteger(currentValue)
@@ -453,7 +464,7 @@ local function input_readInteger(currentValue)
     local firstParam = params[3]
     if firstParam == nil then firstParam = "none" end
     if eventName == "key_down" then
-      local character = string.char(params[3])
+      local character = format_charNumber(params[3])
       local keycode = params[4]
       
       if keycode >= 2 and keycode <= 10 then -- 1 to 9
@@ -558,7 +569,7 @@ local function input_readText(currentValue)
     local firstParam = params[3]
     if firstParam == nil then firstParam = "none" end
     if eventName == "key_down" then
-      local character = string.char(params[3])
+      local character = format_charNumber(params[3])
       local keycode = params[4]
       
       if keycode == 14 then -- Backspace
@@ -616,7 +627,7 @@ local function input_readConfirmation(message)
     local firstParam = params[3]
     if firstParam == nil then firstParam = "none" end
     if eventName == "key_down" then
-      local character = string.char(params[3])
+      local character = format_charNumber(params[3])
       local keycode = params[4]
       
       if keycode == 28 then -- Return or Enter
@@ -699,7 +710,7 @@ local function input_readEnum(currentValue, list, toValue, toDescription, noValu
     local firstParam = params[3]
     if firstParam == nil then firstParam = "none" end
     if eventName == "key_down" then
-      local character = string.char(params[3])
+      local character = format_charNumber(params[3])
       local keycode = params[4]
       
       if keycode == 14 or keycode == 211 then -- Backspace or Delete
@@ -1156,7 +1167,7 @@ local function run()
     -- w.sleep(0.2)
     
     if eventName == "key_down" then
-      local character = string.char(params[3])
+      local character = format_charNumber(params[3])
       local keycode = params[4]
       
       ignoreNextChar = false
@@ -1285,6 +1296,7 @@ w = {
   format_boolean = format_boolean,
   format_string = format_string,
   format_address = format_address,
+  format_charNumber = format_charNumber,
   input_readInteger = input_readInteger,
   input_readText = input_readText,
   input_readConfirmation = input_readConfirmation,

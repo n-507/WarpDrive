@@ -316,7 +316,7 @@ function ship_page_setRotation()
     local firstParam = params[3]
     if firstParam == nil then firstParam = "none" end
     if eventName == "key_down" then
-      local character = string.char(params[3])
+      local character = w.format_charNumber(params[3])
       local keycode = params[4]
       
       if keycode == 200 then

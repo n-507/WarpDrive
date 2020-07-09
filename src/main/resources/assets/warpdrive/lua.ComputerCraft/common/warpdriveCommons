@@ -421,6 +421,17 @@ local function format_address(value)
   return str
 end
 
+local function format_charNumber(value)
+  if  value ~= nil
+  and type(value) == "number"
+  and value <= 255
+  and value >= 0 then
+    return string.char(value)
+  else
+    return string.char(0)
+  end
+end
+
 ----------- Input controls
 
 local function input_readInteger(currentValue)
@@ -1304,6 +1315,7 @@ w = {
   format_boolean = format_boolean,
   format_string = format_string,
   format_address = format_address,
+  format_charNumber = format_charNumber,
   input_readInteger = input_readInteger,
   input_readText = input_readText,
   input_readConfirmation = input_readConfirmation,
