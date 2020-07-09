@@ -330,7 +330,7 @@ function ship_page_setRotation()
       elseif keycode == 28 then
         inputAbort = true
       else
-        w.status_showWarning("Key " .. keycode .. " is invalid")
+        w.status_showWarning("Key code " .. w.format_integer(keycode) .. " is invalid")
       end
     elseif eventName == "interrupted" then
       inputAbort = true
