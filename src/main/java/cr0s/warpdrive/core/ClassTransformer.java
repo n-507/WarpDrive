@@ -76,7 +76,7 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 		
 		nodeMap.put("ForgeHooks.class", "ForgeHooks");
 		nodeMap.put("loadAdvancements.name", "lambda$loadAdvancements$0");
-		nodeMap.put("loadAdvancements.desc", "(Lnet/minecraftforge/fml/common/ModContainer;Ljava/util/Map;Ljava/nio/file/Path;Ljava/nio/file/Path;)Ljava/lang/Boolean;");
+		nodeMap.put("loadAdvancements.desc", "(Lnet/minecraftforge/fml/common/ModContainer;Ljava/util/Map;Lnet/minecraftforge/common/crafting/JsonContext;Ljava/nio/file/Path;Ljava/nio/file/Path;)Ljava/lang/Boolean;");
 		
 		nodeMap.put("RenderGlobal.class", "buw");
 		nodeMap.put("renderWorldBorder.name", "func_180449_a");
