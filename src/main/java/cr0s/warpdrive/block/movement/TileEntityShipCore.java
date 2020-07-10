@@ -470,6 +470,10 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		return enumShipCommand == EnumShipCommand.OFFLINE;
 	}
 	
+	public boolean isUnderMaintenance() {
+		return enumShipCommand == EnumShipCommand.MAINTENANCE;
+	}
+	
 	public boolean isBusy() {
 		return timeLastShipScanDone < 0 || shipScanner != null
 		    || isCooling()

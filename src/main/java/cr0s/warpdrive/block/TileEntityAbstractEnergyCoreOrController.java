@@ -6,6 +6,7 @@ import cr0s.warpdrive.api.computer.ICoreSignature;
 import cr0s.warpdrive.api.computer.IEnergyConsumer;
 import cr0s.warpdrive.api.computer.IMultiBlockCoreOrController;
 import cr0s.warpdrive.api.computer.IMultiBlockCore;
+import cr0s.warpdrive.block.movement.TileEntityShipCore;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.GlobalRegionManager;
 
@@ -39,7 +40,8 @@ public abstract class TileEntityAbstractEnergyCoreOrController extends TileEntit
 	public void update() {
 		super.update();
 		
-		if (world.isRemote) {
+		if ( world.isRemote
+		  && !(this instanceof TileEntityShipCore) ) {
 			return;
 		}
 		

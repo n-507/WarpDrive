@@ -42,10 +42,10 @@ public class PlayerHandler {
 	@SubscribeEvent
 	public void onBreakSpeed(@Nonnull final BreakSpeed event) {
 		final EntityPlayer entityPlayer = event.getEntityPlayer();
-		final BlockPos blockPos = entityPlayer.getPosition();
+		final BlockPos blockPos = event.getPos();
 		
 		// check for lock
-		doCancelEventDuringJump(event, event.getPos());
+		doCancelEventDuringJump(event, blockPos);
 		if (event.isCanceled()) {
 			return;
 		}
@@ -72,7 +72,7 @@ public class PlayerHandler {
 		}
 		final TileEntityShipCore tileEntityShipCoreClosest = (TileEntityShipCore) tileEntity;
 		if ( !tileEntityShipCoreClosest.isAssemblyValid()
-		  || tileEntityShipCoreClosest.getIsEnabled() ) {
+		  || !tileEntityShipCoreClosest.isUnderMaintenance() ) {
 			return;
 		}
 		
