@@ -35,18 +35,19 @@ group = "cr0s.warpdrive" // http://maven.apache.org/guides/mini/guide-naming-con
 version = "${config.minecraft_version}-${config.mod_version}.${System.getenv("BUILD_NUMBER") ?: 'SNAPSHOT'}"
 archivesBaseName = "WarpDrive"
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+// Enforce Java version explicitly so eclipse task generates correctly.
+sourceCompatibility = compileJava.sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = compileJava.targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
     version = config.minecraft_version + "-" + config.forge_version
     runDir = "run"
     
-    // the mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   snapshot are built nightly.
-    // stable_#            stables are built at the discretion of the MCP team.
+    // The mappings can be changed at any time, and must be in the following format.
+    // snapshot_YYYYMMDD   Snapshot are built nightly.
+    // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
-    // simply re-run your setup task after changing the mappings to update your workspace.
+    // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings = "${config.mappings_version}"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
@@ -125,20 +126,19 @@ repositories {
 }
 
 dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
+    // You may put jars on which you depend on in ./libs or you may define them like so..
     //compile "some.group:artifact:version:classifier"
     //compile "some.group:artifact:version"
     
-    // real examples
+    // Real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
     
-    // for more info...
+    // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     
-    // using deobfCompile will include in run environment
+    // Using deobfCompile will include in run environment
     provided "blusunrize:ImmersiveEngineering:${config.ImmersiveEngineering_version}:deobf"
     provided "cofh:CoFHCore:${config.CoFHCore_version}:universal"
     provided "cofh:RedstoneFlux:${config.RedstoneFlux_version}:universal"
@@ -162,7 +162,7 @@ dependencies {
 processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+    inputs.property "mcversion", config.minecraft_version
     
     // skip source assets
     exclude '**/*.pdn'
@@ -173,10 +173,10 @@ processResources {
         include 'mcmod.info'
         
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version':project.version, 'mcversion':config.minecraft_version
     }
     
-    // copy everything else, thats not the mcmod.info
+    // copy everything else, that's not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
@@ -227,19 +227,20 @@ jar {
     dependsOn copyOpenComputersCommons1, copyOpenComputersCommons2, copyOpenComputersCommons3, copyOpenComputersCommons4, copyOpenComputersCommons5, copyOpenComputersCommons6
     
     manifest {
-        attributes FMLAT: "warpdrive_at.cfg"
-        attributes FMLCorePlugin: "cr0s.warpdrive.core.FMLLoadingPlugin"
-        attributes FMLCorePluginContainsFMLMod: "true"
+        attributes([
+            "FMLAT": "warpdrive_at.cfg",
+            "FMLCorePlugin": "cr0s.warpdrive.core.FMLLoadingPlugin",
+            "FMLCorePluginContainsFMLMod": "true",
+        ])
     }
     classifier = ''
     destinationDir = file 'output'
 }
 
-task signJar(type: SignJar) {
+task signJar(type: SignJar, dependsOn: reobfJar) {
     onlyIf { // Skip the task if our secret data isn't available
         project.hasProperty('keyStore')
     }
-    dependsOn reobfJar
     
     if (project.hasProperty('keyStore')) { // This needs to be a path to the keystore file
         keyStore = project.keyStore
