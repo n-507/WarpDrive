@@ -1,38 +1,22 @@
 {
 	"forge_marker": 1,
 	"defaults": {
-		"model": "minecraft:cube_directional",
-		"textures": {
-			"particle": "warpdrive:blocks/detection/biometric_scanner-front_online",
-			"down"    : "warpdrive:blocks/detection/biometric_scanner-side",
-			"up"      : "warpdrive:blocks/detection/biometric_scanner-side",
-			"north"   : "warpdrive:blocks/detection/biometric_scanner-front_online",
-			"south"   : "warpdrive:blocks/detection/biometric_scanner-side",
-			"west"    : "warpdrive:blocks/detection/biometric_scanner-side",
-			"east"    : "warpdrive:blocks/detection/biometric_scanner-side"
-		},
+		"model": "warpdrive:detection/biometric_scanner", 
 		"transform": "forge:default-block"
-	},
-	"variants": {
-		"normal": [{}],
+    },
+    "variants": {
 		"inventory": [{}],
 		"active": {
-			"false": {
-				"textures": {
-					"north"   : "warpdrive:blocks/detection/biometric_scanner-front_offline"
-				}
-			},
-			"true": {
-				
-			}
+			"false": {},
+			"true": {}
 		},
 		"facing": {
-			"north": {},
+			"down" : { "x":  90 },
+			"up"   : { "x": -90 },
+			"north": {          },
 			"south": { "y": 180 },
 			"west" : { "y": 270 },
-			"east" : { "y": 90 },
-			"up"   : { "x": -90 },
-			"down" : { "x": 90 }
+			"east" : { "y":  90 }
 		}
-	}
+    }
 }

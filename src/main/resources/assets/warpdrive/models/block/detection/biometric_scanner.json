@@ -1,0 +1,35 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"particle": "warpdrive:blocks/detection/biometric_scanner-side",
+		"block": "warpdrive:blocks/detection/biometric_scanner-side",
+		"face": "warpdrive:blocks/detection/biometric_scanner-face"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#block"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#block"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#block"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#block"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#block"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#block"}
+			}
+		},
+		{
+			"from": [2, 2, -2],
+			"to": [14, 14, 0],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, -8]},
+			"faces": {
+				"north": {"uv": [0, 0, 12, 12], "texture": "#face"},
+				"east": {"uv": [10, 0, 12, 12], "texture": "#face"},
+				"south": {"uv": [0, 0, 12, 12], "texture": "#face"},
+				"west": {"uv": [0, 0, 2, 12], "texture": "#face"},
+				"up": {"uv": [0, 12, 12, 14], "texture": "#face"},
+				"down": {"uv": [0, 10, 12, 12], "texture": "#face"}
+			}
+		}
+	]
+}

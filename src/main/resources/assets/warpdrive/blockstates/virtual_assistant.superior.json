@@ -3,9 +3,9 @@
 	"defaults": {
 		"model": "minecraft:cube_bottom_top",
 		"textures": {
-			"side"  : "warpdrive:blocks/detection/virtual_assistant-side_online",
-			"bottom": "warpdrive:blocks/detection/virtual_assistant-bottom_top",
-			"top"   : "warpdrive:blocks/detection/virtual_assistant-bottom_top"
+			"side"    : "warpdrive:blocks/detection/virtual_assistant-side_on",
+			"bottom"  : "warpdrive:blocks/detection/virtual_assistant-bottom",
+			"top"     : "warpdrive:blocks/detection/virtual_assistant.superior-top"
 		},
 		"transform": "forge:default-block"
 	},
@@ -13,8 +13,8 @@
 		"normal": [{}],
 		"inventory": [{}],
 		"active": {
-			"false": { "textures": { "side"  : "warpdrive:blocks/detection/virtual_assistant-side_offline" } },
-			"true" : { "textures": { "side"  : "warpdrive:blocks/detection/virtual_assistant-side_online"  } }
+			"false": { "textures": { "side"    : "warpdrive:blocks/detection/virtual_assistant-side_off" } },
+			"true" : {}
 		}
 	}
 }
