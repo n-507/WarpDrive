@@ -7,6 +7,7 @@ local term = require("term")
 local event = require("event")
 local fs = require("filesystem")
 local serialization = require("serialization")
+local unicode = require("unicode")
 local colors = {-- loosely based on CC colors
   green     = 0x008000,
   brown     = 0x804040,
