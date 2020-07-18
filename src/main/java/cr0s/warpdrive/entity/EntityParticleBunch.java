@@ -60,15 +60,6 @@ public class EntityParticleBunch extends Entity {
 		}
 	}
 	
-	// override to skip the block bounding override on client side
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void setPositionAndRotation(final double x, final double y, final double z, final float yaw, final float pitch) {
-	//	super.setPositionAndRotation(x, y, z, yaw, pitch);
-		this.setPosition(x, y, z);
-		this.setRotation(yaw, pitch);
-	}
-	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public int getBrightnessForRender() {

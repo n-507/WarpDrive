@@ -352,11 +352,11 @@ public class Dictionary {
 			config.get("entity_tags", "minecraft:arrow"                        , "NoMass NonLivingTarget").getString();
 			
 			config.get("entity_tags", "ic2:carbon_boat"                        , "NoMass NonLivingTarget").getString(); // IC2 Experimental
-			config.get("entity_tags", "ic2:carbonboat"                        , "NoMass NonLivingTarget").getString(); // IC2 Classic
+			config.get("entity_tags", "ic2:carbonboat"                         , "NoMass NonLivingTarget").getString(); // IC2 Classic
 			config.get("entity_tags", "ic2:rubber_boat"                        , "NoMass NonLivingTarget").getString(); // IC2 Experimental
-			config.get("entity_tags", "ic2:rubberboat"                        , "NoMass NonLivingTarget").getString(); // IC2 Classic
+			config.get("entity_tags", "ic2:rubberboat"                         , "NoMass NonLivingTarget").getString(); // IC2 Classic
 			config.get("entity_tags", "ic2:electric_boat"                      , "NoMass NonLivingTarget").getString(); // IC2 Experimental
-			config.get("entity_tags", "ic2:electricboat"                      , "NoMass NonLivingTarget").getString(); // IC2 Classic
+			config.get("entity_tags", "ic2:electricboat"                       , "NoMass NonLivingTarget").getString(); // IC2 Classic
 			config.get("entity_tags", "ic2:nuke"                               , "NoMass NonLivingTarget").getString(); // IC2 Experimental & Classic
 			config.get("entity_tags", "ic2:itnt"                               , "NoMass NonLivingTarget").getString(); // IC2 Experimental & Classic
 			config.get("entity_tags", "ic2:sticky_dynamite"                    , "NoMass NonLivingTarget").getString(); // IC2 Experimental
