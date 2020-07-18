@@ -420,7 +420,7 @@ public class WorldGenSmallShip extends WorldGenerator {
 		genStructure.setHullGlass(world, x + 12, y + 5, z + 6);
 		if (!isCorrupted || rand.nextBoolean()) {
 			world.setBlockState(new BlockPos(x + 12, y + 5, z + 7),
-			                    WarpDrive.blockShipCores[1].getDefaultState().withProperty(BlockProperties.FACING, EnumFacing.WEST));
+			                    WarpDrive.blockShipCores[1].getDefaultState().withProperty(BlockProperties.FACING_HORIZONTAL, EnumFacing.WEST));
 			if (isCreative) {// fill with energy
 				final TileEntity tileEntity = world.getTileEntity(new BlockPos(x + 12, y + 5, z + 7));
 				if (tileEntity instanceof TileEntityAbstractEnergy) {
