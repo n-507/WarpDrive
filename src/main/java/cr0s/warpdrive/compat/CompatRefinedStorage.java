@@ -1,5 +1,6 @@
 package cr0s.warpdrive.compat;
 
+import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IBlockTransformer;
 import cr0s.warpdrive.api.ITransformation;
@@ -17,6 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Method;
 
@@ -64,15 +66,18 @@ public class CompatRefinedStorage implements IBlockTransformer {
 		}
 		
 		final IRSAPI refinedStorageAPI = API.instance();
+		final INetworkNode networkNode;
 		if (refinedStorageAPI == null) {
 			WarpDrive.logger.error("Invalid API instance while saving externals for RefinedStorage, please report to mod author");
-			return null;
-		}
-		final INetworkNodeManager networkNodeManager = refinedStorageAPI.getNetworkNodeManager(world);
-		
-		final INetworkNode networkNode = networkNodeManager.getNode(tileEntity.getPos());
-		if (networkNode == null) {
-			return null;
+			networkNode = null;
+		} else {
+			final INetworkNodeManager networkNodeManager = refinedStorageAPI.getNetworkNodeManager(world);
+			
+			networkNode = networkNodeManager.getNode(tileEntity.getPos());
+			if (networkNode == null) {
+				WarpDrive.logger.debug(String.format("No network node, nothing to save for %s %s",
+				                                     tileEntity, Commons.format(world, x, y, z)) );
+			}
 		}
 		
 		final TileBase tileBase = (TileBase) tileEntity;
@@ -80,8 +85,10 @@ public class CompatRefinedStorage implements IBlockTransformer {
 		final NBTTagCompound tagCompound = new NBTTagCompound();
 		
 		tagCompound.setInteger(NBT_DIRECTION, tileBase.getDirection().ordinal());
-		tagCompound.setTag(NBT_NODE, networkNode.write(new NBTTagCompound()));
-		tagCompound.setString(NBT_NODE_ID, networkNode.getId());
+		if (networkNode != null) {
+			tagCompound.setTag(NBT_NODE, networkNode.write(new NBTTagCompound()));
+			tagCompound.setString(NBT_NODE_ID, networkNode.getId());
+		}
 		
 		return tagCompound;
 	}
@@ -146,9 +153,13 @@ public class CompatRefinedStorage implements IBlockTransformer {
 	public void restoreExternals(final World world, final BlockPos blockPos,
 	                             final IBlockState blockState, final TileEntity tileEntity,
 	                             final ITransformation transformation, final NBTBase nbtBase) {
+		if (!(tileEntity instanceof TileBase)) {
+			return;
+		}
+		
 		if (!(nbtBase instanceof NBTTagCompound)) {
-			WarpDrive.logger.error(String.format("Unexpected external NBT while restoring RefinedStorage, please report to mod author: %s",
-			                                     nbtBase));
+			WarpDrive.logger.error(String.format("Unexpected external NBT while restoring RefinedStorage, please report to mod author: %s %s %s",
+			                                     blockState, nbtBase, Commons.format(world, blockPos) ));
 			return;
 		}
 		
@@ -186,25 +197,29 @@ public class CompatRefinedStorage implements IBlockTransformer {
 		final IRSAPI refinedStorageAPI = API.instance();
 		if (refinedStorageAPI == null) {
 			WarpDrive.logger.error(String.format("Invalid API instance while restoring RefinedStorage, please report to mod author: %s",
-			                                     nbtBase));
+			                                     nbtBase ));
 			return;
 		}
-		final INetworkNodeFactory networkNodeFactory = refinedStorageAPI.getNetworkNodeRegistry().get(tagCompound.getString(NBT_NODE_ID));
-		if (networkNodeFactory == null) {
-			WarpDrive.logger.error(String.format("Invalid NodeId in external NBT while restoring externals for RefinedStorage, please report to mod author: %s",
-			                                     nbtBase));
-			return;
-		}
-		final NetworkNode networkNode = (NetworkNode) networkNodeFactory.create(tagCompoundNode, world, blockPos);
-		networkNode.setThrottlingDisabled();
-		
 		final INetworkNodeManager manager = refinedStorageAPI.getNetworkNodeManager(world);
-		
-		manager.setNode(blockPos, networkNode);
+		if (tagCompoundNode.hasKey(NBT_NODE_ID, NBT.TAG_STRING)) {
+			final INetworkNodeFactory networkNodeFactory = refinedStorageAPI.getNetworkNodeRegistry().get(tagCompound.getString(NBT_NODE_ID));
+			if (networkNodeFactory == null) {
+				WarpDrive.logger.error(String.format("Invalid NodeId in external NBT while restoring externals for RefinedStorage, please report to mod author: %s",
+				                                     nbtBase ));
+				return;
+			}
+			final NetworkNode networkNode = (NetworkNode) networkNodeFactory.create(tagCompoundNode, world, blockPos);
+			networkNode.setThrottlingDisabled();
+			
+			manager.setNode(blockPos, networkNode);
+		}
 		manager.markForSaving();
 		
 		// restore direction
-		if (tileEntity instanceof TileBase) {
+		if (!tagCompound.hasKey(NBT_DIRECTION, NBT.TAG_ANY_NUMERIC)) {
+			WarpDrive.logger.error(String.format("Missing direction in external NBT while restoring externals for RefinedStorage, please report to mod author: %s",
+			                                     nbtBase ));
+		} else {
 			final int directionOld = tagCompound.getInteger(NBT_DIRECTION);
 			final int directionNew;
 			
@@ -224,8 +239,10 @@ public class CompatRefinedStorage implements IBlockTransformer {
 			}
 			
 			((TileBase) tileEntity).setDirection(EnumFacing.byIndex(directionNew));
-			
-			tileEntity.markDirty();
 		}
+		
+		tileEntity.markDirty();
+		
+		world.notifyBlockUpdate(blockPos, blockState, blockState, 4);
 	}
 }
