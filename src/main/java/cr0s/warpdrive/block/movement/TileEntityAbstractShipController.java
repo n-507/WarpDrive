@@ -17,6 +17,8 @@ import li.cil.oc.api.machine.Context;
 import javax.annotation.Nonnull;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 
 import net.minecraftforge.fml.common.Optional;
 
@@ -97,6 +99,32 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 		tagCompound.setBoolean("commandConfirmed", isCommandConfirmed);
 		
 		return tagCompound;
+	}
+	
+	@Nonnull
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		final NBTTagCompound tagCompound = super.getUpdateTag();
+		
+		tagCompound.setInteger("moveFront", moveFront);
+		tagCompound.setInteger("moveUp", moveUp);
+		tagCompound.setInteger("moveRight", moveRight);
+		tagCompound.setByte("rotationSteps", rotationSteps);
+		
+		return tagCompound;
+	}
+	
+	@Override
+	public void onDataPacket(@Nonnull final NetworkManager networkManager, @Nonnull final SPacketUpdateTileEntity packet) {
+		super.onDataPacket(networkManager, packet);
+		
+		final NBTTagCompound tagCompound = packet.getNbtCompound();
+		
+		setMovement(
+				tagCompound.getInteger("moveFront"),
+				tagCompound.getInteger("moveUp"),
+				tagCompound.getInteger("moveRight") );
+		setRotationSteps(tagCompound.getByte("rotationSteps"));
 	}
 	
 	@Override

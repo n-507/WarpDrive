@@ -1,12 +1,18 @@
 package cr0s.warpdrive.data;
 
 import cr0s.warpdrive.api.ITransformation;
+import cr0s.warpdrive.block.movement.TileEntityShipCore;
+
+import javax.annotation.Nonnull;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Transformation implements ITransformation {
 	
@@ -22,7 +28,7 @@ public class Transformation implements ITransformation {
 	private final int maxY;
 	private final int maxZ;
 	
-	public Transformation(final JumpShip ship, final World targetWorld, final int moveX, final int moveY, final int moveZ, final byte rotationSteps) {
+	public Transformation(@Nonnull final JumpShip ship, @Nonnull final World targetWorld, final int moveX, final int moveY, final int moveZ, final byte rotationSteps) {
 		sourceCore = new VectorI(ship.core);
 		minX = ship.minX;
 		minY = ship.minY;
@@ -31,6 +37,21 @@ public class Transformation implements ITransformation {
 		maxY = ship.maxY;
 		maxZ = ship.maxZ;
 		this.targetWorld = targetWorld;
+		move = new VectorI(moveX, moveY, moveZ);
+		targetCore = sourceCore.add(move);
+		this.rotationSteps = (byte) ((rotationSteps + 4) % 4);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public Transformation(@Nonnull final TileEntityShipCore tileEntityShipCore, final int moveX, final int moveY, final int moveZ, final byte rotationSteps) {
+		sourceCore = new VectorI(tileEntityShipCore);
+		minX = tileEntityShipCore.minX;
+		minY = tileEntityShipCore.minY;
+		minZ = tileEntityShipCore.minZ;
+		maxX = tileEntityShipCore.maxX;
+		maxY = tileEntityShipCore.maxY;
+		maxZ = tileEntityShipCore.maxZ;
+		this.targetWorld = null;
 		move = new VectorI(moveX, moveY, moveZ);
 		targetCore = sourceCore.add(move);
 		this.rotationSteps = (byte) ((rotationSteps + 4) % 4);

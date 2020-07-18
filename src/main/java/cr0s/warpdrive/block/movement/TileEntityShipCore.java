@@ -22,6 +22,7 @@ import cr0s.warpdrive.data.EnumShipMovementType;
 import cr0s.warpdrive.data.GlobalRegionManager;
 import cr0s.warpdrive.data.SoundEvents;
 import cr0s.warpdrive.data.GlobalRegion;
+import cr0s.warpdrive.data.Transformation;
 import cr0s.warpdrive.data.Vector3;
 import cr0s.warpdrive.data.VectorI;
 import cr0s.warpdrive.event.JumpSequencer;
@@ -125,11 +126,44 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		final Vector3 vector3 = new Vector3(this);
 		vector3.translate(0.5D);
 		
+		final Vector3 vMin = new Vector3(minX - 0.0D, minY - 0.0D, minZ - 0.0D);
+		final Vector3 vMax = new Vector3(maxX + 1.0D, maxY + 1.0D, maxZ + 1.0D);
 		FMLClientHandler.instance().getClient().effectRenderer.addEffect(
 				new EntityFXBoundingBox(world, vector3,
-				                        new Vector3(minX - 0.0D, minY - 0.0D, minZ - 0.0D),
-				                        new Vector3(maxX + 1.0D, maxY + 1.0D, maxZ + 1.0D),
+				                        vMin,
+				                        vMax,
 				                        1.0F, 0.8F, 0.3F, BOUNDING_BOX_INTERVAL_TICKS + 1) );
+		
+		final VectorI vMovement = getMovement();
+		if (vMovement.getMagnitudeSquared() > 0) {
+			final VectorI movement = getMovement();
+			final VectorI shipSize = new VectorI(getFront() + 1 + getBack(),
+			                                     getUp()    + 1 + getDown(),
+			                                     getRight() + 1 + getLeft());
+			final int maxDistance = 256;
+			if (Math.abs(movement.x) - shipSize.x > maxDistance) {
+				movement.x = (int) Math.signum(movement.x) * (shipSize.x + maxDistance);
+			}
+			if (Math.abs(movement.y) - shipSize.y > maxDistance) {
+				movement.y = (int) Math.signum(movement.y) * (shipSize.y + maxDistance);
+			}
+			if (Math.abs(movement.z) - shipSize.z > maxDistance) {
+				movement.z = (int) Math.signum(movement.z) * (shipSize.z + maxDistance);
+			}
+			facing = world.getBlockState(pos).getValue(BlockProperties.FACING_HORIZONTAL);
+			final int moveX = facing.getXOffset() * movement.x - facing.getZOffset() * movement.z;
+			final int moveY = movement.y;
+			final int moveZ = facing.getZOffset() * movement.x + facing.getXOffset() * movement.z;
+			final Transformation transformation = new Transformation(this, moveX, moveY, moveZ, getRotationSteps());
+			final Vec3d vMinTarget = transformation.apply(vMin.x, vMin.y, vMin.z);
+			final Vec3d vMaxTarget = transformation.apply(vMax.x, vMax.y, vMax.z);
+			
+			FMLClientHandler.instance().getClient().effectRenderer.addEffect(
+					new EntityFXBoundingBox(world, vector3,
+					                        new Vector3(Math.min(vMinTarget.x, vMaxTarget.x), Math.min(vMinTarget.y, vMaxTarget.y), Math.min(vMinTarget.z, vMaxTarget.z)),
+					                        new Vector3(Math.max(vMinTarget.x, vMaxTarget.x), Math.max(vMinTarget.y, vMaxTarget.y), Math.max(vMinTarget.z, vMaxTarget.z)),
+					                        0.3F, 0.8F, 1.0F, BOUNDING_BOX_INTERVAL_TICKS + 1) );
+		}
 	}
 	
 	@Override
