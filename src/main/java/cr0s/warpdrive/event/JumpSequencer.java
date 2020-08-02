@@ -1676,7 +1676,7 @@ public class JumpSequencer extends AbstractSequencer {
 						           blockPosTarget.getZ(),
 						           false,
 						           new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.entering_protected_area",
-						                             blockPosTarget.getX(), blockPosTarget.getZ(), blockPosTarget.getZ()) );
+						                             blockPosTarget.getX(), blockPosTarget.getY(), blockPosTarget.getZ()) );
 						return result;
 					}
 				}
