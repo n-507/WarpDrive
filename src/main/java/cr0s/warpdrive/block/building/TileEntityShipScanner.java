@@ -10,6 +10,7 @@ import cr0s.warpdrive.block.movement.TileEntityShipCore;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
+import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.EnumShipScannerState;
 import cr0s.warpdrive.data.JumpBlock;
 import cr0s.warpdrive.data.JumpShip;
@@ -448,6 +449,27 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		
 		// Validate context
 		{
+			// Check tier constrains
+			if ( jumpShip.maxX - jumpShip.minX + 1 > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]
+			  || jumpShip.maxY - jumpShip.minY + 1 > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]
+			  || jumpShip.maxZ - jumpShip.minZ + 1 > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()] ) {
+				reason.append(Commons.getStyleWarning(), "warpdrive.builder.guide.ship_is_higher_tier");
+				return false;
+			}
+			if ( jumpShip.actualMass > WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE
+			  && CelestialObjectManager.isPlanet(world, pos.getX(), pos.getZ()) ) {
+				reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.too_much_mass_for_planet",
+				                                       WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE, jumpShip.actualMass );
+				return false;
+			}
+			
+			// note: we don't check for minimum mass so we can build a shuttle with a corvette builder
+			
+			if (jumpShip.actualMass > WarpDriveConfig.SHIP_MASS_MAX_BY_TIER[enumTier.getIndex()]) {
+				reason.append(Commons.getStyleWarning(), "warpdrive.builder.guide.ship_is_higher_tier");
+				return false;
+			}
+			
 			// Check distance
 			final double dX = pos.getX() - targetX;
 			final double dY = pos.getY() - targetY;
