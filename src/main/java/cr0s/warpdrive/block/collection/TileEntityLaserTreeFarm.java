@@ -537,7 +537,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 					return EnumTaskResult.RETRY;
 				}
 				
-				final ItemStack itemStackRawRubber = ItemComponent.getItemStack(EnumComponentType.RAW_RUBBER);
+				final ItemStack itemStackRawRubber = ItemComponent.getItemStackNoCache(EnumComponentType.RAW_RUBBER, 1);
 				if (InventoryWrapper.addToConnectedInventories(world, pos, itemStackRawRubber)) {
 					setIsEnabled(false);
 				}
