@@ -33,6 +33,7 @@ import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -809,7 +810,7 @@ public class TileEntityShipScanner extends TileEntityAbstractMachine implements 
 		// find a unique player in range
 		final AxisAlignedBB axisalignedbb = new AxisAlignedBB(pos.getX() - 1.0D, pos.getY() + 1.0D, pos.getZ() - 1.0D,
 		                                                      pos.getX() + 1.99D, pos.getY() + 5.0D, pos.getZ() + 1.99D);
-		final List list = world.getEntitiesWithinAABBExcludingEntity(null, axisalignedbb);
+		final List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(null, axisalignedbb);
 		final List<EntityPlayer> entityPlayers = new ArrayList<>(10);
 		for (final Object object : list) {
 			if (object instanceof EntityPlayer) {
