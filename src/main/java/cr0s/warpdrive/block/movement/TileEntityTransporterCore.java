@@ -94,7 +94,6 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	                                                                    WarpDriveConfig.TRANSPORTER_RANGE_UPGRADE_MAX_QUANTITY );
 	
 	// persistent properties
-	private UUID uuid = null;
 	private ArrayList<BlockPos> vLocalScanners = null;
 	private int beamFrequency = -1;
 	private boolean isLockRequested = false;
@@ -928,11 +927,11 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		}
 	}
 	
-	boolean updateBeacon(final TileEntity tileEntity, final UUID uuid) {
+	boolean updateBeacon(final TileEntity tileEntity, final UUID uuidTransporterCore) {
 		if ( tileEntity == null
-		  || !this.uuid.equals(uuid) ) {
+		  || !this.uuid.equals(uuidTransporterCore) ) {
 			WarpDrive.logger.error(String.format("%s Invalid parameters in beacon call to transporter as %s, %s",
-			                                     this, tileEntity, uuid));
+			                                     this, tileEntity, uuidTransporterCore));
 			// just ignore it
 			return false;
 		}
