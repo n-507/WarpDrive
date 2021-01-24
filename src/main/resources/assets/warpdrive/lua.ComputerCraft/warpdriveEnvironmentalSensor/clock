@@ -33,6 +33,10 @@ if noExit then
   local isRunning = true
   repeat
     for key, environmentalSensor in pairs(environmentalSensors) do
+      local isSuccessAtmosphere, isBreathable, airConcentration = environmentalSensor.getAtmosphere()
+      local isSuccessBiome, biomeName, biomeTag1, biomeTag2, biomeTag3 = environmentalSensor.getBiome()
+      local isSuccessHumidity, humidityCategory, biomeRainfall = environmentalSensor.getHumidity()
+      local isSuccessTemperature, biomeTemperatureCategory, biomeTemperature = environmentalSensor.getTemperature()
       local isSuccessWeather, currentWeather, nextWeatherSeconds = environmentalSensor.getWeather()
       local isSuccessWorldTime, day, hours, minutes, totalSeconds = environmentalSensor.getWorldTime()
       
@@ -57,35 +61,95 @@ if noExit then
       else
         -- show failure message
         term.setTextColor(colors.red)
-        term.write("Local weather is ? (" .. currentWeather .. ")")
+        term.write("Local weather is ? (" .. currentWeather .. ").")
       end
       
       term.setCursorPos(1, 5)
-      if isSuccessWorldTime then
-        if hours >= 6 and hours < 18 then
-          term.setTextColor(colors.white)
+      if isSuccessAtmosphere then
+        if isBreathable then
+          term.setTextColor(colors.green)
+          term.write("Atmosphere is breathable (" .. airConcentration .. " air concentration).")
         else
-          term.setTextColor(colors.lightGray)
+          term.setTextColor(colors.orange)
+          term.write("Atmosphere is NON-breathable (" .. airConcentration .. " air concentration).")
         end
-        term.write("Day " .. day)
       else
         -- show failure message
         term.setTextColor(colors.red)
-        term.write("Day ? (" .. day .. ")")
+        term.write("Atmosphere is ? (" .. isBreathable .. ").")
       end
       
       term.setCursorPos(1, 7)
+      if isSuccessBiome then
+        if biomeTag1 == nil then
+          biomeTag1 = ""
+        end
+        if biomeTag2 == nil then
+          biomeTag2 = ""
+        end
+        if biomeTag3 == nil then
+          biomeTag3 = ""
+        end
+        term.setTextColor(colors.white)
+        term.write("Biome is " .. biomeName .. " [" .. biomeTag1 .. " " .. biomeTag2 .. " " .. biomeTag3 .. " ...].")
+      else
+        -- show failure message
+        term.setTextColor(colors.red)
+        term.write("Biome is ? (" .. biomeName .. ").")
+      end
+      
+      term.setCursorPos(1, 9)
+      if isSuccessHumidity then
+        if humidityCategory == "DRY" then
+          term.setTextColor(colors.yellow)
+        elseif humidityCategory == "WET" then
+          term.setTextColor(colors.blue)
+        else
+          term.setTextColor(colors.white)
+        end
+        term.write("Humidity is " .. string.format("%.2f", biomeRainfall) .. " in " .. humidityCategory .. " category.")
+      else
+        -- show failure message
+        term.setTextColor(colors.red)
+        term.write("Humidity is ? (" .. humidityCategory .. ").")
+      end
+      
+      term.setCursorPos(1, 11)
+      if isSuccessTemperature then
+        term.setTextColor(colors.white)
+        term.write("Temperature is " .. string.format("%.3f", biomeTemperature) .. " in " .. biomeTemperatureCategory .. " category.")
+      else
+        -- show failure message
+        term.setTextColor(colors.red)
+        term.write("Temperature is ? (" .. biomeTemperatureCategory .. ").")
+      end
+      
+      term.setCursorPos(1, 13)
       if isSuccessWorldTime then
         if hours >= 6 and hours < 18 then
           term.setTextColor(colors.white)
         else
           term.setTextColor(colors.lightGray)
         end
-        term.write("Local time is " .. string.format("%02d", hours) .. ":" .. string.format("%02d", minutes))
+        term.write("World day is " .. day .. ".")
       else
         -- show failure message
         term.setTextColor(colors.red)
-        term.write("Local time is ? (" .. day .. ")")
+        term.write("World day is  ? (" .. day .. ").")
+      end
+      
+      term.setCursorPos(1, 15)
+      if isSuccessWorldTime then
+        if hours >= 6 and hours < 18 then
+          term.setTextColor(colors.white)
+        else
+          term.setTextColor(colors.lightGray)
+        end
+        term.write("Local time is " .. string.format("%02d", hours) .. ":" .. string.format("%02d", minutes) .. ".")
+      else
+        -- show failure message
+        term.setTextColor(colors.red)
+        term.write("Local time is ? (" .. day .. ").")
       end
       
       os.sleep(1)
