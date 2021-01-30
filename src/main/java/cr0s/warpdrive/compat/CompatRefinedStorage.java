@@ -201,7 +201,7 @@ public class CompatRefinedStorage implements IBlockTransformer {
 			return;
 		}
 		final INetworkNodeManager manager = refinedStorageAPI.getNetworkNodeManager(world);
-		if (tagCompoundNode.hasKey(NBT_NODE_ID, NBT.TAG_STRING)) {
+		if (tagCompound.hasKey(NBT_NODE_ID, NBT.TAG_STRING)) {
 			final INetworkNodeFactory networkNodeFactory = refinedStorageAPI.getNetworkNodeRegistry().get(tagCompound.getString(NBT_NODE_ID));
 			if (networkNodeFactory == null) {
 				WarpDrive.logger.error(String.format("Invalid NodeId in external NBT while restoring externals for RefinedStorage, please report to mod author: %s",
