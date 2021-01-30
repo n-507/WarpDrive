@@ -145,7 +145,7 @@ function reactor_page()
     w.write("Lasers charge (k)")
     
     for _, reactorlaser in pairs(reactorlasers) do
-      if reactorlaser.wrap ~= nil then
+      if reactorlaser.wrap ~= nil and reactorlaser.side ~= nil then
         local y = reactorlaser.side % 4
         local x = (reactorlaser.side - y) / 4
         w.setCursorPos(28 + 6 * x, 3 + y)
@@ -281,7 +281,7 @@ function reactor_pulse(output)
     
     if #reactorlasers ~= 0 then
       for _, reactorlaser in pairs(reactorlasers) do
-        if reactorlaser.wrap ~= nil then
+        if reactorlaser.wrap ~= nil and reactorlaser.side ~= nil then
           local y = reactorlaser.side % 4
           local x = (reactorlaser.side - y) / 4
           w.setCursorPos(28 + 6 * x, 3 + y)
