@@ -5,9 +5,11 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.network.PacketHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -106,10 +108,16 @@ public class CloakManager {
 	
 	@SideOnly(Side.CLIENT)
 	public void onClientTick() {
+		@Nullable
+		final EntityPlayerSP player = Minecraft.getMinecraft().player;
+		if (player == null) {
+			// skip without clearing the cache while client world is loading
+			return;
+		}
 		final CloakedArea[] cloakedAreas = cloakToRefresh.toArray(new CloakedArea[0]);
 		cloakToRefresh.clear();
 		for (final CloakedArea cloakedArea : cloakedAreas) {
-			cloakedArea.clientCloak();
+			cloakedArea.clientCloak(player);
 		}
 	}
 	

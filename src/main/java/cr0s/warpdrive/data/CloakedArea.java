@@ -8,6 +8,7 @@ import cr0s.warpdrive.network.PacketHandler;
 import cr0s.warpdrive.render.EntityFXBeam;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -27,6 +28,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -216,10 +218,8 @@ public class CloakedArea {
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void clientCloak() {
+	public void clientCloak(@Nonnull final EntityPlayerSP player) {
 		assert Commons.isSafeThread();
-		final EntityPlayerSP player = Minecraft.getMinecraft().player;
-		assert player != null;
 		
 		// Hide the blocks within area
 		if (WarpDriveConfig.LOGGING_CLOAKING) { WarpDrive.logger.info("Refreshing cloaked blocks..."); }
