@@ -73,6 +73,7 @@ public class Dictionary {
 	public static HashSet<Item> ITEMS_FLYINSPACE = null;
 	public static HashSet<Item> ITEMS_NOFALLDAMAGE = null;
 	public static HashSet<Item> ITEMS_BREATHING_HELMET = null;
+	public static HashSet<Item> ITEMS_EXCLUDED_AVATAR = null;
 	
 	public static void loadConfig(@Nonnull final Configuration config) {
 		
@@ -432,7 +433,8 @@ public class Dictionary {
 					+ "Tags shall be separated by at least one space, comma or tabulation.\n" + "Invalid tags will be ignored silently. Tags and block names are case sensitive.\n"
 					+ "In case of conflicts, the latest tag overwrite the previous ones.\n" + "- FlyInSpace: player can move without gravity effect while wearing this item (default: jetpacks).\n"
 					+ "- NoFallDamage: player doesn't take fall damage while wearing this armor item (default: IC2 rubber boots).\n"
-					+ "- BreathingHelmet: player can breath from WarpDrive air canister or IC2 compressed air while wearing this armor item (default: IC2 nano helmet and Cie).\n");
+					+ "- BreathingHelmet: player can breath from WarpDrive air canister or IC2 compressed air while wearing this armor item (default: IC2 nano helmet and Cie).\n"
+			        + "- ExcludedAvatar: offline avatars can't wear nor hold this item (default: SimplyJetpacks).\n");
 			
 			final ConfigCategory categoryItemTags = config.getCategory("item_tags");
 			// *** enforce default values
@@ -489,6 +491,8 @@ public class Dictionary {
 			config.get("item_tags", "warpdrive:warp_armor.advanced.boots"          , "NoFallDamage").getString();
 			config.get("item_tags", "warpdrive:warp_armor.superior.leggings"       , "NoFallDamage").getString();
 			config.get("item_tags", "warpdrive:warp_armor.superior.boots"          , "NoFallDamage").getString();
+			
+			config.get("item_tags", "simplyjetpacks:itemjetpack"                   , "ExcludedAvatar").getString();
 			
 			// *** read actual values
 			final String[] taggedItemsName = categoryItemTags.getValues().keySet().toArray(new String[0]);
@@ -613,6 +617,7 @@ public class Dictionary {
 		ITEMS_FLYINSPACE = new HashSet<>(taggedItems.size());
 		ITEMS_NOFALLDAMAGE = new HashSet<>(taggedItems.size());
 		ITEMS_BREATHING_HELMET = new HashSet<>(taggedItems.size());
+		ITEMS_EXCLUDED_AVATAR = new HashSet<>(taggedItems.size());
 		for (final Entry<String, String> taggedItem : taggedItems.entrySet()) {
 			final String itemId = taggedItem.getKey();
 			final Item item = Item.REGISTRY.getObject(new ResourceLocation(itemId));
@@ -625,6 +630,7 @@ public class Dictionary {
 				case "FlyInSpace"     : ITEMS_FLYINSPACE.add(item); break;
 				case "NoFallDamage"   : ITEMS_NOFALLDAMAGE.add(item); break;
 				case "BreathingHelmet": ITEMS_BREATHING_HELMET.add(item); break;
+				case "ExcludedAvatar" : ITEMS_EXCLUDED_AVATAR.add(item); break;
 				default:
 					WarpDrive.logger.error(String.format("Unsupported tag %s for item %s", tag, item));
 					break;
@@ -665,6 +671,7 @@ public class Dictionary {
 		WarpDrive.logger.info(String.format("- %s allowing fly in space: %s" , ITEMS_FLYINSPACE.size(), getHashMessage(ITEMS_FLYINSPACE)));
 		WarpDrive.logger.info(String.format("- %s absorbing fall damages: %s", ITEMS_NOFALLDAMAGE.size(), getHashMessage(ITEMS_NOFALLDAMAGE)));
 		WarpDrive.logger.info(String.format("- %s allowing breathing air: %s", ITEMS_BREATHING_HELMET.size(), getHashMessage(ITEMS_BREATHING_HELMET)));
+		WarpDrive.logger.info(String.format("- %s excluded avatar items: %s" , ITEMS_EXCLUDED_AVATAR.size(), getHashMessage(ITEMS_EXCLUDED_AVATAR)));
 	}
 	
 	private static void adjustHardnessAndResistance() {

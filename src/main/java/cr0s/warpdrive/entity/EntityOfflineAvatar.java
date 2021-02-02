@@ -1,6 +1,7 @@
 package cr0s.warpdrive.entity;
 
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.GlobalPosition;
 import cr0s.warpdrive.data.OfflineAvatarManager;
@@ -12,6 +13,8 @@ import java.util.UUID;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -132,6 +135,14 @@ public class EntityOfflineAvatar extends EntityLiving {
 			return;
 		}
 		setPlayer(uuidPlayer, namePlayer);
+		
+		for (final EntityEquipmentSlot entityEquipmentSlot : EntityEquipmentSlot.values()) {
+			final ItemStack itemStack = getItemStackFromSlot(entityEquipmentSlot);
+			if ( !itemStack.isEmpty()
+			  && Dictionary.ITEMS_EXCLUDED_AVATAR.contains(itemStack.getItem()) ) {
+				setItemStackToSlot(entityEquipmentSlot, ItemStack.EMPTY);
+			}
+		}
 	}
 	
 	@Override
