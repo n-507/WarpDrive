@@ -511,7 +511,7 @@ public class Dictionary {
 		final String[] oreNames = OreDictionary.getOreNames();
 		for (final String oreName : oreNames) {
 			final String lowerOreName = oreName.toLowerCase();
-			if (oreName.length() > 4 && oreName.substring(0, 3).equals("ore")) {
+			if (oreName.length() > 4 && oreName.startsWith("ore")) {
 				final List<ItemStack> itemStacks = OreDictionary.getOres(oreName);
 				for (final ItemStack itemStack : itemStacks) {
 					BLOCKS_ORES.add(Block.getBlockFromItem(itemStack.getItem()));
@@ -757,14 +757,14 @@ public class Dictionary {
 	}
 	
 	@Nonnull
-	private static String getHashMessage(@Nonnull final HashSet hashSet) {
+	private static String getHashMessage(@Nonnull final HashSet<?> hashSet) {
 		final StringBuilder message = new StringBuilder();
 		for (final Object object : hashSet) {
 			if (message.length() > 0) {
 				message.append(", ");
 			}
 			if (object instanceof IForgeRegistryEntry) {
-				message.append(((IForgeRegistryEntry) object).getRegistryName());
+				message.append(((IForgeRegistryEntry<?>) object).getRegistryName());
 			} else if (object instanceof String) {
 				message.append((String) object);
 			} else {

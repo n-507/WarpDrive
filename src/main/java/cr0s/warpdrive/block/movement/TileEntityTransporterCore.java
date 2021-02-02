@@ -21,7 +21,6 @@ import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumGlobalRegionType;
 import cr0s.warpdrive.data.EnumTransporterState;
-import cr0s.warpdrive.data.ForceFieldRegistry;
 import cr0s.warpdrive.data.ForceFieldSetup;
 import cr0s.warpdrive.data.GlobalPosition;
 import cr0s.warpdrive.data.GlobalRegionManager;
@@ -499,9 +498,6 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 		if ( beamFrequency != parBeamFrequency
 		  && IBeamFrequency.isValid(parBeamFrequency) ) {
 			final int beamFrequencyOld = beamFrequency;
-			if (hasWorld()) {
-				ForceFieldRegistry.removeFromRegistry(this);
-			}
 			beamFrequency = parBeamFrequency;
 			markDirtyParameters();
 			if (WarpDriveConfig.LOGGING_VIDEO_CHANNEL) {

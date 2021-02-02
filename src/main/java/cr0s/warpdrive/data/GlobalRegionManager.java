@@ -407,6 +407,7 @@ public class GlobalRegionManager {
 		}
 	}
 	
+	@Nullable
 	public static TileEntityShipCore getIntersectingShipCore(@Nonnull final TileEntityShipCore shipCore1) {
 		cleanup();
 		
