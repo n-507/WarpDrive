@@ -8,13 +8,20 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
+
+import net.minecraftforge.common.util.Constants;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 
@@ -29,17 +36,27 @@ public class ForceFieldRegistry {
 	private static int countRemove = 0;
 	private static int countRead = 0;
 	
-	private static final class RegistryEntry {
-		public final GlobalPosition globalPosition;
+	private static final class RegistryEntry extends GlobalPosition {
 		public final boolean isRelay;
-		
-		RegistryEntry(@Nonnull final GlobalPosition globalPosition, final boolean isRelay) {
-			this.globalPosition = globalPosition;
-			this.isRelay = isRelay;
-		}
+		public final int beamFrequency;
 		
 		RegistryEntry(@Nonnull final TileEntity tileEntity) {
-			this(new GlobalPosition(tileEntity), tileEntity instanceof TileEntityForceFieldRelay);
+			super(tileEntity);
+			this.isRelay = tileEntity instanceof TileEntityForceFieldRelay;
+			this.beamFrequency = ((IBeamFrequency) tileEntity).getBeamFrequency();
+		}
+		
+		public RegistryEntry(@Nonnull final NBTTagCompound tagCompound) {
+			super(tagCompound);
+			isRelay = tagCompound.getBoolean("isRelay");
+			beamFrequency = tagCompound.getInteger(IBeamFrequency.BEAM_FREQUENCY_TAG);
+		}
+		
+		@Override
+		public void writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
+			super.writeToNBT(tagCompound);
+			tagCompound.setBoolean("isRelay", isRelay);
+			tagCompound.setInteger(IBeamFrequency.BEAM_FREQUENCY_TAG, beamFrequency);
 		}
 		
 		@Override
@@ -52,7 +69,7 @@ public class ForceFieldRegistry {
 			}
 			if (object instanceof TileEntity) {
 				final TileEntity tileEntity = (TileEntity) object;
-				return globalPosition.equals(tileEntity)
+				return super.equals(tileEntity)
 				    && isRelay == (tileEntity instanceof TileEntityForceFieldRelay);
 			}
 			if (getClass() != object.getClass()) {
@@ -60,12 +77,12 @@ public class ForceFieldRegistry {
 			}
 			final RegistryEntry that = (RegistryEntry) object;
 			return isRelay == that.isRelay
-			    && globalPosition.equals(that.globalPosition);
+			    && super.equals(that);
 		}
 		
 		@Override
 		public int hashCode() {
-			return globalPosition.hashCode();
+			return super.hashCode();
 		}
 	}
 	
@@ -104,14 +121,14 @@ public class ForceFieldRegistry {
 		Set<RegistryEntry> setRegistryEntryToIterate = new HashSet<>();
 		for (final RegistryEntry registryEntry : setRegistryEntries) {
 			// skip if it's in another dimension
-			if (registryEntry.globalPosition.dimensionId != world.provider.getDimension()) {
+			if (registryEntry.dimensionId != world.provider.getDimension()) {
 				continue;
 			}
 			
 			if (registryEntry.isRelay) {
-				range2 = (registryEntry.globalPosition.x - blockPos.getX()) * (registryEntry.globalPosition.x - blockPos.getX())
-				       + (registryEntry.globalPosition.y - blockPos.getY()) * (registryEntry.globalPosition.y - blockPos.getY())
-				       + (registryEntry.globalPosition.z - blockPos.getZ()) * (registryEntry.globalPosition.z - blockPos.getZ());
+				range2 = (registryEntry.x - blockPos.getX()) * (registryEntry.x - blockPos.getX())
+				       + (registryEntry.y - blockPos.getY()) * (registryEntry.y - blockPos.getY())
+				       + (registryEntry.z - blockPos.getZ()) * (registryEntry.z - blockPos.getZ());
 				if (range2 <= maxRange2) {
 					// remember relay entry in range
 					setRegistryEntryToIterate.add(registryEntry);
@@ -141,14 +158,14 @@ public class ForceFieldRegistry {
 			for (final RegistryEntry registryEntryCurrent : setRegistryEntryToIterate) {
 				
 				// get tile entity and validate beam frequency
-				final TileEntity tileEntityCurrent = world.getTileEntity(registryEntryCurrent.globalPosition.getBlockPos());
+				final TileEntity tileEntityCurrent = world.getTileEntity(registryEntryCurrent.getBlockPos());
 				if ( (!(tileEntityCurrent instanceof IBeamFrequency))
 				  || ((IBeamFrequency) tileEntityCurrent).getBeamFrequency() != beamFrequency
 				  || !(tileEntityCurrent instanceof TileEntityForceFieldRelay) ) {
 					// block no longer exist => remove from registry
 					WarpDrive.logger.info(String.format("Removing invalid ForceFieldRegistry relay entry for beam frequency %d %s: %s",
 					                                    beamFrequency,
-					                                    Commons.format(world, registryEntryCurrent.globalPosition.getBlockPos()),
+					                                    Commons.format(world, registryEntryCurrent.getBlockPos()),
 					                                    tileEntityCurrent ));
 					countRemove++;
 					setRegistryEntries.remove(registryEntryCurrent);
@@ -168,9 +185,9 @@ public class ForceFieldRegistry {
 					if ( !setRegistryEntryRelaysInRange.contains(registryEntryRelay)
 					  && !setRegistryEntryToIterate.contains(registryEntryRelay)
 					  && !setRegistryEntryToIterateNext.contains(registryEntryRelay) ) {
-						range2 = (tileEntityCurrent.getPos().getX() - registryEntryRelay.globalPosition.x) * (tileEntityCurrent.getPos().getX() - registryEntryRelay.globalPosition.x)
-						       + (tileEntityCurrent.getPos().getY() - registryEntryRelay.globalPosition.y) * (tileEntityCurrent.getPos().getY() - registryEntryRelay.globalPosition.y)
-						       + (tileEntityCurrent.getPos().getZ() - registryEntryRelay.globalPosition.z) * (tileEntityCurrent.getPos().getZ() - registryEntryRelay.globalPosition.z);
+						range2 = (tileEntityCurrent.getPos().getX() - registryEntryRelay.x) * (tileEntityCurrent.getPos().getX() - registryEntryRelay.x)
+						       + (tileEntityCurrent.getPos().getY() - registryEntryRelay.y) * (tileEntityCurrent.getPos().getY() - registryEntryRelay.y)
+						       + (tileEntityCurrent.getPos().getZ() - registryEntryRelay.z) * (tileEntityCurrent.getPos().getZ() - registryEntryRelay.z);
 						if (range2 <= maxRange2) {
 							// add a relay entry in range
 							setRegistryEntryToIterateNext.add(registryEntryRelay);
@@ -188,13 +205,13 @@ public class ForceFieldRegistry {
 		for (final TileEntity tileEntityRelayInRange : setTileEntityRelaysInRange) {
 			for (final RegistryEntry registryEntryNonRelay : setRegistryEntryNonRelays) {
 				if (!setRegistryEntryResults.contains(registryEntryNonRelay)) {
-					range2 = (tileEntityRelayInRange.getPos().getX() - registryEntryNonRelay.globalPosition.x) * (tileEntityRelayInRange.getPos().getX() - registryEntryNonRelay.globalPosition.x)
-					       + (tileEntityRelayInRange.getPos().getY() - registryEntryNonRelay.globalPosition.y) * (tileEntityRelayInRange.getPos().getY() - registryEntryNonRelay.globalPosition.y)
-					       + (tileEntityRelayInRange.getPos().getZ() - registryEntryNonRelay.globalPosition.z) * (tileEntityRelayInRange.getPos().getZ() - registryEntryNonRelay.globalPosition.z);
+					range2 = (tileEntityRelayInRange.getPos().getX() - registryEntryNonRelay.x) * (tileEntityRelayInRange.getPos().getX() - registryEntryNonRelay.x)
+					       + (tileEntityRelayInRange.getPos().getY() - registryEntryNonRelay.y) * (tileEntityRelayInRange.getPos().getY() - registryEntryNonRelay.y)
+					       + (tileEntityRelayInRange.getPos().getZ() - registryEntryNonRelay.z) * (tileEntityRelayInRange.getPos().getZ() - registryEntryNonRelay.z);
 					if (range2 <= maxRange2) {
 						
 						// get tile entity and validate beam frequency
-						final TileEntity tileEntity = world.getTileEntity(registryEntryNonRelay.globalPosition.getBlockPos());
+						final TileEntity tileEntity = world.getTileEntity(registryEntryNonRelay.getBlockPos());
 						if ( (tileEntity instanceof IBeamFrequency)
 						  && ((IBeamFrequency) tileEntity).getBeamFrequency() == beamFrequency ) {
 							// add a non-relay in range
@@ -204,7 +221,7 @@ public class ForceFieldRegistry {
 							// block no longer exist => remove from registry
 							WarpDrive.logger.info(String.format("Removing invalid ForceFieldRegistry non-relay entry for beam frequency %d %s: %s",
 							                                    beamFrequency,
-							                                    Commons.format(world, registryEntryNonRelay.globalPosition.getBlockPos()),
+							                                    Commons.format(world, registryEntryNonRelay.getBlockPos()),
 							                                    tileEntity ));
 							countRemove++;
 							setRegistryEntries.remove(registryEntryNonRelay);
@@ -274,7 +291,7 @@ public class ForceFieldRegistry {
 				if (message.length() > 0) {
 					message.append(", ");
 				}
-				message.append(Commons.format(registryEntry.globalPosition));
+				message.append(Commons.format(registryEntry));
 			}
 			WarpDrive.logger.info(String.format("- %d entries at beam frequency %d : %s",
 			                                    relayOrProjectors.size(),
@@ -282,5 +299,60 @@ public class ForceFieldRegistry {
 			                                    message ));
 			return true;
 		});
+	}
+	
+	public static void readFromNBT(@Nullable final NBTTagCompound tagCompound) {
+		if ( tagCompound == null
+		  || !tagCompound.hasKey("forceFieldRegistry") ) {
+			registry.clear();
+			return;
+		}
+		
+		// read all entries in a flat structure
+		final NBTTagList tagList;
+		tagList = tagCompound.getTagList("forceFieldRegistry", Constants.NBT.TAG_COMPOUND);
+		
+		final RegistryEntry[] registryFlat = new RegistryEntry[tagList.tagCount()];
+		final HashMap<Integer, Integer> sizeBeamFrequencies = new HashMap<>();
+		for (int index = 0; index < tagList.tagCount(); index++) {
+			final RegistryEntry registryEntry = new RegistryEntry(tagList.getCompoundTagAt(index));
+			registryFlat[index] = registryEntry;
+			
+			// update stats
+			Integer count = sizeBeamFrequencies.computeIfAbsent(registryEntry.beamFrequency, k -> 0);
+			count++;
+			sizeBeamFrequencies.put(registryEntry.beamFrequency, count);
+		}
+		
+		// pre-build the local collections using known stats to avoid re-allocations
+		final HashMap<Integer, ArrayList<RegistryEntry>> registryLocal = new HashMap<>();
+		for (final Entry<Integer, Integer> entryBeamFrequency : sizeBeamFrequencies.entrySet()) {
+			registryLocal.put(entryBeamFrequency.getKey(), new ArrayList<>(entryBeamFrequency.getValue()));
+		}
+		
+		// fill the local collections
+		for (final RegistryEntry registryEntry : registryFlat) {
+			registryLocal.get(registryEntry.beamFrequency).add(registryEntry);
+		}
+		
+		// transfer to main one
+		registry.clear();
+		for (final Entry<Integer, ArrayList<RegistryEntry>> entry : registryLocal.entrySet()) {
+			registry.put(entry.getKey(), new CopyOnWriteArraySet<>(entry.getValue()));
+		}
+	}
+	
+	public static void writeToNBT(@Nonnull final NBTTagCompound tagCompound) {
+		final NBTTagList tagList = new NBTTagList();
+		registry.forEachValue(registryEntries -> {
+			                      for (final RegistryEntry registryEntry : registryEntries) {
+				                      final NBTTagCompound tagCompoundItem = new NBTTagCompound();
+				                      registryEntry.writeToNBT(tagCompoundItem);
+				                      tagList.appendTag(tagCompoundItem);
+			                      }
+			                      return true;
+		                      }
+			);
+		tagCompound.setTag("forceFieldRegistry", tagList);
 	}
 }

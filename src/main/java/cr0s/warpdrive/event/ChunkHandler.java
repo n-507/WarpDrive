@@ -7,6 +7,7 @@ import cr0s.warpdrive.api.ExceptionChunkNotLoaded;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObjectManager;
 import cr0s.warpdrive.data.ChunkData;
+import cr0s.warpdrive.data.ForceFieldRegistry;
 import cr0s.warpdrive.data.GlobalRegionManager;
 import cr0s.warpdrive.data.OfflineAvatarManager;
 import cr0s.warpdrive.data.StateAir;
@@ -60,6 +61,7 @@ public class ChunkHandler {
 			// load registries
 			final String filename = String.format("%s/%s.dat", event.getWorld().getSaveHandler().getWorldDirectory().getPath(), WarpDrive.MODID);
 			final NBTTagCompound tagCompound = Commons.readNBTFromFile(filename);
+			ForceFieldRegistry.readFromNBT(tagCompound);
 			GlobalRegionManager.readFromNBT(tagCompound);
 			OfflineAvatarManager.readFromNBT(tagCompound);
 			
@@ -176,6 +178,7 @@ public class ChunkHandler {
 		// save registries
 		final String filename = String.format("%s/%s.dat", event.getWorld().getSaveHandler().getWorldDirectory().getPath(), WarpDrive.MODID);
 		final NBTTagCompound tagCompound = new NBTTagCompound();
+		ForceFieldRegistry.writeToNBT(tagCompound);
 		GlobalRegionManager.writeToNBT(tagCompound);
 		OfflineAvatarManager.writeToNBT(tagCompound);
 		Commons.writeNBTToFile(filename, tagCompound);

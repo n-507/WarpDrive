@@ -33,6 +33,11 @@ public class GlobalPosition {
 		this.z = blockPos.getZ();
 	}
 	
+	public GlobalPosition(@Nonnull final GlobalPosition globalPosition) {
+		this(globalPosition.dimensionId, globalPosition.x, globalPosition.y, globalPosition.z);
+		this.cache_blockPos = globalPosition.cache_blockPos;
+	}
+	
 	public GlobalPosition(@Nonnull final TileEntity tileEntity) {
 		this(tileEntity.getWorld().provider.getDimension(), tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ());
 	}

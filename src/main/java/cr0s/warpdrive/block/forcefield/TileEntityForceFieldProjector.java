@@ -259,7 +259,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 				cooldownTicks = PROJECTOR_COOLDOWN_TICKS;
 				guideTicks = 0;
 				
-				destroyForceField();
+				destroyForceField("projector deactivation");
 			}
 			
 			if (isEnabledAndValid) {
@@ -287,7 +287,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	
 	@Override
 	public void onBlockBroken(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
-		destroyForceField();
+		destroyForceField("projector block broken");
 		try {
 			doScheduledForceFieldRemoval();
 		} catch (final Exception exception) {
@@ -764,7 +764,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		return false;
 	}
 	
-	private void destroyForceField() {
+	private void destroyForceField(final String context) {
 		if (world == null || world.isRemote) {
 			return;
 		}
@@ -772,8 +772,8 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 		final int countPlaced = vForceFields != null ? vForceFields.size() : 0;
 		final int countCalculated = calculated_forceField != null ? calculated_forceField.size() : 0;
 		if (countPlaced + countCalculated > 0) {
-			WarpDrive.logger.info(String.format("%s destroying force field of %d placed out of %d calculated blocks",
-			                                    this, countPlaced, countCalculated));
+			WarpDrive.logger.info(String.format("%s destroying force field of %d placed out of %d calculated blocks due to %s",
+			                                    this, countPlaced, countCalculated, context));
 			if (WarpDriveConfig.LOGGING_FORCE_FIELD) {
 				new RuntimeException().printStackTrace(WarpDrive.printStreamInfo);
 			}
@@ -1060,7 +1060,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 					if (WarpDriveConfig.LOGGING_FORCE_FIELD) {
 						WarpDrive.logger.info(this + " rebooting with new rendering...");
 					}
-					destroyForceField();
+					destroyForceField("new rendering");
 					
 				} else if ( legacy_forceFieldSetup.isInverted != cache_forceFieldSetup.isInverted
 				         || legacy_forceFieldSetup.shapeProvider != cache_forceFieldSetup.shapeProvider
@@ -1075,7 +1075,7 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 					if (WarpDriveConfig.LOGGING_FORCE_FIELD) {
 						WarpDrive.logger.info(this + " rebooting with new shape...");
 					}
-					destroyForceField();
+					destroyForceField("new shape");
 					isDirty.set(true);
 				}
 			}
