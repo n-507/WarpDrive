@@ -820,6 +820,16 @@ public class Recipes {
 		WarpDrive.register(new RecipeTuningDriver(groupTools,
 		                                          new ItemStack(WarpDrive.itemTuningDriver, 1, ItemTuningDriver.MODE_CONTROL_CHANNEL),
 		                                          new ItemStack(Items.REDSTONE), 7, "_control_channel2"), "_control_channel1");
+		
+		// User manual
+		final ItemStack itemStackManual = WarpDriveConfig.getItemStackOrFire("patchouli:guide_book", 0, "{\"patchouli:book\": \"warpdrive:warpdrive_manual\"}");
+		if (!itemStackManual.isEmpty()) {
+			WarpDrive.register(new ShapedOreRecipe(groupTools,
+			                                       itemStackManual, false, " g ", "ibi", " i ",
+			                                       'g', "nuggetGold",
+			                                       'i', "nuggetIron",
+			                                       'b', Items.BOOK ));
+		}
 	}
 	
 	public static void initDynamic() {
