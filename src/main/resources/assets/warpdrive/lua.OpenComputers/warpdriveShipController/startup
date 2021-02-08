@@ -97,6 +97,7 @@ function ship_boot()
     w.setColorSuccess()
     w.writeLn("triangulated")
   end
+  ship.command("MANUAL", false)
   ship_updateMovementStats()
   w.sleep(0.2)
   
