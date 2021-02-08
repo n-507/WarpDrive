@@ -661,8 +661,8 @@ function ship_page_advanced()
   w.page_begin(w.data_getName() .. " - Advanced")
   
   w.setCursorPos(1, 5)
-  local command, _ = ship.command()
-  w.writeLn("Ship is in " .. command .. " mode")
+  local status, isEnabled, state, energy = ship.state()
+  w.writeLn("Ship is in " .. state .. " mode")
   
   w.setCursorPos(1, 16)
   w.setColorControl()

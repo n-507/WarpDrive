@@ -2,6 +2,7 @@ package cr0s.warpdrive.block.movement;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.api.WarpDriveText;
+import cr0s.warpdrive.data.EnergyWrapper;
 import cr0s.warpdrive.data.EnumGlobalRegionType;
 import cr0s.warpdrive.data.GlobalRegionManager;
 import cr0s.warpdrive.data.GlobalRegion;
@@ -272,6 +273,15 @@ public class TileEntityShipController extends TileEntityAbstractShipController {
 			return super.rotationSteps(arguments); // return current local values
 		}
 		return tileEntityShipCore.rotationSteps(arguments);
+	}
+	
+	@Override
+	public Object[] state() {
+		final TileEntityShipCore tileEntityShipCore = tileEntityShipCoreWeakReference == null ? null : tileEntityShipCoreWeakReference.get();
+		if (tileEntityShipCore == null) {
+			return new Object[] { "No ship core detected", false, "-NotDetected-", 0 };
+		}
+		return tileEntityShipCore.state();
 	}
 	
 	@Override

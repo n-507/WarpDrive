@@ -51,6 +51,7 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 				"getMaxJumpDistance",
 				"movement",
 				"rotationSteps",
+				"state",
 				"targetName",
 				});
 	}
@@ -370,6 +371,9 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	}
 	
 	@Override
+	abstract public Object[] state();
+	
+	@Override
 	public Object[] targetName(final Object[] arguments) {
 		if (arguments.length == 1 && arguments[0] != null) {
 			this.nameTarget = (String) arguments[0];
@@ -445,6 +449,13 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 	
 	@Callback(direct = true)
 	@Optional.Method(modid = "opencomputers")
+	public Object[] state(final Context context, final Arguments arguments) {
+		OC_convertArgumentsAndLogCall(context, arguments);
+		return state();
+	}
+	
+	@Callback(direct = true)
+	@Optional.Method(modid = "opencomputers")
 	public Object[] targetName(final Context context, final Arguments arguments) {
 		return targetName(OC_convertArgumentsAndLogCall(context, arguments));
 	}
@@ -483,6 +494,9 @@ public abstract class TileEntityAbstractShipController extends TileEntityAbstrac
 		
 		case "rotationSteps":
 			return rotationSteps(arguments);
+		
+		case "state":
+			return state();
 		
 		case "targetName":
 			return targetName(arguments);

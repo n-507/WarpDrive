@@ -1375,4 +1375,16 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		}
 		return new Object[] { true, maximumDistance_blocks };
 	}
+	
+	@Override
+	public Object[] state() {
+		final String units = energy_getDisplayUnits();
+		final long energy = EnergyWrapper.convert(energy_getEnergyStored(), units);
+		final String status = getStatusHeaderInPureText();
+		final String stringState = isOffline() ? "OFFLINE"
+		                         : isUnderMaintenance() ? "MAINTENANCE"
+		                         : isCooling() ? "COOLING"
+		                         : enumShipCommand.name();
+		return new Object[] { status, isEnabled, stringState, energy };
+	}
 }
