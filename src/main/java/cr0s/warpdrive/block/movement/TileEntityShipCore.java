@@ -240,6 +240,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		  || ( isCommandConfirmed
 		    && enumShipCommand == EnumShipCommand.OFFLINE ) ) {
 			stateCurrent = EnumShipCoreState.IDLE;
+			commandCurrent = EnumShipCommand.OFFLINE;
 		}
 		
 		// periodically log the ship state
@@ -258,7 +259,8 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		}
 		
 		// refresh rendering
-		final boolean isActive = commandCurrent != EnumShipCommand.OFFLINE;
+		final boolean isActive = isEnabled
+		                      && enumShipCommand != EnumShipCommand.OFFLINE;
 		updateBlockState(null, BlockProperties.ACTIVE, isActive);
 		
 		// scan ship content progressively
@@ -373,20 +375,15 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		
 		switch (stateCurrent) {
 		case IDLE:
-			if ( isCommandConfirmed
+			if ( isEnabled
+			  && isCommandConfirmed
 			  && enumShipCommand.isMovement() ) {
 				commandCurrent = enumShipCommand;
-				stateCurrent = EnumShipCoreState.ONLINE;
-				/*
-				if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
-					WarpDrive.logger.info(String.format("%s state IDLE -> ONLINE",
-					                                    this));
-				}
-				/**/
+				stateCurrent = EnumShipCoreState.EXECUTE;
 			}
 			break;
 		
-		case ONLINE:
+		case EXECUTE:
 			// (disabling will switch back to IDLE and clear variables)
 			
 			switch (commandCurrent) {
@@ -529,11 +526,13 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	}
 	
 	public boolean isOffline() {
-		return enumShipCommand == EnumShipCommand.OFFLINE;
+		return !isEnabled
+		    || enumShipCommand == EnumShipCommand.OFFLINE;
 	}
 	
 	public boolean isUnderMaintenance() {
-		return enumShipCommand == EnumShipCommand.MAINTENANCE;
+		return isEnabled
+		    && enumShipCommand == EnumShipCommand.MAINTENANCE;
 	}
 	
 	public boolean isBusy() {

@@ -35,7 +35,7 @@
 				"down"    : "warpdrive:blocks/movement/ship_core-top_bottom",
 				"up"      : "warpdrive:blocks/movement/ship_core-top_bottom",
 				"north"   : "warpdrive:blocks/movement/ship_core-front",
-				"south"   : "warpdrive:blocks/movement/ship_controller-side_active1",
+				"south"   : "warpdrive:blocks/movement/ship_controller-side_inactive",
 				"west"    : "warpdrive:blocks/movement/ship_core-left_offline",
 				"east"    : "warpdrive:blocks/movement/ship_core-right_offline"
 			} },
@@ -43,7 +43,7 @@
 				"particle": "warpdrive:blocks/movement/ship_core-top_bottom",
 				"down"    : "warpdrive:blocks/movement/ship_core-top_bottom",
 				"up"      : "warpdrive:blocks/movement/ship_core-top_bottom",
-				"north"   : "warpdrive:blocks/movement/ship_controller-side_active2",
+				"north"   : "warpdrive:blocks/movement/ship_controller-side_inactive",
 				"south"   : "warpdrive:blocks/movement/ship_core-front",
 				"west"    : "warpdrive:blocks/movement/ship_core-right_offline",
 				"east"    : "warpdrive:blocks/movement/ship_core-left_offline"
@@ -55,7 +55,7 @@
 				"north"   : "warpdrive:blocks/movement/ship_core-right_offline",
 				"south"   : "warpdrive:blocks/movement/ship_core-left_offline",
 				"west"    : "warpdrive:blocks/movement/ship_core-front",
-				"east"    : "warpdrive:blocks/movement/ship_controller-side_active3"
+				"east"    : "warpdrive:blocks/movement/ship_controller-side_inactive"
 			} },
 		"active=false,facing=east" : { "model": "minecraft:cube", "textures": {
 				"particle": "warpdrive:blocks/movement/ship_core-top_bottom",
@@ -63,7 +63,7 @@
 				"up"      : "warpdrive:blocks/movement/ship_core-top_bottom",
 				"north"   : "warpdrive:blocks/movement/ship_core-left_offline",
 				"south"   : "warpdrive:blocks/movement/ship_core-right_offline",
-				"west"    : "warpdrive:blocks/movement/ship_controller-side_active4",
+				"west"    : "warpdrive:blocks/movement/ship_controller-side_inactive",
 				"east"    : "warpdrive:blocks/movement/ship_core-front"
 			} },
 		
