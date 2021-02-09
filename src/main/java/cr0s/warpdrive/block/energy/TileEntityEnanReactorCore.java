@@ -781,7 +781,8 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		super.readFromNBT(tagCompound);
 		
 		// skip empty NBT on placement to use defaults values
-		if (!tagCompound.hasKey("outputMode")) {
+		if ( (world == null || !world.isRemote)
+		  && !tagCompound.hasKey("outputMode") ) {
 			return;
 		}
 		
