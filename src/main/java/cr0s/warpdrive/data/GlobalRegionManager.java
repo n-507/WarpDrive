@@ -15,6 +15,7 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -250,8 +251,8 @@ public class GlobalRegionManager {
 		double distanceSquared_min = Double.MAX_VALUE;
 		GlobalRegion result = null;
 		for (final GlobalRegion globalRegion : setGlobalRegions) {
-			if (enumGlobalRegionType != null
-			    && globalRegion.type != enumGlobalRegionType) {
+			if ( enumGlobalRegionType != null
+			  && globalRegion.type != enumGlobalRegionType ) {
 				continue;
 			}
 			
@@ -267,6 +268,30 @@ public class GlobalRegionManager {
 		}
 		
 		return result;
+	}
+	
+	@Nonnull
+	public static ArrayList<GlobalRegion> getContainers(final EnumGlobalRegionType enumGlobalRegionType, @Nonnull final World world, @Nonnull final BlockPos blockPos) {
+		final CopyOnWriteArraySet<GlobalRegion> setGlobalRegions = registry.get(world.provider.getDimension());
+		if (setGlobalRegions == null) {
+			return new ArrayList<>(0);
+		}
+		
+		final ArrayList<GlobalRegion> listContainers = new ArrayList<>(5);
+		for (final GlobalRegion globalRegion : setGlobalRegions) {
+			if ( enumGlobalRegionType != null
+			  && globalRegion.type != enumGlobalRegionType ) {
+				continue;
+			}
+			
+			if (!globalRegion.contains(blockPos)) {
+				continue;
+			}
+			
+			listContainers.add(globalRegion);
+		}
+		
+		return listContainers;
 	}
 	
 	public static boolean onBlockUpdating(@Nullable final Entity entity, @Nonnull final World world, @Nonnull final BlockPos blockPos, final IBlockState blockState) {

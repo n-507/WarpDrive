@@ -724,6 +724,7 @@ warpdrive.tooltip.item_tag.no_fall_damage=§b吸收跌落傷害§r.
 warpdrive.upgrade.description.base.computer_interface=Enables computer connection.
 warpdrive.upgrade.description.chunk_loader.efficiency=Reduces energy cost.
 warpdrive.upgrade.description.chunk_loader.range=Increases maximum range.
+warpdrive.upgrade.description.lift.security=Enables access restriction.
 warpdrive.upgrade.description.mining_laser.pumping=Enables fluid removal.
 warpdrive.upgrade.description.camera.recognition_range=Increases image recognition range.
 warpdrive.upgrade.description.cloaking.transparency=Enables full transparency.

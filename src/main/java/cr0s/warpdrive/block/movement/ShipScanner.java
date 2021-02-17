@@ -1,12 +1,14 @@
 package cr0s.warpdrive.block.movement;
 
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.api.computer.ISecurityStation;
 import cr0s.warpdrive.block.BlockSecurityStation;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -15,6 +17,7 @@ class ShipScanner {
 	
 	// inputs
 	private final IBlockAccess blockAccess;
+	private final BlockPos blockPosCore;
 	private final int minX, minY, minZ;
 	private final int maxX, maxY, maxZ;
 	
@@ -30,9 +33,11 @@ class ShipScanner {
 	public BlockPos posSecurityStation = null;
 	
 	ShipScanner(final IBlockAccess blockAccess,
+	            final BlockPos blockPosCore,
 	            final int minX, final int minY, final int minZ,
 	            final int maxX, final int maxY, final int maxZ) {
 		this.blockAccess = blockAccess;
+		this.blockPosCore = blockPosCore.toImmutable();
 		this.minX = minX;
 		this.minY = minY;
 		this.minZ = minZ;
@@ -61,8 +66,17 @@ class ShipScanner {
 					if (!Dictionary.BLOCKS_NOMASS.contains(block)) {
 						mass++;
 						
-						if (block instanceof BlockSecurityStation) {
-							posSecurityStation = mutableBlockPos.toImmutable();
+						// keep the security station closest to the ship core
+						if ( block instanceof BlockSecurityStation
+						  && ( posSecurityStation == null
+						    || blockPosCore == null
+						    || blockPosCore.distanceSq(posSecurityStation) > blockPosCore.distanceSq(mutableBlockPos) ) ) {
+							// keep only enabled security stations
+							final TileEntity tileEntity = blockAccess.getTileEntity(mutableBlockPos);
+							if ( tileEntity instanceof ISecurityStation
+							  && ((ISecurityStation) tileEntity).getIsEnabled() ) {
+								posSecurityStation = mutableBlockPos.toImmutable();
+							}
 						}
 					}
 				}

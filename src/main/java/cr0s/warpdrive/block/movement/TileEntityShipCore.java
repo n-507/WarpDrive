@@ -30,6 +30,7 @@ import cr0s.warpdrive.render.EntityFXBoundingBox;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -43,6 +44,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.potion.PotionEffect;
@@ -91,6 +93,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	public int shipMass;
 	public int shipVolume;
 	private BlockPos posSecurityStation = null;
+	private WeakReference<TileEntitySecurityStation> weakTileEntitySecurityStation = null;
 	
 	private EnumShipMovementType shipMovementType;
 	private ShipMovementCosts shipMovementCosts;
@@ -123,9 +126,11 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		}
 		ticksBoundingBoxUpdate = BOUNDING_BOX_INTERVAL_TICKS;
 		
+		// core coordinates
 		final Vector3 vector3 = new Vector3(this);
 		vector3.translate(0.5D);
 		
+		// bounding box
 		final Vector3 vMin = new Vector3(minX - 0.0D, minY - 0.0D, minZ - 0.0D);
 		final Vector3 vMax = new Vector3(maxX + 1.0D, maxY + 1.0D, maxZ + 1.0D);
 		FMLClientHandler.instance().getClient().effectRenderer.addEffect(
@@ -134,6 +139,18 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				                        vMax,
 				                        1.0F, 0.8F, 0.3F, BOUNDING_BOX_INTERVAL_TICKS + 1) );
 		
+		// security station
+		if (posSecurityStation != null) {
+			final Vector3 vMinSecurityStation = new Vector3(posSecurityStation.getX() - 0.0D, posSecurityStation.getY() - 0.0D, posSecurityStation.getZ() - 0.0D);
+			final Vector3 vMaxSecurityStation = new Vector3(posSecurityStation.getX() + 1.0D, posSecurityStation.getY() + 1.0D, posSecurityStation.getZ() + 1.0D);
+			FMLClientHandler.instance().getClient().effectRenderer.addEffect(
+					new EntityFXBoundingBox(world, vector3,
+					                        vMinSecurityStation,
+					                        vMaxSecurityStation,
+					                        1.0F, 0.2F, 0.9F, BOUNDING_BOX_INTERVAL_TICKS + 1) );
+		}
+		
+		// target location
 		final VectorI vMovement = getMovement();
 		if (vMovement.getMagnitudeSquared() > 0) {
 			final VectorI movement = getMovement();
@@ -265,7 +282,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				return;
 			}
 			
-			shipScanner = new ShipScanner(world, minX, minY, minZ, maxX, maxY, maxZ);
+			shipScanner = new ShipScanner(world, pos, minX, minY, minZ, maxX, maxY, maxZ);
 			if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
 				WarpDrive.logger.info(String.format("%s scanning started",
 				                                    this));
@@ -279,11 +296,14 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			
 			shipMass = shipScanner.mass;
 			shipVolume = shipScanner.volume;
-			posSecurityStation = shipScanner.posSecurityStation;
+			if (posSecurityStation != shipScanner.posSecurityStation) {
+				posSecurityStation = shipScanner.posSecurityStation;
+				weakTileEntitySecurityStation = null;
+			}
 			shipScanner = null;
 			if (WarpDriveConfig.LOGGING_JUMPBLOCKS) {
-				WarpDrive.logger.info(String.format("%s scanning done: mass %d, volume %d",
-				                                    this, shipMass, shipVolume));
+				WarpDrive.logger.info(String.format("%s scanning done: mass %d, volume %d, security station %s",
+				                                    this, shipMass, shipVolume, posSecurityStation ));
 			}
 			
 			// validate results
@@ -599,18 +619,25 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	}
 	
 	public String getFirstOnlineCrew() {
-		if (posSecurityStation == null) {// no crew defined
+		final TileEntitySecurityStation tileEntitySecurityStation = getSecurityStation();
+		if (tileEntitySecurityStation == null) {
 			return null;
 		}
-		
-		final TileEntity tileEntity = world.getTileEntity(posSecurityStation);
-		if ( !(tileEntity instanceof TileEntitySecurityStation)
-		  || tileEntity.isInvalid() ) {// we're desync
-			// force a refresh
-			timeLastShipScanDone = -1;
+		if (tileEntitySecurityStation == TileEntitySecurityStation.DUMMY) {
 			return "-busy-";
 		}
-		return ((TileEntitySecurityStation) tileEntity).getFirstOnlinePlayer();
+		return tileEntitySecurityStation.getFirstOnlinePlayer();
+	}
+	
+	public boolean isCrewMember(final EntityPlayer entityPlayer) {
+		final TileEntitySecurityStation tileEntitySecurityStation = getSecurityStation();
+		if (tileEntitySecurityStation == null) {
+			return true;
+		}
+		if (tileEntitySecurityStation == TileEntitySecurityStation.DUMMY) {
+			return false;
+		}
+		return tileEntitySecurityStation.isAttachedPlayer(entityPlayer);
 	}
 	
 	@Override
@@ -739,8 +766,37 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		}
 	}
 	
-	private TileEntitySecurityStation findSecurityStation() {// @TODO
-		return null;
+	@Nullable
+	private TileEntitySecurityStation getSecurityStation() {
+		if (posSecurityStation == null) {// no crew defined
+			return null;
+		}
+		
+		// cache the tile entity to avoid slow access to world object
+		TileEntity tileEntity = weakTileEntitySecurityStation == null ? null : weakTileEntitySecurityStation.get();
+		if ( tileEntity == null
+		  || tileEntity.isInvalid()
+		  || !posSecurityStation.equals(tileEntity.getPos()) ) {
+			tileEntity = world.getTileEntity(posSecurityStation);
+			weakTileEntitySecurityStation = null;
+		}
+		if ( !(tileEntity instanceof TileEntitySecurityStation)
+		  || tileEntity.isInvalid() ) {// we're desync
+			if (Commons.throttleMe("SecurityStationDesync")) {
+				WarpDrive.logger.warn(String.format("%s: Security station %s has invalid tile entity: %s",
+				                                    this, posSecurityStation, tileEntity ));
+			}
+			// force a refresh
+			timeLastShipScanDone = -1;
+			return TileEntitySecurityStation.DUMMY;
+		}
+		if (weakTileEntitySecurityStation == null) {
+			weakTileEntitySecurityStation = new WeakReference<>((TileEntitySecurityStation) tileEntity);
+		}
+		if (!((TileEntitySecurityStation) tileEntity).getIsEnabled()) {// disabled
+			return null;
+		}
+		return (TileEntitySecurityStation) tileEntity;
 	}
 	
 	public boolean summonOwnerOnDeploy(final EntityPlayerMP entityPlayerMP) {
@@ -755,10 +811,11 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			return false;
 		}
 		
-		final TileEntitySecurityStation tileEntitySecurityStation = findSecurityStation();
-		if (tileEntitySecurityStation != null) {
-			tileEntitySecurityStation.players.clear();
-			tileEntitySecurityStation.players.add(entityPlayerMP.getName());
+		final TileEntitySecurityStation tileEntitySecurityStation = getSecurityStation();
+		if ( tileEntitySecurityStation != null
+		  && tileEntitySecurityStation != TileEntitySecurityStation.DUMMY ) {
+			tileEntitySecurityStation.removeAllAttachedPlayers();
+			tileEntitySecurityStation.attachPlayer(entityPlayerMP);
 		}
 		
 		final AxisAlignedBB aabb = new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
@@ -1203,6 +1260,10 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	public NBTTagCompound getUpdateTag() {
 		final NBTTagCompound tagCompound = super.getUpdateTag();
 		
+		if (posSecurityStation != null) {
+			tagCompound.setTag("posSecurityStation", NBTUtil.createPosTag(posSecurityStation));
+		}
+		
 		tagCompound.setInteger("minX", minX);
 		tagCompound.setInteger("maxX", maxX);
 		tagCompound.setInteger("minY", minY);
@@ -1218,6 +1279,13 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		super.onDataPacket(networkManager, packet);
 		
 		final NBTTagCompound tagCompound = packet.getNbtCompound();
+		
+		if (tagCompound.hasKey("posSecurityStation")) {
+			posSecurityStation = NBTUtil.getPosFromTag(tagCompound.getCompoundTag("posSecurityStation"));
+		} else {
+			posSecurityStation = null;
+		}
+		weakTileEntitySecurityStation = null;
 		
 		minX = tagCompound.getInteger("minX");
 		maxX = tagCompound.getInteger("maxX");

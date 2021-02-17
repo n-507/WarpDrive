@@ -234,6 +234,7 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 		return stringBuilderResult.toString();
 	}
 	
+	@Override
 	public boolean getIsEnabled() {
 		return isEnabled;
 	}

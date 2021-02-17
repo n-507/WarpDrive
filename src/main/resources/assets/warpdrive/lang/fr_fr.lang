@@ -725,6 +725,7 @@ warpdrive.tooltip.item_tag.no_fall_damage=§bAbsorbe les damages de chute§r.
 warpdrive.upgrade.description.base.computer_interface=Connecte avec un ordinateur.
 warpdrive.upgrade.description.chunk_loader.efficiency=Réduit le coût energétique.
 warpdrive.upgrade.description.chunk_loader.range=Augmente la portée max.
+warpdrive.upgrade.description.lift.security=Restreint l'accès.
 warpdrive.upgrade.description.mining_laser.pumping=Enlève les fluides.
 warpdrive.upgrade.description.camera.recognition_range=Augmente la portée de reconnaissance.
 warpdrive.upgrade.description.cloaking.transparency=Transparence complète.

@@ -1,13 +1,19 @@
 package cr0s.warpdrive.block.movement;
 
 import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.computer.ILift;
 import cr0s.warpdrive.block.TileEntityAbstractEnergyConsumer;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnergyWrapper;
+import cr0s.warpdrive.data.EnumComponentType;
+import cr0s.warpdrive.data.EnumGlobalRegionType;
 import cr0s.warpdrive.data.EnumLiftMode;
+import cr0s.warpdrive.data.GlobalRegion;
+import cr0s.warpdrive.data.GlobalRegionManager;
 import cr0s.warpdrive.data.SoundEvents;
 import cr0s.warpdrive.data.Vector3;
+import cr0s.warpdrive.item.ItemComponent;
 import cr0s.warpdrive.network.PacketHandler;
 
 import li.cil.oc.api.machine.Arguments;
@@ -15,13 +21,16 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -31,7 +40,11 @@ import net.minecraftforge.fml.common.Optional;
 
 public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements ILift {
 	
+	// global properties
 	private static final double LIFT_GRAB_RADIUS = 0.4D;
+	private static final UpgradeSlot upgradeSlotSecurity = new UpgradeSlot("lift.security",
+	                                                                       ItemComponent.getItemStackNoCache(EnumComponentType.DIAMOND_CRYSTAL, 1),
+	                                                                       1);
 	
 	// persistent properties
 	private EnumLiftMode mode = EnumLiftMode.INACTIVE;
@@ -52,6 +65,8 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 				"state"
 		});
 		doRequireUpgradeToInterface();
+		
+		registerUpgradeSlot(upgradeSlotSecurity);
 	}
 	
 	@Override
@@ -143,44 +158,86 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 		final double xMax = pos.getX() + 0.5 + LIFT_GRAB_RADIUS;
 		final double zMin = pos.getZ() + 0.5 - LIFT_GRAB_RADIUS;
 		final double zMax = pos.getZ() + 0.5 + LIFT_GRAB_RADIUS;
-		boolean isTransferDone = false; 
 		
-		// Lift up
+		final AxisAlignedBB aabb;
 		if (mode == EnumLiftMode.UP) {
-			final AxisAlignedBB aabb = new AxisAlignedBB(
+			aabb = new AxisAlignedBB(
 					xMin, firstUncoveredY, zMin,
 					xMax, pos.getY(), zMax);
-			final List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(null, aabb);
-			for (final Entity entity : list) {
-				if ( entity instanceof EntityLivingBase
-				  && energy_consume(WarpDriveConfig.LIFT_ENERGY_PER_ENTITY, true)) {
-					entity.setPositionAndUpdate(pos.getX() + 0.5D, pos.getY() + 1.0D, pos.getZ() + 0.5D);
-					PacketHandler.sendBeamPacket(world,
-							new Vector3(pos.getX() + 0.5D, firstUncoveredY, pos.getZ() + 0.5D),
-							new Vector3(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D),
-							1F, 1F, 0F, 40, 0, 100);
-					world.playSound(null, pos, SoundEvents.LASER_HIGH, SoundCategory.AMBIENT, 4.0F, 1.0F);
-					energy_consume(WarpDriveConfig.LIFT_ENERGY_PER_ENTITY, false);
-					isTransferDone = true;
+		} else if (mode == EnumLiftMode.DOWN) {
+			aabb = new AxisAlignedBB(
+					xMin, Math.min(firstUncoveredY + 4.0D, pos.getY()), zMin,
+					xMax, pos.getY() + 2.0D, zMax);
+		} else {
+			return false;
+		}
+		final List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(null, aabb);
+		if (list.isEmpty()) {
+			return false;
+		}
+		
+		final ArrayList<GlobalRegion> globalRegions = getUpgradeCount(upgradeSlotSecurity) <= 0
+		                                            ? new ArrayList<>(0)
+		                                            : GlobalRegionManager.getContainers(EnumGlobalRegionType.SHIP, world, pos);
+		final ArrayList<TileEntityShipCore> tileEntityShipCores = new ArrayList<>(globalRegions.size());
+		if (!globalRegions.isEmpty()) {// check security constrains
+			for (final GlobalRegion globalRegion : globalRegions) {
+				// abort on invalid ship cores
+				final TileEntity tileEntity = world.getTileEntity(globalRegion.getBlockPos());
+				if (!(tileEntity instanceof TileEntityShipCore)) {
+					if (Commons.throttleMe("liftEntity-InvalidInstance")) {
+						WarpDrive.logger.error(String.format("Unable to lift entity due to invalid tile entity for global region, expecting TileEntityShipCore, got %s",
+						                                     tileEntity ));
+					}
+					return false;
+				}
+				final TileEntityShipCore tileEntityShipCore = (TileEntityShipCore) tileEntity;
+				if (!tileEntityShipCore.isAssemblyValid()) {
+					if (Commons.throttleMe("liftEntity-InvalidAssembly")) {
+						WarpDrive.logger.error(String.format("Unable to lift entity due to invalid ship assembly for %s",
+						                                     tileEntity ));
+					}
+					return false;
+				}
+				tileEntityShipCores.add(tileEntityShipCore);
+			}
+		}
+		
+		boolean isTransferDone = false;
+		for (final Entity entity : list) {
+			if (!(entity instanceof EntityLivingBase)) {
+				continue;
+			}
+			if (!globalRegions.isEmpty()) {// check security constrains
+				if (!(entity instanceof EntityPlayer)) {// only players are allowed
+					continue;
+				}
+				boolean isCrewMember = true;
+				for (final TileEntityShipCore tileEntityShipCore : tileEntityShipCores) {
+					isCrewMember &= tileEntityShipCore.isCrewMember((EntityPlayer) entity);
+				}
+				if (!isCrewMember) {
+					continue;
 				}
 			}
 			
-		} else if (mode == EnumLiftMode.DOWN) {
-			final AxisAlignedBB aabb = new AxisAlignedBB(
-					xMin, Math.min(firstUncoveredY + 4.0D, pos.getY()), zMin,
-					xMax, pos.getY() + 2.0D, zMax);
-			final List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(null, aabb);
-			for (final Entity entity : list) {
-	  			if ( entity instanceof EntityLivingBase
-            && energy_consume(WarpDriveConfig.LIFT_ENERGY_PER_ENTITY, true)) {
-            entity.setPositionAndUpdate(pos.getX() + 0.5D, firstUncoveredY, pos.getZ() + 0.5D);
-            PacketHandler.sendBeamPacket(world,
-	  						new Vector3(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D),
-	  						new Vector3(pos.getX() + 0.5D, firstUncoveredY, pos.getZ() + 0.5D), 1F, 1F, 0F, 40, 0, 100);
-	  				world.playSound(null, pos, SoundEvents.LASER_HIGH, SoundCategory.AMBIENT, 4.0F, 1.0F);
-	  				energy_consume(WarpDriveConfig.LIFT_ENERGY_PER_ENTITY, false);
-	  				isTransferDone = true;
+			if (energy_consume(WarpDriveConfig.LIFT_ENERGY_PER_ENTITY, true)) {
+				if (mode == EnumLiftMode.UP) {// Lift up
+					entity.setPositionAndUpdate(pos.getX() + 0.5D, pos.getY() + 1.0D, pos.getZ() + 0.5D);
+					PacketHandler.sendBeamPacket(world,
+					                             new Vector3(pos.getX() + 0.5D, firstUncoveredY, pos.getZ() + 0.5D),
+					                             new Vector3(pos.getX() + 0.5D, pos.getY()     , pos.getZ() + 0.5D),
+					                             1.0F, 1.0F, 0.0F, 40, 0, 100);
+				} else {
+					entity.setPositionAndUpdate(pos.getX() + 0.5D, firstUncoveredY, pos.getZ() + 0.5D);
+					PacketHandler.sendBeamPacket(world,
+					                             new Vector3(pos.getX() + 0.5D, pos.getY()     , pos.getZ() + 0.5D),
+					                             new Vector3(pos.getX() + 0.5D, firstUncoveredY, pos.getZ() + 0.5D),
+					                             1.0F, 1.0F, 0.0F, 40, 0, 100);
 				}
+				world.playSound(null, pos, SoundEvents.LASER_HIGH, SoundCategory.AMBIENT, 4.0F, 1.0F);
+				energy_consume(WarpDriveConfig.LIFT_ENERGY_PER_ENTITY, false);
+				isTransferDone = true;
 			}
 		}
 		

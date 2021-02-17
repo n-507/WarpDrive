@@ -333,6 +333,14 @@ public class Recipes {
 		                                       'm', ItemComponent.getItemStack(EnumComponentType.LASER_MEDIUM_EMPTY),
 		                                       'r', "blockRedstone",
 		                                       'l', "blockLapis"));
+		
+		// *** Security Station
+		WarpDrive.register(new ShapedOreRecipe(groupMachines,
+		                                       new ItemStack(WarpDrive.blockSecurityStation), "ede", "eme", "eMe",
+		                                       'd', ItemComponent.getItemStack(EnumComponentType.DIAMOND_CRYSTAL),
+		                                       'e', ItemComponent.getItemStack(EnumComponentType.ENDER_COIL),
+		                                       'M', ItemComponent.getItemStack(EnumComponentType.MEMORY_CRYSTAL),
+		                                       'm', itemStackMachineCasings[0] ));
 	}
 	
 	private static void initComponents() {

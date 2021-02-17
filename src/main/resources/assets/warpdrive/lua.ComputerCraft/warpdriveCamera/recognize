@@ -43,13 +43,17 @@ repeat
 until (count ~= nil and count ~= -1) or delay > 10
 
 if count ~= nil and count > 0 then
-  for i=0, count-1 do
-    local success, type, name, x, y, z, vx, vy, vz = camera.getResult(i)
+  for i = 0, count - 1 do
+    local success, type, name, x, y, z, vx, vy, vz, isCrewMember = camera.getResult(i)
     x = math.floor(x * 10) / 10
     y = math.floor(y * 10) / 10
     z = math.floor(z * 10) / 10
     if success then
-      print(type .. " " .. name .. " @ (" .. x .. " " .. y .. " " .. z .. ")")
+      if isCrewMember then
+        print("CREW" .. " " .. name .. " @ (" .. x .. " " .. y .. " " .. z .. ")")
+      else
+        print(type .. " " .. name .. " @ (" .. x .. " " .. y .. " " .. z .. ")")
+      end
     else
       showError("Error " .. type)
     end

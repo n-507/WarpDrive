@@ -1,13 +1,19 @@
 package cr0s.warpdrive.block.detection;
 
 import cr0s.warpdrive.Commons;
+import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.api.IGlobalRegionProvider;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.TileEntityAbstractEnergyCoreOrController;
+import cr0s.warpdrive.block.movement.TileEntityShipCore;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.EnergyWrapper;
+import cr0s.warpdrive.data.EnumComponentType;
 import cr0s.warpdrive.data.EnumGlobalRegionType;
+import cr0s.warpdrive.data.GlobalRegion;
+import cr0s.warpdrive.data.GlobalRegionManager;
+import cr0s.warpdrive.item.ItemComponent;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -15,10 +21,13 @@ import li.cil.oc.api.machine.Context;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import java.util.ArrayList;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -26,6 +35,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.Optional;
 
 public class TileEntityVirtualAssistant extends TileEntityAbstractEnergyCoreOrController implements IGlobalRegionProvider {
+	
+	// global properties
+	private static final UpgradeSlot upgradeSlotSecurity = new UpgradeSlot("virtual_assistant.security",
+	                                                                       ItemComponent.getItemStackNoCache(EnumComponentType.DIAMOND_CRYSTAL, 1),
+	                                                                       1);
 	
 	// persistent properties
 	private String lastCommand = "";
@@ -42,6 +56,8 @@ public class TileEntityVirtualAssistant extends TileEntityAbstractEnergyCoreOrCo
 			"getLastCommand",
 			"pullLastCommand"
 		});
+		
+		registerUpgradeSlot(upgradeSlotSecurity);
 	}
 	
 	@Override
@@ -129,6 +145,33 @@ public class TileEntityVirtualAssistant extends TileEntityAbstractEnergyCoreOrCo
 		if (!message.toLowerCase().startsWith(name.toLowerCase())) {
 			return false;
 		}
+		
+		if (getUpgradeCount(upgradeSlotSecurity) > 0) {// check security constrains
+			final ArrayList<GlobalRegion> globalRegions = GlobalRegionManager.getContainers(EnumGlobalRegionType.SHIP, world, pos);
+			for (final GlobalRegion globalRegion : globalRegions) {
+				// abort on invalid ship cores
+				final TileEntity tileEntity = world.getTileEntity(globalRegion.getBlockPos());
+				if (!(tileEntity instanceof TileEntityShipCore)) {
+					if (Commons.throttleMe("onChatReceived-InvalidInstance")) {
+						WarpDrive.logger.error(String.format("Unable to assist player due to invalid tile entity for global region, expecting TileEntityShipCore, got %s",
+						                                     tileEntity));
+					}
+					return false;
+				}
+				final TileEntityShipCore tileEntityShipCore = (TileEntityShipCore) tileEntity;
+				if (!tileEntityShipCore.isAssemblyValid()) {
+					if (Commons.throttleMe("onChatReceived-InvalidAssembly")) {
+						WarpDrive.logger.error(String.format("Unable to assist player due to invalid ship assembly for %s",
+						                                     tileEntity ));
+					}
+					return false;
+				}
+				if (!tileEntityShipCore.isCrewMember(entityPlayer)) {
+					return false;
+				}
+			}
+		}
+		
 		final String command = message.substring(name.length()).trim();
 		lastCommand = command;
 		sendEvent("virtualAssistantCommand", command);
