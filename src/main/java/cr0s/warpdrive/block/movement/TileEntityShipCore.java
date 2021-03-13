@@ -94,6 +94,8 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	public int shipVolume;
 	private BlockPos posSecurityStation = null;
 	private WeakReference<TileEntitySecurityStation> weakTileEntitySecurityStation = null;
+	private boolean isShipScanValid = false;
+	protected WarpDriveText textShipScanIssues = VALIDITY_ISSUES_UNKNOWN;
 	
 	private EnumShipMovementType shipMovementType;
 	private ShipMovementCosts shipMovementCosts;
@@ -271,16 +273,16 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			if ( getBack() == 0 && getFront() == 0
 			  && getLeft() == 0 && getRight() == 0
 			  && getDown() == 0 && getUp() == 0 ) {
-				textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.no_dimension_set");
-				isAssemblyValid = false;
+				textShipScanIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.no_dimension_set");
+				isShipScanValid = false;
 				return;
 			}
 			if ( (getBack() + getFront()) > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]
 			  || (getLeft() + getRight()) > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]
 			  || (getDown() + getUp()   ) > WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()] ) {
-				textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.too_large_side_for_tier",
+				textShipScanIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.too_large_side_for_tier",
 				                                       WarpDriveConfig.SHIP_SIZE_MAX_PER_SIDE_BY_TIER[enumTier.getIndex()]);
-				isAssemblyValid = false;
+				isShipScanValid = false;
 				return;
 			}
 			
@@ -325,45 +327,45 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 			if (!isUnlimited) {
 				if ( shipMass > WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE
 				  && CelestialObjectManager.isPlanet(world, pos.getX(), pos.getZ()) ) {
-					textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.too_much_mass_for_planet",
+					textShipScanIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.too_much_mass_for_planet",
 					                                       WarpDriveConfig.SHIP_MASS_MAX_ON_PLANET_SURFACE, shipMass );
-					isAssemblyValid = false;
+					isShipScanValid = false;
 					if (isEnabled) {
-						commandDone(false, textValidityIssues);
+						commandDone(false, textShipScanIssues);
 					}
 					return;
 				}
 				if ( shipMass < WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE
 				  && CelestialObjectManager.isInHyperspace(world, pos.getX(), pos.getZ()) ) {
-					textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.insufficient_mass_for_hyperspace",
+					textShipScanIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.insufficient_mass_for_hyperspace",
 					                                       WarpDriveConfig.SHIP_MASS_MIN_FOR_HYPERSPACE, shipMass );
-					isAssemblyValid = false;
+					isShipScanValid = false;
 					if (isEnabled) {
-						commandDone(false, textValidityIssues);
+						commandDone(false, textShipScanIssues);
 					}
 					return;
 				}
 				if (shipMass < WarpDriveConfig.SHIP_MASS_MIN_BY_TIER[enumTier.getIndex()]) {
-					textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.insufficient_mass_for_tier",
+					textShipScanIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.insufficient_mass_for_tier",
 					                                       WarpDriveConfig.SHIP_MASS_MIN_BY_TIER[enumTier.getIndex()], shipMass );
-					isAssemblyValid = false;
+					isShipScanValid = false;
 					if (isEnabled) {
-						commandDone(false, textValidityIssues);
+						commandDone(false, textShipScanIssues);
 					}
 					return;
 				}
 				if (shipMass > WarpDriveConfig.SHIP_MASS_MAX_BY_TIER[enumTier.getIndex()]) {
-					textValidityIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.too_much_mass_for_tier",
+					textShipScanIssues = new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.too_much_mass_for_tier",
 					                                       WarpDriveConfig.SHIP_MASS_MAX_BY_TIER[enumTier.getIndex()], shipMass );
-					isAssemblyValid = false;
+					isShipScanValid = false;
 					if (isEnabled) {
-						commandDone(false, textValidityIssues);
+						commandDone(false, textShipScanIssues);
 					}
 					return;
 				}
 			}
-			textValidityIssues = new WarpDriveText();
-			isAssemblyValid = true;
+			textShipScanIssues = new WarpDriveText();
+			isShipScanValid = true;
 		}
 		
 		// skip state handling while cooling down
@@ -641,7 +643,9 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 	
 	@Override
 	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
-		final boolean isValid = super.doScanAssembly(isDirty, textReason);
+		final boolean isValid = super.doScanAssembly(isDirty, textReason)
+		                     && isShipScanValid;
+		textReason.append(textShipScanIssues);
 		
 		// refresh cache
 		facing = world.getBlockState(pos).getValue(BlockProperties.FACING_HORIZONTAL);
