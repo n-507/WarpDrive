@@ -909,6 +909,9 @@ warpdrive.mining_laser.status_line._insufficient_energy= - Out of energy
 
 warpdrive.monitor.viewing_camera=Camera op %2$d, %3$d, %4$d met videokanaal %1$d aan het bekijken...
 
+warpdrive.optical_sensor.status_line.no_result=No entity in sight.
+warpdrive.optical_sensor.status_line.result_count=%1$d entities in sight.
+
 warpdrive.particle.ion.name=ioon
 warpdrive.particle.ion.tooltip=Geproduceerd door de botsing van een aantal deeltjes in de Normale Versneller
 warpdrive.particle.proton.name=protoon

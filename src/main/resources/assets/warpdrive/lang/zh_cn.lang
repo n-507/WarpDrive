@@ -910,6 +910,9 @@ warpdrive.mining_laser.status_line._insufficient_energy=- 能量用尽
 
 warpdrive.monitor.viewing_camera=摄像机位于 %2$d, %3$d, %4$d ，频道为 %1$d
 
+warpdrive.optical_sensor.status_line.no_result=No entity in sight.
+warpdrive.optical_sensor.status_line.result_count=%1$d entities in sight.
+
 warpdrive.particle.ion.name=离子
 warpdrive.particle.ion.tooltip=产生于基础粒子加速器的粒子流碰撞中
 warpdrive.particle.proton.name=质子
