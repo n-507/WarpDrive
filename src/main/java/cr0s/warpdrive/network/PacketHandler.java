@@ -2,6 +2,7 @@ package cr0s.warpdrive.network;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObject;
 import cr0s.warpdrive.data.CloakedArea;
@@ -215,14 +216,20 @@ public class PacketHandler {
 	}
 	
 	public static Packet<?> getPacketForThisEntity(final Entity entity) {
+		// skip buggy entities
+		if (Dictionary.isNoReveal(entity)) {
+			return null;
+		}
+		
 		final EntityTrackerEntry entry = new EntityTrackerEntry(entity, 0, 0, 0, false);
 		try {
 			return (Packet<?>) EntityTrackerEntry_getPacketForThisEntity.invoke(entry);
 		} catch (final Exception exception) {
 			exception.printStackTrace(WarpDrive.printStreamError);
 		}
-		WarpDrive.logger.error(String.format("Unable to get packet for entity %s",
-		                                     entity));
+		WarpDrive.logger.error(String.format("Unable to get packet for entity %s, consider adding the NoReveal tag to entities with id %s.",
+		                                     entity, Dictionary.getId(entity) ));
+		Dictionary.addToNoReveal(entity);
 		return null;
 	}
 	
@@ -235,8 +242,7 @@ public class PacketHandler {
 			}
 			final Packet<?> packet = getPacketForThisEntity(entity);
 			if (packet == null) {
-				WarpDrive.logger.error(String.format("Unable to reveal entity %s to player %s: null packet",
-				                                     entity, entityPlayerMP));
+				// note: error is already logged by getPacketForThisEntity()
 				return;
 			}
 			if (WarpDriveConfig.LOGGING_CLOAKING) {

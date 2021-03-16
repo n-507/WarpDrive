@@ -68,6 +68,7 @@ public class Dictionary {
 	private static HashSet<ResourceLocation> ENTITIES_LEFTBEHIND = null;
 	private static HashSet<ResourceLocation> ENTITIES_NONLIVINGTARGET = null;
 	private static HashSet<ResourceLocation> ENTITIES_LIVING_WITHOUT_AIR = null;
+	private static HashSet<ResourceLocation> ENTITIES_NO_REVEAL = null;
 	
 	// Items dictionary
 	public static HashSet<Item> ITEMS_FLYINSPACE = null;
@@ -332,6 +333,7 @@ public class Dictionary {
 					+ "In case of conflicts, the latest tag overwrite the previous ones.\n" + "- Anchor: ship can't move with this entity aboard (default: none).\n"
 					+ "- NoMass: this entity doesn't count when calculating ship volume/mass (default: boats, frames, carts).\n"
 					+ "- LeftBehind: this entity won't move with your ship nor transporter (default: particle effects).\n"
+					+ "- NoReveal: this entity won't be revealed when uncloaking. Applies to buggy entity with no network packets. (default: SGCraft Iris).\n"
 //					+ "- NoTransport: this entity is ignored by the transporter (default: -none-).\n"
 					+ "- NonLivingTarget: this non-living entity can be targeted/removed by weapons (default: ItemFrame, Painting).\n"
 					+ "- LivingWithoutAir: this living entity doesn't need air to live (default: vanilla zombies and skeletons).");
@@ -416,6 +418,9 @@ public class Dictionary {
 			config.get("entity_tags", "thaumcraft:wisp"                        , "LivingWithoutAir").getString();
 			config.get("entity_tags", "twilightforest.skeleton_druid"          , "LivingWithoutAir").getString();
 			config.get("entity_tags", "warpdrive:entity_offline_avatar"        , "LivingWithoutAir").getString();
+			
+			// buggy entities
+			config.get("entity_tags", "sgcraft:stargate_iris"                  , "NoReveal").getString();
 			
 			// *** read actual values
 			final String[] taggedEntitiesName = categoryEntityTags.getValues().keySet().toArray(new String[0]);
@@ -591,6 +596,7 @@ public class Dictionary {
 		ENTITIES_LEFTBEHIND = new HashSet<>(taggedEntities.size());
 		ENTITIES_NONLIVINGTARGET = new HashSet<>(taggedEntities.size());
 		ENTITIES_LIVING_WITHOUT_AIR = new HashSet<>(taggedEntities.size());
+		ENTITIES_NO_REVEAL = new HashSet<>(taggedEntities.size());
 		for (final Entry<String, String> taggedEntity : taggedEntities.entrySet()) {
 			final ResourceLocation resourceLocation = new ResourceLocation(taggedEntity.getKey());
 			if (EntityList.getClass(resourceLocation) == null) {
@@ -605,6 +611,7 @@ public class Dictionary {
 				case "LeftBehind"      : ENTITIES_LEFTBEHIND.add(resourceLocation); break;
 				case "NonLivingTarget" : ENTITIES_NONLIVINGTARGET.add(resourceLocation); break;
 				case "LivingWithoutAir": ENTITIES_LIVING_WITHOUT_AIR.add(resourceLocation); break;
+				case "NoReveal"        : ENTITIES_NO_REVEAL.add(resourceLocation); break;
 				default:
 					WarpDrive.logger.error(String.format("Unsupported tag %s for entity %s",
 					                                     tag, resourceLocation ));
@@ -665,6 +672,7 @@ public class Dictionary {
 		WarpDrive.logger.info(String.format("- %s with LeftBehind tag: %s"      , ENTITIES_LEFTBEHIND.size(), getHashMessage(ENTITIES_LEFTBEHIND)));
 		WarpDrive.logger.info(String.format("- %s with NonLivingTarget tag: %s" , ENTITIES_NONLIVINGTARGET.size(), getHashMessage(ENTITIES_NONLIVINGTARGET)));
 		WarpDrive.logger.info(String.format("- %s with LivingWithoutAir tag: %s", ENTITIES_LIVING_WITHOUT_AIR.size(), getHashMessage(ENTITIES_LIVING_WITHOUT_AIR)));
+		WarpDrive.logger.info(String.format("- %s with NoReveal tag: %s"        , ENTITIES_NO_REVEAL.size(), getHashMessage(ENTITIES_NO_REVEAL)));
 		
 		// print tagged items
 		WarpDrive.logger.info("Active items dictionary:");
@@ -886,5 +894,15 @@ public class Dictionary {
 	public static boolean isNonLivingTarget(final Entity entity) {
 		final ResourceLocation resourceLocation = EntityList.getKey(entity);
 		return ENTITIES_NONLIVINGTARGET.contains(resourceLocation);
+	}
+	
+	public static boolean isNoReveal(final Entity entity) {
+		final ResourceLocation resourceLocation = EntityList.getKey(entity);
+		return ENTITIES_NO_REVEAL.contains(resourceLocation);
+	}
+	
+	public static boolean addToNoReveal(final Entity entity) {
+		final ResourceLocation resourceLocation = EntityList.getKey(entity);
+		return ENTITIES_NO_REVEAL.add(resourceLocation);
 	}
 }
