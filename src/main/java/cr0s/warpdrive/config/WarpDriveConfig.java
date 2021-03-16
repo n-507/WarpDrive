@@ -576,6 +576,7 @@ public class WarpDriveConfig {
 	// Hull
 	public static float[]          HULL_HARDNESS = { 666666.0F, 25.0F, 50.0F, 80.0F };
 	public static float[]          HULL_BLAST_RESISTANCE = { 666666.0F, 60.0F, 90.0F, 120.0F };
+	public static int[]            HULL_HARVEST_LEVEL = { 666666, 2, 3, 3 };
 	
 	// Block transformers library
 	public static HashMap<String, IBlockTransformer> blockTransformers = new HashMap<>(30);
