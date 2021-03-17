@@ -156,6 +156,9 @@ public class GlobalRegionManager {
 	
 	@Nullable
 	public static GlobalRegion getByUUID(final EnumGlobalRegionType enumGlobalRegionType, final UUID uuid) {
+		if (uuid == null) {
+			return null;
+		}
 		for (final Integer dimensionId : registry.keySet()) {
 			final CopyOnWriteArraySet<GlobalRegion> setGlobalRegions = registry.get(dimensionId);
 			if (setGlobalRegions == null) {
