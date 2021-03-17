@@ -102,7 +102,8 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 			return null;
 		}
 		TileEntityEnanReactorCore reactorCore = weakReactorCore != null ? weakReactorCore.get() : null;
-		if (reactorCore == null) {
+		if ( reactorCore == null
+		  || reactorCore.isInvalid() ) {
 			final BlockPos blockPos = pos.add(- reactorFace.x, - reactorFace.y, - reactorFace.z);
 			final TileEntity tileEntity = world.getTileEntity(blockPos);
 			if (tileEntity instanceof TileEntityEnanReactorCore) {
@@ -116,6 +117,7 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 					                                     tileEntity));
 				}
 				reactorFace = ReactorFace.UNKNOWN;
+				weakReactorCore = null;
 			}
 		}
 		return reactorCore;
