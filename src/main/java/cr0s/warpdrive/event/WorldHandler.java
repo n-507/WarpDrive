@@ -167,7 +167,7 @@ public class WorldHandler {
 			blockStateBefore = blockEvent.getWorld().getBlockState(blockEvent.getPos());
 			blockStatePlaced = blockEvent.getState();
 		}
-		if (WarpDriveConfig.LOGGING_BREAK_PLACE && WarpDrive.isDev) {
+		if (WarpDrive.isDev && WarpDriveConfig.LOGGING_BREAK_PLACE) {
 			if (blockStateBefore != blockStatePlaced) {
 				WarpDrive.logger.info(String.format("onBlockEvent %s %s -> %s %s by %s",
 				                                    blockEvent.getClass().getSimpleName(),

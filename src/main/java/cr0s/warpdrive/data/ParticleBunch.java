@@ -154,7 +154,7 @@ public class ParticleBunch extends Vector3 {
 			final double energy_before = energy;
 			energy *= 1.0D + countMagnets * TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_FACTOR_PER_MAGNET[tier - 1];
 			energy = Math.min(energy, TileEntityAcceleratorCore.PARTICLE_BUNCH_ENERGY_MAXIMUM[tier - 1]);
-			if (WarpDriveConfig.LOGGING_ACCELERATOR && WarpDrive.isDev) {
+			if (WarpDrive.isDev && WarpDriveConfig.LOGGING_ACCELERATOR) {
 				WarpDrive.logger.info(String.format(this + " accelerating by %d magnets energy %.5f -> %.5f at [%d %d %d]",
 						countMagnets, energy_before, energy, vCurrentBlock.x, vCurrentBlock.y, vCurrentBlock.z));
 			}

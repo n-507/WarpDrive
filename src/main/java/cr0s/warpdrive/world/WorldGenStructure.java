@@ -337,7 +337,7 @@ public class WorldGenStructure {
 				}
 			} else {
 				index++;
-				if (WarpDriveConfig.LOGGING_WORLD_GENERATION && WarpDrive.isDev) {
+				if (WarpDrive.isDev && WarpDriveConfig.LOGGING_WORLD_GENERATION) {
 					WarpDrive.logger.info(String.format("At index %d, deploying %s ",
 					                                    index, jumpBlock));
 				}
@@ -346,7 +346,7 @@ public class WorldGenStructure {
 				if (blockAtTarget == Blocks.AIR || Dictionary.BLOCKS_EXPANDABLE.contains(blockAtTarget)) {
 					jumpBlock.deploy(null, world, transformation);
 				} else {
-					if (WarpDriveConfig.LOGGING_WORLD_GENERATION && WarpDrive.isDev) {
+					if (WarpDrive.isDev && WarpDriveConfig.LOGGING_WORLD_GENERATION) {
 						WarpDrive.logger.info(String.format("Deployment collision detected %s with %s during world generation, skipping this block...",
 						                                    Commons.format(world, targetX + jumpBlock.x, targetY + jumpBlock.y, targetZ + jumpBlock.z),
 						                                    blockAtTarget.getRegistryName()));

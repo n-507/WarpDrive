@@ -347,8 +347,9 @@ public class LivingHandler {
 			if (!itemStackInSlot.isEmpty()) {
 				if (Dictionary.ITEMS_NOFALLDAMAGE.contains(itemStackInSlot.getItem())) {
 					event.setCanceled(true); // Don't damage entity
-					if (WarpDrive.isDev && entityLivingBase instanceof EntityPlayerMP) {
-						WarpDrive.logger.warn(String.format("(boot absorbed ) Entity fall damage at motionY %.3f from distance %.3f of %s, isCancelled %s",
+					if ( WarpDrive.isDev && WarpDriveConfig.LOGGING_GRAVITY
+					  && entityLivingBase instanceof EntityPlayerMP ) {
+						WarpDrive.logger.warn(String.format("(boots absorbed) Entity fall damage at motionY %.3f from distance %.3f of %s, isCancelled %s",
 						                                    motionY, event.getDistance(), entityLivingBase, event.isCanceled()));
 					}
 				}

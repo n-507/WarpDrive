@@ -232,6 +232,7 @@ import javax.annotation.Nullable;
 public class WarpDrive {
 	public static final String MODID = "warpdrive";
 	public static final String VERSION = "@version@";
+	public static final Integer[] VERSION_NUMBERS;
 	@SuppressWarnings("ConstantConditions")
 	public static final boolean isDev = java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0
 	                                 || VERSION.contains("-dev");
@@ -377,6 +378,31 @@ public class WarpDrive {
 	public static LoggerPrintStream printStreamError;
 	public static LoggerPrintStream printStreamWarn;
 	public static LoggerPrintStream printStreamInfo;
+	
+	static {
+		// pre-calculate and sanitize the version numbers
+		String[] strings = WarpDrive.VERSION.split("-");
+		if (strings.length < 2) {
+			strings = "0.0.0-0.0.0".split("-");
+		}
+		if (WarpDrive.isDev && strings[strings.length - 1].contains("dev")) {
+			strings = strings[strings.length - 2].split("\\.");
+		} else {
+			strings = strings[strings.length - 1].split("\\.");
+		}
+		final ArrayList<Integer> integers = new ArrayList<>(strings.length);
+		for (final String string : strings) {
+			try {
+				integers.add(Integer.parseInt(string));
+			} catch (final NumberFormatException exception) {
+				// ignore
+			}
+		}
+		while (integers.size() < 3) {
+			integers.add(0);
+		}
+		VERSION_NUMBERS = integers.toArray(new Integer[0]);
+	}
 	
 	public WarpDrive() {
 	}

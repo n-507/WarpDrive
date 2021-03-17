@@ -688,7 +688,7 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 		}
 		if (legacy_isolationRate != isolationRate) {
 			markDirtyGlobalRegion();
-			if (WarpDriveConfig.LOGGING_RADAR && WarpDrive.isDev) {
+			if (WarpDrive.isDev && WarpDriveConfig.LOGGING_RADAR) {
 				WarpDrive.logger.info(String.format("%s Isolation updated to %d (%.1f%%)",
 				                                    this, isolationBlocksCount , isolationRate * 100.0));
 			}

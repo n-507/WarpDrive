@@ -966,8 +966,8 @@ public class Commons {
 	
 	public static void writeNBTToFile(@Nonnull final String fileName, @Nonnull final NBTTagCompound tagCompound) {
 		if (WarpDrive.isDev) {
-			WarpDrive.logger.info(String.format("writeNBTToFile %s",
-			                                    fileName));
+			WarpDrive.logger.debug(String.format("writeNBTToFile %s",
+			                                     fileName));
 		}
 		
 		try {
@@ -989,7 +989,8 @@ public class Commons {
 	
 	public static NBTTagCompound readNBTFromFile(@Nonnull final String fileName) {
 		if (WarpDrive.isDev) {
-			WarpDrive.logger.info(String.format("readNBTFromFile %s", fileName));
+			WarpDrive.logger.debug(String.format("readNBTFromFile %s",
+			                                     fileName));
 		}
 		
 		try {

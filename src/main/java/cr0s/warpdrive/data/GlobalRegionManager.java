@@ -15,7 +15,6 @@ import cr0s.warpdrive.config.WarpDriveConfig;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -536,9 +535,9 @@ public class GlobalRegionManager {
 					}
 					// skip unloaded chunks
 					if (!isLoaded) {
-						if (WarpDrive.isDev) {
-							WarpDrive.logger.info(String.format("Skipping non-loaded GlobalRegion %s",
-							                                    registryItem));
+						if (WarpDrive.isDev && WarpDriveConfig.LOGGING_GLOBAL_REGION_REGISTRY) {
+							WarpDrive.logger.debug(String.format("Skipping non-loaded GlobalRegion %s",
+							                                     registryItem));
 						}
 						continue;
 					}

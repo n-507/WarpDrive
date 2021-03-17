@@ -55,7 +55,7 @@ public class DamageIrradiation extends DamageSource {
 		
 		final double speed = Math.abs(strength);
 		final Vector3 v3Motion = v3Direction.clone().scale(speed); // new Vector3(entity.motionX, entity.motionY, entity.motionZ);
-		if (WarpDriveConfig.LOGGING_ACCELERATOR && WarpDrive.isDev) {
+		if (WarpDrive.isDev && WarpDriveConfig.LOGGING_ACCELERATOR) {
 			PacketHandler.sendBeamPacket(world, v3From, v3Entity,
 			                             0.25F, 0.75F, 0.38F, 10, 0, 50);
 			WarpDrive.logger.info(String.format("%s strength %.1f speed %.3f entity %s source %s direction %s motion %s entity %s",

@@ -323,7 +323,7 @@ public class TileEntityAcceleratorCore extends TileEntityAbstractEnergyCoreOrCon
 			return target_K;
 		} else {
 			//noinspection StatementWithEmptyBody
-			if (WarpDriveConfig.LOGGING_ACCELERATOR && WarpDrive.isDev) {
+			if (WarpDrive.isDev && WarpDriveConfig.LOGGING_ACCELERATOR) {
 				// WarpDrive.logger.info("Accelerator temperature current " + actual_K + " rate " + rate + " target " + target_K);
 			}
 			return actual_K + rate * Math.signum(delta_K) * Math.sqrt(Math.abs(delta_K) / ACCELERATOR_AMBIENT_TEMPERATURE_K);
