@@ -99,10 +99,14 @@ public class PacketHandler {
 		
 		final MessageBeamEffect messageBeamEffect = new MessageBeamEffect(source, target, red, green, blue, age);
 		// Send packet to all players within cloaked area
-		final List<Entity> list = world.getEntitiesWithinAABB(EntityPlayerMP.class, aabb);
-		for (final Entity entity : list) {
-			if (entity instanceof EntityPlayerMP) {
-				PacketHandler.simpleNetworkManager.sendTo(messageBeamEffect, (EntityPlayerMP) entity);
+		assert world.getMinecraftServer() != null;
+		final List<EntityPlayerMP> playerEntityList = world.getMinecraftServer().getPlayerList().getPlayers();
+		final int dimensionId = world.provider.getDimension();
+		for (final EntityPlayerMP entityPlayerMP : playerEntityList) {
+			if (entityPlayerMP.dimension == dimensionId) {
+				if (aabb.intersects(entityPlayerMP.getEntityBoundingBox())) {
+					simpleNetworkManager.sendTo(messageBeamEffect, entityPlayerMP);
+				}
 			}
 		}
 	}

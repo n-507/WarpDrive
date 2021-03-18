@@ -79,9 +79,8 @@ public class BlockCloakingCoil extends BlockAbstractBase {
 		}
 	}
 	
-	public static void setBlockState(@Nonnull final World world, @Nonnull final BlockPos blockPos,
+	public static void setBlockState(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockStateActual,
 	                                 final boolean isConnected, final boolean isActive, final boolean isOuter, final EnumFacing enumFacing) {
-		final IBlockState blockStateActual = world.getBlockState(blockPos);
 		IBlockState blockStateNew = blockStateActual.withProperty(BlockProperties.CONNECTED, isConnected)
 		                                            .withProperty(BlockProperties.ACTIVE, isActive)
 		                                            .withProperty(OUTER, isOuter);

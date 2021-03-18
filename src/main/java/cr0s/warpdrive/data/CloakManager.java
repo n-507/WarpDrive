@@ -28,22 +28,6 @@ public class CloakManager {
 	
 	public CloakManager() { }
 	
-	public boolean isCloaked(final int dimensionID, final BlockPos blockPos) {
-		for (final CloakedArea area : cloaks) {
-			if (area.dimensionId != dimensionID) {
-				continue;
-			}
-			
-			if ( area.minX <= blockPos.getX() && area.maxX >= blockPos.getX() 
-			  && area.minY <= blockPos.getY() && area.maxY >= blockPos.getY()
-			  && area.minZ <= blockPos.getZ() && area.maxZ >= blockPos.getZ() ) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
 	public void onChunkLoaded(final EntityPlayerMP player, final int chunkPosX, final int chunkPosZ) {
 		for (final CloakedArea area : cloaks) {
 			// skip other dimensions

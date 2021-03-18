@@ -64,6 +64,10 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 		nodeMap.put("invalidateRegionAndSetBlock.desc", "(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;)Z");
 		nodeMap.put("setBlockState.name", "func_180501_a");
 		
+		nodeMap.put("NetHandlerPlayClient.class", "brx");
+		nodeMap.put("handleUpdateTileEntity.name", "func_147273_a");
+		nodeMap.put("handleUpdateTileEntity.desc", "(Lnet/minecraft/network/play/server/SPacketUpdateTileEntity;)V");
+		
 		nodeMap.put("Chunk.class", "axu");
 		nodeMap.put("read.name", "func_186033_a");
 		nodeMap.put("read.desc", "(Lnet/minecraft/network/PacketBuffer;IZ)V");
@@ -119,6 +123,10 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 			
 		case "net.minecraft.client.multiplayer.WorldClient":
 			bytesNew = transformMinecraftWorldClient(bytesOld);
+			break;
+			
+		case "net.minecraft.client.network.NetHandlerPlayClient":
+			bytesNew = transformMinecraftNetHandlerPlayClient(bytesOld);
 			break;
 			
 		case "net.minecraft.world.chunk.Chunk":
@@ -561,6 +569,68 @@ public class ClassTransformer implements net.minecraft.launchwrapper.IClassTrans
 							methodNode.instructions.set(nodeAt, overwriteNode);
 							if (debugLog) { FMLLoadingPlugin.logger.info(String.format("Injecting into %s.%s %s", classNode.name, methodNode.name, methodNode.desc)); }
 							countTransformed++;
+						}
+					}
+					
+					indexInstruction++;
+				}
+			}
+		}
+		
+		if (countTransformed != countExpected) {
+			FMLLoadingPlugin.logger.error(String.format("Transformation failed for %s (%d/%d), aborting...", classNode.name, countTransformed, countExpected));
+			return bytes;
+		}
+		
+		final ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS); // | ClassWriter.COMPUTE_FRAMES);
+		classNode.accept(writer);
+		final byte[] bytesNew = writer.toByteArray();
+		FMLLoadingPlugin.logger.info(String.format("Successful injection in %s", classNode.name));
+		return bytesNew;
+	}
+	
+	private byte[] transformMinecraftNetHandlerPlayClient(@Nonnull final byte[] bytes) {
+		final ClassNode classNode = new ClassNode();
+		final ClassReader classReader = new ClassReader(bytes);
+		classReader.accept(classNode, 0);
+		
+		final int countExpected = 1;
+		int countTransformed = 0;
+		for (final MethodNode methodNode : classNode.methods) {
+			if (debugLog) { FMLLoadingPlugin.logger.info(String.format("- Method %s %s", methodNode.name, methodNode.desc)); }
+			
+			if ( (methodNode.name.equals(nodeMap.get("handleUpdateTileEntity.name")) || methodNode.name.equals("handleUpdateTileEntity"))
+			  && methodNode.desc.equals(nodeMap.get("handleUpdateTileEntity.desc")) ) {
+				FMLLoadingPlugin.logger.debug(String.format("Found method to transform: %s %s %s",
+				                                            classNode.name, methodNode.name, methodNode.desc ));
+				
+				int indexInstruction = 0;
+				
+				while (indexInstruction < methodNode.instructions.size()) {
+					final AbstractInsnNode abstractNode = methodNode.instructions.get(indexInstruction);
+					if (debugLog) { decompile(abstractNode); }
+					
+					if (abstractNode instanceof LdcInsnNode) {
+						final LdcInsnNode nodeAt = (LdcInsnNode) abstractNode;
+						
+						if ( nodeAt.cst instanceof String
+						  && ((String) nodeAt.cst).contains("Received invalid update packet for null tile entity at ") ) {
+							final AbstractInsnNode abstractNodeToRemove = methodNode.instructions.get(indexInstruction - 1);
+							if ( (abstractNodeToRemove instanceof FieldInsnNode)
+							  && ((FieldInsnNode) abstractNodeToRemove).desc.equals("Lorg/apache/logging/log4j/Logger;") ) {
+								indexInstruction -= 1;
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								removeInstruction(methodNode, indexInstruction);
+								indexInstruction--;
+								
+								if (debugLog) { FMLLoadingPlugin.logger.info(String.format("Injecting into %s.%s %s", classNode.name, methodNode.name, methodNode.desc)); }
+								countTransformed++;
+							}
 						}
 					}
 					

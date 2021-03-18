@@ -1,5 +1,6 @@
 package cr0s.warpdrive.compat;
 
+import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.api.IBlockTransformer;
 import cr0s.warpdrive.api.ITransformation;
 import cr0s.warpdrive.api.WarpDriveText;
@@ -7,6 +8,7 @@ import cr0s.warpdrive.block.BlockAbstractBase;
 import cr0s.warpdrive.block.BlockAbstractContainer;
 import cr0s.warpdrive.block.breathing.BlockAirFlow;
 import cr0s.warpdrive.block.breathing.BlockAirSource;
+import cr0s.warpdrive.block.detection.TileEntityCloakingCore;
 import cr0s.warpdrive.block.hull.BlockHullSlab;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
@@ -40,6 +42,11 @@ public class CompatWarpDrive implements IBlockTransformer {
 	
 	@Override
 	public boolean isJumpReady(final Block block, final int metadata, final TileEntity tileEntity, final WarpDriveText reason) {
+		if ( tileEntity instanceof TileEntityCloakingCore
+		  && ((TileEntityCloakingCore) tileEntity).getIsEnabled() ) {
+			reason.append(Commons.getStyleWarning(), "warpdrive.ship.guide.cloaking_field_overlapping");
+			return false;
+		}
 		return true;
 	}
 	

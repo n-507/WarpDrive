@@ -509,11 +509,6 @@ public class TileEntityShipCore extends TileEntityAbstractShipController impleme
 				return;
 			}
 			
-			if (WarpDrive.cloaks.isCloaked(world.provider.getDimension(), pos)) {
-				commandDone(false, new WarpDriveText(Commons.getStyleWarning(), "warpdrive.ship.guide.cloaking_field_overlapping"));
-				return;
-			}
-			
 			doJump();
 			setCooldown(shipMovementCosts.cooldown_seconds * 20);
 			commandDone(true, new WarpDriveText(Commons.getStyleCorrect(), "warpdrive.ship.guide.pre_jump_success"));

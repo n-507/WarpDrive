@@ -471,7 +471,10 @@ public class WarpDriveConfig {
 	public static int              CLOAKING_MAX_FIELD_RADIUS = 63;
 	public static int              CLOAKING_TIER1_ENERGY_PER_BLOCK = 32;
 	public static int              CLOAKING_TIER2_ENERGY_PER_BLOCK = 128;
-	public static int              CLOAKING_FIELD_REFRESH_INTERVAL_SECONDS = 3;
+	public static int              CLOAKING_TIER1_FIELD_REFRESH_INTERVAL_TICKS = 60;
+	public static int              CLOAKING_TIER2_FIELD_REFRESH_INTERVAL_TICKS = 30;
+	public static int              CLOAKING_VOLUME_SCAN_BLOCKS_PER_TICK = 1000;
+	public static int              CLOAKING_VOLUME_SCAN_AGE_TOLERANCE_SECONDS = 120;
 	
 	// Breathing
 	public static int              BREATHING_ENERGY_PER_CANISTER = 200;
@@ -1276,8 +1279,14 @@ public class WarpDriveConfig {
 				config.get("cloaking", "tier1_energy_per_block", CLOAKING_TIER1_ENERGY_PER_BLOCK, "Energy cost per non-air block in a Tier1 cloak").getInt());
 		CLOAKING_TIER2_ENERGY_PER_BLOCK = Commons.clamp(CLOAKING_TIER1_ENERGY_PER_BLOCK, Integer.MAX_VALUE,
 				config.get("cloaking", "tier2_energy_per_block", CLOAKING_TIER2_ENERGY_PER_BLOCK, "Energy cost per non-air block in a Tier2 cloak").getInt());
-		CLOAKING_FIELD_REFRESH_INTERVAL_SECONDS = Commons.clamp(1, 30,
-				config.get("cloaking", "field_refresh_interval_seconds", CLOAKING_FIELD_REFRESH_INTERVAL_SECONDS, "Update speed of cloak simulation").getInt());
+		CLOAKING_TIER1_FIELD_REFRESH_INTERVAL_TICKS = Commons.clamp(20, 600,
+				config.get("cloaking", "tier1_field_refresh_interval_ticks", CLOAKING_TIER1_FIELD_REFRESH_INTERVAL_TICKS, "Update speed of a Tier1 cloak").getInt());
+		CLOAKING_TIER2_FIELD_REFRESH_INTERVAL_TICKS = Commons.clamp(20, 600,
+                config.get("cloaking", "tier2_field_refresh_interval_ticks", CLOAKING_TIER2_FIELD_REFRESH_INTERVAL_TICKS, "Update speed of a Tier2 cloak").getInt());
+		CLOAKING_VOLUME_SCAN_BLOCKS_PER_TICK = Commons.clamp(100, 100000,
+				config.get("cloaking", "volume_scan_blocks_per_tick", CLOAKING_VOLUME_SCAN_BLOCKS_PER_TICK, "Number of blocks to scan per tick when getting cloak bounds, too high will cause lag spikes when resizing a cloak").getInt());
+		CLOAKING_VOLUME_SCAN_AGE_TOLERANCE_SECONDS = Commons.clamp(0, 300,
+				config.get("cloaking", "volume_scan_age_tolerance", CLOAKING_VOLUME_SCAN_AGE_TOLERANCE_SECONDS, "Cloak volume won't be refreshed unless it's older than that many seconds").getInt());
 		
 		// Air generator
 		BREATHING_MAX_ENERGY_STORED_BY_TIER = config.get("breathing", "max_energy_stored_by_tier", BREATHING_MAX_ENERGY_STORED_BY_TIER, "Maximum energy stored for a given tier").getIntList();

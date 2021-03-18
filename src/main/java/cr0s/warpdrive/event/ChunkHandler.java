@@ -356,6 +356,11 @@ public class ChunkHandler {
 		return chunkData != null && chunkData.isLoaded();
 	}
 	
+	public static boolean isLoaded(@Nonnull final World world, final int xChunk, final int zChunk) {
+		final ChunkData chunkData = getChunkData(world.isRemote, world.provider.getDimension(), xChunk, zChunk, false);
+		return chunkData != null && chunkData.isLoaded();
+	}
+	
 	/* air handling */
 	@Nullable
 	public static StateAir getStateAir(@Nonnull final World world, final int x, final int y, final int z) {

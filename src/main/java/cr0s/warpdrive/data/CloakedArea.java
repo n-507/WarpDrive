@@ -8,7 +8,6 @@ import cr0s.warpdrive.network.PacketHandler;
 import cr0s.warpdrive.render.EntityFXBeam;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -26,9 +25,9 @@ import net.minecraft.network.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.World;
 
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -107,7 +106,7 @@ public class CloakedArea {
 	// Sending only if field changes: sets up or collapsing
 	public void sendCloakPacketToPlayersEx(final boolean isUncloaking) {
 		if (WarpDriveConfig.LOGGING_CLOAKING) {
-			WarpDrive.logger.info(String.format("sendCloakPacketToPlayersEx %s", isUncloaking));
+			WarpDrive.logger.info(String.format("sendCloakPacketToPlayersEx isUncloaking %s", isUncloaking));
 		}
 		final int RADIUS = 250;
 		
@@ -154,7 +153,7 @@ public class CloakedArea {
 					                                    this, EntityPlayerMP.getName()));
 				}
 				removePlayer(EntityPlayerMP.getUniqueID());
-				final Packet packetToSend = PacketHandler.getPacketForThisEntity(EntityPlayerMP);
+				final Packet<?> packetToSend = PacketHandler.getPacketForThisEntity(EntityPlayerMP);
 				if (packetToSend != null) {
 					FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList()
 					                .sendToAllNearExcept(
@@ -226,15 +225,10 @@ public class CloakedArea {
 		final World world = player.getEntityWorld();
 		final int minY_clamped = Math.max(0, minY);
 		final int maxY_clamped = Math.min(255, maxY);
-		for (int y = minY_clamped; y <= maxY_clamped; y++) {
-			for (int x = minX; x <= maxX; x++) {
-				for (int z = minZ; z <= maxZ; z++) {
-					final BlockPos blockPos = new BlockPos(x, y, z);
-					final IBlockState blockState = world.getBlockState(blockPos);
-					if (blockState.getBlock() != Blocks.AIR) {
-						world.setBlockState(blockPos, blockStateFog, 4);
-					}
-				}
+		for (final MutableBlockPos mutableBlockPos : MutableBlockPos.getAllInBoxMutable(minX, minY_clamped, minZ, maxX, maxY_clamped, maxZ)) {
+			final IBlockState blockState = world.getBlockState(mutableBlockPos);
+			if (blockState.getBlock() != Blocks.AIR) {
+				world.setBlockState(mutableBlockPos, blockStateFog, 4);
 			}
 		}
 		
