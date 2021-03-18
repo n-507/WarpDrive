@@ -2,9 +2,11 @@ package cr0s.warpdrive.block.energy;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.WarpDrive;
+import cr0s.warpdrive.api.IGlobalRegionProvider;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.EnergyWrapper;
+import cr0s.warpdrive.data.EnumGlobalRegionType;
 import cr0s.warpdrive.data.EnumTier;
 import cr0s.warpdrive.data.ReactorFace;
 import cr0s.warpdrive.data.EnumReactorOutputMode;
@@ -18,6 +20,7 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -31,7 +34,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
+public class TileEntityEnanReactorCore extends TileEntityEnanReactorController implements IGlobalRegionProvider {
 	
 	// generation & instability is 'per tick'
 	private static final double INSTABILITY_MIN = 0.004D;
@@ -62,6 +65,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	private boolean hold = true; // hold updates and power output until reactor is controlled (i.e. don't explode on chunk-loading while computer is booting)
 	private AxisAlignedBB aabbRender = null;
 	private Vector3 vCenter = null;
+	private AxisAlignedBB cache_aabbArea;
 	private boolean isFirstException = true;
 	private int energyStored_max;
 	private int generation_offset;
@@ -412,9 +416,10 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 						WarpDrive.logger.error(String.format("%s tileEntity is %s",
 						                                     this, tileEntity ));
 					}
-					statusLasers.append(String.format("\n- face %s has reached instability %.2f while laser has %d energy available with %d laser medium(s)",
+					statusLasers.append(String.format("\n- face %s has reached instability %.2f while laser %s has %d energy available with %d laser medium(s)",
 					                                  reactorFace.name,
 					                                  instabilityValues[reactorFace.indexStability],
+					                                  Commons.format(world, mutableBlockPos),
 					                                  energyStored,
 					                                  countLaserMediums ));
 				} else {
@@ -505,14 +510,8 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 	}
 	
 	@Override
-	public void onBlockUpdateDetected() {
-		super.onBlockUpdateDetected();
-		
-		markDirtyAssembly();
-	}
-	
-	@Override
 	public void onBlockBroken(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
+		// disconnect the stabilization lasers
 		final MutableBlockPos mutableBlockPos = new MutableBlockPos();
 		for (final ReactorFace reactorFace : ReactorFace.getLasers(enumTier)) {
 			if (reactorFace.indexStability < 0) {
@@ -583,6 +582,61 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController {
 		}
 		
 		return isValid;
+	}
+	
+	// IGlobalRegionProvider overrides
+	@Override
+	public EnumGlobalRegionType getGlobalRegionType() {
+		return EnumGlobalRegionType.REACTOR;
+	}
+	
+	@Override
+	public AxisAlignedBB getGlobalRegionArea() {
+		if (cache_aabbArea == null) {
+			int minX = 0;
+			int minY = 0;
+			int minZ = 0;
+			int maxX = 0;
+			int maxY = 0;
+			int maxZ = 0;
+			for (final ReactorFace reactorFace : ReactorFace.getLasers(EnumTier.get(getTierIndex()))) {
+				minX = Math.min(minX, reactorFace.x);
+				minY = Math.min(minY, reactorFace.y);
+				minZ = Math.min(minZ, reactorFace.z);
+				maxX = Math.max(maxX, reactorFace.x);
+				maxY = Math.max(maxY, reactorFace.y);
+				maxZ = Math.max(maxZ, reactorFace.z);
+			}
+			cache_aabbArea = new AxisAlignedBB(
+					pos.getX() + minX       , pos.getY() + minY       , pos.getZ() + minZ       ,
+					pos.getX() + maxX + 1.0D, pos.getY() + maxY + 1.0D, pos.getZ() + maxZ + 1.0D );
+		}
+		return cache_aabbArea;
+	}
+	
+	@Override
+	public int getMass() {
+		return ReactorFace.getLasers(EnumTier.get(getTierIndex())).length;
+	}
+	
+	@Override
+	public double getIsolationRate() {
+		return 1.0D;
+	}
+	
+	@Override
+	public boolean onBlockUpdatingInArea(@Nullable final Entity entity, final BlockPos blockPos, final IBlockState blockState) {
+		// energy ducts are updating quite frequently, so we explicitly check for reactor faces here
+		for (final ReactorFace reactorFace : ReactorFace.get(enumTier)) {
+			if ( blockPos.getX() == pos.getX() + reactorFace.x
+			  && blockPos.getY() == pos.getY() + reactorFace.y
+			  && blockPos.getZ() == pos.getZ() + reactorFace.z ) {
+				markDirtyAssembly();
+				break;
+			}
+		}
+		
+		return true;
 	}
 	
 	// Common OC/CC methods

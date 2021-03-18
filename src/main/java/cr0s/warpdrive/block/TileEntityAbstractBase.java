@@ -123,7 +123,7 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 	}
 	
 	@Override
-	public void onBlockUpdateDetected() {
+	public void onBlockUpdateDetected(@Nonnull final BlockPos blockPosUpdated) {
 		assert Commons.isSafeThread();
 		if (!isConstructed) {
 			onConstructed();

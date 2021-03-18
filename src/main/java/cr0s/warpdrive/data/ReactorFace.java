@@ -67,7 +67,7 @@ public class ReactorFace implements IStringSerializable {
 		new ReactorFace(EnumTier.SUPERIOR, 15, "laser.superior.west++"  ,  4, 6,  2, EnumFacing.EAST );
 		addCoreBlocks(EnumTier.SUPERIOR, 2, 0, 4, 0);
 		
-		// pre-build the list of lasers in the structure
+		// pre-build the list of faces and lasers in the structure
 		final HashMap<EnumTier, ArrayList<ReactorFace>> facesByTiers = new HashMap<>(EnumTier.length);
 		final HashMap<EnumTier, ArrayList<ReactorFace>> lasersByTiers = new HashMap<>(EnumTier.length);
 		for (final EnumTier tierLoop : EnumTier.values()) {

@@ -16,7 +16,8 @@ public enum EnumGlobalRegionType implements IStringSerializable {
 	WARP_ECHO        ("warp_echo"        , true ), // remains of a warp
 	ACCELERATOR      ("accelerator"      , false), // an accelerator setup
 	TRANSPORTER      ("transporter"      , false), // a transporter room
-	VIRTUAL_ASSISTANT("virtual_assistant", false); // a virtual assistant
+	VIRTUAL_ASSISTANT("virtual_assistant", false), // a virtual assistant
+	REACTOR          ("reactor"          , false); // a reactor
 	
 	private final String name;
 	private final boolean hasRadarEcho;

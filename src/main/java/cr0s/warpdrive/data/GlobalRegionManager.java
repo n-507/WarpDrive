@@ -308,7 +308,8 @@ public class GlobalRegionManager {
 		}
 		boolean isAllowed = true;
 		for (final GlobalRegion registryItem : setGlobalRegions) {
-			if (registryItem.contains(blockPos)) {
+			if ( registryItem.contains(blockPos)
+			  && !registryItem.getBlockPos().equals(blockPos) ) {
 				final TileEntity tileEntity = world.getTileEntity(registryItem.getBlockPos());
 				if (tileEntity instanceof IGlobalRegionProvider) {
 					isAllowed = isAllowed && ((IGlobalRegionProvider) tileEntity).onBlockUpdatingInArea(entity, blockPos, blockState);

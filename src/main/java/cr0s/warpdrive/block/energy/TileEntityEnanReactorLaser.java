@@ -26,7 +26,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockPos.MutableBlockPos;
 
 import net.minecraftforge.fml.common.Optional;
 
@@ -56,11 +55,6 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	@Override
 	protected void onFirstUpdateTick() {
 		super.onFirstUpdateTick();
-		
-		if (reactorFace == ReactorFace.UNKNOWN) {
-			// laser isn't linked yet, let's try to update nearby reactors
-			onBlockUpdateDetected();
-		}
 		
 		vLaser = new Vector3(this).translate(0.5);
 	}
@@ -92,18 +86,6 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		// always update cached signature name
 		reactorSignatureName = reactorCore != null ? reactorCore.getSignatureName() : "";
 		
-		// refresh blockstate
-		final IBlockState blockState_old = world.getBlockState(pos);
-		final IBlockState blockState_new;
-		if (reactorFace.facingLaserProperty != null) {
-			blockState_new = blockState_old.withProperty(BlockProperties.ACTIVE, true)
-			                               .withProperty(BlockProperties.FACING, reactorFace.facingLaserProperty);
-		} else {
-			blockState_new = blockState_old.withProperty(BlockProperties.ACTIVE, false)
-			                               .withProperty(BlockProperties.FACING, EnumFacing.DOWN);
-		}
-		updateBlockState(blockState_old, blockState_new);
-		
 		// skip if it's already set to save resources
 		if (this.reactorFace == reactorFace) {
 			return;
@@ -127,10 +109,12 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 				reactorCore = (TileEntityEnanReactorCore) tileEntity;
 				weakReactorCore = new WeakReference<>(reactorCore);
 			} else {
-				WarpDrive.logger.error(String.format("%s Invalid TileEntityEnanReactorCore %s: %s",
-				                                     this,
-				                                     Commons.format(world, pos),
-				                                     tileEntity));
+				if (tileEntity != null) {
+					WarpDrive.logger.error(String.format("%s Invalid TileEntityEnanReactorCore %s: %s",
+					                                     this,
+					                                     Commons.format(world, pos),
+					                                     tileEntity));
+				}
 				reactorFace = ReactorFace.UNKNOWN;
 			}
 		}
@@ -138,35 +122,11 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 	}
 	
 	@Override
-	public void onBlockUpdateDetected() {
-		super.onBlockUpdateDetected();
-		
-		final TileEntityEnanReactorCore reactorCore = getReactorCore();
-		if (reactorCore != null) {
-			reactorCore.onBlockUpdateDetected();
-		} else {
-			final MutableBlockPos mutableBlockPos = new MutableBlockPos(pos);
-			for (final ReactorFace reactorFace : ReactorFace.getLasers()) {
-				if (reactorFace.indexStability < 0) {
-					continue;
-				}
-				
-				mutableBlockPos.setPos(pos.getX() - reactorFace.x,
-				                       pos.getY() - reactorFace.y,
-				                       pos.getZ() - reactorFace.z);
-				if (world.isBlockLoaded(mutableBlockPos, true)) {
-					final TileEntity tileEntity = world.getTileEntity(mutableBlockPos);
-					if (tileEntity instanceof TileEntityEnanReactorCore) {
-						((TileEntityEnanReactorCore) tileEntity).onBlockUpdateDetected();
-					}
-				}
-			}
-		}
-	}
-	
-	@Override
 	protected boolean doScanAssembly(final boolean isDirty, final WarpDriveText textReason) {
 		final boolean isValid = super.doScanAssembly(isDirty, textReason);
+		
+		// check if the reactor core is still there
+		getReactorCore();
 		
 		if (reactorFace == ReactorFace.UNKNOWN) {
 			textReason.append(Commons.getStyleWarning(), "warpdrive.enan_reactor.status_line.missing_reactor_core");
@@ -174,6 +134,23 @@ public class TileEntityEnanReactorLaser extends TileEntityAbstractLaser implemen
 		}
 		
 		return isValid;
+	}
+	
+	@Override
+	protected void doUpdateParameters(final boolean isDirty) {
+		super.doUpdateParameters(isDirty);
+		
+		// refresh blockstate
+		final IBlockState blockState_old = world.getBlockState(pos);
+		final IBlockState blockState_new;
+		if (reactorFace.facingLaserProperty != null) {
+			blockState_new = blockState_old.withProperty(BlockProperties.ACTIVE, true)
+			                               .withProperty(BlockProperties.FACING, reactorFace.facingLaserProperty);
+		} else {
+			blockState_new = blockState_old.withProperty(BlockProperties.ACTIVE, false)
+			                               .withProperty(BlockProperties.FACING, EnumFacing.DOWN);
+		}
+		updateBlockState(blockState_old, blockState_new);
 	}
 	
 	protected int stabilize(final int energy) {
