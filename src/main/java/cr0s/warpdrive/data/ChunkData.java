@@ -25,7 +25,7 @@ public class ChunkData {
 	private static final String TAG_AIR_SEGMENT_DATA = "data";
 	private static final String TAG_AIR_SEGMENT_DELAY = "delay";
 	private static final String TAG_AIR_SEGMENT_Y = "y";
-	private static final long RELOAD_DELAY_MIN_MS = 100;
+	private static final long RELOAD_DELAY_MIN_MS = 10000;
 	private static final long LOAD_UNLOAD_DELAY_MIN_MS = 1000;
 	private static final long SAVE_SAVE_DELAY_MIN_MS = 100;
 	
@@ -54,19 +54,22 @@ public class ChunkData {
 		timeUnloaded = 0L;
 	}
 	
-	public void load(final NBTTagCompound tagCompoundChunk) {
+	public void load(@Nonnull final NBTTagCompound tagCompoundChunk, @Nonnull final World world) {
 		// check consistency
 		assert !isLoaded;
 		
 		// detects fast reloading
 		final long time = System.currentTimeMillis();
-		if ( WarpDriveConfig.LOGGING_CHUNK_HANDLER
+		if ( WarpDriveConfig.LOGGING_CHUNK_RELOADING
 		  && timeUnloaded != 0L
 		  && time - timeUnloaded < RELOAD_DELAY_MIN_MS ) {
-			WarpDrive.logger.warn(String.format("Chunk %s (%d %d %d) is reloading after only %d ms", 
+			WarpDrive.logger.warn(String.format("Chunk %s %s is reloading after only %d ms", 
 			                                    chunkCoordIntPair,
-			                                    getChunkPosition().getX(), getChunkPosition().getY(), getChunkPosition().getZ(),
+			                                    Commons.format(world, getChunkPosition()),
 			                                    time - timeUnloaded));
+			if (Commons.throttleMe("ChunkData.ChunkReloading")) {
+				new RuntimeException().printStackTrace(WarpDrive.printStreamInfo);
+			}
 		}
 		
 		// load defaults

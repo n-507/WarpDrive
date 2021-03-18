@@ -115,6 +115,14 @@ public abstract class TileEntityAbstractMachine extends TileEntityAbstractInterf
 	}
 	
 	public void markDirtyAssembly() {
+		
+		if (WarpDrive.isDev) {
+			WarpDrive.logger.info(String.format("%s markDirtyAssembly at %d", this, world.getWorldTime()));
+			if (Commons.throttleMe("markDirtyAssembly")) {
+				new Exception().printStackTrace(WarpDrive.printStreamInfo);
+			}
+		}
+		
 		isDirtyAssembly = true;
 	}
 	

@@ -91,7 +91,7 @@ public class ChunkHandler {
 		assert chunkData != null;
 		// (world can load a non-generated chunk, or the chunk be regenerated, so we reset only as needed)
 		if (!chunkData.isLoaded()) { 
-			chunkData.load(new NBTTagCompound());
+			chunkData.load(new NBTTagCompound(), world);
 		}
 	}
 	
@@ -107,7 +107,7 @@ public class ChunkHandler {
 		
 		final ChunkData chunkData = getChunkData(event.getWorld().isRemote, event.getWorld().provider.getDimension(), event.getChunk().x, event.getChunk().z, true);
 		assert chunkData != null;
-		chunkData.load(event.getData());
+		chunkData.load(event.getData(), event.getWorld());
 	}
 	
 	// (called after data loading, or before a late generation, or on client side) 
@@ -123,7 +123,7 @@ public class ChunkHandler {
 		final ChunkData chunkData = getChunkData(event.getWorld().isRemote, event.getWorld().provider.getDimension(), event.getChunk().x, event.getChunk().z, true);
 		assert chunkData != null;
 		if (!chunkData.isLoaded()) {
-			chunkData.load(new NBTTagCompound());
+			chunkData.load(new NBTTagCompound(), event.getWorld());
 		}
 	}
 	/*

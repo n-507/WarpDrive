@@ -77,6 +77,13 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 			return;
 		}
 		
+		if (WarpDrive.isDev && this instanceof TileEntityAbstractMachine) {
+			WarpDrive.logger.info(String.format("%s onConstructed at %d", this, world.getWorldTime()));
+			if (Commons.throttleMe("onConstructed")) {
+				new Exception().printStackTrace(WarpDrive.printStreamInfo);
+			}
+		}
+		
 		// immediately retrieve tier, we need it to connect energy conduits and save the world before the first tick
 		final Block block = getBlockType();
 		if (block instanceof IBlockBase) {
@@ -285,7 +292,9 @@ public abstract class TileEntityAbstractBase extends TileEntity implements IBloc
 			onConstructed();
 			WarpDrive.logger.error(String.format("%s Tile entity was used before being loaded! this is a forge issue.",
 			                                     this ));
-			new RuntimeException().printStackTrace(WarpDrive.printStreamError);
+			if (Commons.throttleMe("TileEntityAbstractBase.getTierIndex")) {
+				new RuntimeException().printStackTrace(WarpDrive.printStreamInfo);
+			}
 		}
 		return enumTier.getIndex();
 	}
