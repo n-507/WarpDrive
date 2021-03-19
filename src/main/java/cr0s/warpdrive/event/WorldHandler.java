@@ -201,6 +201,10 @@ public class WorldHandler {
 		} else {
 			isAllowed = isAllowed && GlobalRegionManager.onBlockUpdating(entity, blockEvent.getWorld(), blockEvent.getPos(), blockEvent.getState());
 		}
+		if ( blockEvent instanceof BlockEvent.BreakEvent
+		  && entity instanceof EntityPlayer ) {
+			isAllowed = isAllowed && PlayerHandler.checkMaintenanceAndCrew(blockEvent, (EntityPlayer) entity, blockEvent.getPos(), blockStateBefore);
+		}
 		if (!isAllowed) {
 			if (blockEvent.isCancelable()) {
 				blockEvent.setCanceled(true);

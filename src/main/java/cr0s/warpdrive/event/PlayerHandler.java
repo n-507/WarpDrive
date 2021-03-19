@@ -24,7 +24,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
@@ -64,6 +66,18 @@ public class PlayerHandler {
 	}
 	
 	@SubscribeEvent
+	public void onLeftClickBlock(@Nonnull final LeftClickBlock event) {
+		final BlockPos blockPos = event.getPos();
+		
+		// check for lock
+		doCancelEventDuringJump(event, blockPos);
+		
+		// check for maintenance and member access
+		final IBlockState blockState = event.getWorld().getBlockState(blockPos);
+		doCancelEventForNonMembers(event, blockPos, blockState);
+	}
+	
+	@SubscribeEvent
 	public void onRightClickBlock(@Nonnull final RightClickBlock event) {
 		final BlockPos blockPos = event.getPos();
 		
@@ -75,8 +89,24 @@ public class PlayerHandler {
 		doCancelEventForNonMembers(event, blockPos, blockState);
 	}
 	
-	private void doCancelEventForNonMembers(@Nonnull final PlayerEvent event, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
+	private void doCancelEventForNonMembers(@Nonnull final PlayerEvent event,
+	                                       @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
 		final EntityPlayer entityPlayer = event.getEntityPlayer();
+		final boolean isCrewMember = checkMaintenanceAndCrew(event, entityPlayer, blockPos, blockState);
+		
+		// restrict mining/access to members only
+		if ( !isCrewMember
+		  && !entityPlayer.isCreative() ) {
+			if (Commons.throttleMe("cancelingEventForNonMember")) {
+				WarpDrive.logger.info(String.format("Cancelling event for non-member %s",
+				                                     entityPlayer));
+			}
+			event.setCanceled(true);
+		}
+	}
+	
+	public static boolean checkMaintenanceAndCrew(@Nonnull final Event event, @Nonnull final EntityPlayer entityPlayer,
+	                                              @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
 		final Block block = blockState.getBlock();
 		final float hardness = blockState.getBlockHardness(entityPlayer.getEntityWorld(), blockPos);
 		
@@ -84,12 +114,12 @@ public class PlayerHandler {
 		if ( block instanceof BlockForceField
 		  || hardness < WarpDriveConfig.HULL_HARDNESS[1]
 		  || Dictionary.BLOCKS_ANCHOR.contains(block) ) {
-			return;
+			return true;
 		}
 		// keep blocks inside a ship
 		final ArrayList<GlobalRegion> globalRegions = GlobalRegionManager.getContainers(EnumGlobalRegionType.SHIP, entityPlayer.world, blockPos);
 		if (globalRegions.isEmpty()) {
-			return;
+			return true;
 		}
 		
 		// sanitize & summarize the ship list
@@ -103,15 +133,16 @@ public class PlayerHandler {
 					WarpDrive.logger.error(String.format("Unable to adjust harvest speed due to invalid tile entity for global region, expecting TileEntityShipCore, got %s",
 					                                     tileEntity ));
 				}
-				return;
+				return false;
 			}
+			// skip invalid assemblies
 			final TileEntityShipCore tileEntityShipCore = (TileEntityShipCore) tileEntity;
 			if (!tileEntityShipCore.isAssemblyValid()) {
 				if (Commons.throttleMe("onBreakSpeed-InvalidAssembly")) {
-					WarpDrive.logger.error(String.format("Unable to adjust harvest speed due to invalid ship assembly for %s",
+					WarpDrive.logger.debug(String.format("Skipping maintenance & crew members for invalid ship assembly %s",
 					                                     tileEntity ));
 				}
-				return;
+				continue;
 			}
 			isUnderMaintenance &= tileEntityShipCore.isUnderMaintenance();
 			isCrewMember &= tileEntityShipCore.isCrewMember(entityPlayer);
@@ -119,20 +150,15 @@ public class PlayerHandler {
 		
 		// apply maintenance bypass/boost
 		if (isUnderMaintenance) {
+			// @TODO: return an enum to remove this hack
 			if (event instanceof BreakSpeed) {
 				((BreakSpeed) event).setNewSpeed(5.0F * hardness);
 			}
-			return;
+			return true;
 		}
 		
-		// restrict mining/access to members only
-		if ( !isCrewMember
-		  && !entityPlayer.isCreative() ) {
-			WarpDrive.logger.error(String.format("Cancelling event for non-member %s",
-			                                     entityPlayer ));
-			
-			event.setCanceled(true);
-		}
+		return isCrewMember
+		    || entityPlayer.isCreative();
 	}
 	
 	private void doCancelEventDuringJump(@Nonnull final PlayerEvent event, @Nonnull final BlockPos blockPos) {
