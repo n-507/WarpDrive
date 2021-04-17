@@ -345,16 +345,27 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController i
 				if (tileEntityEnanReactorLaser != null) {
 					if (tileEntityEnanReactorLaser.stabilize(stabilizerEnergy) == -stabilizerEnergy) {
 						// chunk isn't updating properly => protect the reactor
-						instabilityValues[reactorFace.indexStability] = instabilityTarget;
 						hold = true;
-						// delay simulation for a few seconds
-						updateTicks = Math.max(updateTicks, WarpDriveConfig.ENAN_REACTOR_FREEZE_INTERVAL_TICKS);
 						// report to console
 						if (Commons.throttleMe(String.format("Reactor simulation hold %s", Commons.format(world, pos)))) {
-							WarpDrive.logger.warn(String.format("Reactor %s simulation is now on hold for at least %d ticks due to partial loading",
-							                                    Commons.format(world, pos), WarpDriveConfig.ENAN_REACTOR_FREEZE_INTERVAL_TICKS ));
+							WarpDrive.logger.warn(String.format("Reactor %s simulation is now on hold for %d ticks due to partial loading of laser %s",
+							                                    Commons.format(world, pos), updateTicks,
+							                                    Commons.format(world, tileEntityEnanReactorLaser.getPos()) ));
 						}
 					}
+				}
+			}
+		}
+		// chunk isn't updating properly => protect the reactor
+		if (hold) {
+			// delay simulation for a few seconds
+			updateTicks = Math.max(updateTicks, WarpDriveConfig.ENAN_REACTOR_FREEZE_INTERVAL_TICKS);
+			// force an assembly check
+			markDirtyAssembly();
+			// protect the reactor
+			for (final ReactorFace reactorFace : ReactorFace.getLasers(enumTier)) {
+				if (instabilityValues[reactorFace.indexStability] > instabilityTarget) {
+					instabilityValues[reactorFace.indexStability] = instabilityTarget;
 				}
 			}
 		}
