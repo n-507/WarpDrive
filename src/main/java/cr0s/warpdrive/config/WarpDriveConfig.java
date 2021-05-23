@@ -259,7 +259,7 @@ public class WarpDriveConfig {
 	public static boolean LOGGING_XML_PREPROCESSOR = false;
 	public static boolean LOGGING_RENDERING = false;
 	public static boolean LOGGING_CHUNK_HANDLER = false;
-	public static boolean LOGGING_CHUNK_RELOADING = true;
+	public static boolean LOGGING_CHUNK_RELOADING = false;
 	public static boolean LOGGING_CHUNK_LOADING = true;
 	public static boolean LOGGING_ENTITY_FX = false;
 	public static boolean LOGGING_CLIENT_SYNCHRONIZATION = false;
@@ -996,7 +996,7 @@ public class WarpDriveConfig {
 		LOGGING_XML_PREPROCESSOR = config.get("logging", "enable_XML_preprocessor_logs", LOGGING_XML_PREPROCESSOR, "Save XML preprocessor results as output*.xml file, enable it to debug your XML configuration files").getBoolean(false);
 		LOGGING_RENDERING = config.get("logging", "enable_rendering_logs", LOGGING_RENDERING, "Detailed rendering logs to help debug the mod.").getBoolean(false);
 		LOGGING_CHUNK_HANDLER = config.get("logging", "enable_chunk_handler_logs", LOGGING_CHUNK_HANDLER, "Detailed chunk data logs to help debug the mod.").getBoolean(false);
-		LOGGING_CHUNK_RELOADING = config.get("logging", "enable_chunk_reloading_logs", LOGGING_CHUNK_RELOADING, "Report in logs when a chunk is reloaded shortly after being unloaded, usually associated with server lag.").getBoolean(false);
+		LOGGING_CHUNK_RELOADING = config.get("logging", "enable_experimental_chunk_reloading_logs", LOGGING_CHUNK_RELOADING, "Report in logs when a chunk is reloaded shortly after being unloaded, usually associated with server lag.").getBoolean(false);
 		LOGGING_CHUNK_LOADING = config.get("logging", "enable_chunk_loading_logs", LOGGING_CHUNK_LOADING, "Chunk loading logs, enable it to report chunk loaders updates").getBoolean(false);
 		LOGGING_ENTITY_FX = config.get("logging", "enable_entity_fx_logs", LOGGING_ENTITY_FX, "EntityFX logs, enable it to dump entityFX registry updates").getBoolean(false);
 		LOGGING_GRAVITY = config.get("logging", "enable_gravity_logs", LOGGING_GRAVITY, "Gravity logs, enable it before reporting fall damage and related issues").getBoolean(false);
