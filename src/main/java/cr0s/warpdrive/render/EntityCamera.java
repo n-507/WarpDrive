@@ -23,6 +23,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 public final class EntityCamera extends EntityLivingBase {
 	
 	// entity coordinates (x, y, z) are dynamically changed by player
@@ -33,8 +36,6 @@ public final class EntityCamera extends EntityLivingBase {
 	private int cameraZ;
 	
 	private EntityPlayer player;
-	
-	private final Minecraft mc = Minecraft.getMinecraft();
 	
 	private int dx = 0, dy = 0, dz = 0;
 	
@@ -96,6 +97,7 @@ public final class EntityCamera extends EntityLivingBase {
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void onEntityUpdate() {
 		if (world.isRemote) {
 			if (player == null || player.isDead) {
@@ -112,6 +114,7 @@ public final class EntityCamera extends EntityLivingBase {
 			}
 			
 			final Block block = world.getBlockState(new BlockPos(cameraX, cameraY, cameraZ)).getBlock();
+			final Minecraft mc = Minecraft.getMinecraft();
 			if (mc.getRenderViewEntity() != null) {
 				mc.getRenderViewEntity().rotationYaw = player.rotationYaw;
 				// mc.renderViewEntity.rotationYawHead = player.rotationYawHead;
