@@ -5,6 +5,7 @@ import cr0s.warpdrive.WarpDrive;
 import cr0s.warpdrive.config.Dictionary;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.CelestialObject;
+import cr0s.warpdrive.data.CloakManager;
 import cr0s.warpdrive.data.CloakedArea;
 import cr0s.warpdrive.data.GlobalPosition;
 import cr0s.warpdrive.data.MovingEntity;
@@ -72,23 +73,28 @@ public class PacketHandler {
 		
 		final MessageBeamEffect messageBeamEffect = new MessageBeamEffect(v3Source, v3Target, red, green, blue, age);
 		
-		// small beam are sent relative to beam center
-		if (v3Source.distanceTo_square(v3Target) < 3600 /* 60 * 60 */) {
-			simpleNetworkManager.sendToAllAround(messageBeamEffect, new TargetPoint(
-					world.provider.getDimension(), (v3Source.x + v3Target.x) / 2, (v3Source.y + v3Target.y) / 2, (v3Source.z + v3Target.z) / 2, radius));
-		} else {// large beam are sent from both ends
-			assert world.getMinecraftServer() != null;
-			final List<EntityPlayerMP> playerEntityList = world.getMinecraftServer().getPlayerList().getPlayers();
-			final int dimensionId = world.provider.getDimension();
-			final int radius_square = radius * radius;
-			for (final EntityPlayerMP entityPlayerMP : playerEntityList) {
-				if (entityPlayerMP.dimension == dimensionId) {
-					if ( v3Source.distanceTo_square(entityPlayerMP) < radius_square
-					  || v3Target.distanceTo_square(entityPlayerMP) < radius_square ) {
-						simpleNetworkManager.sendTo(messageBeamEffect, entityPlayerMP);
-					}
-				}
+		// get cloaked area
+		final CloakedArea cloakedArea = CloakManager.getContainingArea(world, v3Source.getBlockPos(), v3Target.getBlockPos());
+		
+		// send beam from both ends
+		assert world.getMinecraftServer() != null;
+		final List<EntityPlayerMP> playerEntityList = world.getMinecraftServer().getPlayerList().getPlayers();
+		final int dimensionId = world.provider.getDimension();
+		final int radius_square = radius * radius;
+		for (final EntityPlayerMP entityPlayerMP : playerEntityList) {
+			// is it out of range?
+			if ( entityPlayerMP.world == null
+			  || entityPlayerMP.world.provider.getDimension() != dimensionId
+			  || ( v3Source.distanceTo_square(entityPlayerMP) > radius_square
+			    && v3Target.distanceTo_square(entityPlayerMP) > radius_square ) ) {
+				continue;
 			}
+			// is it cloaked?
+			if ( cloakedArea != null
+			  && !cloakedArea.isBlockWithinArea(entityPlayerMP.getPosition()) ) {
+				continue;
+			}
+			simpleNetworkManager.sendTo(messageBeamEffect, entityPlayerMP);
 		}
 	}
 	
@@ -98,6 +104,7 @@ public class PacketHandler {
 		assert !world.isRemote;
 		
 		final MessageBeamEffect messageBeamEffect = new MessageBeamEffect(source, target, red, green, blue, age);
+		
 		// Send packet to all players within cloaked area
 		assert world.getMinecraftServer() != null;
 		final List<EntityPlayerMP> playerEntityList = world.getMinecraftServer().getPlayerList().getPlayers();
@@ -141,9 +148,27 @@ public class PacketHandler {
 		final MessageSpawnParticle messageSpawnParticle = new MessageSpawnParticle(
 			type, quantity, origin, direction, baseRed, baseGreen, baseBlue, fadeRed, fadeGreen, fadeBlue);
 		
-		// small beam are sent relative to beam center
-		simpleNetworkManager.sendToAllAround(messageSpawnParticle, new TargetPoint(
-				world.provider.getDimension(), origin.x, origin.y, origin.z, radius));
+		// get cloaked area
+		final CloakedArea cloakedArea = CloakManager.getContainingArea(world, origin.getBlockPos(), null);
+		
+		// send particle to players in range and the same cloak
+		assert world.getMinecraftServer() != null;
+		final List<EntityPlayerMP> playerEntityList = world.getMinecraftServer().getPlayerList().getPlayers();
+		final int radius_square = radius * radius;
+		for (final EntityPlayerMP entityPlayerMP : playerEntityList) {
+			// is it out of range?
+			if ( entityPlayerMP.world == null
+			  || entityPlayerMP.world.provider.getDimension() != world.provider.getDimension()
+			  || origin.distanceTo_square(entityPlayerMP) > radius_square ) {
+				continue;
+			}
+			// is it cloaked?
+			if ( cloakedArea != null
+			  && !cloakedArea.isBlockWithinArea(entityPlayerMP.getPosition()) ) {
+				continue;
+			}
+			simpleNetworkManager.sendTo(messageSpawnParticle, entityPlayerMP);
+		}
 		
 		if (WarpDriveConfig.LOGGING_EFFECTS) {
 			WarpDrive.logger.info(String.format("Sent particle effect '%s' x %d from %s toward %s as RGB %.2f %.2f %.2f fading to %.2f %.2f %.2f",
