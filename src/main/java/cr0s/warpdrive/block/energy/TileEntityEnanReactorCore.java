@@ -638,6 +638,7 @@ public class TileEntityEnanReactorCore extends TileEntityEnanReactorController i
 	@Override
 	public boolean onBlockUpdatingInArea(@Nullable final Entity entity, final BlockPos blockPos, final IBlockState blockState) {
 		// energy ducts are updating quite frequently, so we explicitly check for reactor faces here
+		finishConstruction();
 		for (final ReactorFace reactorFace : ReactorFace.get(enumTier)) {
 			if ( blockPos.getX() == pos.getX() + reactorFace.x
 			  && blockPos.getY() == pos.getY() + reactorFace.y
