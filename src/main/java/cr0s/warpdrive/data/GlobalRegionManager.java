@@ -95,13 +95,19 @@ public class GlobalRegionManager {
 				continue;
 			}
 			
-			if ( registryItem.type.equals(globalRegionProvider.getGlobalRegionType())
-			  && registryItem.uuid.equals(uuidTileEntity) ) {// already registered
-				registryItem.update(globalRegionProvider);    // in-place update only works as long as hashcode remains unchanged
-				setRegistryItems.removeAll(listToRemove);
-				return;
-			} else if (registryItem.sameCoordinates(globalRegionProvider)) {
-				listToRemove.add(registryItem);
+			if (registryItem.sameCoordinates(globalRegionProvider)) {
+				if ( registryItem.type.equals(globalRegionProvider.getGlobalRegionType())
+				  && registryItem.uuid.equals(uuidTileEntity) ) {// already registered
+					// note: in-place update only works as long as hashcode remains unchanged, that means same position, same type, same UUID
+					registryItem.update(globalRegionProvider);
+					setRegistryItems.removeAll(listToRemove);
+					if (WarpDriveConfig.LOGGING_GLOBAL_REGION_REGISTRY) {
+						printRegistry("updated");
+					}
+					return;
+				} else {
+					listToRemove.add(registryItem);
+				}
 			}
 		}
 		setRegistryItems.removeAll(listToRemove);
@@ -287,6 +293,14 @@ public class GlobalRegionManager {
 			}
 			
 			if (!globalRegion.contains(blockPos)) {
+				continue;
+			}
+			
+			// sanitize tile entity
+			// note: since player is in range, we can safely load the tile entity
+			final TileEntity tileEntity = world.getTileEntity(globalRegion.getBlockPos());
+			if (!(tileEntity instanceof IGlobalRegionProvider)) {
+				cleanup();
 				continue;
 			}
 			

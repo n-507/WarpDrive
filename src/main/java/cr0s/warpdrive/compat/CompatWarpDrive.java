@@ -2,6 +2,7 @@ package cr0s.warpdrive.compat;
 
 import cr0s.warpdrive.Commons;
 import cr0s.warpdrive.api.IBlockTransformer;
+import cr0s.warpdrive.api.IGlobalRegionProvider;
 import cr0s.warpdrive.api.ITransformation;
 import cr0s.warpdrive.api.WarpDriveText;
 import cr0s.warpdrive.block.BlockAbstractBase;
@@ -13,6 +14,7 @@ import cr0s.warpdrive.block.hull.BlockHullSlab;
 import cr0s.warpdrive.config.WarpDriveConfig;
 import cr0s.warpdrive.data.BlockProperties;
 import cr0s.warpdrive.data.ChunkData;
+import cr0s.warpdrive.data.GlobalRegionManager;
 import cr0s.warpdrive.data.StateAir;
 import cr0s.warpdrive.event.ChunkHandler;
 
@@ -81,6 +83,9 @@ public class CompatWarpDrive implements IBlockTransformer {
 				return;
 			}
 			chunkData.setDataAir(x, y, z, StateAir.AIR_DEFAULT);
+		}
+		if (tileEntity instanceof IGlobalRegionProvider) {
+			GlobalRegionManager.removeFromRegistry((IGlobalRegionProvider) tileEntity);
 		}
 	}
 	
