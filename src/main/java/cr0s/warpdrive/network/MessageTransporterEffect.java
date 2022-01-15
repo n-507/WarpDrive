@@ -266,8 +266,10 @@ public class MessageTransporterEffect implements IMessage, IMessageHandler<Messa
 		
 		final Collection<BlockPos> vContainments = ((TileEntityTransporterCore) tileEntity).getContainments();
 		if (vContainments == null) {
-			WarpDrive.logger.error(String.format("No containments blocks identified for transporter core at %s",
-			                                     blockPosTransporter ));
+			if (Commons.throttleMe("noContainmentsBlock")) {
+				WarpDrive.logger.error(String.format("No containment block identified for transporter core at %s",
+				                                     blockPosTransporter ));
+			}
 			return;
 		}
 		for (final BlockPos vContainment : vContainments) {
