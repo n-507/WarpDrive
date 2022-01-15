@@ -39,6 +39,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -1321,6 +1322,12 @@ public class JumpSequencer extends AbstractSequencer {
 			}
 			
 			final BlockPos target = transformation.apply(jumpBlock.x, jumpBlock.y, jumpBlock.z);
+			
+			// TODO: add a proper tag on 1.15+
+			if (jumpBlock.block instanceof BlockRedstoneWire) {
+				worldTarget.setBlockState(target, jumpBlock.block.getStateFromMeta(jumpBlock.blockMeta));
+			}
+			
 			JumpBlock.refreshBlockStateOnClient(worldTarget, target);
 			
 			actualIndexInShip++;
