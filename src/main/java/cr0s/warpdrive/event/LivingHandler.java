@@ -27,6 +27,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -184,6 +186,15 @@ public class LivingHandler {
 			// *** offline avatar handling
 			if (WarpDriveConfig.OFFLINE_AVATAR_ENABLE) {
 				OfflineAvatarManager.onTick((EntityPlayer) entityLivingBase);
+			}
+			
+			// *** elytra handling
+			// note: flags are pretty slow to access, so we try to filter out the obvious cases first
+			if ( !entityLivingBase.onGround
+			  && !celestialObject.hasAtmosphere()
+			  && entityLivingBase.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() == Items.ELYTRA
+			  && entityLivingBase.isElytraFlying() ) {
+				((EntityPlayerMP) entityLivingBase).clearElytraFlying();
 			}
 		}
 		
