@@ -248,10 +248,6 @@ public class Commons {
 	
 	public static void addChatMessage(final ICommandSender commandSender, @Nonnull final ITextComponent textComponent) {
 		final String message = textComponent.getFormattedText();
-		addChatMessage(commandSender, message);
-	}
-	
-	public static void addChatMessage(final ICommandSender commandSender, @Nonnull final String message) {
 		if (commandSender == null) {
 			WarpDrive.logger.error(String.format("Unable to send message to NULL sender: %s",
 			                                     message));
@@ -264,23 +260,28 @@ public class Commons {
 		}
 		
 		final String[] lines = updateEscapeCodes(message).split("\n");
-		String formatNextLine = "";
-		for (final String line : lines) {
-			commandSender.sendMessage(new TextComponentString(formatNextLine + line));
+		if (lines.length == 1) {
+			commandSender.sendMessage(textComponent);
 			
-			// compute remaining format
-			int index = 0;
-			while (index < line.length()) {
-				if (line.charAt(index) == (char) 167 && index + 1 < line.length()) {
-					index++;
-					final char charFormat = line.charAt(index);
-					if (charFormat == 'r') {
-						formatNextLine = CHAR_FORMATTING + charFormat;
-					} else {
-						formatNextLine += CHAR_FORMATTING + charFormat;
+		} else {
+			String formatNextLine = "";
+			for (final String line : lines) {
+				commandSender.sendMessage(new TextComponentString(formatNextLine + line));
+				
+				// compute remaining format
+				int index = 0;
+				while (index < line.length()) {
+					if (line.charAt(index) == (char) 167 && index + 1 < line.length()) {
+						index++;
+						final char charFormat = line.charAt(index);
+						if (charFormat == 'r') {
+							formatNextLine = CHAR_FORMATTING + charFormat;
+						} else {
+							formatNextLine += CHAR_FORMATTING + charFormat;
+						}
 					}
+					index++;
 				}
-				index++;
 			}
 		}
 		
