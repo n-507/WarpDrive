@@ -73,7 +73,8 @@ public class CompatWarpDrive implements IBlockTransformer {
 	@Override
 	public void removeExternals(final World world, final int x, final int y, final int z,
 	                            final Block block, final int blockMeta, final TileEntity tileEntity) {
-		if (block instanceof BlockAirFlow || block instanceof BlockAirSource) {
+		if ( block instanceof BlockAirFlow
+		  || block instanceof BlockAirSource ) {
 			final ChunkData chunkData = ChunkHandler.getChunkData(world, x, y, z);
 			if (chunkData == null) {
 				// chunk isn't loaded, skip it

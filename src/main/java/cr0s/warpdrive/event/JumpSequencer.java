@@ -1320,7 +1320,7 @@ public class JumpSequencer extends AbstractSequencer {
 				}
 			}
 			
-			final BlockPos target = transformation.apply(jumpBlock.x, jumpBlock.y, jumpBlock.z); 
+			final BlockPos target = transformation.apply(jumpBlock.x, jumpBlock.y, jumpBlock.z);
 			JumpBlock.refreshBlockStateOnClient(worldTarget, target);
 			
 			actualIndexInShip++;

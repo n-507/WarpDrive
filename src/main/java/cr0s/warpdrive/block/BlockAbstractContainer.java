@@ -211,8 +211,7 @@ public abstract class BlockAbstractContainer extends BlockContainer implements I
 	}
 	
 	@Override
-	public void breakBlock(final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
-		assert world != null;
+	public void breakBlock(@Nonnull final World world, @Nonnull final BlockPos blockPos, @Nonnull final IBlockState blockState) {
 		// cascade to tile entity before it's removed
 		final TileEntity tileEntity = world.getTileEntity(blockPos);
 		if (tileEntity instanceof TileEntityAbstractBase) {
