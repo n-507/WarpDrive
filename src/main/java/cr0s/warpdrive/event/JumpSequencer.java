@@ -1298,7 +1298,15 @@ public class JumpSequencer extends AbstractSequencer {
 						WarpDrive.logger.info(String.format("Removing tile entity at (%d %d %d)",
 						                                    jumpBlock.x, jumpBlock.y, jumpBlock.z));
 					}
-					worldSource.removeTileEntity(blockPos);
+					if (WarpDriveConfig.G_ENABLE_EXPERIMENTAL_UNLOAD) {
+						final TileEntity tileEntity = worldSource.getTileEntity(blockPos);
+						if (tileEntity != null) {
+							tileEntity.onChunkUnload();
+							worldSource.removeTileEntity(blockPos);
+						}
+					} else {
+						worldSource.removeTileEntity(blockPos);
+					}
 				}
 				try {
 					boolean isRemoved = FastSetBlockState.setBlockStateNoLight(worldSource, blockPos, Blocks.AIR.getDefaultState(), 2);

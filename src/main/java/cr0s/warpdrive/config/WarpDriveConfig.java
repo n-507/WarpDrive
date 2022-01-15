@@ -188,6 +188,7 @@ public class WarpDriveConfig {
 	public static boolean              G_ENABLE_FAST_SET_BLOCKSTATE = false;
 	public static boolean              G_ENABLE_PROTECTION_CHECKS = true;
 	public static boolean              G_ENABLE_EXPERIMENTAL_REFRESH = false;
+	public static boolean              G_ENABLE_EXPERIMENTAL_UNLOAD = true;
 	public static int                  G_MINIMUM_DIMENSION_UNLOAD_QUEUE_DELAY = 100;
 	public static boolean              G_ENABLE_FORGE_CHUNK_MANAGER = true;
 	
@@ -861,6 +862,8 @@ public class WarpDriveConfig {
 		                                        "Enable area protection checks from other mods or plugins, disable if you use the event system exclusively").getBoolean(G_ENABLE_PROTECTION_CHECKS);
 		G_ENABLE_EXPERIMENTAL_REFRESH  = config.get("general", "enable_experimental_refresh", G_ENABLE_EXPERIMENTAL_REFRESH,
 		                                            "Enable experimental refresh during jump to prevent duping, use at your own risk").getBoolean(G_ENABLE_EXPERIMENTAL_REFRESH);
+		G_ENABLE_EXPERIMENTAL_UNLOAD  = config.get("general", "enable_experimental_unload", G_ENABLE_EXPERIMENTAL_UNLOAD,
+		                                           "Enable experimental tile entity unloading during jump to force a cleanup, required for IC2 Classic, may cause issues with other mods").getBoolean(G_ENABLE_EXPERIMENTAL_UNLOAD);
 		G_MINIMUM_DIMENSION_UNLOAD_QUEUE_DELAY = Commons.clamp(0, 1000,
 				config.get("general", "minimum_dimension_unload_queue_delay_ticks", G_MINIMUM_DIMENSION_UNLOAD_QUEUE_DELAY,
 		                   "Enforce a minimum value for Forge's dimensionUnloadQueueDelay to fix various dimension transition issues from unloading the world too soon (set below 100 at your own risk)").getInt());
