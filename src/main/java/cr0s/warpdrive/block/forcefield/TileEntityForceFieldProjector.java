@@ -836,7 +836,12 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	}
 	
 	public Vector3 getMin() {
-		return v3Min;
+		assert EnumForceFieldUpgrade.RANGE.getProjectorUpgradeSlot() != null;
+		if (hasUpgrade(EnumForceFieldUpgrade.RANGE.getProjectorUpgradeSlot())) {
+			return v3Min;
+		} else {
+			return new Vector3(-1.0D, -1.0D, -1.0D);
+		}
 	}
 	
 	private void setMin(final float x, final float y, final float z) {
@@ -844,7 +849,12 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	}
 	
 	public Vector3 getMax() {
-		return v3Max;
+		assert EnumForceFieldUpgrade.RANGE.getProjectorUpgradeSlot() != null;
+		if (hasUpgrade(EnumForceFieldUpgrade.RANGE.getProjectorUpgradeSlot())) {
+			return v3Max;
+		} else {
+			return new Vector3( 1.0D,  1.0D,  1.0D);
+		}
 	}
 	
 	private void setMax(final float x, final float y, final float z) {
@@ -1110,11 +1120,13 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 	}
 	
 	public Object[] min(final Object[] arguments) {
-		return computer_getOrSetVector3(this::getMin, this::setMin, arguments);
+		assert EnumForceFieldUpgrade.RANGE.getProjectorUpgradeSlot() != null;
+		return computer_getOrSetVector3(this::getMin, this::setMin, EnumForceFieldUpgrade.RANGE.getProjectorUpgradeSlot(), arguments);
 	}
 	
 	public Object[] max(final Object[] arguments) {
-		return computer_getOrSetVector3(this::getMax, this::setMax, arguments);
+		assert EnumForceFieldUpgrade.RANGE.getProjectorUpgradeSlot() != null;
+		return computer_getOrSetVector3(this::getMax, this::setMax, EnumForceFieldUpgrade.RANGE.getProjectorUpgradeSlot(), arguments);
 	}
 	
 	public Object[] rotation(final Object[] arguments) {
@@ -1145,11 +1157,17 @@ public class TileEntityForceFieldProjector extends TileEntityAbstractForceField 
 				return new Object[] { rotationYaw, rotationPitch, rotationRoll, message };
 			}
 		}
-		return new Float[] { rotationYaw, rotationPitch, rotationRoll };
+		assert EnumForceFieldUpgrade.ROTATION.getProjectorUpgradeSlot() != null;
+		if (hasUpgrade(EnumForceFieldUpgrade.ROTATION.getProjectorUpgradeSlot())) {
+			return new Float[] { rotationYaw, rotationPitch, rotationRoll };
+		} else {
+			return new Object[] { 0.0F, 0.0F, 0.0F, "Missing " + EnumForceFieldUpgrade.ROTATION.getProjectorUpgradeSlot().itemStack.getDisplayName() };
+		}
 	}
 	
 	public Object[] translation(final Object[] arguments) {
-		return computer_getOrSetVector3(this::getTranslation, this::setTranslation, arguments);
+		assert EnumForceFieldUpgrade.TRANSLATION.getProjectorUpgradeSlot() != null;
+		return computer_getOrSetVector3(this::getTranslation, this::setTranslation, EnumForceFieldUpgrade.TRANSLATION.getProjectorUpgradeSlot(), arguments);
 	}
 	
 	// OpenComputers callback methods

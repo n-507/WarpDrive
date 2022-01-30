@@ -31,7 +31,6 @@ import li.cil.oc.api.network.Visibility;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -359,6 +358,7 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 	@Nonnull
 	protected Object[] computer_getOrSetVector3(@Nonnull final FunctionGet<Vector3> getVector,
 	                                            @Nonnull final FunctionSetVector<Float> setVector,
+	                                            @Nonnull final TileEntityAbstractBase.UpgradeSlot upgradeSlot,
 	                                            final Object[] arguments) {
 		if ( arguments != null
 		  && arguments.length > 0
@@ -389,7 +389,11 @@ public abstract class TileEntityAbstractInterfaced extends TileEntityAbstractBas
 			}
 		}
 		final Vector3 v3Actual = getVector.apply();
-		return new Double[] { v3Actual.x, v3Actual.y, v3Actual.z };
+		if (hasUpgrade(upgradeSlot)) {
+			return new Double[] { v3Actual.x, v3Actual.y, v3Actual.z };
+		} else {
+			return new Object[] { v3Actual.x, v3Actual.y, v3Actual.z, "Missing " + upgradeSlot.itemStack.getDisplayName() };
+		}
 	}
 	
 	protected UUID computer_getUUID(final UUID uuidDefault, @Nonnull final Object[] arguments) {
