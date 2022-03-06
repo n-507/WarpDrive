@@ -152,7 +152,7 @@ public class CommandDump extends AbstractCommand {
 				assert uniqueIdentifier != null;
 				final String stringDamage = itemStack.getItemDamage() == 0 ? "" : String.format(" damage=\"%d\"", itemStack.getItemDamage());
 				final String stringNBT = !itemStack.hasTagCompound() ? "" : String.format(" nbt=\"%s\"", itemStack.getTagCompound());
-				WarpDrive.logger.info(String.format("Slot %3d is <loot item=\"%s:%s\"%s minQuantity=\"%d\" minQuantity=\"%d\"%s weight=\"1\" /><!-- %s -->",
+				WarpDrive.logger.info(String.format("Slot %3d is <loot item=\"%s:%s\"%s minQuantity=\"%d\" maxQuantity=\"%d\"%s weight=\"1\" /><!-- %s -->",
 				                                    indexSlot,
 				                                    uniqueIdentifier.getNamespace(), uniqueIdentifier.getPath(),
 				                                    stringDamage,
