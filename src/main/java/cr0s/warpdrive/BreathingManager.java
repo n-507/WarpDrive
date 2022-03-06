@@ -26,6 +26,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.World;
@@ -263,7 +264,7 @@ public class BreathingManager {
 			for (int slotIndex = 0; slotIndex < playerInventory.size(); ++slotIndex) {
 				final ItemStack itemStack = playerInventory.get(slotIndex);
 				if ( !itemStack.isEmpty()
-				  && itemStack.isItemEqual(WarpDriveConfig.IC2_compressedAir) ) {
+				  && WarpDriveConfig.isIC2CompressedAir(itemStack) ) {
 					itemStack.shrink(1);
 					playerInventory.set(slotIndex, itemStack);
 					
@@ -354,12 +355,14 @@ public class BreathingManager {
 					final int airCapacity = airContainerItem.getMaxAirStorage(itemStack);
 					sumAirCapacityTicks += airCapacity * airContainerItem.getAirTicksPerConsumption(itemStack);
 					
-				} else if (WarpDriveConfig.IC2_compressedAir != null && itemStack.isItemEqual(WarpDriveConfig.IC2_compressedAir)) {
-					sumAirStoredTicks += AIR_IC2_COMPRESSED_AIR_TICKS;
-					sumAirCapacityTicks += AIR_IC2_COMPRESSED_AIR_TICKS;
+				} else if ( WarpDriveConfig.IC2_compressedAir != null
+				         && WarpDriveConfig.isIC2CompressedAir(itemStack) ) {
+					sumAirStoredTicks += AIR_IC2_COMPRESSED_AIR_TICKS * itemStack.getCount();
+					sumAirCapacityTicks += AIR_IC2_COMPRESSED_AIR_TICKS * itemStack.getCount();
 					
-				} else if (WarpDriveConfig.IC2_emptyCell != null && itemStack.isItemEqual(WarpDriveConfig.IC2_emptyCell)) {
-					sumAirCapacityTicks += AIR_IC2_COMPRESSED_AIR_TICKS;
+				} else if ( WarpDriveConfig.IC2_emptyCell != null
+				         && itemStack.isItemEqual(WarpDriveConfig.IC2_emptyCell) ) {
+					sumAirCapacityTicks += AIR_IC2_COMPRESSED_AIR_TICKS * itemStack.getCount();
 					
 				} else if (canElectrolyse) {
 					if (itemStack.getItem() == itemIce) {

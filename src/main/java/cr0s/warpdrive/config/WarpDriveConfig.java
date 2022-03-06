@@ -1805,6 +1805,14 @@ public class WarpDriveConfig {
 		}
 	}
 	
+	public static boolean isIC2CompressedAir(@Nonnull final ItemStack itemStack) {
+		final NBTTagCompound nbtCompressedAir = WarpDriveConfig.IC2_compressedAir.getTagCompound();
+		return !itemStack.isEmpty()
+		    && itemStack.isItemEqual(WarpDriveConfig.IC2_compressedAir)
+		    && ( (nbtCompressedAir == null)
+		      || (itemStack.getTagCompound() != null && nbtCompressedAir.equals(itemStack.getTagCompound())) );
+	}
+	
 	public static DocumentBuilder getXmlDocumentBuilder() {
 		if (xmlDocumentBuilder == null) {
 			
