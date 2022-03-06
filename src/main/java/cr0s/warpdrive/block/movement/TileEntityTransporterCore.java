@@ -925,6 +925,7 @@ public class TileEntityTransporterCore extends TileEntityAbstractEnergyCoreOrCon
 	
 	boolean updateBeacon(final TileEntity tileEntity, final UUID uuidTransporterCore) {
 		if ( tileEntity == null
+		  || this.uuid == null
 		  || !this.uuid.equals(uuidTransporterCore) ) {
 			WarpDrive.logger.error(String.format("%s Invalid parameters in beacon call to transporter as %s, %s",
 			                                     this, tileEntity, uuidTransporterCore));
