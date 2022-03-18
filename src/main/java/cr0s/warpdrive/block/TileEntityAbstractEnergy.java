@@ -258,18 +258,6 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 				public long getEnergyCapacity() {
 					return outputsEnergy(facing) || inputsEnergy(facing) ? EnergyWrapper.convertInternalToGT_floor(energy_getMaxStorage()) : 0;
 				}
-						
-						/*
-						@Override
-						public BigInteger getEnergyStoredActual() {
-							return null;
-						}
-						
-						@Override
-						public BigInteger getEnergyCapacityActual() {
-							return null;
-						}
-						/**/
 				
 				@Override
 				public long getOutputAmperage() {
@@ -292,8 +280,13 @@ public abstract class TileEntityAbstractEnergy extends TileEntityAbstractEnergyB
 				}
 				
 				@Override
-				public boolean isSummationOverflowSafe() {
-					return false;
+				public long getInputPerSec() {
+					return inputsEnergy(facing) ? (long) GT_amperageInput * GT_voltageInput / 20 : 0L;
+				}
+				
+				@Override
+				public long getOutputPerSec() {
+					return outputsEnergy(facing) ? (long) GT_amperageOutput * GT_voltageOutput / 20 : 0L;
 				}
 			};
 			if (WarpDriveConfig.LOGGING_ENERGY) {
