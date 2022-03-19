@@ -261,9 +261,9 @@ idea {
 }
 
 runClient {
-    jvmArgs "-Xmx2048m", "-Xms1024m", "-ea"
+    jvmArgs "-Xmx3192m", "-Xms3192m", "-ea"
 }
 
 runServer {
-    jvmArgs "-Xmx2048m", "-Xms1024m", "-ea"
+    jvmArgs "-Xmx3192m", "-Xms3192m", "-ea"
 }
