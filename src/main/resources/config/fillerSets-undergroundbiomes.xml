@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <worldGeneration version="3"
 				 xmlns="http://warpdrive.lemadec.org"
 				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -204,7 +204,6 @@
                 <import group="undergroundBiomes_rareOres" name="%type%@%metadata%" />
                 <filler block="minecraft:obsidian" weight="100" />
                 <filler block="undergroundbiomes:%type%_stone_diamond_ore" metadata="%metadata%" weight="5" />
-                <filler block="minecraft:bedrock" weight="1" />
             </fillerSet>
 
             <!-- assorted overworld surface blocks -->

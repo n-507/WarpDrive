@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <worldGeneration version="3"
 				 xmlns="http://warpdrive.lemadec.org"
 				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -162,7 +162,6 @@
 		<import group="overworld_rareOres" name="stone" />
 		<filler block="minecraft:obsidian" weight="100" />
 		<filler block="minecraft:diamond_ore" weight="5" />
-		<filler block="minecraft:bedrock" weight="1" />
 	</fillerSet>
 	
 	<fillerSet group="overworld_rareGems" name="emerald" weight="10">
@@ -234,7 +233,6 @@
 		<filler block="minecraft:quartz_ore" ratio="0.07" />
 		<filler block="minecraft:glowstone" ratio="0.0075" />
 		<filler block="minecraft:lava" ratio="0.01" />
-		<filler block="minecraft:bedrock" ratio=".001" />
 		
 		<filler block="arsmagica2:vinteumOre" metadata="4" ratio=".0005" mods="arsmagica2" /><!-- Sunstone -->
 		<filler block="bigreactors:brore" metadata="2" ratio=".015" mods="bigreactors" /><!-- Benitoite -->
@@ -274,7 +272,7 @@
 	<fillerSet group="end_gems" name="amethyst" weight="10" mods="biomesoplenty">
 		<filler block="biomesoplenty:gem_ore" metadata="0" ratio=".001" /><!-- Amethyst -->
 	</fillerSet>
-	<fillerSet group="end_gems" name="none" ratio="0.10"><!-- slight change of no gems -->
+	<fillerSet group="end_gems" name="none" ratio="0.10"><!-- slight chance of no gems -->
 		<filler block="minecraft:end_stone" metadata="0" ratio=".00000001" /><!-- negligeable ratio -->
 	</fillerSet>
 	
