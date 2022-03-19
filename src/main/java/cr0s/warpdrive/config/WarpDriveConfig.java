@@ -109,8 +109,10 @@ public class WarpDriveConfig {
 	private static DocumentBuilder xmlDocumentBuilder;
 	private static final String[]  defaultXML_fillerSets = {
 			"fillerSets-default.xml",
+			"fillerSets-GTCEu.xml",
 			"fillerSets-netherores.xml",
 			"fillerSets-undergroundbiomes.xml",
+			"fillerSets-undergroundBiomes_GTCEu.xml",
 	};
 	private static final String[]  defaultXML_lootSets = {
 			"lootSets-default.xml",

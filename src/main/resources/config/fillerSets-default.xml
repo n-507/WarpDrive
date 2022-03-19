@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <worldGeneration version="3"
 				 xmlns="http://warpdrive.lemadec.org"
 				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 				 xsi:schemaLocation="http://warpdrive.lemadec.org WarpDrive.xsd">
 	
 	<!-- all possible overworld ores -->
-	<fillerSet group="overworld_allOres" name="stone">
+	<fillerSet group="overworld_allOres" name="stone" mods="!gregtech">
 		<!-- insert common first, so their ratio/weight takes priority -->
 		<import group="overworld_commonOres" name="stone" />
 		<import group="overworld_uncommonOres" name="stone" />
@@ -13,26 +13,26 @@
 	</fillerSet>
 	
 	<!-- common overworld ores with various base blocks -->
-	<fillerSet group="overworld_common" name="stone" weight="20">
+	<fillerSet group="overworld_common" name="stone" weight="20" mods="!gregtech">
 		<import group="overworld_commonOres" name="stone" />
 		<filler block="minecraft:stone" weight="1" />
 	</fillerSet>
-	<fillerSet group="overworld_common" name="corrupted" weight="5">
+	<fillerSet group="overworld_common" name="corrupted" weight="5" mods="!gregtech">
 		<import group="overworld_commonOres" name="stone" />
 		<filler block="minecraft:stone" weight="5" />
 		<filler block="minecraft:cobblestone" weight="1" />
 	</fillerSet>
-	<fillerSet group="overworld_common" name="cobblestone" weight="1">
+	<fillerSet group="overworld_common" name="cobblestone" weight="1" mods="!gregtech">
 		<import group="overworld_commonOres" name="stone" />
 		<filler block="minecraft:cobblestone" weight="1" />
 	</fillerSet>
-	<fillerSet group="overworld_common" name="sandNclay" weight="2">
+	<fillerSet group="overworld_common" name="sandNclay" weight="2" mods="!gregtech">
 		<import group="overworld_commonOres" name="stone" />
 		<filler block="minecraft:sandstone" weight="1" />
 		<filler block="minecraft:clay" weight="1" />
 	</fillerSet>
 	
-	<fillerSet group="overworld_commonOres" name="stone">
+	<fillerSet group="overworld_commonOres" name="stone" mods="!gregtech">
 		<filler block="minecraft:coal_ore" ratio=".06" />
 		<filler block="minecraft:iron_ore" ratio=".04" />
 		<filler block="minecraft:redstone_ore" ratio=".008" mods="!thermalfoundation" />
@@ -85,26 +85,26 @@
 	
 	
 	<!-- uncommon overworld ores with various base blocks -->
-	<fillerSet group="overworld_uncommon" name="stone" weight="10">
+	<fillerSet group="overworld_uncommon" name="stone" weight="10" mods="!gregtech">
 		<import group="overworld_uncommonOres" name="stone" />
 		<filler block="minecraft:stone" weight="1" />
 	</fillerSet>
-	<fillerSet group="overworld_uncommon" name="corrupted" weight="5">
+	<fillerSet group="overworld_uncommon" name="corrupted" weight="5" mods="!gregtech">
 		<import group="overworld_uncommonOres" name="stone" />
 		<filler block="minecraft:stone" weight="5" />
 		<filler block="minecraft:cobblestone" weight="1" />
 	</fillerSet>
-	<fillerSet group="overworld_uncommon" name="cobblestone" weight="1">
+	<fillerSet group="overworld_uncommon" name="cobblestone" weight="1" mods="!gregtech">
 		<import group="overworld_uncommonOres" name="stone" />
 		<filler block="minecraft:cobblestone" weight="1" />
 	</fillerSet>
-	<fillerSet group="overworld_uncommon" name="sandNclay" weight="2">
+	<fillerSet group="overworld_uncommon" name="sandNclay" weight="2" mods="!gregtech">
 		<import group="overworld_uncommonOres" name="stone" />
 		<filler block="minecraft:sandstone" weight="1" />
 		<filler block="minecraft:clay" weight="1" />
 	</fillerSet>
 	
-	<fillerSet group="overworld_uncommonOres" name="stone">
+	<fillerSet group="overworld_uncommonOres" name="stone" mods="!gregtech">
 		<filler block="minecraft:redstone_ore" ratio=".008" mods="!thermalfoundation" />
 		<filler block="thermalfoundation:ore_fluid" metadata="2" ratio=".008" />
 		<filler block="minecraft:gold_ore" ratio=".010" />
@@ -152,13 +152,13 @@
 	
 	
 	<!-- rare overworld ores with various base blocks -->
-	<fillerSet group="overworld_rare" name="stone" weight="10">
+	<fillerSet group="overworld_rare" name="stone" weight="10" mods="!gregtech">
 		<import group="overworld_rareOres" name="stone" />
 		<filler block="minecraft:stone" weight="100" />
 		<filler block="minecraft:iron_ore" weight="5" />
 		<filler block="minecraft:lava" weight="1" />
 	</fillerSet>
-	<fillerSet group="overworld_rare" name="obsidian" weight="2">
+	<fillerSet group="overworld_rare" name="obsidian" weight="2" mods="!gregtech">
 		<import group="overworld_rareOres" name="stone" />
 		<filler block="minecraft:obsidian" weight="100" />
 		<filler block="minecraft:diamond_ore" weight="5" />
@@ -192,7 +192,7 @@
 		<filler block="minecraft:stone" metadata="0" ratio=".00000001" /><!-- negligeable ratio -->
 	</fillerSet>
 	
-	<fillerSet group="overworld_rareOres" name="stone">
+	<fillerSet group="overworld_rareOres" name="stone" mods="!gregtech">
 		<filler block="minecraft:gold_ore" ratio=".004" />
 		<filler block="minecraft:diamond_ore" ratio=".004" />
 		<import group="overworld_rareGems" /><!-- add a random gem, don't mix them in the same volume -->
@@ -223,7 +223,7 @@
 	
 	
 	<!-- nether ores with simple base block -->
-	<fillerSet group="nether" name="stone" weight="10">
+	<fillerSet group="nether" name="stone" weight="10" mods="!gregtech">
 		<import group="nether_ores" name="netherrack" />
 		<filler block="minecraft:netherrack" weight="100" />
 		<filler block="minecraft:lava" weight="5" />
@@ -261,7 +261,7 @@
 	
 	
 	<!-- end ores with simple base block -->
-	<fillerSet group="end" name="end" weight="10">
+	<fillerSet group="end" name="end" weight="10" mods="!gregtech">
 		<import group="end_ores" name="endstone" />
 		<filler block="minecraft:end_stone" weight="100" />
 	</fillerSet>
@@ -638,10 +638,10 @@
 		<filler block="StargateTech2:block.naquadah" ratio=".005" mods="StargateTech2" /><!-- Naquadah -->
 		<filler block="enderio:block_alloy" metadata="1" ratio="0.001" mods="enderio" /><!-- Energetic alloy block -->
 	</fillerSet>
-	<fillerSet group="moon.core" name="stone" weight="5">
+	<fillerSet group="moon.core" name="stone" weight="5" mods="!gregtech">
 		<import group="overworld_rare" name="stone" />
 	</fillerSet>
-	<fillerSet group="moon.core" name="obsidian" weight="1">
+	<fillerSet group="moon.core" name="obsidian" weight="1" mods="!gregtech">
 		<import group="overworld_rare" name="obsidian" />
 		<filler block="enderio:block_alloy" metadata="6" ratio="0.001" mods="enderio" /><!-- Dark steel block -->
 	</fillerSet>
