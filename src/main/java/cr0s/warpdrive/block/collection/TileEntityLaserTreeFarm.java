@@ -34,6 +34,8 @@ import java.util.Set;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockOldLog;
 import net.minecraft.block.BlockPlanks.EnumType;
+import net.minecraft.block.IGrowable;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -48,6 +50,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import net.minecraftforge.common.IPlantable;
@@ -564,7 +567,13 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 		
 		// actually break the block
 		final boolean isLeaf = Dictionary.isLeaf(blockStateValuable.getBlock());
-		if (isLog || (breakLeaves && isLeaf)) {
+		final boolean isStackingPlant = Dictionary.isStackingPlant(blockStateValuable.getBlock());
+		final boolean isGrown = blockStateValuable.getBlock() instanceof IGrowable
+		                     && !((IGrowable) blockStateValuable.getBlock()).canGrow(world, blockPosValuable, blockStateValuable, world.isRemote);
+		if ( isLog
+		  || (breakLeaves && isLeaf)
+		  || isGrown
+		  || isStackingPlant ) {
 			// consume power
 			final int energyCost = isLog ? energyHarvestingLog : energyHarvestingLeaf;
 			isPowered = laserMedium_consumeExactly(energyCost, false);
@@ -580,9 +589,9 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 			
 			harvestBlock(blockPosValuable, blockStateValuable);
 			
-			tickCurrentTask = isLog ? WarpDriveConfig.TREE_FARM_HARVEST_LOG_DELAY_TICKS
-			                        : enableSilktouch ? WarpDriveConfig.TREE_FARM_SILKTOUCH_LEAF_DELAY_TICKS
-			                                          : WarpDriveConfig.TREE_FARM_BREAK_LEAF_DELAY_TICKS;
+			tickCurrentTask = isLog || isGrown ? WarpDriveConfig.TREE_FARM_HARVEST_LOG_DELAY_TICKS
+			                                   : enableSilktouch ? WarpDriveConfig.TREE_FARM_SILKTOUCH_LEAF_DELAY_TICKS
+			                                                     : WarpDriveConfig.TREE_FARM_BREAK_LEAF_DELAY_TICKS;
 			return EnumTaskResult.CONTINUE;
 		}
 		
@@ -729,6 +738,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 		final int volume = (xMax - xMin) * (yMax - yMin) * (zMax - zMin);
 		
 		final Collection<BlockPos> logPositions = new HashSet<>(volume);
+		final Collection<BlockStatePos> cropBlockStatePositions = new HashSet<>(volume);
 		
 		final MutableBlockPos mutableBlockPos = new MutableBlockPos();
 		for (int y = yMin; y <= yMax; y++) {
@@ -741,6 +751,9 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 						throw new ExceptionChunkNotLoaded(String.format("Valuable calculation aborted %s",
 						                                                Commons.format(blockAccess, mutableBlockPos)));
 					}
+					if (blockState.getMaterial() == Material.AIR) {
+						continue;
+					}
 					
 					final Block block = blockState.getBlock();
 					if (Dictionary.isLog(block)) {
@@ -752,19 +765,43 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 							logPositions.add(mutableBlockPos.toImmutable());
 						}
 					}
+					if (block instanceof IGrowable) {
+						if (((IGrowable) block).canGrow((World) blockAccess, mutableBlockPos, blockState, false)) {
+							continue;
+						}
+						if (WarpDriveConfig.LOGGING_COLLECTION) {
+							WarpDrive.logger.info(String.format("Found grown crop %s",
+							                                    Commons.format(blockAccess, mutableBlockPos) ));
+						}
+						cropBlockStatePositions.add(new BlockStatePos(mutableBlockPos, blockState));
+					}
+					// note: mutableBlockPos value may change from here
+					if (Dictionary.isStackingPlant(block)) {
+						mutableBlockPos.setPos(x, y + 1, z);
+						final IBlockState blockStateAbove = isSafeThread ? blockAccess.getBlockState(mutableBlockPos) : Commons.getBlockState_noChunkLoading(blockAccess, mutableBlockPos);
+						if (blockState.equals(blockStateAbove)) {
+							if (WarpDriveConfig.LOGGING_COLLECTION) {
+								WarpDrive.logger.info(String.format("Found stacked reed or cactus %s",
+								                                    Commons.format(blockAccess, mutableBlockPos) ));
+							}
+							logPositions.add(mutableBlockPos.toImmutable());
+						}
+					}
 				}
 			}
 		}
-		if (logPositions.isEmpty()) {
+		if ( logPositions.isEmpty()
+		  && cropBlockStatePositions.isEmpty() ) {
 			if (WarpDriveConfig.LOGGING_COLLECTION) {
 				WarpDrive.logger.info("Found no valuable");
 			}
 			return new ArrayList<>();
 		}
 		
-		final HashSet<Block> blockResults = breakLeaves ? Dictionary.getLogsAndLeaves() : Dictionary.getLogs();
+		final HashSet<Block> blockResults = breakLeaves ? Dictionary.getLogsLeavesAndStackings() : Dictionary.getLogsAndStackings();
 		final Set<BlockStatePos> blockStatePositions = Commons.getConnectedBlockStatePos(blockAccess, logPositions, Commons.DIRECTIONS_UP_CONE,
-		                                                                                 Dictionary.getLogsAndLeaves(), blockResults, maxLogDistance);
+		                                                                                 Dictionary.getLogsLeavesAndStackings(), blockResults, maxLogDistance);
+		blockStatePositions.addAll(cropBlockStatePositions);
 		
 		final ArrayList<BlockStatePos> blockStatePosList = new ArrayList<>(blockStatePositions);
 		blockStatePosList.sort(comparator);
