@@ -257,19 +257,19 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 			}
 			
 			if (!blockPosSoils.isEmpty() && !InventoryWrapper.getConnectedInventories(world, pos).isEmpty()) {
-				world.playSound(null, pos, SoundEvents.LASER_HIGH, SoundCategory.BLOCKS, 4F, 1F);
+				world.playSound(null, pos, SoundEvents.LASER_HIGH, SoundCategory.BLOCKS, 1.0F, 0.85F + 0.30F * world.rand.nextFloat());
 				currentState = STATE_PLANTING;
 				tickCurrentTask = WarpDriveConfig.TREE_FARM_PLANT_DELAY_TICKS;
 				return;
 				
 			} else if (!blockPosValuables.isEmpty()) {
-				world.playSound(null, pos, SoundEvents.LASER_HIGH, SoundCategory.BLOCKS, 4F, 1F);
+				world.playSound(null, pos, SoundEvents.LASER_HIGH, SoundCategory.BLOCKS, 1.0F, 0.85F + 0.30F * world.rand.nextFloat());
 				currentState = STATE_HARVESTING;
 				tickCurrentTask = WarpDriveConfig.TREE_FARM_HARVEST_LOG_DELAY_TICKS;
 				return;
 				
 			} else {
-				world.playSound(null, pos, SoundEvents.LASER_LOW, SoundCategory.BLOCKS, 4F, 1F);
+				world.playSound(null, pos, SoundEvents.LASER_LOW, SoundCategory.BLOCKS, 1.0F, 0.85F + 0.30F * world.rand.nextFloat());
 				currentState = STATE_WARMING_UP;
 				tickCurrentTask = WarpDriveConfig.TREE_FARM_WARM_UP_DELAY_TICKS;
 				return;
@@ -466,7 +466,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 		final int age = Math.max(10, Math.round((4 + world.rand.nextFloat()) * WarpDriveConfig.MINING_LASER_MINE_DELAY_TICKS));
 		PacketHandler.sendBeamPacket(world, laserOutput, new Vector3(blockPosPlant).translate(0.5D),
 		                             0.2F, 0.7F, 0.4F, age, 0, 50);
-		world.playSound(null, pos, SoundEvents.LASER_LOW, SoundCategory.BLOCKS, 4F, 1F);
+		world.playSound(null, pos, SoundEvents.LASER_LOW, SoundCategory.BLOCKS, 1.0F, 0.35F + 0.30F * world.rand.nextFloat());
 		world.setBlockState(blockPosPlant, blockStatePlant, 3);
 		
 		tickCurrentTask = WarpDriveConfig.TREE_FARM_PLANT_DELAY_TICKS;
@@ -510,7 +510,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 					final int age = Math.max(10, Math.round((4 + world.rand.nextFloat()) * WarpDriveConfig.TREE_FARM_HARVEST_LOG_DELAY_TICKS));
 					PacketHandler.sendBeamPacket(world, laserOutput, new Vector3(blockPosValuable).translate(0.5D),
 					                             0.8F, 0.8F, 0.2F, age, 0, 50);
-					world.playSound(null, pos, SoundEvents.LASER_LOW, SoundCategory.BLOCKS, 4F, 0.5F);
+					world.playSound(null, pos, SoundEvents.LASER_LOW, SoundCategory.BLOCKS, 1.0F, 0.35F + 0.30F * world.rand.nextFloat());
 					
 					world.setBlockState(blockPosValuable, blockStateValuable.getBlock().getStateFromMeta(metadata + 6), 3);
 					
@@ -545,7 +545,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 				final int age = Math.max(10, Math.round((4 + world.rand.nextFloat()) * WarpDriveConfig.TREE_FARM_HARVEST_LOG_DELAY_TICKS));
 				PacketHandler.sendBeamPacket(world, laserOutput, new Vector3(blockPosValuable).translate(0.5D),
 				                             0.8F, 0.8F, 0.2F, age, 0, 50);
-				world.playSound(null, pos, SoundEvents.LASER_LOW, SoundCategory.BLOCKS, 4F, 0.5F);
+				world.playSound(null, pos, SoundEvents.LASER_LOW, SoundCategory.BLOCKS, 1.0F, 0.35F + 0.30F * world.rand.nextFloat());
 				
 				world.setBlockToAir(blockPosValuable);
 				
@@ -568,7 +568,7 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 			final int age = Math.max(10, Math.round((4 + world.rand.nextFloat()) * WarpDriveConfig.MINING_LASER_MINE_DELAY_TICKS));
 			PacketHandler.sendBeamPacket(world, laserOutput, new Vector3(blockPosValuable).translate(0.5D),
 			                             0.2F, 0.7F, 0.4F, age, 0, 50);
-			world.playSound(null, pos, SoundEvents.LASER_LOW, SoundCategory.BLOCKS, 4F, 1F);
+			world.playSound(null, pos, SoundEvents.LASER_LOW, SoundCategory.BLOCKS, 1.0F, 0.85F + 0.30F * world.rand.nextFloat());
 			
 			harvestBlock(blockPosValuable, blockStateValuable);
 			

@@ -235,7 +235,7 @@ public class TileEntityLift extends TileEntityAbstractEnergyConsumer implements 
 					                             new Vector3(pos.getX() + 0.5D, firstUncoveredY, pos.getZ() + 0.5D),
 					                             1.0F, 1.0F, 0.0F, 40, 0, 100);
 				}
-				world.playSound(null, pos, SoundEvents.LASER_HIGH, SoundCategory.AMBIENT, 4.0F, 1.0F);
+				world.playSound(null, pos, SoundEvents.LASER_HIGH, SoundCategory.AMBIENT, 1.0F, 1.0F);
 				energy_consume(WarpDriveConfig.LIFT_ENERGY_PER_ENTITY, false);
 				isTransferDone = true;
 			}
