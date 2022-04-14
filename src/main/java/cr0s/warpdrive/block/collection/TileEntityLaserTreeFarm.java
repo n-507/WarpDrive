@@ -37,6 +37,7 @@ import net.minecraft.block.BlockPlanks.EnumType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemBlockSpecial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -385,9 +386,16 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 					indexSlotPlant++;
 					continue;
 				}
-				final Block blockFromItem = Block.getBlockFromItem(itemStackPlant.getItem());
+				final Block blockFromItem;
+				if (itemStackPlant.getItem() instanceof ItemBlock) {
+					blockFromItem = Block.getBlockFromItem(itemStackPlant.getItem());
+				} else if (itemStackPlant.getItem() instanceof ItemBlockSpecial) {
+					blockFromItem = ((ItemBlockSpecial) itemStackPlant.getItem()).getBlock();
+				} else {
+					blockFromItem = null;
+				}
 				if ( !(itemStackPlant.getItem() instanceof IPlantable)
-				     && !(blockFromItem instanceof IPlantable) ) {
+				  && !(blockFromItem instanceof IPlantable) ) {
 					indexSlotPlant++;
 					continue;
 				}
