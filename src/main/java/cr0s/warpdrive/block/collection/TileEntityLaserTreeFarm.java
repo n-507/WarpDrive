@@ -435,14 +435,14 @@ public class TileEntityLaserTreeFarm extends TileEntityAbstractMiner {
 			return EnumTaskResult.SKIP;
 		}
 		
-		// no sapling found for this soil, moving on...
+		// no plantable found for this soil, moving on...
 		if ( blockStatePlant == null
 		  || itemStackPlant.isEmpty()
 		  || inventoryPlant == null ) {
 			if (WarpDriveConfig.LOGGING_COLLECTION) {
-				WarpDrive.logger.debug("No sapling found");
+				WarpDrive.logger.debug("No plantable found");
 			}
-			return EnumTaskResult.SKIP;
+			return EnumTaskResult.CONTINUE;
 		}
 		
 		// check area protection
