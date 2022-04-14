@@ -46,6 +46,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
+import gregtech.api.items.IToolItem;
+
 public class TooltipHandler {
 	
 	private static final BlockPos blockPosDummy = new BlockPos(0, -1, 0);
@@ -434,10 +436,20 @@ public class TooltipHandler {
 		// durability
 		if (WarpDriveConfig.TOOLTIP_ADD_DURABILITY.isEnabled(isSneaking, isCreativeMode)) {
 			try {
-				if (event.getItemStack().isItemStackDamageable()) {
+				if (WarpDriveConfig.isGregtechLoaded) {
+					if (itemStack.getItem() instanceof IToolItem) {
+						final IToolItem toolItem = (IToolItem) itemStack.getItem();
+						final int itemDamage = toolItem.getItemDamage(itemStack);
+						final int maxDamage = toolItem.getMaxItemDamage(itemStack);
+						Commons.addTooltip(event.getToolTip(), String.format("Durability: %d / %d",
+						                                                     maxDamage - itemDamage,
+						                                                     maxDamage));
+					}
+				}
+				if (itemStack.isItemStackDamageable()) {
 					Commons.addTooltip(event.getToolTip(), String.format("Durability: %d / %d",
-					                                                     event.getItemStack().getMaxDamage() - event.getItemStack().getItemDamage(),
-					                                                     event.getItemStack().getMaxDamage() ));
+					                                                     itemStack.getMaxDamage() - itemStack.getItemDamage(),
+					                                                     itemStack.getMaxDamage() ));
 				}
 			} catch (final Exception exception) {
 				// no operation
