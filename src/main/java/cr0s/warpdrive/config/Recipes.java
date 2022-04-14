@@ -545,11 +545,23 @@ public class Recipes {
 		final Object whiteLensOrGlassPane = WarpDriveConfig.getOreOrItemStack(
 				"ore:craftingLensWhite", 0,
 				"ore:paneGlassColorless", 0 );
+		final Object glassPane = WarpDriveConfig.getOreOrItemStack(
+				"ore:plateGlass", 0,
+				"ore:paneGlassColorless", 0 );
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
 		                                       ItemComponent.getItemStackNoCache(EnumComponentType.LENS, 2), false, "ggg", "pdp", "ggg",
 		                                       'g', "nuggetGold",
 		                                       'p', whiteLensOrGlassPane,
 		                                       'd', diamondLensOrGem ));
+		// in case craftingLens was found, add a secondary more expensive recipe with just glass
+		// note: this is done in the spirit of Gregtech progression while keeping early access to laser tree farm
+		if (!glassPane.equals(whiteLensOrGlassPane)) {
+			WarpDrive.register(new ShapedOreRecipe(groupComponents,
+			                                       ItemComponent.getItemStackNoCache(EnumComponentType.LENS, 1), false, "ggg", "pdp", "ggg",
+			                                       'g', "nuggetGold",
+			                                       'p', glassPane,
+			                                       'd', diamondLensOrGem ));
+		}
 		
 		// Zoom is 3 Lens, 2 Iron ingot, 2 Dyes, 1 Redstone, 1 Basic motor
 		WarpDrive.register(new ShapedOreRecipe(groupComponents,
@@ -1175,13 +1187,14 @@ public class Recipes {
 			                                       'g', "paneGlassColorless"));
 		}
 		
-		// Laser tree farm is 2 Motors, 2 Lenses, 1 Computer interface, 1 LV Machine casing, 1 Diamond axe, 2 Glass pane
+		// Laser tree farm is 2 Motors, 2 Lenses, 1 Computer interface, 1 LV Machine casing, 1 Iron axe, 2 Glass pane
+		// note: diamond axe was more consistent with Buildcraft, nowadays other mods have cheaper options
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       new ItemStack(WarpDrive.blockLaserTreeFarm), false, "glg", "tlt", "am ",
 		                                       't', itemStackMotors[0],
 		                                       'l', ItemComponent.getItemStack(EnumComponentType.LENS),
 		                                       'm', itemStackMachineCasings[0],
-		                                       'a', Items.DIAMOND_AXE,
+		                                       'a', Items.IRON_AXE,
 		                                       'g', "paneGlassColorless"));
 	}
 	
