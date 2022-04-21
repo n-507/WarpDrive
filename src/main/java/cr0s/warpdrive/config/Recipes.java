@@ -1543,7 +1543,7 @@ public class Recipes {
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       WarpDrive.blockCapacitor[EnumTier.SUPERIOR.getIndex()], false, "psp", "ici", "pgp",
 		                                       'c', ItemComponent.getItemStack(EnumComponentType.CAPACITIVE_CLUSTER),
-		                                       'p', ItemComponent.getItemStack(EnumComponentType.CARBON_FIBER),
+		                                       'p', "plateCarbon",
 		                                       'i', ItemComponent.getItemStack(EnumComponentType.POWER_INTERFACE),
 		                                       'g', "ingotGold",
 		                                       's', ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR) ), "_direct");
@@ -1551,7 +1551,7 @@ public class Recipes {
 		WarpDrive.register(new ShapedOreRecipe(groupMachines,
 		                                       WarpDrive.blockCapacitor[EnumTier.SUPERIOR.getIndex()], false, "p p", "csc", "p p",
 		                                       'c', new ItemStack(WarpDrive.blockCapacitor[EnumTier.ADVANCED.getIndex()]),
-		                                       'p', ItemComponent.getItemStack(EnumComponentType.CARBON_FIBER),
+		                                       'p', "plateCarbon",
 		                                       's', ItemComponent.getItemStack(EnumComponentType.SUPERCONDUCTOR) ), "_upgrade");
 	}
 	
