@@ -127,8 +127,11 @@ public class InventoryWrapper {
 					} else if (inventory instanceof IItemHandler) {
 						qtyLeft = addToInventory(itemStack, (IItemHandler) inventory);
 					} else {
-						WarpDrive.logger.error(String.format("Invalid inventory type %s, please report to mod author: %s",
-						                                    Commons.format(world, blockPos), inventory ));
+						if (Commons.throttleMe("addToInventories")){
+							WarpDrive.logger.error(String.format("Invalid inventory type %s of class %s at %s, please report to mod author",
+							                                     inventory, inventory.getClass(), Commons.format(world, blockPos) ));
+							break;
+						}
 					}
 					if (qtyLeft > 0) {
 						if (itemStackLeft == itemStack) {
@@ -141,7 +144,7 @@ public class InventoryWrapper {
 				}
 				if (qtyLeft > 0) {
 					if (WarpDriveConfig.LOGGING_COLLECTION) {
-						WarpDrive.logger.info(String.format("Overflow detected %s",
+						WarpDrive.logger.info(String.format("Overflow detected at %s",
 						                                    Commons.format(world, blockPos) ));
 					}
 					overflow = true;

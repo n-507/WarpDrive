@@ -430,6 +430,7 @@ public class WarpDriveConfig {
 	public static double           MINING_LASER_MINE_SILKTOUCH_ENERGY_FACTOR = 1.5;
 	public static int              MINING_LASER_MINE_SILKTOUCH_DEUTERIUM_MB = 0;
 	public static double           MINING_LASER_MINE_FORTUNE_ENERGY_FACTOR = 1.5;
+	public static boolean          MINING_LASER_PUMP_UPGRADE_HARVEST_FLUID = false;
 	
 	// Laser tree farm
 	// oak      tree height is 8 to 11 logs + 2 leaves
@@ -1258,6 +1259,7 @@ public class WarpDriveConfig {
 			MINING_LASER_MINE_FORTUNE_ENERGY_FACTOR = Commons.clamp(0.01D, 1000.0D,
 					config.get("mining_laser", "fortune_energy_factor", MINING_LASER_MINE_FORTUNE_ENERGY_FACTOR, "Energy cost multiplier per fortune level").getDouble(MINING_LASER_MINE_FORTUNE_ENERGY_FACTOR));
 		}
+		MINING_LASER_PUMP_UPGRADE_HARVEST_FLUID = config.get("mining_laser", "pump_upgrade_harvest_fluid", MINING_LASER_PUMP_UPGRADE_HARVEST_FLUID, "Pump upgrade will actually pump fluid source if a tank is found, instead of just evaporating it").getBoolean(false);
 		
 		// Tree Farm
 		TREE_FARM_MAX_MEDIUMS_COUNT = Commons.clamp(1, 10,
