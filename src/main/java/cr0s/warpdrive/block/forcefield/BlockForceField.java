@@ -98,7 +98,8 @@ public class BlockForceField extends BlockAbstractForceField implements IDamageR
 	public MapColor getMapColor(final IBlockState blockState, final IBlockAccess blockAccess, final BlockPos blockPos) {
 		final IExtendedBlockState blockStateExtended = (IExtendedBlockState) getExtendedState(blockState, blockAccess, blockPos);
 		final IBlockState blockStateCamouflage = blockStateExtended.getValue(BlockProperties.CAMOUFLAGE);
-		if (blockStateCamouflage != Blocks.AIR) {
+		if ( blockStateCamouflage != null
+		  && blockStateCamouflage.getBlock() != Blocks.AIR ) {
 			try {
 				return blockStateCamouflage.getMapColor(blockAccess, blockPos);
 			} catch (final Exception exception) {
