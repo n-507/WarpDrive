@@ -65,15 +65,7 @@ public class CompatEnergyControl implements IBlockTransformer {
 	
 	@Override
 	public NBTBase saveExternals(World world, int x, int y, int z, Block block, int blockMeta, TileEntity tileEntity) {
-		if(
-			classInfoPanel.isInstance(block) ||
-			classHoloPanel.isInstance(block) ||
-			classInfoPanelExtender.isInstance(block) ||
-			classHoloPanelExtender.isInstance(block)
-		){
-			//trick the system to call restoreExternals later
-			return new NBTTagCompound();
-		}
+		//nothing to do
 		return null;
 	}
 	
@@ -247,21 +239,8 @@ public class CompatEnergyControl implements IBlockTransformer {
 		return metadata;
 	}
 	
-	@SuppressWarnings("all")    //Suppress error related to invoke with args
 	@Override
 	public void restoreExternals(World world, BlockPos blockPos, IBlockState blockState, TileEntity tileEntity, ITransformation transformation, NBTBase nbtBase) {
-		try {
-			//Request an update to the block state
-			//Necessary. Otherwise screen sometimes do not connect.
-			if(classInfoPanel.isInstance(blockState.getBlock()) || classHoloPanel.isInstance(blockState.getBlock())){
-				tileEntity.getClass().getMethod("updateBlockState").invoke(tileEntity, blockState);
-			}
-			if(classInfoPanelExtender.isInstance(blockState.getBlock()) || classHoloPanelExtender.isInstance(blockState.getBlock())){
-				tileEntity.getClass().getMethod("update").invoke(tileEntity);
-			}
-		}catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e){
-			WarpDrive.logger.warn(String.format("Failed to call update on a Energy Control panel %s at %s. The screen may become split.", blockState, blockPos));
-			WarpDrive.logger.warn(e);
-		}
+		//nothing to do
 	}
 }
