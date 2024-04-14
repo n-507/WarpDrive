@@ -354,6 +354,10 @@ public class JumpBlock {
 				nbtToDeploy.setInteger("y", target.getY());
 				nbtToDeploy.setInteger("z", target.getZ());
 				
+				/*
+				//NOTE: this was the original NuclearControl compatibility.
+				//NOTE: However this is incorrect, as it may result in flipping the screen.
+				//NOTE: See CompatEnergyControl.java in mod compat for updated implementation.
 				if (nbtToDeploy.hasKey("screenData")) {// IC2NuclearControl 2.2.5a
 					final NBTTagCompound nbtScreenData = nbtToDeploy.getCompoundTag("screenData");
 					if ( nbtScreenData.hasKey("minX") && nbtScreenData.hasKey("minY") && nbtScreenData.hasKey("minZ")
@@ -373,7 +377,7 @@ public class JumpBlock {
 						nbtToDeploy.setTag("screenData", nbtScreenData);
 					}
 				}
-				
+				*/
 				TileEntity newTileEntity = null;
 				boolean isForgeMultipart = false;
 				if ( WarpDriveConfig.isForgeMultipartLoaded
