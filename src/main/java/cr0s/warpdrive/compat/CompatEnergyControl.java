@@ -28,6 +28,8 @@ public class CompatEnergyControl implements IBlockTransformer {
 	private static Class<?> classHoloPanel;                 //Holographic Panel
 	private static Class<?> classHoloPanelExtender;         //Holo Extender
 	
+	private static Class<?> classRangeTrigger;              //Range Trigger
+	
 	public static void register(){
 		try{
 			classThermalMonitor = Class.forName("com.zuxelus.energycontrol.blocks.ThermalMonitor");
@@ -36,6 +38,7 @@ public class CompatEnergyControl implements IBlockTransformer {
 			classInfoPanelExtender = Class.forName("com.zuxelus.energycontrol.blocks.InfoPanelExtender");
 			classHoloPanel = Class.forName("com.zuxelus.energycontrol.blocks.HoloPanel");
 			classHoloPanelExtender = Class.forName("com.zuxelus.energycontrol.blocks.HoloPanelExtender");
+			classRangeTrigger = Class.forName("com.zuxelus.energycontrol.blocks.RangeTrigger");
 			WarpDriveConfig.registerBlockTransformer("energycontrol", new CompatEnergyControl());
 		}catch(final ClassNotFoundException exception){
 			WarpDrive.logger.error(exception);
@@ -82,7 +85,7 @@ public class CompatEnergyControl implements IBlockTransformer {
 	//Rotation ID/metadata                                  0   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15
 	private static final byte[] panelRotFacing      = {     0,  1,  5,  4,  2,  3,  6,  7,  11, 10, 8,  9,  12, 13, 14, 15};
 	private static final byte[] nbtRotFacing        = {     0,  1,  5,  4,  2,  3,  0,  1,  2,  3,  4,  5,  12, 13, 14, 15};
-	private static final byte[] holoRotFacing       = {     1,  2,  3,  0,  5,  6,  7,  4,  8,  9,  10, 11, 12, 13, 14, 15};
+	private static final byte[] horizontalRotFacing = {     1,  2,  3,  0,  5,  6,  7,  4,  8,  9,  10, 11, 12, 13, 14, 15};
 	
 	@Override
 	public int rotate(Block block, int metadata, NBTTagCompound nbtTileEntity, ITransformation transformation) {
@@ -124,7 +127,8 @@ public class CompatEnergyControl implements IBlockTransformer {
 		if(
 			classHoloPanel.isInstance(block) ||
 			classInfoPanel.isInstance(block) ||
-			classRemoteThermalMonitor.isInstance(block)
+			classRemoteThermalMonitor.isInstance(block) ||
+			classRangeTrigger.isInstance(block)
 		){
 			NBTTagList items = nbtTileEntity.getTagList("Items", 10);
 			NBTTagList itemsNew = items.copy();
@@ -216,22 +220,23 @@ public class CompatEnergyControl implements IBlockTransformer {
 		}
 		
 		
-		//4 sided type (holo displays) - facing only
+		//4 sided type (holo displays and range trigger) - facing only
 		if(
 			classHoloPanel.isInstance(block) ||
-			classHoloPanelExtender.isInstance(block)
+			classHoloPanelExtender.isInstance(block) ||
+			classRangeTrigger.isInstance(block)
 		){
 			int facing = nbtTileEntity.getInteger("facing");
 			switch (rotationSteps) {
 				//without break, so it rotate an additional time for each step.
 				case 3:
-					metadata = holoRotFacing[metadata];
+					metadata = horizontalRotFacing[metadata];
 					facing = nbtRotFacing[facing];
 				case 2:
-					metadata = holoRotFacing[metadata];
+					metadata = horizontalRotFacing[metadata];
 					facing = nbtRotFacing[facing];
 				case 1:
-					metadata = holoRotFacing[metadata];
+					metadata = horizontalRotFacing[metadata];
 					facing = nbtRotFacing[facing];
 				default:
 					break;
